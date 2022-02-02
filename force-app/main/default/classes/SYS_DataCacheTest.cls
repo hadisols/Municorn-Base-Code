@@ -37,12 +37,14 @@ public class SYS_DataCacheTest {
         Test.stopTest(); 
         System.assertEquals(null,null);
     }
+    /*
     @IsTest static void checkpricebookid(){
         Test.startTest();
         String testid = SYS_DataCache.priceBookId;
         Test.stopTest(); 
         System.assertEquals(null,null);
     }
+    */
     @IsTest static void checkLoadTest(){
         Test.startTest();
         Account acc = new Account( Name= 'abc');
