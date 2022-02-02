@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grant_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Grant Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>authorization_code</fullName>
+                <default>false</default>
+                <label>Authorization Code</label>
+            </value>
+            <value>
+                <fullName>client_credentials</fullName>
+                <default>false</default>
+                <label>Client Credentials</label>
+            </value>
+            <value>
+                <fullName>device_code</fullName>
+                <default>false</default>
+                <label>Device Code</label>
+            </value>
+            <value>
+                <fullName>refresh_token</fullName>
+                <default>false</default>
+                <label>Refresh Token</label>
+            </value>
+            <value>
+                <fullName>password</fullName>
+                <default>false</default>
+                <label>Password</label>
+            </value>
+            <value>
+                <fullName>pkce</fullName>
+                <default>false</default>
+                <label>PKCE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -368,13 +368,30 @@ global virtual class SYS_ApplicationService {
         req.setMethod(integrationSetting.UpdateMethod__c);
         for(HttpHeaders__mdt head:httpHeader){
             SYS_debug.log('header is = '+head.MasterLabel + ''+head.Value__c);
-            req.setHeader(String.valueOf(head.MasterLabel), String.valueOf(head.Value__c));
-                
+            req.setHeader(String.valueOf(head.MasterLabel), String.valueOf(head.Value__c));       
         }
+        
+        String oauthGrantType = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).AuthenticationType__c;
+        if(oauthGrantType.toLowerCase() == 'oauth'){
+            String configId = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).OAuth_Config_Record_Id__c;
+            List<SYS_OAuthConfig__c> configs = [SELECT 
+                                                    Id, 
+                                                    Access_Token__c,
+                                                    Token_type__c 
+                                                FROM SYS_OAuthConfig__c 
+                                           	    WHERE Id =:configId];
+
+            if(configs.size()>0){
+                req.setHeader('Authorization',configs[0].Token_type__c+' '+configs[0].Access_Token__c);                                       
+            }
+            SYS_debug.log('MS Header:'+req.getHeader('Authorization'));
+        }
+
         String resourceUrl = integrationSetting.BaseAPIEndPoint__c+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
         req.setEndpoint(resourceUrl);
         return req;
     }
+    
 
     /* ------------------------------------------------------------------------ */
 
@@ -401,6 +418,8 @@ global virtual class SYS_ApplicationService {
         SYS_debug.log('body:'+body);
          
         HttpResponse response = http.send(req);
+        SYS_debug.log('Outbound Request:'+req);
+        SYS_debug.log('Outbound Response:'+response.getBody());
         return response;
         
     }
