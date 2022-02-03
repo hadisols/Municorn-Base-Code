@@ -130,10 +130,11 @@ public class SYS_DataCache {
             if(mappings == null){
                 mappings = new List<FieldSetting__mdt>();
                 System.debug('Field Settings #### 1:'+mappings);
-                mappings = [Select Id,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+                mappings = [Select Id,Order_Number__c, ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
                             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c 
                             from FieldSetting__mdt /*where Is_Active__c=true where FieldApiName__c != null*/
-                            WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'INBOUND'];
+                            WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'INBOUND'
+                            ORDER BY Order_Number__c ASC];
                 System.debug('Field Settings #### 2:'+mappings);
                 for(FieldSetting__mdt item : mappings) {
                     System.debug('Field Settings #### 3:'+item);
@@ -157,7 +158,7 @@ public class SYS_DataCache {
                 //             ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c 
                 //             from FieldSetting__mdt /*where Is_Active__c=true where FieldApiName__c != null*/
                 //             WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'OUTBOUND'];
-                String query = 'SELECT Id, ChildFieldApiName__c,Field_Mapping_Handler__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,' +                
+                String query = 'SELECT Id, Order_Number__c, ChildFieldApiName__c,Field_Mapping_Handler__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,' +                
                 ' ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c ' + 
                 ' from FieldSetting__mdt '+
                 ' WHERE ObjectSetting__r.IntegrationType__r.developername =\''+SYS_DataCache.INT_TYPE+'\' AND Direction__c != \'OUTBOUND\' '; 
@@ -337,8 +338,9 @@ public class SYS_DataCache {
     public static List<ObjectSetting__mdt> objSettings {
         get{
             if(objMap.size() == 0) {
-                objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
-                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c FROM ObjectSetting__mdt LIMIT 10000];
+                // objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
+                //                     ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c FROM ObjectSetting__mdt LIMIT 10000];
+                objMap = ObjectSetting__mdt.getAll().values();
             }
             return objMap;
         }
@@ -349,8 +351,7 @@ public class SYS_DataCache {
         get {
             if(externalIdmap.values().size() == 0) {
                 objMap = new List<ObjectSetting__mdt>();
-                objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
-                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c FROM ObjectSetting__mdt LIMIT 10000];
+                objMap = ObjectSetting__mdt.getAll().values();
                 for(IntegrationSetting__mdt intSetting : [SELECT developername FROM IntegrationSetting__mdt]) {
                     Map<String, String> objToKey = new Map<String, String>();
                     for(ObjectSetting__mdt obj : objMap) {
@@ -370,8 +371,7 @@ public class SYS_DataCache {
         get{
             if(extFieldName.isEmpty()) {
                 objMap = new List<ObjectSetting__mdt>();
-                objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
-                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c FROM ObjectSetting__mdt LIMIT 10000];
+                objMap = ObjectSetting__mdt.getAll().values();
             }
             for(ObjectSetting__mdt obj : objMap) {
                 extFieldName.put(obj.DeveloperName, obj.ExternalFieldApi__c);
@@ -384,8 +384,7 @@ public class SYS_DataCache {
     public static map<String, ObjectSetting__mdt> objectSettingMap {
         get{
             if( objectSettingInit.isEmpty()) {
-                List<ObjectSetting__mdt> objMap = [SELECT DeveloperName, ApexHandler__c,BypassTrigger__c, ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
-                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c FROM ObjectSetting__mdt LIMIT 10000];
+                List<ObjectSetting__mdt> objMap = ObjectSetting__mdt.getAll().values();
                 
                 for(ObjectSetting__mdt obj : objMap) {
                     objectSettingInit.put(obj.DeveloperName, obj);

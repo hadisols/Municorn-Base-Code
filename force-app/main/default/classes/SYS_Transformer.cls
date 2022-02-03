@@ -26,6 +26,7 @@ public virtual class SYS_Transformer {
         set{childRoot = value;}
     }
     public static List<Map<String, Object>> childFlatKeyList = new List<Map<String, Object>>();
+
     
     public static Map<Id, String> getRequestJson(List<sObject> objsList) {
         //This will take list of object and generate outbound JSON body
@@ -163,36 +164,117 @@ public virtual class SYS_Transformer {
         } 
 		
         System.debug('hbdebug parentChildObjMap '+ JSON.serialize(parentChildObjMap)); 
+        Boolean bypassOrder = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE) != null ?
+                                SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).BypassOrder__c : true;
+
         for(sObject obj : objs) {  //looping through quoteline
-            Map<String, Object> jsonMapObject = getRequestJsonSingle(false,obj,SYS_DataCache.fieldSettingMappingUsingObjSetting, parentChildObjMap);
-           System.debug('received data==' + jsonMapObject);
             String objId = (String)obj.get('Id');
-            //now fill children - childMappingsMap.get(objectName)[0].
-            //Map<Id, Map<String, List<sObject>>> parentChildObjMap
-            if(parentChildObjMap.get(objId) != null ) {
-                 for(String childObjectName : parentChildObjMap.get(objId).keySet()) { //each quoteLine from map
-                    if(childMappingsMap.get(childObjectName)[0].ChildRootElement__c != null){
-                        if(jsonMapObject.get(childMappingsMap.get(childObjectName)[0].ChildRootElement__c) == null) {
-                        jsonMapObject.put(childMappingsMap.get(childObjectName)[0].ChildRootElement__c, new List<Map<String, Object>>()); 
-                        } 
-                        System.debug('hbdebug getRequestJsonSingle child - '+ childObjectName);
-                    
-                        for(sObject childObj : parentChildObjMap.get(objId).get(childObjectName)) {
-                            System.debug('Obj added==' + getRequestJsonSingle(true,childObj, childMappingsMap.get(childObjectName) , parentChildObjMap));
-                            System.debug('Obj jsonMapObject==' + jsonMapObject + ' objectKey==' + (String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c);
-                           ((List<Map<String, Object>>)jsonMapObject.get((String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c)).add(getRequestJsonSingle(true,childObj, childMappingsMap.get(childObjectName), parentChildObjMap)); 
-                            //Need to debug as line should be an array.
+            if(bypassOrder) {
+                Map<String, Object> jsonMapObject = getRequestJsonSingle(false,obj,SYS_DataCache.fieldSettingMappingUsingObjSetting, parentChildObjMap);
+                System.debug('received data==' + jsonMapObject);
+                
+                //now fill children - childMappingsMap.get(objectName)[0].
+                //Map<Id, Map<String, List<sObject>>> parentChildObjMap
+                if(parentChildObjMap.get(objId) != null ) {
+                     for(String childObjectName : parentChildObjMap.get(objId).keySet()) { //each quoteLine from map
+                        if(childMappingsMap.get(childObjectName)[0].ChildRootElement__c != null){
+                            if(jsonMapObject.get(childMappingsMap.get(childObjectName)[0].ChildRootElement__c) == null) {
+                            jsonMapObject.put(childMappingsMap.get(childObjectName)[0].ChildRootElement__c, new List<Map<String, Object>>()); 
+                            } 
+                            System.debug('hbdebug getRequestJsonSingle child - '+ childObjectName);
+                        
+                            for(sObject childObj : parentChildObjMap.get(objId).get(childObjectName)) {
+                                System.debug('Obj added==' + getRequestJsonSingle(true,childObj, childMappingsMap.get(childObjectName) , parentChildObjMap));
+                                System.debug('Obj jsonMapObject==' + jsonMapObject + ' objectKey==' + (String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c);
+                               ((List<Map<String, Object>>)jsonMapObject.get((String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c)).add(getRequestJsonSingle(true,childObj, childMappingsMap.get(childObjectName), parentChildObjMap)); 
+                                //Need to debug as line should be an array.
+                            }
                         }
                     }
                 }
+                System.debug('Obj jsonMapObject==' + jsonMapObject);
+                jsonMap.put(objId, JSON.serialize(jsonMapObject));
+                
+            } else {
+                String jsonBody = getRequestJsonSingleOrdered(false,obj,SYS_DataCache.fieldSettingMappingUsingObjSetting, parentChildObjMap);
+                jsonMap.put(objId, jsonBody);
             }
-            System.debug('Obj jsonMapObject==' + jsonMapObject);
-            jsonMap.put(objId, JSON.serialize(jsonMapObject));
             
         }
         return jsonMap;
     }
+
+    public static String getRequestJsonSingleOrdered(Boolean considerChild,sObject obj , List<FieldSetting__mdt> mappings, Map<Id, Map<String, List<sObject>>> mapVal) {
+        String jsonBody;
+        List<String> keys = new List<String>();
+        Map<String, FieldSetting__mdt> mapKeyToSetting = new Map<String, FieldSetting__mdt>();
+        for(FieldSetting__mdt setting : mappings) {
+            if(setting.Key__c != null) {
+                keys.add(setting.Key__c);
+                mapKeyToSetting.put(setting.Key__c, setting);
+            }
+        }
+        
+        JSONGenerator gen = JSON.createGenerator(true);
+        for(Integer i = 0; i < keys.size(); i++) {
+            
+            List<String> splitKeys = keys[i].split('\\.');
+            System.debug('len'+keys[i]);
+            Boolean endObj = true;
+            for(integer j = 0 ; j < splitKeys.size(); j++) {
+                String objValue = getFieldValues(obj, mapKeyToSetting.get(keys[i]), mapKeyToSetting.get(keys[i]).FieldApiName__c ) != null ?
+                                    String.valueOf(getFieldValues(obj, mapKeyToSetting.get(keys[i]), mapKeyToSetting.get(keys[i]).FieldApiName__c )) :
+                                    '';
+                system.debug('loop '+j);
+                if(i == 0) {
+                    if(j == (splitKeys.size()-1)) {
+                        gen.writeStartObject();
+                        gen.writeStringField(splitKeys[j], objValue); 
+
+                        //getFieldValues(sObject obj, FieldSetting__mdt mapping, String fieldAPIName)
+                        System.debug('gen.writeStartObject');
+                        System.debug('gen.writeStringField '+objValue);
+                        continue;
+                    }
+                    gen.writeStartObject();
+                    gen.writeFieldName(splitKeys[j]);
+                    System.debug('gen.writeStartObject');
+                    System.debug('gen.writeFieldName '+splitKeys[j]);
+                    
+
+                } else if(keys[i-1].contains(splitKeys[j])) {
+                    continue;
+                } else if(!(keys[i-1].contains(splitKeys[j]))) {
+                    System.debug('diff'+(keys[i-1].split('\\.').size() - j));
+                    if((keys[i-1].split('\\.').size() - splitKeys.size()) < 0 && (splitKeys.size() - 1) != j ) {
+                        System.debug('current count higher');
+                        gen.writeFieldName(splitKeys[j]);gen.writeStartObject();
+                        System.debug('gen.writeFieldName '+splitKeys[j]);System.debug('gen.writeStartObject');
+                    } else {
+                        if(endObj) {
+                            for(integer itr = 1; itr < (keys[i-1].split('\\.').size() - j); itr++) {
+                                gen.writeEndObject();
+                                System.debug('gen.writeEndObject()');
+                            }
+                            endObj = false;
+                        }
+                        if(j == (splitKeys.size() - 1)) {
+                            gen.writeStringField(splitKeys[j], objValue);
+                            System.debug('gen.writeStringField '+objValue);
+                        } else {
+                            gen.writeFieldName(splitKeys[j]);gen.writeStartObject();
+                            System.debug('gen.writeFieldName '+splitKeys[j]);System.debug('gen.writeStartObject');
+                        }
+                    }
+                }                     
+            }
+        }
     
+        jsonBody = gen.getAsString();
+        System.debug('jsonBody'+jsonBody);
+        return jsonBody;
+    }
+
     public static Map<String, Object> getRequestJsonSingle(Boolean considerChild,sObject obj , List<FieldSetting__mdt> mappings, Map<Id, Map<String, List<sObject>>> mapVal) {
         Map<String, Object> jsonMapObject = new Map<String, Object>();
         System.debug('hbdebug getRequestJsonSingle obj'+ JSON.serialize(obj));
