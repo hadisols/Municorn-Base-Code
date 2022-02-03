@@ -28,39 +28,46 @@ public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.
         List<Id> pendingProcessLogs = new List<Id>();
         for(SYS_IntegrationLog__c log:sysLogs) {
             
-            if(Limits.getCallouts() < Limits.getLimitCallouts() - 1){
-                SYS_DataCache.INT_TYPE = log.SYS_IntegrationSettings__c;
-                SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
-                SYS_ApplicationService appService;
-                
+            try{
 
-                if(log.How_to_process__c == 'use_object_setting')
-                    appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
-                else if(log.How_to_process__c == 'use_custom_apex_handler')
-                    appService = (SYS_ApplicationService)Type.forName(log.Custom_Apex_Handler__c).newInstance();
-                else if(log.How_to_process__c == 'ignore_log'){
-                    continue;
+                if(Limits.getCallouts() < Limits.getLimitCallouts() - 1){
+                    SYS_DataCache.INT_TYPE = log.SYS_IntegrationSettings__c;
+                    SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
+                    SYS_ApplicationService appService;
+                    
+
+                    if(log.How_to_process__c == 'use_object_setting')
+                        appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
+                    else if(log.How_to_process__c == 'use_custom_apex_handler')
+                        appService = (SYS_ApplicationService)Type.forName(log.Custom_Apex_Handler__c).newInstance();
+                    else if(log.How_to_process__c == 'ignore_log'){
+                        continue;
+                    }
+                    else{
+                        //Log Message
+                        continue;
+                    }
+                    HttpResponse outboundResponse = appService.doOutbound(log);
+                    outboundResultLogs.add(appService.generatelogForOutboundResult(outboundResponse,log));
                 }
                 else{
-                    //Log Message
-                    continue;
+                    pendingProcessLogs.add(log.Id);
                 }
-                HttpResponse outboundResponse = appService.doOutbound(log);
-                outboundResultLogs.add(appService.generatelogForOutboundResult(outboundResponse,log));
-            }
-            else{
-                pendingProcessLogs.add(log.Id);
-            }
 
-            /**
-             * If there are still some logs pending for process after exhausting the callout limits 
-             * then chain the queueable
-             **/ 
-            if(pendingProcessLogs.size()>0){
-                System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
+                /**
+                 * If there are still some logs pending for process after exhausting the callout limits 
+                 * then chain the queueable
+                 **/ 
+                if(pendingProcessLogs.size()>0){
+                    System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
+                }
+            }catch(Exception e){
+
+                SYS_ApplicationService.logException(log,e.getStackTraceString());
+    
             }
             
-        }
+        }//For Loop Ends
         
         if(outboundResultLogs.size() > 0){
 

@@ -18,7 +18,6 @@ global virtual class SYS_ApplicationService {
         String tokenFromUrl = RestContext.request.params.get('token');
         String tokenFromIntegrationSetting = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).webhookToken__c;
 
-        SYstem.debug('WEBHOOK TOKEN CHECK: '+tokenFromUrl+' vs. '+tokenFromIntegrationSetting);
         return (tokenFromUrl == tokenFromIntegrationSetting);
 
     }
@@ -91,11 +90,14 @@ global virtual class SYS_ApplicationService {
      * Override if custom handler is required when there are errors in DMLs
      */
     global virtual void handleDMLErrors(Database.Error[] errors){
+        String errMsg='The following error has occurred while performing DML: ';
         for(Database.Error err : errors) {
+            errMsg+= err.getStatusCode() + ': ' + err.getMessage() + '. Fields affected are: ' + err.getFields()+'\n';
             SYS_debug.log('The following error has occurred.');                    
             SYS_debug.log(err.getStatusCode() + ': ' + err.getMessage());
             SYS_debug.log('Fields affected are: ' + err.getFields());
         }
+        SYS_ApplicationService.logException(SYS_DataCache.log, errMsg);
     }
 
     /**
@@ -354,6 +356,7 @@ global virtual class SYS_ApplicationService {
 
         //TODO DML Based on log operation type
         //Database.UpsertResult[] results = Database.upsert(sObjectsToDML,externalIdField, false);
+        SYS_DataCache.log = log;
                
         return doDML(sObjectsToDML,log.SYS_Operation_Type__c,externalIdFieldAPIName);
     }
@@ -432,7 +435,7 @@ global virtual class SYS_ApplicationService {
 
         if(!result){
             
-            String errorMessage = 'The following error has occurred.';
+            String errorMessage = 'Error while processing inbound';
             /*
             String errorMessage = 'The following error has occurred.';
             for(Database.Error err : result.getErrors()) {
@@ -455,13 +458,18 @@ global virtual class SYS_ApplicationService {
         }
         else{
             
-            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
-                logResp.Status__c = 'DONE';
-            }
+            /**
+             * TODO For Guest user the fields are not creatable. 
+             * This won't cause any error becoz the rest service class is without sharing
+             */
 
-            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
-                logResp.Message__c = 'Record created successfully';
-            }
+            //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
+                logResp.Status__c = 'DONE';
+            //}
+
+            //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
+                logResp.Message__c = 'Record created/updated successfully';
+            //}
             
             logResp.Id = log.Id;
         }
@@ -632,6 +640,13 @@ global virtual class SYS_ApplicationService {
     }
 
     /* ------------------------------------------------------------------------ */
+
+    public static void logException(SYS_IntegrationLog__c log,String stackTrace){
+        //log.Type__c = 'EXCEPTION';
+        log.Status__c = 'FAIL';
+        log.Message__c = stackTrace;
+        upsert log;
+    }
 
     /************************** C O N C R E T E    M E T H O D S    E N D *****************************/
 

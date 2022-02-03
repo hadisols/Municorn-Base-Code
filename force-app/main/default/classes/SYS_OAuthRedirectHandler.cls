@@ -21,6 +21,7 @@ global class SYS_OAuthRedirectHandler {
                                                 Refresh_Token__c, 
                                                 Token_Endpoint__c, 
                                                 Client_Id__c, 
+                                                Token_Expiry_Time__c,
                                                 Additional_URL_Parameters__c 
                                             FROM SYS_OAuthConfig__c 
                                            	WHERE Id =:state];
@@ -50,6 +51,7 @@ global class SYS_OAuthRedirectHandler {
             JSONParser parser = JSON.createParser(res.getBody());
             String access_token='';
             String refresh_token=''; 
+            String expiry;
             while (parser.nextToken() != null) {
                 if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && 
                     (parser.getText() == 'access_token')) {
@@ -64,10 +66,18 @@ global class SYS_OAuthRedirectHandler {
                     parser.nextToken();
                     refresh_token= parser.getText();
                 }
+
+                if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && 
+                    (parser.getText() == 'expires_in')) {
+                    
+                    parser.nextToken();
+                    expiry = parser.getText();
+                }
             }
 
             configs[0].Access_Token__c =access_token;
             configs[0].Refresh_Token__c = refresh_token;
+            configs[0].Token_Expiry_Time__c = expiry;
             update configs;
 
             RestContext.response.responseBody = Blob.valueOf('{"data":'+res.getBody()+'}');

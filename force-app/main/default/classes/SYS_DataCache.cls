@@ -6,6 +6,21 @@ public class SYS_DataCache {
     private static Map<String, Map<String, List<FieldSetting__mdt>>> childFieldSettingMap;
     private static List<FieldSetting__mdt> mappings;
 
+    private static SYS_IntegrationLog__c sysLog;
+    public static SYS_IntegrationLog__c log{
+        get{
+            if(sysLog==NULL){
+                sysLog = new SYS_IntegrationLog__c();
+            }
+            return sysLog;
+        }
+        set{
+            sysLog = value;
+        }
+        
+    }
+
+
     //Extension for Webhook extension
     private static String extension;
     public static String getExtension{

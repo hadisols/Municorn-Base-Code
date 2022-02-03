@@ -17,11 +17,6 @@
                 <label>NEW</label>
             </value>
             <value>
-                <fullName>INPROGRESS</fullName>
-                <default>false</default>
-                <label>INPROGRESS</label>
-            </value>
-            <value>
                 <fullName>DONE</fullName>
                 <default>false</default>
                 <label>DONE</label>
