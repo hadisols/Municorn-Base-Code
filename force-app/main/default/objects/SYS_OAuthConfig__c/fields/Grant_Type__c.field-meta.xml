@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Status__c</fullName>
-    <defaultValue>&quot;NEW&quot;</defaultValue>
+    <fullName>Grant_Type__c</fullName>
     <externalId>false</externalId>
-    <label>Status</label>
-    <required>true</required>
+    <label>Grant Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
@@ -12,29 +12,34 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>NEW</fullName>
+                <fullName>authorization_code</fullName>
                 <default>false</default>
-                <label>NEW</label>
+                <label>Authorization Code</label>
             </value>
             <value>
-                <fullName>DONE</fullName>
+                <fullName>client_credentials</fullName>
                 <default>false</default>
-                <label>DONE</label>
+                <label>Client Credentials</label>
             </value>
             <value>
-                <fullName>FAIL</fullName>
+                <fullName>device_code</fullName>
                 <default>false</default>
-                <label>FAIL</label>
+                <label>Device Code</label>
             </value>
             <value>
-                <fullName>ERROR</fullName>
+                <fullName>refresh_token</fullName>
                 <default>false</default>
-                <label>ERROR</label>
+                <label>Refresh Token</label>
             </value>
             <value>
-                <fullName>PENDING_PARENT</fullName>
+                <fullName>password</fullName>
                 <default>false</default>
-                <label>PENDING_PARENT</label>
+                <label>Password</label>
+            </value>
+            <value>
+                <fullName>pkce</fullName>
+                <default>false</default>
+                <label>PKCE</label>
             </value>
         </valueSetDefinition>
     </valueSet>

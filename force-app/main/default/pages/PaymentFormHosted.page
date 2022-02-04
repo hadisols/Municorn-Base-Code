@@ -1,0 +1,75 @@
+<apex:page showHeader="false" sidebar="false" showChat="false" showQuickActionVfHeader="false" 
+                controller="PaymentFormController" action="{!initPage}">
+    <body>
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!paymentRequests}" var="req" id="theTable" styleClass="payment-summary">
+                <apex:column value="{!req.Amount__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <!-- <input type="text" id="" value="{!isCreditcard}"> -->
+        <!-- <apex:form >
+            <apex:pageBlock >
+                <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem >Payment Method
+                        <apex:selectRadio value="{!selectedMethod}">
+                            <br/>
+                            <apex:selectOption itemLabel="Credit Card + 3.99%" itemValue="cc" id="credit-card-opt"/>
+                            <apex:selectOption itemLabel="Bank Payment" itemValue="ach" id="ach-opt"/>           
+                            
+                        </apex:selectRadio>     
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form> -->
+        <input type="text" id="selected-val" value="" />
+        <input type="text" id="selected-amount" value="" />
+
+
+        <input type="radio" id="credit-card-opt" value="" checked="true">Credit Card + 3.99%</input><br/>
+        <input type="radio" id="ach-opt" value="" >Bank Payment</input>
+        <br/>
+        <button id="btnToken" onclick="">Get Token</button>
+        
+
+        <apex:outputPanel id="showstate">
+            <input type="text" id="inputtoken" value="{!pageToken}" />
+            <apex:pageMessage summary="{!pageToken}" severity="error"/>
+        </apex:outputPanel>
+		<br />
+        <form method="post" action="https://test.authorize.net/payment/payment" id="formAuthorizeNetTestPage" name="formAuthorizeNetTestPage">
+            
+            <input type="hidden" id="redirectToken" name="token" value="" />
+            <button id="btnContinue" onclick="">Pay</button>
+		</form>
+    </body>
+
+    
+    <apex:form >
+        <!-- Define the JavaScript function sayHello-->
+        <!-- <apex:actionFunction name="sayHello" action="{!sayHello}" rerender="out" status="myStatus"/> -->
+        <apex:actionFunction name="performCharge" action="{!getToken}" oncomplete="" reRender="showstate">
+            <apex:param name="request" assignTo="{!selectedMethod}" value=""/>
+        </apex:actionFunction>
+    </apex:form>
+    
+    <apex:includeScript value="{!$Resource.jquery}"/>
+    <apex:includeScript value="{!$Resource.form_helper_js}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </link>
+<style>
+body {
+  font-family: Arial;
+  font-size: 17px;
+  padding: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+hr {
+  border: 1px solid lightgrey;
+}
+
+</style>
+
+</apex:page>

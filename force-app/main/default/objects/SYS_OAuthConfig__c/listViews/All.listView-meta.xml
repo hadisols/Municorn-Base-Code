@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>Client_Secret__c</columns>
+    <columns>Grant_Type__c</columns>
+    <columns>Authorize_Endpoint__c</columns>
+    <columns>Token_Endpoint__c</columns>
+    <columns>Redirect_URL__c</columns>
+    <columns>Access_Token__c</columns>
+    <columns>Refresh_Token__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

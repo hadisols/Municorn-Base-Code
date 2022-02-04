@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>ApexHandler__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">SYS_ApplicationService</value>
     </values>
     <values>
         <field>AuthenticationType__c</field>
@@ -20,7 +20,11 @@
     </values>
     <values>
         <field>EscapeCharacter__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">#</value>
+    </values>
+    <values>
+        <field>Hashing_Algo__c</field>
+        <value xsi:type="xsd:string">SHA1</value>
     </values>
     <values>
         <field>Hashing_Algo__c</field>

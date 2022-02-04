@@ -5,26 +5,50 @@ global virtual class SYS_ApplicationService {
 
     /* ------------------------------------------------------------------------ */
     
-    //WEBHOOK Virtuals  
-
+    //WEBHOOK Virtuals
+    
+    /**
+     * This hook is called from Webservice methods to verify the source.
+     * Default is to cross check the token configured in Integration Setting
+     * Zero Arguments. Relies on Integration Setting in DataCache
+     * Override if custom signature check is required
+     */
     global virtual Boolean doWebhookSignatureCheck(){
 
         String tokenFromUrl = RestContext.request.params.get('token');
         String tokenFromIntegrationSetting = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).webhookToken__c;
 
-        SYstem.debug('WEBHOOK TOKEN CHECK: '+tokenFromUrl+' vs. '+tokenFromIntegrationSetting);
         return (tokenFromUrl == tokenFromIntegrationSetting);
 
     }
 
+    /**
+     * This hook is called from insertWebhookLog methods.
+     * Default is to set the response body with incoming request
+     * Zero Arguments. Relies on Integration Setting in DataCache and RestContext
+     * Override if custom handler is required after successful log creation
+     */
     global virtual void setSuccessHttpResponse(){
         RestContext.response.responseBody = Blob.valueOf(RestContext.request.requestBody.toString());
     }
 
+    /**
+     * This hook is called from insertWebhookLog methods.
+     * Default is just a message for Debug logs
+     * Zero Arguments. Relies on Integration Setting in DataCache and RestContext
+     * Override if custom handler is required when log creation causes error
+     */
     global virtual void setErrorHttpResponse(){
         SYS_debug.log('Webhook Error');
     }
 
+
+    /**
+     * These hooks are called from Webservice.
+     * Default is to generate a log record using another hook (generateLogForWebhookReq) and insert using another concrete method
+     * Zero Arguments. Relies on Integration Setting in DataCache and RestContext
+     * Override if custom handler is required for any or all of Http Verbs
+     */
     global virtual void doPost(){
         
         SYS_IntegrationLog__c log = generateLogForWebhookReq('POST');
@@ -59,15 +83,30 @@ global virtual class SYS_ApplicationService {
 
     /* ------------------------------------------------------------------------ */
 
-    
+    /**
+     * This hook is called from all DML hooks following this method
+     * Default is just a message for Debug logs
+     * Argument: Database.Error[]. Relies on Integration Setting in DataCache
+     * Override if custom handler is required when there are errors in DMLs
+     */
     global virtual void handleDMLErrors(Database.Error[] errors){
+        String errMsg='The following error has occurred while performing DML: ';
         for(Database.Error err : errors) {
+            errMsg+= err.getStatusCode() + ': ' + err.getMessage() + '. Fields affected are: ' + err.getFields()+'\n';
             SYS_debug.log('The following error has occurred.');                    
             SYS_debug.log(err.getStatusCode() + ': ' + err.getMessage());
             SYS_debug.log('Fields affected are: ' + err.getFields());
         }
+        SYS_ApplicationService.logException(SYS_DataCache.log, errMsg);
     }
 
+    /**
+     * These hooks are called from doDML() concrete method which in turn is called from doInbound
+     * Default is to call the DML based on operation type
+     * Argument: List<sObject>. Additionally ExternalId field for upsert.
+     * Relies on Integration Setting in DataCache
+     * Override if custom handler is required for any DML
+     */
     global virtual Boolean doInsert(List<sObject> records){
         Database.SaveResult[] results;
         Boolean success = true;
@@ -126,6 +165,13 @@ global virtual class SYS_ApplicationService {
 
     /* ------------------------------------------------------------------------ */ 
 
+    
+    /**
+     * This hook is called from SYS_Transformer to set values for sObject record
+     * Default is map based on field type
+     * Relies on Integration Setting in DataCache
+     * Override if custom field mapping is required
+     */
     global virtual sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
 
         SObjectType r = ((SObject)(Type.forName('Schema.'+sObjectApiName).newInstance())).getSObjectType();
@@ -157,12 +203,23 @@ global virtual class SYS_ApplicationService {
     }
 
     /* ------------------------------------------------------------------------ */ 
+    
+    /**
+     * This hook is called from generateLogForWebhookReq to map Http verb to DML operation type
+     * Override if a different mapping is required
+     */
     global virtual String getOperationTypeFor(String method) {
 
         Map<String,String> methodToOperationMap = new Map<String,String>{'POST'=>'INSERT','PUT'=>'UPSERT','DELETE'=>'DELETE','PATCH'=>'UPDATE'};
         return methodToOperationMap.get(method);
     }
 
+    /**
+     * This hook is called from generateLogForWebhookReq
+     * Default is to get digest for Http request body based on algorithm configured on Integration Settings 
+     * Relies on Integration Setting in DataCache and RestContext
+     * Override if custom digest generation is requied
+     */
     global virtual String generateHash(String requestBody,String algo) {
 
         Blob requestBlob = Blob.valueOf(requestBody);
@@ -172,6 +229,12 @@ global virtual class SYS_ApplicationService {
         return base64EncodedHash;
     }
 
+    /**
+     * This hook is called from each of the hook for Http Verb processing
+     * Arguement: Http Verb - POST,GET,PATCH,DELETE,PUT
+     * Relies on Integration Setting in DataCache and RestContext
+     * Override if custom log generation is required
+     */
     global virtual SYS_IntegrationLog__c generateLogForWebhookReq(String method) {
         String requestBody = RestContext.request.requestBody.toString();
         SYS_IntegrationLog__c log = SYS_ApplicationService.getLogsToInsert(requestBody);
@@ -192,6 +255,11 @@ global virtual class SYS_ApplicationService {
         return log;
     }
 
+    /**
+     * This hook is called from SYS_QueueableForInboundChild to generate logs for inbound child records
+     * Arguement: record json and Integration setting
+     * Override if custom log generation is required
+     */
     global virtual SYS_IntegrationLog__c generateLogForChildRecords(String recordsJson,String integrationSetting) {
         SYS_IntegrationLog__c log = SYS_ApplicationService.getLogsToInsert(recordsJson);
 
@@ -236,6 +304,12 @@ global virtual class SYS_ApplicationService {
         return jsonBody;
     }
 
+    /**
+     * This hook is called from doInbound to identify resource from incoming JSON
+     * Arguement: SYS Log record and JSON Body
+     * Default is return the root if it exists or the value of falt key mentioned in Flat_Key_for_Resource__c field on log record
+     * Override if custom implementation is required for identifying the resoruce for inbound request
+     */
     global virtual String getResourceFromJSON(SYS_IntegrationLog__c log,String jsonBody){
 
         String resource = '';
@@ -282,6 +356,7 @@ global virtual class SYS_ApplicationService {
 
         //TODO DML Based on log operation type
         //Database.UpsertResult[] results = Database.upsert(sObjectsToDML,externalIdField, false);
+        SYS_DataCache.log = log;
                
         return doDML(sObjectsToDML,log.SYS_Operation_Type__c,externalIdFieldAPIName);
     }
@@ -296,13 +371,30 @@ global virtual class SYS_ApplicationService {
         req.setMethod(integrationSetting.UpdateMethod__c);
         for(HttpHeaders__mdt head:httpHeader){
             SYS_debug.log('header is = '+head.MasterLabel + ''+head.Value__c);
-            req.setHeader(String.valueOf(head.MasterLabel), String.valueOf(head.Value__c));
-                
+            req.setHeader(String.valueOf(head.MasterLabel), String.valueOf(head.Value__c));       
         }
+        
+        String oauthGrantType = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).AuthenticationType__c;
+        if(oauthGrantType.toLowerCase() == 'oauth'){
+            String configId = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).OAuth_Config_Record_Id__c;
+            List<SYS_OAuthConfig__c> configs = [SELECT 
+                                                    Id, 
+                                                    Access_Token__c,
+                                                    Token_type__c 
+                                                FROM SYS_OAuthConfig__c 
+                                           	    WHERE Id =:configId];
+
+            if(configs.size()>0){
+                req.setHeader('Authorization',configs[0].Token_type__c+' '+configs[0].Access_Token__c);                                       
+            }
+            SYS_debug.log('MS Header:'+req.getHeader('Authorization'));
+        }
+
         String resourceUrl = integrationSetting.BaseAPIEndPoint__c+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
         req.setEndpoint(resourceUrl);
         return req;
     }
+    
 
     /* ------------------------------------------------------------------------ */
 
@@ -329,6 +421,8 @@ global virtual class SYS_ApplicationService {
         SYS_debug.log('body:'+body);
          
         HttpResponse response = http.send(req);
+        SYS_debug.log('Outbound Request:'+req);
+        SYS_debug.log('Outbound Response:'+response.getBody());
         return response;
         
     }
@@ -341,7 +435,7 @@ global virtual class SYS_ApplicationService {
 
         if(!result){
             
-            String errorMessage = 'The following error has occurred.';
+            String errorMessage = 'Error while processing inbound';
             /*
             String errorMessage = 'The following error has occurred.';
             for(Database.Error err : result.getErrors()) {
@@ -364,13 +458,18 @@ global virtual class SYS_ApplicationService {
         }
         else{
             
-            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
-                logResp.Status__c = 'DONE';
-            }
+            /**
+             * TODO For Guest user the fields are not creatable. 
+             * This won't cause any error becoz the rest service class is without sharing
+             */
 
-            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
-                logResp.Message__c = 'Record created successfully';
-            }
+            //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
+                logResp.Status__c = 'DONE';
+            //}
+
+            //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
+                logResp.Message__c = 'Record created/updated successfully';
+            //}
             
             logResp.Id = log.Id;
         }
@@ -541,6 +640,13 @@ global virtual class SYS_ApplicationService {
     }
 
     /* ------------------------------------------------------------------------ */
+
+    public static void logException(SYS_IntegrationLog__c log,String stackTrace){
+        //log.Type__c = 'EXCEPTION';
+        log.Status__c = 'FAIL';
+        log.Message__c = stackTrace;
+        upsert log;
+    }
 
     /************************** C O N C R E T E    M E T H O D S    E N D *****************************/
 
