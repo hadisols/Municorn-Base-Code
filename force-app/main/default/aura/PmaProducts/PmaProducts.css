@@ -1,0 +1,23 @@
+.THIS .product-wrapper {
+    padding: 0.5em;
+    border-radius: 5px 5px 0 0;
+	max-height: 135px;
+    box-shadow: 0 0 5px rgb(0 0 0 / 30%);
+    transition: all 200ms ease-in-out;
+}
+.THIS .product-wrapper:hover{
+    box-shadow:0 2px 5px rgba(0,0,0,0.5);
+}
+.THIS .image-wrapper.max-height{
+    max-height: 100px;
+}
+.THIS .prodctimage {
+    margin: 0 auto;
+}
+.THIS .prodctimage:hover{
+    transform: scale(1.2);
+}
+.THIS .product-title{
+    font-weight: 700;
+    font-family: monospace;
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Micro_Deposit_Two__c</fullName>
+    <description>Positive amount in cents. The value of one of the micro-deposits as given by your customer. It can take a few days for the micro-deposit to appear in the customer&apos;s bank account. For &quot;$0.32&quot;, enter 32. The order does not matter between the two fields.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Positive amount in cents. The value of one of the micro-deposits as given by your customer. It can take a few days for the micro-deposit to appear in the customer&apos;s bank account. For &quot;$0.32&quot;, enter 32. The order does not matter between the two fields.</inlineHelpText>
+    <label>Micro-Deposit Two</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

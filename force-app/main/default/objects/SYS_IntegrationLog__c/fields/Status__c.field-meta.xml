@@ -43,6 +43,12 @@
                 <label>READY FOR PROCESSING</label>
             </value>
             <value>
+                <fullName>INPROGRESS</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>INPROGRESS</label>
+            </value>
+            <value>
                 <fullName>READY_FOR_PARENT</fullName>
                 <default>false</default>
                 <isActive>false</isActive>

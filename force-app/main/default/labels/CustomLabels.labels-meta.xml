@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>ach_account_number</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach account number</shortDescription>
+        <value>Account Number</value>
+    </labels>
+    <labels>
+        <fullName>ach_account_number_reenter</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Re enter ach account number</shortDescription>
+        <value>Re-enter Account Number</value>
+    </labels>
+    <labels>
+        <fullName>ach_bank_status_error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach bank status error</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>ach_bank_status_pending_verification</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach bank status pending verification</shortDescription>
+        <value>Pending verification</value>
+    </labels>
+    <labels>
+        <fullName>ach_bank_status_verified</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach bank status verified</shortDescription>
+        <value>Verified</value>
+    </labels>
+    <labels>
+        <fullName>ach_bank_verification_enter_amount_1</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Amount 1 display when showing verification UI</shortDescription>
+        <value>Amount 1</value>
+    </labels>
+    <labels>
+        <fullName>ach_bank_verification_enter_amount_2</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Amount 2 display when showing verification UI</shortDescription>
+        <value>Amount 2</value>
+    </labels>
+    <labels>
+        <fullName>ach_bank_verification_micro_deposits_message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Note message to say that the user needs to enter the micro deposits received on</shortDescription>
+        <value>Note: To verify bank account, please enter the two micro deposits received on your bank account. It might take a couple of days for the deposits to appear on the bank account statement!</value>
+    </labels>
+    <labels>
+        <fullName>ach_bank_verification_verify_button_text</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach verification verify button text</shortDescription>
+        <value>Verify</value>
+    </labels>
+    <labels>
+        <fullName>ach_manual_authorization_message_footer</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach manual authorization message footer</shortDescription>
+        <value>I understand that this authorization will remain in full force and effect until I notify {{OrgName}} in writing  to revoke this authorization. I understand that {{OrgName}} requires at least 2 weeks prior notice in order to cancel this authorization.</value>
+    </labels>
+    <labels>
+        <fullName>ach_manual_authorization_message_header</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach manual authorization message header</shortDescription>
+        <value>I hereby authorize {{OrgName}} to electronically credit my accounts (and, if necessary, to electronically debit my (our) account to correct erroneous credits at Checking account at the depository financial institution named below (“DEPOSITORY”). I agree that ACH transactions authorize comply with all applicable law.</value>
+    </labels>
+    <labels>
+        <fullName>ach_manual_register_button_text</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach manual register button text</shortDescription>
+        <value>Register bank account</value>
+    </labels>
+    <labels>
+        <fullName>ach_routing_number</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Ach routing number</shortDescription>
+        <value>Routing Number (RTN)</value>
+    </labels>
+    <labels>
+        <fullName>ach_saved_accounts</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Users bank accounts</shortDescription>
+        <value>Bank payments</value>
+    </labels>
+    <labels>
+        <fullName>ach_select_bank_account_and_pay_title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Select bank account and pay title, block for using plaid as payment method</shortDescription>
+        <value>Direct payment</value>
+    </labels>
+    <labels>
+        <fullName>add_to_cart_text</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Add to cart</shortDescription>
+        <value>Add to cart</value>
+    </labels>
+    <labels>
+        <fullName>bank_payment</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Bank ACH payments label</shortDescription>
+        <value>ACH payments (Manual)</value>
+    </labels>
+    <labels>
+        <fullName>button_code_payment_button_text</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Payment button text</shortDescription>
+        <value>Pay now</value>
+    </labels>
+    <labels>
+        <fullName>checkout_cart_items</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Checkout all cart items on charge component</shortDescription>
+        <value>Checkout</value>
+    </labels>
+    <labels>
+        <fullName>create_new_prefix</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>create_new_prefix</shortDescription>
+        <value>Create new</value>
+    </labels>
+    <labels>
+        <fullName>credit_or_debit_card</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Credit or debit card label</shortDescription>
+        <value>Credit/Debit Card</value>
+    </labels>
+    <labels>
+        <fullName>email</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>email</shortDescription>
+        <value>Email</value>
+    </labels>
+    <labels>
+        <fullName>email_message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Short message describing org is requesting a payment</shortDescription>
+        <value>{{orgName}} is requesting you to process the following payments</value>
+    </labels>
+    <labels>
+        <fullName>email_pay_button_text</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pay button in email text</shortDescription>
+        <value>Process payments</value>
+    </labels>
+    <labels>
+        <fullName>email_subject</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Subject of email for processing payments</shortDescription>
+        <value>Pay to {{orgName}}</value>
+    </labels>
+    <labels>
+        <fullName>email_user_salutation</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Email user salutation</shortDescription>
+        <value>Dear {{userName}},</value>
+    </labels>
+    <labels>
+        <fullName>error_header</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error header</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>error_message_ach_registration_account_number_invalid</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Account number is not provided while registration</shortDescription>
+        <value>Please enter a valid account number</value>
+    </labels>
+    <labels>
+        <fullName>error_message_ach_registration_re_enter_account_number_invalid</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Re entered account number is invalid</shortDescription>
+        <value>Please re enter account number. Account numbers must match!</value>
+    </labels>
+    <labels>
+        <fullName>error_message_ach_registration_routing_number_invalid</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Routing number is not provided</shortDescription>
+        <value>Please enter a valid routing number</value>
+    </labels>
+    <labels>
+        <fullName>error_message_ach_verification_enter_amount_1</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Prompts user to enter micro deposit amount 1 for bank verification</shortDescription>
+        <value>Please enter amount 1</value>
+    </labels>
+    <labels>
+        <fullName>error_message_ach_verification_enter_amount_2</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Prompts user to enter micro deposit amount 2 for bank verification</shortDescription>
+        <value>Please enter amount 2</value>
+    </labels>
+    <labels>
+        <fullName>error_message_ach_verification_select_bank</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Prompts user to select a bank when performing verification</shortDescription>
+        <value>Please select a bank account</value>
+    </labels>
+    <labels>
+        <fullName>error_message_bad_request</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Prompts user that the request format is invalid</shortDescription>
+        <value>Bad request</value>
+    </labels>
+    <labels>
+        <fullName>error_message_invalid_organization</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Organization is not yet setup</shortDescription>
+        <value>Organization setup is not yet completed! Please contact admin</value>
+    </labels>
+    <labels>
+        <fullName>error_message_invalid_user_request</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Prompts user that the request format is invalid</shortDescription>
+        <value>Bad request</value>
+    </labels>
+    <labels>
+        <fullName>error_message_stripe_setup_error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Stripe account not set properly</shortDescription>
+        <value>Payment platform not set properly! Please contact admin</value>
+    </labels>
+    <labels>
+        <fullName>frequency_month</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Frequency describing this is a monthly recurring payment</shortDescription>
+        <value>Monthly</value>
+    </labels>
+    <labels>
+        <fullName>frequency_quarter</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Frequency describing this is a quarterly recurring payment</shortDescription>
+        <value>Quarterly</value>
+    </labels>
+    <labels>
+        <fullName>frequency_single</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Frequency describing this is a one time payment</shortDescription>
+        <value>One time payment</value>
+    </labels>
+    <labels>
+        <fullName>frequency_year</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Frequency describing this is a yearly recurring payment</shortDescription>
+        <value>Yearly</value>
+    </labels>
+    <labels>
+        <fullName>no_saved_cards_available</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No saved cards available message</shortDescription>
+        <value>No saved cards available</value>
+    </labels>
+    <labels>
+        <fullName>pay_now</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>pay_now</shortDescription>
+        <value>Pay now</value>
+    </labels>
+    <labels>
+        <fullName>process_cart_items</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Process all the items added to cart on charge component</shortDescription>
+        <value>Process payment</value>
+    </labels>
+    <labels>
+        <fullName>save_card_for_future_checkouts</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Save card for future checkouts label</shortDescription>
+        <value>Save card for future checkouts</value>
+    </labels>
+    <labels>
+        <fullName>saved_cards</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>User&apos;s saved cards</shortDescription>
+        <value>Card payments</value>
+    </labels>
+    <labels>
+        <fullName>search_prefix</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>search_prefix</shortDescription>
+        <value>Search</value>
+    </labels>
+    <labels>
+        <fullName>stripe_payment_page_org_name_prefix</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>stripe payment page org name prefix</shortDescription>
+        <value>You are about to make a payment to</value>
+    </labels>
+    <labels>
+        <fullName>stripe_payment_page_pay_text_prefix</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pay prefix</shortDescription>
+        <value>Pay</value>
+    </labels>
+    <labels>
+        <fullName>subscribe</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>subscribe</shortDescription>
+        <value>Subscribe</value>
+    </labels>
+    <labels>
+        <fullName>test_mode_message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Message describing that the app is currently in test mode</shortDescription>
+        <value>App is in test mode</value>
+    </labels>
+</CustomLabels>

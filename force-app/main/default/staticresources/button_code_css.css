@@ -1,0 +1,15 @@
+.payment-button {
+    -webkit-border-radius: 0.2rem !important;
+    -moz-border-radius: 0.2rem !important;
+    border-radius: 0.2rem !important;
+    color: #FFFFFF !important;
+    font-family: "Helvetica Neue", Helvetica !important;
+  	font-size: .9rem !important;
+  	font-variant: normal !imporant;
+    padding: 0.6rem 2.5rem !important;
+    background: #004487 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    cursor: pointer !important;
+    border: none !important;
+}

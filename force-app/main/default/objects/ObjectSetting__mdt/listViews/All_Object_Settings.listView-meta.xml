@@ -15,7 +15,6 @@
     <columns>ResourcePath__c</columns>
     <columns>Trigger_Condition__c</columns>
     <columns>TriggerEvents__c</columns>
-    <columns>Unique_Name__c</columns>
     <filterScope>Everything</filterScope>
     <label>All Object Settings</label>
 </ListView>

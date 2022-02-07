@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Payment_Method_Status__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>The current status of the Payment Method. Set automatically.</inlineHelpText>
+    <label>Payment Method Status</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Invalid</fullName>
+                <default>false</default>
+                <label>Invalid</label>
+            </value>
+            <value>
+                <fullName>Valid</fullName>
+                <default>false</default>
+                <label>Valid</label>
+            </value>
+            <value>
+                <fullName>Expired</fullName>
+                <default>false</default>
+                <label>Expired</label>
+            </value>
+            <value>
+                <fullName>One-Time</fullName>
+                <default>false</default>
+                <label>One-Time</label>
+            </value>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Pending</fullName>
+                <default>false</default>
+                <label>Pending</label>
+            </value>
+            <value>
+                <fullName>Validated</fullName>
+                <default>false</default>
+                <label>Validated</label>
+            </value>
+            <value>
+                <fullName>Verified</fullName>
+                <default>false</default>
+                <label>Verified</label>
+            </value>
+            <value>
+                <fullName>Verification Failed</fullName>
+                <default>false</default>
+                <label>Verification Failed</label>
+            </value>
+            <value>
+                <fullName>Errored</fullName>
+                <default>false</default>
+                <label>Errored</label>
+            </value>
+            <value>
+                <fullName>Deleted from Payment Gateway</fullName>
+                <default>false</default>
+                <label>Deleted from Payment Gateway</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

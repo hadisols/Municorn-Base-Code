@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Micro_Deposit_Field_Value_Greater_Than_1</fullName>
+    <active>false</active>
+    <description>When entering micro-deposit amounts, the amount should be entered for example as &quot;32&quot;, not &quot;0.32&quot; or &quot;.32).</description>
+    <errorConditionFormula>OR(AND(NOT(ISBLANK( Micro_Deposit_One__c )), Micro_Deposit_One__c &lt;1),AND(NOT(ISBLANK( Micro_Deposit_Two__c )), Micro_Deposit_Two__c &lt;1))</errorConditionFormula>
+    <errorMessage>When entering micro-deposit amounts, the amount should be entered for example as &quot;32&quot;, not &quot;0.32&quot; or &quot;.32).</errorMessage>
+</ValidationRule>

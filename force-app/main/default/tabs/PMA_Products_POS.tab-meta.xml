@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Created by Lightning App Builder</description>
+    <flexiPage>PMA_Products_POS</flexiPage>
+    <label>PMA Products POS</label>
+    <motif>Custom53: Bell</motif>
+</CustomTab>

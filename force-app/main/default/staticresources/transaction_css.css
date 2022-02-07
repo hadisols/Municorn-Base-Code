@@ -1,0 +1,421 @@
+body {
+	padding: 0px 0px 30px 0px;
+    background: transparent;
+}
+
+.payment-form-body {
+    margin-top: 50px !important;
+    max-width: 800px;
+    margin: auto;
+    position: relative;
+}
+
+.amount-description {
+    text-align: center;
+    font-size: 2rem;
+    padding: 1rem;
+    font-weight: bold;
+    color: #222222;
+}
+
+#card-element {
+	padding-top: 0.5rem;
+    padding-left: 0;
+}
+
+* {
+  font-family: "Helvetica Neue", Helvetica;
+  font-size: 0.95rem;
+  font-variant: normal;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+form {
+  width: 100%;
+  margin: 0 0 20rem 0
+}
+
+.group {
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+label, #pouet {
+  position: relative;
+  /*color: #8898AA;*/
+  font-weight: normal;
+  line-height: 40px;
+  margin-left: 9px;
+  display: flex;
+  flex-direction: row;
+}
+
+label > span, #pouet > span {
+  text-align: right;
+  margin-right: 30px;
+}
+
+.field {
+  background: transparent;
+  font-weight: normal;
+  border: 0;
+  color: #31325F;
+  outline: none;
+  flex: 1;
+  padding-right: 10px;
+  padding-left: 10px;
+  cursor: text;
+}
+
+.field::-webkit-input-placeholder { color: #CFD7E0; }
+.field::-moz-placeholder { color: #CFD7E0; }
+
+.button-container {
+    text-align: center;
+    padding: .5rem 0 1.8rem 0;
+    display: none;
+}
+
+.payment-option {
+    width: 100%;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    border-bottom: 1px solid #f1f1f1;
+    margin-top: .4rem;
+}
+
+.payment-form-body .pbBody {
+    background: white !important;
+    margin: 0 0 0 0 !important;
+}
+
+#tabs { 
+    background: transparent; 
+    border: none;
+    outline: none;
+}
+
+#tabs .ui-widget-header { 
+    background: transparent; 
+    border: none; 
+    border-bottom: 1px solid #c0c0c0; 
+    -moz-border-radius: 0px; 
+    -webkit-border-radius: 0px; 
+    border-radius: 0px; 
+} 
+#tabs .ui-tabs-nav .ui-state-default { 
+    background: transparent; 
+    border: none; 
+}
+#tabs .ui-tabs-nav .ui-state-default a { 
+    color: #c0c0c0; 
+}
+
+#tabs .ui-tabs-nav .ui-state-active a { 
+    color: #222222;
+    outline: 0;
+}
+
+.payment-option label {
+    cursor: pointer;
+}
+
+.payment-option.selected {
+    border-bottom: 1px solid #ECEBEA;
+    border-top: 1px solid #ECEBEA;
+}
+
+.payment-button, .register-ach-button, .verify-ach-button {
+    -webkit-border-radius: 0.2rem !important;
+    -moz-border-radius: 0.2rem !important;
+    border-radius: 0.2rem !important;
+    color: #FFFFFF !important;
+    font-family: "Helvetica Neue", Helvetica !important;
+  	font-size: .9rem !important;
+  	font-variant: normal !imporant;
+    padding: 0.6rem 2.5rem !important;
+    background: #004487 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    cursor: pointer !important;
+    border: none !important;
+}
+
+.verify-ach-button {
+    padding: .3rem 1rem !important;
+}
+
+.payment-button:hover, .register-ach-button:hover {
+    background: #1E62D0;
+    text-decoration: none;
+}
+
+.payment-button:active, .register-ach-button:active {
+    background: #1E62D0;
+    text-decoration: none;
+    box-shadow: none !important;
+}
+
+input[name=payment-source] {
+    cursor: pointer;
+}
+
+.outcome {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.save-card-cb-container {
+	font-size: 0.9rem;
+    font-family: "Helvetica Neue", Helvetica;
+    color: gray;
+}
+
+.error {
+  font-size: 0.8rem;
+  text-align: center;
+  color: #E4584C;
+  border: none !important;
+}
+
+.success-new-card.visible, .error.visible {
+  display: inline;
+}
+
+.success-new-card {
+  color: #666EE8;
+}
+
+#save-card {
+    margin-top: 4px;
+    margin-right: 5px;
+}
+
+h3 {
+    color: rgb(8,7,7) !important;
+    font-family: "Helvetica Neue", Helvetica !important;
+  	font-size: 0.9rem !important;
+    padding: .7rem 1.3rem !important;
+  	font-variant: normal !important;
+    background: #ECEBEA !important;
+}
+
+.ui-accordion-content {
+    height: auto !important;
+    overflow: hidden !important;
+}
+
+.saved-payment-method {
+    cursor: pointer !important;
+    font-size: 13px;
+    width: 100%;
+}
+
+.saved-payment-method table {
+    margin-top: 0px !important;
+}
+
+.saved-payment-method table tr td {
+    padding: .5rem;
+    font-size: 13px;
+}
+
+.saved-payment-method.bank-accounts table:nth-child(1) tr td:nth-child(1) {
+    width: 5%;
+}
+
+.saved-payment-method.bank-accounts table:nth-child(1) tr td:nth-child(2) {
+    width: 15%;
+}
+
+.saved-payment-method.bank-accounts table:nth-child(1) tr td:nth-child(3) {
+    width: 25%;
+}
+
+.saved-payment-method.bank-accounts table:nth-child(1) tr td:nth-child(4) {
+    width: 30%;
+}
+
+.saved-payment-method.bank-accounts table:nth-child(1) tr td:nth-child(5) {
+    width: 15%;
+}
+
+.saved-payment-method.bank-accounts table:nth-child(1) tr td:nth-child(6) {
+    width: 10%;
+}
+
+.saved-payment-method.cards table:nth-child(1) tr td:nth-child(1) {
+    width: 5%;
+}
+
+.saved-payment-method.cards table:nth-child(1) tr td:nth-child(2) {
+    width: 40%;
+}
+
+.saved-payment-method.cards table:nth-child(1) tr td:nth-child(3) {
+    width: 10%;
+}
+
+.saved-payment-method.cards table:nth-child(1) tr td:nth-child(4) {
+    width: 45%;
+}
+
+table.transaction-details, table.payment-request-details {
+    margin-top: 1rem;
+    padding: 20px;
+}
+
+table.transaction-details {
+    border: 1px solid lightgray;
+}
+
+table.transaction-details td, table.transaction-details th {
+    padding: .3rem;
+    padding-left: 20px !important;
+    color: black;
+    font-family: "Helvetica Neue", Helvetica !important;
+  	font-size: 0.9rem !important;
+  	font-variant: normal !important;
+  	border: 1px solid lightgray;
+}
+
+.card-brand-logo {
+    position: relative;
+    margin-right: 1rem;
+    margin-left: -.8rem;
+    top: -.2rem;
+}
+
+p.law-disclaimer {
+    margin: 1.5rem 0rem !important;
+    font-size: .8rem;
+    font-style: italic;
+}
+
+.ach-bank-manual-details {
+    width: 90%;
+    margin-top: 5px;
+    height: 25px;
+}
+
+.ach-verification-container {
+    width: 30rem !important;
+    margin-left: auto;
+    margin-bottom: 1.5rem;
+    margin-right: 3.5rem;
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.verification-amounts-input {
+    width: 5rem;
+}
+
+.ach-verification-container tr td:nth-child(1) {
+    width: 6rem;
+    white-space: no-nowrap;
+}
+
+.ach-verification-container tr td:nth-child(2) {
+    width: 5rem;
+}
+
+.ach-verification-container tr td:nth-child(3) {
+    width: 6rem;
+    white-space: nowrap;
+}
+
+.ach-verification-container tr td:nth-child(4) {
+    width: 5rem;
+}
+
+.more-payment-methods {
+    display: block;
+    margin-top: 1.5rem;
+}
+
+.more-payment-methods-link {
+    display: inline-block;
+    padding: 1rem 3rem 1rem 0rem;
+}
+
+.more-payment-methods-link span{
+    cursor:pointer;
+    text-decoration: underline;
+    color: #049CD7;
+}
+
+.micro-deposits-message {
+    font-size: 0.8rem;
+    font-style: italic;
+    margin: 1rem 0rem !important;
+    color: #222222;
+}
+
+.bPageBlock .detailList tr td {
+    border-bottom: none !important;
+}
+
+input[type=text] {
+    padding: 1rem;
+    border-radius: 3px;
+    border: 1px solid #bfbdbd;
+}
+
+input[type=text]::placeholder {
+    font-size: 0.9rem;
+    color: #999999;
+}
+
+.payment-summary th {
+    text-align: center;
+    font-weight: normal !important;
+}
+
+.payment-summary td, .payment-summary td label {
+    text-align: center;
+    font-weight: bold;
+}
+
+.payment-summary td label {
+    display: inline-table;
+}
+
+.payment-summary {
+    margin-bottom: 1.5rem;
+}
+
+.payment-details-panel table:nth-child(1) tr td:nth-child(1) {
+    width: 50%;
+}
+
+.payment-details-panel table:nth-child(1) tr td:nth-child(2) {
+    width: 50%;
+    font-weight: bold;
+}
+
+.charge-output-panel {
+    display: block;
+    margin-top: 2rem;
+}
+
+.status-icon {
+    float: right;
+    margin: 0 0 .6rem 0;
+}
+
+.payment-label {
+    font-weight: bold;
+}

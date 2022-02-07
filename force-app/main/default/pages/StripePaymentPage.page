@@ -1,0 +1,297 @@
+<apex:page showHeader="false" sidebar="false" showChat="false" showQuickActionVfHeader="false"
+           controller="TransactionController" action="{!initCards}" docType="html-5.0">
+    <body>
+        <apex:slds />
+        <div class="payment-form-body" style="display:block">
+            <div id="spinner" class="slds-spinner_container">
+                <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+            <apex:form id="payment_form" styleClass="payment-form">
+                <input type="hidden" value="{!stripePublishableKey}" id="stripePublishableKey"/>
+                <input type="hidden" value="{!labelsJson}" id="customLabels"/>
+                <input type="hidden" value="{!appMode}" id="app-mode"/>            
+                <apex:pageBlock rendered="{!not(isblank(error))}">
+                    <apex:pageMessage summary="{!error}" severity="error"/>
+                </apex:pageBlock>
+                <apex:pageBlock rendered="{!appMode != 'live'}">
+                    <apex:pageMessage summary="{!$Label.test_mode_message}" severity="info"/>
+                </apex:pageBlock>
+                <apex:pageBlock rendered="{!isblank(error)}">
+                    <h3 style="margin-bottom: 20px;">{!$Label.stripe_payment_page_org_name_prefix}
+                        <span>{!organization}</span></h3>
+                    <apex:pageBlockTable value="{!paymentRequests}" var="req" id="theTable" styleClass="payment-summary">
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.PaymentRequest__c.fields.Frequency__c.Label}</apex:facet>
+                            <apex:outputlabel rendered="{!req.Frequency__c == 'single'}"
+                                              value="{!$Label.frequency_single}"/>
+                            <apex:outputlabel rendered="{!req.Frequency__c == 'month'}" value="{!$Label.frequency_month}"/>
+                            <apex:outputlabel rendered="{!req.Frequency__c == 'quarter'}"
+                                              value="{!$Label.frequency_quarter}"/>
+                            <apex:outputlabel rendered="{!req.Frequency__c == 'year'}" value="{!$Label.frequency_year}"/>
+                        </apex:column>
+                        
+                        <apex:column value="{!req.FirstChargeDate__c}"/>
+                    </apex:pageBlockTable>
+                    <div id="tabs">
+                        <ul>
+                            <li id="cards-tab-header"><a href="#cards-tab">{!$Label.saved_cards}</a></li>
+                            <!--
+							<li id="banks-tab-header"><a href="#ach-tab">{!$Label.ach_saved_accounts}</a></li>
+							-->	
+                        </ul>
+                        <div id="cards-tab">
+                            <apex:pageBlockSection columns="1">
+                                <apex:pageBlockSectionItem rendered="{!(cards != null && NOT(cards.empty))}">
+                                    <apex:outputPanel >
+                                        <div class="payment-group">
+                                            <apex:repeat value="{!cards}" var="card">
+                                                <div class="payment-option">
+                                                    <div class="saved-payment-method cards">
+                                                        <apex:panelGrid columns="4">
+                                                            <apex:outputPanel >
+                                                                <input type="radio" name="payment-source" value="{!card.id}"
+                                                                       class="{!IF(card.default_source, 'default-source', '')}"/>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel >
+                                                                <span class="card-brand-logo">
+                                                                    <apex:image rendered="{!contains(card.brand, 'Visa')}" value="{!$Resource.visa}"
+                                                                                width="35" height="35" alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'MasterCard')}"
+                                                                                value="{!$Resource.Mastercard}" width="35" height="35"
+                                                                                alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'Maestro')}"
+                                                                                value="{!$Resource.Maestro}" width="35" height="35"
+                                                                                alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'Cirrus')}"
+                                                                                value="{!$Resource.Cirrus}" width="35" height="35"
+                                                                                alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'American Express')}"
+                                                                                value="{!$Resource.AmericanExpress}" width="35" height="35"
+                                                                                alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'Discover')}"
+                                                                                value="{!$Resource.Discover}" width="35" height="35"
+                                                                                alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'Diners Club')}"
+                                                                                value="{!$Resource.DinersClub}" width="35" height="35"
+                                                                                alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'JCB')}" value="{!$Resource.JCB}"
+                                                                                width="35" height="35" alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'UnionPay')}"
+                                                                                value="{!$Resource.UnionPay}" width="35" height="35"
+                                                                                alt="{!card.brand}"/>
+                                                                    <apex:image rendered="{!contains(card.brand, 'unknown') || isBlank(card.brand)}"
+                                                                                value="{!$Resource.UnknownCard}" width="35" height="35"
+                                                                                alt="{!card.brand}"/></span>
+                                                                <span>xxxx xxxx xxxx {!card.last4}</span>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel >
+                                                                <apex:outputText value="{!card.exp_month}/{!card.exp_year}"/>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel >
+                                                                <apex:outputText value="{!card.name}"/>
+                                                            </apex:outputPanel>
+                                                        </apex:panelGrid>
+                                                        <div class="button-container">
+                                                            <apex:commandbutton id="payment-button"
+                                                                                styleClass="payment-button pay"
+                                                                                value="{!$Label.process_cart_items}"
+                                                                                onclick="pay()"
+                                                                                reRender="none"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:repeat>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputPanel >
+                                        <div class="payment-group">
+                                            <div class="payment-option">
+                                                <div id="pouet">
+                                                    <span class="{!IF(cards == null || cards.empty, 'slds-hide', 'slds-show')}">
+                                                        <input type="radio" name="payment-source" id="new-card-radio" value="new"/></span>
+                                                    <div id="card-element" class="field"></div>
+                                                </div>
+                                                <div id="card-errors" class="error" role="alert"></div>
+                                                <div class="button-container">
+                                                    <div class="outcome">
+                                                        <span class="save-card-cb-container"><input type="checkbox" id="save-card"
+                                                                                                    checked="checked"/>{!$Label.save_card_for_future_checkouts}</span>
+                                                    </div>
+                                                    <div style="text-align: center">
+                                                        <apex:commandbutton id="payment-button"
+                                                                            styleClass="payment-button pay"
+                                                                            value="{!$Label.process_cart_items}"
+                                                                            onclick="pay()" reRender="none"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                        </div>
+                        <div id="ach-tab">
+                        </div>
+                    </div>
+                </apex:pageBlock>
+                <apex:actionFunction name="performCharge" action="{!charge}" reRender="charge-output, payment-form"
+                                     oncomplete="chargeComplete()">
+                    <apex:param name="request" assignTo="{!stripePaymentRequestJson}" value=""/>
+                </apex:actionFunction>
+
+            </apex:form>
+            <!-- 
+            <apex:outputPanel id="charge-output-new" >
+                <apex:outputText value="Sample message!"/>
+            </apex:outputPanel> 
+            -->
+            
+            <apex:outputPanel id="charge-output" styleClass="charge-output" rendered="{!isblank(error)}">
+                <apex:outputText value="{!error}"/>
+                <apex:repeat value="{!payments.payments}" var="payment">
+                    <apex:variable var="req" value="{!payment.paymentRequest}"/>
+                    <apex:variable var="txn" value="{!payment.txn}"/>
+                    <apex:outputPanel styleClass="charge-output-panel" rendered="{!payment.type == 'OTHER'}">
+                        <!-- <apex:outputPanel styleClass="charge-output-panel" > -->
+                        <apex:outputPanel styleClass="charge-output-header">
+                            <apex:outputText value="{!$ObjectType.PaymentRequest__c.Label} {!payment.itemNumber}"
+                                             styleClass="payment-label"/>
+                            <apex:image url="{!$Resource.success_icon}" width="25" height="25"
+                                        styleClass="status-icon success-icon"
+                                        rendered="{!req.Status__c != 'payment_failed'}"/>
+                            <apex:image url="{!$Resource.failure_icon}" width="25" height="25"
+                                        styleClass="status-icon failure-icon"
+                                        rendered="{!req.Status__c == 'payment_failed'}"/>
+                        </apex:outputPanel>
+                        <apex:outputPanel styleClass="payment-details-panel">
+                            <apex:panelGrid columns="2" styleClass="transaction-details">
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Payment_Reference_Id__c.Label}"/>
+                                <apex:outputText value="{!req.Payment_Reference_Id__c}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Amount__c.Label}"/>
+                                <apex:outputText value="{!req.Amount__c} {!req.Currency_Code__c}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.PaymentType__c.Label}"/>
+                                <apex:outputText value="{!req.PaymentType__c}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Frequency__c.Label}"/>
+                                <apex:outputText rendered="{!req.Frequency__c == 'single'}"
+                                                 value="{!$Label.frequency_single}"/>
+                                <apex:outputText rendered="{!req.Frequency__c == 'month'}"
+                                                 value="{!$Label.frequency_month}"/>
+                                <apex:outputText rendered="{!req.Frequency__c == 'quarter'}"
+                                                 value="{!$Label.frequency_quarter}"/>
+                                <apex:outputText rendered="{!req.Frequency__c == 'year'}" value="{!$Label.frequency_year}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.FirstChargeDate__c.Label}"/>
+                                <apex:outputText value="{!req.FirstChargeDate__c}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Status__c.Label}"/>
+                                <apex:outputText value="{!req.Status__c}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Status_Message__c.Label}"/>
+                                <apex:outputText value="{!req.Status_Message__c}"/>
+                                <apex:outputText value="{!$ObjectType.Contact.Label}"/>
+                                <apex:outputText value="{!req.Contact__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Email__c.Label}"/>
+                                <apex:outputText value="{!req.Email__c}"/>
+                                <apex:outputText value="{!$ObjectType.Opportunity.Label}"/>
+                                <apex:outputText value="{!req.Opportunity__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.Account.Label}"/>
+                                <apex:outputText value="{!req.Account__r.Name}"/>
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <apex:outputPanel styleClass="charge-output-panel" rendered="{!payment.type == 'TXN'}">
+                        <apex:outputPanel styleClass="charge-output-header">
+                            <apex:outputText value="{!$ObjectType.PaymentRequest__c.Label} {!payment.itemNumber}"
+                                             styleClass="payment-label"/>
+                            <apex:image url="{!$Resource.success_icon}" width="25" height="25"
+                                        styleClass="status-icon success-icon"
+                                        rendered="{!txn.Status__c != 'failed'}"/>
+                            <apex:image url="{!$Resource.failure_icon}" width="25" height="25"
+                                        styleClass="status-icon failure-icon"
+                                        rendered="{!txn.Status__c == 'failed'}"/>
+                        </apex:outputPanel>
+                        <apex:outputPanel styleClass="payment-details-panel">
+                            <apex:panelGrid columns="2" id="success-grid" styleClass="transaction-details"
+                                            rendered="{!txn.Status__c != 'failed'}">
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionReference__c.Label}"/>
+                                <apex:outputText value="{!txn.TransactionReference__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Amount__c.Label}"/>
+                                <apex:outputText value="{!txn.Amount__c} {!txn.CurrencyCode__c}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.PaymentType__c.Label}"/>
+                                <apex:outputText value="{!IF(txn.PaymentRequestId__r.PaymentType__c == 'immediate', 'One time payment', 'Recurring')}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Status__c.Label}"/>
+                                <apex:outputText value="{!txn.Status__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionDate__c.Label}"/>
+                                <apex:outputText value="{!txn.TransactionDate__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentMethodType__c.Label}"/>
+                                <apex:outputText value="{!txn.PaymentMethodType__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentCardLast4Digits__c.Label}"
+                                                 rendered="{!txn.PaymentCardLast4Digits__c != null}"/>
+                                <apex:outputText value="xxxx xxxx xxxx {!txn.PaymentCardLast4Digits__c}"
+                                                 rendered="{!txn.PaymentCardLast4Digits__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentBankLast4Digits__c.Label}"
+                                                 rendered="{!txn.PaymentBankLast4Digits__c != null}"/>
+                                <apex:outputText value="{!txn.PaymentBankLast4Digits__c}"
+                                                 rendered="{!txn.PaymentBankLast4Digits__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentBankName__c.Label}"
+                                                 rendered="{!txn.PaymentBankName__c != null}"/>
+                                <apex:outputText value="{!txn.PaymentBankName__c}"
+                                                 rendered="{!txn.PaymentBankName__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Contact.Label}"/>
+                                <apex:outputText value="{!txn.PaymentRequestId__r.Contact__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Email__c.Label}"/>
+                                <apex:outputText value="{!txn.PaymentRequestId__r.Email__c}"/>
+                                <apex:outputText value="{!$ObjectType.Opportunity.Label}"/>
+                                <apex:outputText value="{!txn.PaymentRequestId__r.Opportunity__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.Account.Label}"/>
+                                <apex:outputText value="{!txn.PaymentRequestId__r.Account__r.Name}"/>
+                            </apex:panelGrid>
+                            <apex:panelGrid columns="2" id="failure-grid" styleClass="transaction-details"
+                                            rendered="{!txn.Status__c == 'failed'}">
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionReference__c.Label}"/>
+                                <apex:outputText value="{!txn.TransactionReference__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Amount__c.Label}"/>
+                                <apex:outputText value="{!txn.Amount__c} {!txn.CurrencyCode__c}"/>
+                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.PaymentType__c.Label}"/>
+                                <apex:outputText value="{!IF(txn.PaymentRequestId__r.PaymentType__c == 'immediate', 'One time payment', 'Recurring')}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentMethodType__c.Label}"
+                                                 rendered="{!txn.PaymentMethodType__c != null}"/>
+                                <apex:outputText value="{!txn.PaymentMethodType__c}"
+                                                 rendered="{!txn.PaymentMethodType__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Contact.Label}"/>
+                                <apex:outputText value="{!txn.PaymentRequestId__r.Contact__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Status__c.Label}"/>
+                                <apex:outputText value="{!txn.Status__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionDate__c.Label}"/>
+                                <apex:outputText value="{!txn.TransactionDate__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.FailureCode__c.Label}"
+                                                 rendered="{!txn.FailureCode__c != null}"/>
+                                <apex:outputText value="{!txn.FailureCode__c}" rendered="{!txn.FailureCode__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.FailureMessage__c.Label}"/>
+                                <apex:outputText value="{!txn.FailureMessage__c}"/>
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:repeat>
+            </apex:outputPanel>
+        </div>
+    </body>
+    <apex:stylesheet value="{!$Resource.transaction_css}"/>
+    <script type="text/javascript" src="//js.stripe.com/v3/">
+    </script>
+    <apex:includeScript value="{!$Resource.jquery}"/>
+    <style>
+        #tabs .ui-tabs-nav .ui-state-active {
+        background: transparent url('{!$Resource.tab_panel_arrow_image}') no-repeat bottom center;
+        border: none;
+        }
+        
+        
+    </style>
+    <script type="text/javascript" src="//code.jquery.com/ui/1.12.1/jquery-ui.js">
+    </script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <apex:includeScript value="{!$Resource.transaction_js}"/>
+</apex:page>

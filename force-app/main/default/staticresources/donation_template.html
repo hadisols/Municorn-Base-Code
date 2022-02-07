@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>{{pay_button_text}}</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    * {box-sizing: border-box;}
+    
+    body { 
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .logo {
+      overflow: hidden;
+      background-color: #b9b9b9;
+      padding: 20px 10px;
+      text-align: center;
+    }
+    
+    </style>
+<body>
+    
+<table width="640" height="400" cellpadding="0" cellspacing="0" border="0" class="header">
+    
+    <tr>
+        <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" border="0" class="container">
+                <tr class="logo">
+                    <td>
+                        <!-- <img src="//stripe-dev-developer-edition.na114.force.com/resource/1641240802000/jasonEmerLogo?" alt="Logo" width="50%" style="padding: 2rem"> -->
+                        <img src="https://v1.nitrocdn.com/FZxJoWkMTLoVJQTcwbqRRfIrgDkhHwVQ/assets/static/optimized/rev-eba27f3/wp-content/uploads/2021/01/Jason-Emer-Logo.png" alt="Logo" width="50%" style="padding: 2rem">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" class="mobile"
+                        style="font-family:arial, sans-serif; font-size:20px; line-height:26px; font-weight:bold;">
+                        {{user_salutation}}
+                    </td>
+                </tr>
+                <?xml version="1.0" encoding="UTF-8"?>
+                <tr>
+                    <td align="left"
+                        style="font-size:16px;">
+                        {{email_message}}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" style="padding: 2rem">
+                        <table border="1" cellpadding="6" cellspacing="0" bordercolor="#e0e0e0" style="width: 100%">
+                            <thead class="">
+                            <tr class="headerRow">
+                                <th class="headerRow" scope="col" colspan="1">{{frequency_field}}</th>
+                                <th class="headerRow" scope="col" colspan="1">{{amount_field}}</th>
+                                <th class="headerRow" scope="col" colspan="1">{{first_charge_date_field}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{payments}}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="mobile" style="font-size:14px; line-height:20px;" align="center">
+                        <table width="200" height="44" cellpadding="0" cellspacing="0" border="0" bgcolor="#2b3a63"
+                               style="border-radius:4px;">
+                            <tr>
+                                <td align="center" valign="middle" height="44"
+                                    style="font-family: Arial, sans-serif; font-size:14px; font-weight:bold;"><a
+                                        href="{{link}}" target="_parent"
+                                        style="font-family: Arial, sans-serif; color:#ffffff; display: inline-block; text-decoration: none; line-height:44px; width:200px; font-weight:bold;">{{pay_button_text}}</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

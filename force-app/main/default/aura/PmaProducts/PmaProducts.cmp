@@ -1,0 +1,90 @@
+<aura:component
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+    access="global" controller="ProductsController">
+    <ltng:require styles="{!$Resource.Bootstrap}" afterScriptsLoaded="{!c.setup}" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+
+    <!--Aura Attributes START-->
+    <aura:attribute name="accountColums" type="List" />
+    <aura:attribute name="productData" type="Object" />
+    <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" />
+    <aura:attribute name="initialRows" type="Integer" default="10" />
+    <aura:attribute name="currentCount" type="Integer" default="10" />
+    <aura:attribute name="totalRows" type="Integer" default="0" />
+    <aura:attribute name="loadOffset" type="Integer" default="1" />
+    <!--Set when to trigger loading of more rows-->
+    <!--Aura Attributes END-->
+
+    <div class="slds-page-header" role="banner">
+        <span class="slds-page-header__title">Products List</span>
+    </div>
+    <div class="slds-card my-2">
+        <!--Start Bootstrap Products data markup-->
+        <div class="sfappwrapper">
+            <div class="d-flex flex-row justify-content-start flex-wrap my-2">
+                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
+                    <div class="d-flex flex-column justify-content-start flex-wrap">
+                        <div class="overflow-hidden mx-auto image-wrapper max-height">
+                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
+                                alt="Book" />
+                        </div>
+                        <div class="product-title text-center slds-truncate">Book</div>
+                    </div>
+                </div>
+                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
+                    <div class="d-flex flex-column justify-content-start flex-wrap">
+                        <div class="overflow-hidden mx-auto image-wrapper max-height">
+                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100" alt="Book" />
+                        </div>
+                        <div class="product-title text-center slds-truncate">Book</div>
+                    </div>
+                </div>
+                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
+                    <div class="d-flex flex-column justify-content-start flex-wrap">
+                        <div class="overflow-hidden mx-auto image-wrapper max-height">
+                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100" alt="Book" />
+                        </div>
+                        <div class="product-title text-center slds-truncate">Book</div>
+                    </div>
+                </div>
+                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
+                    <div class="d-flex flex-column justify-content-start flex-wrap">
+                        <div class="overflow-hidden mx-auto image-wrapper max-height">
+                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?laptop"
+                                alt="Book" />
+                        </div>
+                        <div class="product-title text-center slds-truncate">Book</div>
+                    </div>
+                </div>
+                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
+                    <div class="d-flex flex-column justify-content-start flex-wrap">
+                        <div class="overflow-hidden mx-auto image-wrapper max-height">
+                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?book"
+                                alt="Book" />
+                        </div>
+                        <div class="product-title text-center slds-truncate">Book</div>
+                    </div>
+                </div>
+                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
+                    <div class="d-flex flex-column justify-content-start flex-wrap">
+                        <div class="overflow-hidden mx-auto image-wrapper max-height">
+                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?avatar"
+                                alt="Book" />
+                        </div>
+                        <div class="product-title text-center slds-truncate">Book</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--End Bootstrap Products data markup-->
+    <!--Lightning data table markup-->
+    <div style="height:250px">
+        <lightning:datatable aura:id="dataTableID" keyField="Id" hideCheckboxColumn="true" columns="{!v.accountColums}"
+            data="{!v.productData}" enableInfiniteLoading="{!v.enableInfiniteLoading}" loadMoreOffset="{!v.loadOffset}"
+            onloadmore="{!c.handleLoadMore}" />
+    </div>
+</aura:component>

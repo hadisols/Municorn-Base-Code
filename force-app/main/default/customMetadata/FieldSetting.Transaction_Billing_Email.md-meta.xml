@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Transaction Billing Email</label>
+    <protected>false</protected>
+    <values>
+        <field>ChildFieldApiName__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ChildRootElement__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Direction__c</field>
+        <value xsi:type="xsd:string">INBOUND</value>
+    </values>
+    <values>
+        <field>FieldApiName__c</field>
+        <value xsi:type="xsd:string">Billing_Email__c</value>
+    </values>
+    <values>
+        <field>Field_Mapping_Handler__c</field>
+        <value xsi:type="xsd:string">SYS_ApplicationService</value>
+    </values>
+    <values>
+        <field>Get_value_from_Log__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsChild__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Key__c</field>
+        <value xsi:type="xsd:string">data.object.billing_details.email</value>
+    </values>
+    <values>
+        <field>ObjectApiName__c</field>
+        <value xsi:type="xsd:string">Transaction__c</value>
+    </values>
+    <values>
+        <field>ObjectSetting__c</field>
+        <value xsi:type="xsd:string">Stripe_Transaction</value>
+    </values>
+    <values>
+        <field>ParentField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>RestResource__c</field>
+        <value xsi:type="xsd:string">charge</value>
+    </values>
+    <values>
+        <field>StaticValue__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

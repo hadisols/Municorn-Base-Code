@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Postal_Code__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>The billing postal code related to the card. Gateway provider validates addresses only if this setting is turned on (if provider supports).</inlineHelpText>
+    <label>Postal Code</label>
+    <length>10</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
