@@ -23,12 +23,13 @@ global virtual class SYS_ApplicationService {
     }
 
     /**
-     * This hook is called from insertWebhookLog methods.
+     * This hook is called from insertWebhookLog methods and webservice.
      * Default is to set the response body with incoming request
      * Zero Arguments. Relies on Integration Setting in DataCache and RestContext
      * Override if custom handler is required after successful log creation
      */
     global virtual void setSuccessHttpResponse(){
+        if(RestContext.request!=NULL)
         RestContext.response.responseBody = Blob.valueOf(RestContext.request.requestBody.toString());
     }
 
@@ -38,8 +39,8 @@ global virtual class SYS_ApplicationService {
      * Zero Arguments. Relies on Integration Setting in DataCache and RestContext
      * Override if custom handler is required when log creation causes error
      */
-    global virtual void setErrorHttpResponse(){
-        SYS_debug.log('Webhook Error');
+    global virtual void setErrorHttpResponse(String stackTrace){
+        SYS_debug.log('Webhook Error:'+stackTrace);
     }
 
 
@@ -115,6 +116,9 @@ global virtual class SYS_ApplicationService {
             success = false;
             handleDMLErrors(results[0].getErrors());
         }
+        else{
+            SYS_DataCache.log.WhatId__c = results[0].getId();
+        }
 
         return success;
     }
@@ -127,6 +131,9 @@ global virtual class SYS_ApplicationService {
             success = false;
             handleDMLErrors(results[0].getErrors());
         }
+        else{
+            SYS_DataCache.log.WhatId__c = results[0].getId();
+        }
 
         return success;
     }
@@ -138,6 +145,9 @@ global virtual class SYS_ApplicationService {
         if(!results[0].isSuccess()){
             success = false;
             handleDMLErrors(results[0].getErrors());
+        }
+        else{
+            SYS_DataCache.log.WhatId__c = results[0].getId();
         }
 
         return success;
@@ -157,6 +167,9 @@ global virtual class SYS_ApplicationService {
         if(!results[0].isSuccess()){
             success = false;
             handleDMLErrors(results[0].getErrors());
+        }
+        else{
+            SYS_DataCache.log.WhatId__c = results[0].getId();
         }
 
         return success;
@@ -191,7 +204,9 @@ global virtual class SYS_ApplicationService {
             }catch(Exception e){
                 
             }
-        } else if (fieldType == 'STRING') {
+        }else if (fieldType == 'STRING') {
+            sObj.put(mapping.FieldApiName__c, String.valueof(value));
+        }else if (fieldType == 'BOOLEAN') {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
         }
         else{
@@ -260,18 +275,29 @@ global virtual class SYS_ApplicationService {
      * Arguement: record json and Integration setting
      * Override if custom log generation is required
      */
-    global virtual SYS_IntegrationLog__c generateLogForChildRecords(String recordsJson,String integrationSetting) {
+    global virtual SYS_IntegrationLog__c generateLogForChildRecords(String parentLogId,String resource,String recordsJson,String integrationSetting) {
         SYS_IntegrationLog__c log = SYS_ApplicationService.getLogsToInsert(recordsJson);
 
         String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
         if(algo!=NULL && algo!='')
-        log.Request_Digest__c = generateHash(recordsJson,algo);
-        
+            log.Request_Digest__c = generateHash(recordsJson,algo);
+
+        SYS_debug.log('MS SYS_DataCache.log in generate child log:'+SYS_DataCache.log.Id);
+        log.Parent__c = parentLogId;
+        log.Resource__c = resource;
         log.Type__c = 'INBOUND';
         log.SYS_Operation_Type__c = 'UPSERT';
         log.Flat_Key_for_Resource__c = '';
-        log.SYS_IntegrationSettings__c = integrationSetting;//'SFsource';
-        log.Status__c = 'NEW';
+        log.SYS_IntegrationSettings__c = integrationSetting;
+        log.Status__c = 'NEW';//'WAITING_FOR_PARENT';
+
+        /**
+         * Applies when the child records require parenting after creation
+         */
+        log.Requires_process_on_complete__c = true;
+        log.On_Complete_Handler__c = 'SYS_ApplicationService';
+        /** */
+
         log.External_Id_Field_API_Name__c = 'SYS_Child_Key__c';
         log.How_to_process__c = 'use_custom_apex_handler';
         log.Custom_Apex_Handler__c = 'SYS_ApplicationService';
@@ -322,7 +348,7 @@ global virtual class SYS_ApplicationService {
         }
         else{
             //Key mentioned in Flat_Key_for_Resource__c identifies Resource
-            Map<String, Object> flatKeyMap = SYS_Transformer.makeJsonIntoKeyValuePairs(jsonBody);
+            Map<String, Object> flatKeyMap = getFlatKeys(jsonBody);
             System.debug('-- MS flatKeyMap in getResourceFromJSON:'+flatKeyMap);
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }
@@ -333,6 +359,7 @@ global virtual class SYS_ApplicationService {
     /* ------------------------------------------------------------------------ */ 
 
     global virtual Boolean doInbound(SYS_IntegrationLog__c log) {
+        
         String jsonBody = '';
         
         jsonBody =  log.data0__c != null ? log.data0__c : '' +
@@ -356,7 +383,7 @@ global virtual class SYS_ApplicationService {
 
         //TODO DML Based on log operation type
         //Database.UpsertResult[] results = Database.upsert(sObjectsToDML,externalIdField, false);
-        SYS_DataCache.log = log;
+        
                
         return doDML(sObjectsToDML,log.SYS_Operation_Type__c,externalIdFieldAPIName);
     }
@@ -400,11 +427,10 @@ global virtual class SYS_ApplicationService {
 
     global virtual HttpResponse doOutbound(SYS_IntegrationLog__c log){
 
+       
         Http http = new Http();
         HttpRequest req = buildOutboundHttpRequest(log);
-        
 
-        
         String body = log.data0__c != null ? log.data0__c : '' +
                             log.data1__c != null ? log.data1__c : '' +
                             log.data2__c != null ? log.data2__c : '' +
@@ -416,6 +442,8 @@ global virtual class SYS_ApplicationService {
                             log.data8__c != null ? log.data8__c : '' +
                             log.data9__c != null ? log.data9__c : '' ; 
         
+        
+
         body = preprocessJSONForOutbound(log,body);
         req.setBody(body);
         SYS_debug.log('body:'+body);
@@ -464,17 +492,57 @@ global virtual class SYS_ApplicationService {
              */
 
             //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
-                logResp.Status__c = 'DONE';
+                
             //}
 
             //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
-                logResp.Message__c = 'Record created/updated successfully';
             //}
+
             
-            logResp.Id = log.Id;
+            //ID jobID = System.enqueueJob(new SYS_ParentChildRecordsQueueable(log,SYS_DataCache.INT_TYPE));
+            logResp = SYS_DataCache.log;
+            logResp.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
+            logResp.Status__c = 'DONE';
+            logResp.Message__c = 'Record created/updated successfully';
+
+            /**
+             * Check if there are other siblings. Call parenting queueable only if all are done
+             */
+
+            System.debug('MS totalChildRecords B4:'+SYS_QueueableForInboundChild.totalChildRecords);
+            SYS_QueueableForInboundChild.totalChildRecords--;
+            System.debug('MS totalChildRecords After:'+SYS_QueueableForInboundChild.totalChildRecords);
+            if(SYS_DataCache.log.Requires_process_on_complete__c && (SYS_QueueableForInboundChild.totalChildRecords==0))
+            {
+                System.enqueueJob(new SYS_ParentingQueueable(String.valueOf(SYS_DataCache.log.Parent__c),SYS_DataCache.INT_TYPE,SYS_DataCache.log));
+            }
+            
         }
 
         return logResp;
+    }
+
+    global virtual void fixParent(String parentLogId,SYS_IntegrationLog__c childLog){
+
+        List<FieldSetting__mdt> fsm = new List<FieldSetting__mdt>();
+        fsm = [SELECT ParentField__c,ObjectApiName__c FROM FieldSetting__mdt WHERE RestResource__c = :childLog.Resource__c AND Get_value_from_Log__c=true];
+        System.debug('MS Fixing Relationship:'+fsm);
+        List<sObject> childRecords = new List<sObject>();
+        
+        for(SYS_IntegrationLog__c cLog:[SELECT Id,WhatId__c,Parent__r.WhatId__c FROM SYS_IntegrationLog__c WHERE Parent__c = :parentLogId AND Status__c='DONE'])
+        {
+            sObject sObj = Schema.getGlobalDescribe().get(fsm[0].ObjectApiName__c).newSObject();
+            System.debug('MS cLog:'+cLog);
+            System.debug('MS cLog.Parent__r.WhatId__c:'+cLog.Parent__r.WhatId__c);
+            sObj.put('Id',cLog.WhatId__c);
+            sObj.put(fsm[0].ParentField__c,cLog.Parent__r.WhatId__c);
+            childRecords.add(sObj);
+        }
+        System.debug('MS Child Records for Parenting:'+childRecords);
+       
+        doDML(childRecords, 'UPDATE', '');
+        
+
     }
 
     /* ------------------------------------------------------------------------ */
@@ -633,9 +701,16 @@ global virtual class SYS_ApplicationService {
     public void insertWebhookLog(SYS_IntegrationLog__c log){
         try{
             Database.SaveResult result = Database.insert(log,false);
-            setSuccessHttpResponse();
+            //TODO check if result is success/error and take action
+
+            if(!result.isSuccess()){
+                handleDMLErrors(result.getErrors());
+            }
+            else{
+                setSuccessHttpResponse();
+            }
         } catch ( Exception e ) {
-            setErrorHttpResponse();
+            setErrorHttpResponse(e.getStackTraceString());
         }
     }
 
@@ -646,6 +721,60 @@ global virtual class SYS_ApplicationService {
         log.Status__c = 'FAIL';
         log.Message__c = stackTrace;
         upsert log;
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+    public static Map<String, Object> getFlatKeys(String jsonObj) {
+        Object result = JSON.deserializeUntyped(jsonObj);
+        Map<String, Object> flatKeyMap = new Map<String, Object>();
+        if (result instanceof Map<String, Object>) {
+            recursiveJsonParser((Map<String, Object>)result, new List<String>(), flatKeyMap);
+        }
+        return flatKeyMap;
+    }
+    
+    private static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result) {
+        for(String key : jsonObject.keySet()) {
+            Object currentObj = jsonObject.get(key);
+            if (currentObj instanceof Map<String, Object>) {
+                Map<String, Object> child = (Map<String, Object>)currentObj;
+                parents.add(key);
+                recursiveJsonParser(child, parents, result);
+                parents.remove(parents.size() - 1);
+           
+            } else {
+                String parentKey = '';
+                if(parents.size() > 0) {
+                    parentKey = String.join(parents, '.');
+                } 
+                if (currentObj instanceof Decimal) {
+                    //Add
+                	result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Decimal) currentObj);
+                } else if (currentObj instanceof Integer) {
+                    //Add
+                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Integer) currentObj);
+                }
+                else if (currentObj instanceof String) {
+                    //Add
+                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key,  currentObj);
+                } else if (currentObj instanceof Boolean) {
+                    //Add
+                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Boolean) currentObj);
+                } 
+                else if (currentObj == null) {
+                    //TODO - Verify accuracy on what needs to be done
+                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, null);
+                }
+                else{
+                	//TODO
+                }
+                
+            }
+            
+        }
+        return;
+        
     }
 
     /************************** C O N C R E T E    M E T H O D S    E N D *****************************/

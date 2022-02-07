@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Get_value_from_Log__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If this checkbox is checked then the value for the field corresponding to this field setting will be derived from the field referred by the API name in ParentField__c field</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>If this checkbox is checked then the value for the field corresponding to this field setting will be derived from the field referred by the API name in ParentField__c field</inlineHelpText>
+    <label>Get value from Log</label>
+    <type>Checkbox</type>
+</CustomField>

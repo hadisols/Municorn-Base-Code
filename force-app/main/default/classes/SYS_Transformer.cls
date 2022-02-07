@@ -332,6 +332,7 @@ public virtual class SYS_Transformer {
             // sObjectApiName = mappings[0].ObjectSetting__r.Object__r.QualifiedAPIName;
             sObjectApiName = mappings[0].ObjectApiName__c;
             SYS_DataCache.sObjectApiName = sObjectApiName;
+            SYS_DataCache.OBJ_TYPE = mappings[0].ObjectSetting__r.DeveloperName;
         }
 
         System.debug('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer:'+SYS_DataCache.sObjectApiName);
@@ -367,7 +368,7 @@ public virtual class SYS_Transformer {
         return objectsToUpsert;
     }
     
-    public static List<sObject> parseJsonToChildObject(String jsonObj, String sObjectApiName, Map<String, FieldSetting__mdt> mapOfPaths) {
+    public static List<sObject> parseJsonToChildObject_DEPRECATED(String jsonObj, String sObjectApiName, Map<String, FieldSetting__mdt> mapOfPaths) {
         Map<String, Object> flatKeyMap = makeJsonIntoKeyValuePairs(jsonObj);
         if(SYS_Transformer.isChild){
         	System.debug('\n\n++++++++++++ flatKeyMap: '+flatKeyMap);
@@ -527,7 +528,7 @@ public virtual class SYS_Transformer {
     public static Map<String, Object> makeJsonIntoKeyValuePairs(String jsonObj) {
         Object result = JSON.deserializeUntyped(jsonObj);
         Map<String, Object> flatKeyMap = new Map<String, Object>();
-
+        System.debug('MS Double check. in makeJsonIntoKeyValuePairs');
         if (result instanceof Map<String, Object>) {
             recursiveJsonParser((Map<String, Object>)result, new List<String>(), flatKeyMap);
         }
@@ -535,18 +536,22 @@ public virtual class SYS_Transformer {
     }
     
     private static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result) {
-        //Handle arrays later
+        System.debug('MS Double check. jsonObject:'+jsonObject);
         for(String key : jsonObject.keySet()) {
             Object currentObj = jsonObject.get(key);
             System.debug('##key='+key);
             if (currentObj instanceof Map<String, Object>) {
+                System.debug('MS Double check. in IF:'+currentObj);
                 Map<String, Object> child = (Map<String, Object>)currentObj;
+                
                 parents.add(key);
+                System.debug('MS Double check. Parents:'+parents);
                 recursiveJsonParser(child, parents, result);
                 parents.remove(parents.size() - 1);
+                System.debug('MS Double check. Parents after:'+parents);
            
             } else {
-                
+                System.debug('MS Double check. in else:'+currentObj);
                 String parentKey = '';
                 System.debug('params=='+key+' =='+parents.size()+' res=='+result);
                 if(parents.size() > 0) {
@@ -592,7 +597,7 @@ public virtual class SYS_Transformer {
                         
                         //24 jan 2022
                         
-                        ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(childRecList,key,SYS_DataCache.INT_TYPE));
+                        ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
                         //System.debug('job id is==='+jobID);
                     }
                 }

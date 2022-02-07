@@ -4,9 +4,7 @@
 		<members>SYS_ApplicationService</members>
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
-		<members>SYS_DataCacheTest</members>
 		<members>SYS_ExceptionHandler</members>
-		<members>SYS_HttpBuilder</members>
 		<members>SYS_IntegrationLogInboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundQueueable</members>
@@ -14,21 +12,22 @@
 		<members>SYS_InvocableHandler</members>
 		<members>SYS_OAuthRedirectHandler</members>
 		<members>SYS_QueueableForInboundChild</members>
-		<members>SYS_RelationshipMapper</members>
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
-		<members>override_SYS_ApplicationService</members>
+		<members>SYS_ParentingQueueable</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
 		<members>SYS_IntegrationLogTrigger</members>
 		<name>ApexTrigger</name>
 	</types>
+	<!--
 	<types>
 		<members>*</members>
 		<name>CustomMetadata</name>
 	</types>
+	-->
 	<types>
         <members>SYS_IntegrationLog__c</members>
         <name>CustomTab</name>
@@ -46,6 +45,7 @@
 	</types>
 	<types>
 		<members>SYS_IntegrationLog_Record_Page</members>
+		<members>SYS_OAuth_Configs</members>
 		<name>FlexiPage</name>
 	</types>
 	<types>

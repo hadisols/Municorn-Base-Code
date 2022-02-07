@@ -4,20 +4,21 @@
     <externalId>false</externalId>
     <label>SYS_IntegrationSettings</label>
     <required>false</required>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Quickbooks</fullName>
+                <fullName>Stripe</fullName>
                 <default>false</default>
-                <label>Quickbooks</label>
+                <label>Stripe</label>
             </value>
             <value>
-                <fullName>JIRA</fullName>
+                <fullName>Plivo</fullName>
                 <default>false</default>
-                <label>JIRA</label>
+                <label>Plivo</label>
             </value>
         </valueSetDefinition>
     </valueSet>
