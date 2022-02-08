@@ -247,7 +247,7 @@ global virtual class SYS_ApplicationService {
         }else if (fieldType == 'STRING') {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
         }else if (fieldType == 'BOOLEAN') {
-            sObj.put(mapping.FieldApiName__c, String.valueof(value));
+            sObj.put(mapping.FieldApiName__c, Boolean.valueof(value));
         }
         else{
             sObj.put(mapping.FieldApiName__c, value);
