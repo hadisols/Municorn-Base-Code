@@ -38,8 +38,9 @@ public class SYS_QueueableForInboundChild implements Queueable {
         
         for(String singleChildJSON : childRecList){
             if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
-                //appService.insertWebhookLog(appService.generateLogForChildRecords(this.parentLog.Id,this.key,singleChildJSON,integrationSetting));
-                childRecordsToInsert.add(appService.generateLogForChildRecords(this.parentLog.Id,this.key,singleChildJSON,integrationSetting));
+                SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(this.parentLog.Id,this.key,singleChildJSON,integrationSetting);
+                if(newlog!=NULL)
+                    childRecordsToInsert.add(newlog);
             }
             else{
                 pendingChildRecords.add(singleChildJSON);

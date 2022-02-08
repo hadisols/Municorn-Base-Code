@@ -67,7 +67,7 @@ public class SYS_IntegrationLogOutboundImmediate{
                     System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
                 }
             }catch(Exception e){
-                SYS_ApplicationService.logException(log, e.getStackTraceString());
+                SYS_ApplicationService.logException(log, e.getStackTraceString()+'\n'+e.getMessage());
             }
             
         }// For Loop ends

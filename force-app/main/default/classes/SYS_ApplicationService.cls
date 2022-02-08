@@ -176,12 +176,52 @@ global virtual class SYS_ApplicationService {
     }
 
 
-    /* ------------------------------------------------------------------------ */ 
+    /* ------------------------------------------------------------------------ */
+    /**
+     * OUTBOUND
+     * This hook is called from SYS_Transformer to set values for JSON record
+     * Relies on Integration Setting in DataCache
+     * Override if custom field mapping is required
+     */
+    global virtual Object getFieldValues(sObject obj, FieldSetting__mdt mapping, String fieldAPIName){
+        //TODO - handle case - Account."CreatedBy".Name, where CreatedBy is not an sobject - This can be handled by overriding the current method and add the handler
+        // on field setting
 
+        String fvalue='';
+        if(fieldAPIName == null){
+            fvalue = mapping.StaticValue__c;
+        }
+        else if(fieldAPIName.contains('.')){
+            List<String> splitedFields = fieldAPIName.split('\\.');
+            try{
+                for(Integer i = 0; i < splitedFields.size() - 1; i++){
+                    obj = obj.getSobject(splitedFields[i]);   
+                } 
+                return obj.get(splitedFields[splitedFields.size()-1]);
+            }catch(exception ex){
+               System.debug('******exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
+               return null;
+            }
+            
+        } 
+        /*
+        else if(obj.get(fieldAPIName)!=null && fieldAPIName == SYS_DataCache.namespacePrefix + 'Is_Taxable__c') { //TODO - specific to quickbooks
+            return ((Boolean)obj.get(fieldAPIName)) ? 'TAX' : 'NON';
+        } 
+        else if(obj.get(fieldAPIName) != null && fieldAPIName == SYS_DataCache.namespacePrefix + 'Total_Tax__c') {
+            return ((Decimal)obj.get(fieldAPIName)) == 0.00 ? 'null' : obj.get(fieldAPIName);  
+        }
+        */
+        else if(obj.get(fieldAPIName)!=null){
+            return obj.get(fieldAPIName);
+        }
+        return fvalue;
+    }
     
     /**
+     * INBOUND
      * This hook is called from SYS_Transformer to set values for sObject record
-     * Default is map based on field type
+     * Default is mapping based on field type
      * Relies on Integration Setting in DataCache
      * Override if custom field mapping is required
      */
@@ -339,6 +379,10 @@ global virtual class SYS_ApplicationService {
     global virtual String getResourceFromJSON(SYS_IntegrationLog__c log,String jsonBody){
 
         String resource = '';
+        if(log.Resource__c!=NULL){
+            return log.Resource__c;
+        }
+
         if(log.Flat_Key_for_Resource__c == NULL || log.Flat_Key_for_Resource__c == ''){
             //Root element identifies Resource
             Object responseType = JSON.deserializeUntyped(jsonBody);

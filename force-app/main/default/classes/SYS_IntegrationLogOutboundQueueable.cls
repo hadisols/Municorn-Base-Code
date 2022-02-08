@@ -65,7 +65,7 @@ public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.
                 }
             }catch(Exception e){
 
-                SYS_ApplicationService.logException(log,e.getStackTraceString());
+                SYS_ApplicationService.logException(log,e.getStackTraceString()+'\n'+e.getMessage());
     
             }
             

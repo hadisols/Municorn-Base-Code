@@ -61,7 +61,7 @@ public class SYS_IntegrationLogInboundImmediate{
                 
                 inboundResultLogs.add(appService.generatelogForInboundResult(dmlResult,log));
             }catch(Exception e){
-                SYS_ApplicationService.logException(log, e.getStackTraceString());
+                SYS_ApplicationService.logException(log, e.getStackTraceString()+'\n'+e.getMessage());
             }
 
         }// For loop ends
