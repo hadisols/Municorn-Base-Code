@@ -25,7 +25,6 @@
 		<members>SYS_ApplicationService</members>
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
-		<members>SYS_ExceptionHandler</members>
 		<members>SYS_IntegrationLogInboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundQueueable</members>

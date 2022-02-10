@@ -36,6 +36,7 @@ public class SYS_IntegrationLogTriggerHandler {
 
         }
 
+        //TODO if Out of Queue Limits update log with exception details
         if(newOutboundLogIds.size()>0)
             System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(newOutboundLogIds));
 

@@ -227,6 +227,16 @@ global virtual class SYS_ApplicationService {
      */
     global virtual sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
 
+        System.debug(mapping.FieldApiName__c+' +MS+ '+value);
+        if(mapping.Get_value_from_Log__c)
+            value = SYS_DataCache.log.get(mapping.Log_API_for_field_mapping__c);
+            
+
+        if(value==NULL) return sObj;
+
+        System.debug('--MS In Field Mapping. Value check:'+mapping.Log_API_for_field_mapping__c);
+        System.debug('--MS In Field Mapping. Value check Log:'+SYS_DataCache.log);
+
         SObjectType r = ((SObject)(Type.forName('Schema.'+sObjectApiName).newInstance())).getSObjectType();
         DescribeSObjectResult d = r.getDescribe();
                 
@@ -239,11 +249,7 @@ global virtual class SYS_ApplicationService {
         
         //TODO add other field types
         if(fieldType=='DATE'){
-            try{
-                sObj.put(mapping.FieldApiName__c, date.valueOf((String)value));
-            }catch(Exception e){
-                
-            }
+            sObj.put(mapping.FieldApiName__c, date.valueOf((String)value));
         }else if (fieldType == 'STRING') {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
         }else if (fieldType == 'BOOLEAN') {
@@ -621,6 +627,7 @@ global virtual class SYS_ApplicationService {
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.How_To_Process__c.isCreateable()) {
                 logResp.How_To_Process__c = 'ignore_log';
+                
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.SYS_Operation_Type__c.isCreateable()) {
                 logResp.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
@@ -628,6 +635,7 @@ global virtual class SYS_ApplicationService {
             
         }
         else{
+
 
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
                 logResp.Status__c = 'DONE';

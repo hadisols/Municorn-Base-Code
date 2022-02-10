@@ -23,6 +23,7 @@ public class SYS_IntegrationLogInboundImmediate{
                                                 data7__c,
                                                 data8__c,
                                                 data9__c,
+                                                Custom_Field_Value__c,
                                                 Parent__r.WhatId__c,
                                                 Resource__c,
                                                 On_Complete_Handler__c,
