@@ -610,6 +610,7 @@
 	<types>
 		<members>AmericanExpress</members>
 		<members>Bootstrap</members>
+		<members>FontAwesome</members>
 		<members>button_code_css</members>
 		<members>Cirrus</members>
 		<members>DinersClub</members>
