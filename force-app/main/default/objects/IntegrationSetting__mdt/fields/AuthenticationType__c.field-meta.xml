@@ -3,7 +3,7 @@
     <fullName>AuthenticationType__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>AuthenticationType</label>
+    <label>Authentication Type</label>
     <required>true</required>
     <type>Picklist</type>
     <valueSet>

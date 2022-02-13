@@ -74,6 +74,21 @@ public class SYS_DataCache {
     public static String INT_TYPE;
     public static String OBJ_TYPE;
 
+    
+    private static Map<String, String> external_key;
+    public static Map<String, String> externalKeyByResourceMap {
+        get {
+            if(external_key == null) {
+                external_key = new Map<String, String>();
+                for(FieldSetting__mdt fs : FieldMappingOutbound){
+                    if(fs.Is_External_Field__c)
+                        external_key.put(fs.RestResource__c,fs.FieldApiName__c);
+                }
+            }
+            return external_key;
+        }
+    }
+
     /******* NEW VARIABLES END*********/
 	
     //TODO - add a method checkAndLoad , called from every getter, single query on grand child and get 
@@ -153,12 +168,13 @@ public class SYS_DataCache {
     //     }
     // }
 
+    //CONSIDERS OUTBOUND FIELDS ONLY
     public static List<FieldSetting__mdt> AllFieldSettingMappings{
         get{
             if(mappings == null){
                 mappings = new List<FieldSetting__mdt>();
                 System.debug('Field Settings #### 1:'+mappings);
-                mappings = [Select Id,Log_API_for_field_mapping__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+                mappings = [Select Id,Log_API_for_field_mapping__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
                             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c 
                             from FieldSetting__mdt /*where Is_Active__c=true where FieldApiName__c != null*/
                             WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'INBOUND'];
@@ -185,7 +201,11 @@ public class SYS_DataCache {
                 //             ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c 
                 //             from FieldSetting__mdt /*where Is_Active__c=true where FieldApiName__c != null*/
                 //             WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'OUTBOUND'];
+<<<<<<< HEAD
                 String query = 'SELECT Id,Log_API_for_field_mapping__c, Get_value_from_Log__c, ObjectSetting__r.DeveloperName,ChildFieldApiName__c,Field_Mapping_Handler__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,' +                
+=======
+                String query = 'SELECT Id,Log_API_for_field_mapping__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c, ObjectSetting__r.DeveloperName,ChildFieldApiName__c,Field_Mapping_Handler__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,' +                
+>>>>>>> 67099d4dfb80a4a01d5f218fa8e5b773dc0af528
                 ' ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c ' + 
                 ' from FieldSetting__mdt '+
                 ' WHERE ObjectSetting__r.IntegrationType__r.developername =\''+SYS_DataCache.INT_TYPE+'\' AND Direction__c != \'OUTBOUND\' '; 
@@ -206,6 +226,7 @@ public class SYS_DataCache {
         }
     }
     
+    //NOT USED
     public static Map<String, List<FieldSetting__mdt>> GetChildFieldSettingMap{
         get{
             if(childFieldSettingMap == null){
@@ -232,7 +253,7 @@ public class SYS_DataCache {
         }
     }
     
-
+    //NOT USED
     public static List<FieldSetting__mdt> FieldSettingMappings{
         get{
             if(objectFieldSettingMap == null){
@@ -255,6 +276,7 @@ public class SYS_DataCache {
         }
     }
 
+    //CONSIDERS OUTBOUND FIELDS ONLY
     public static List<FieldSetting__mdt> fieldSettingMappingUsingObjSetting {
         get {
             if(objectFieldSettingMap == null) {
@@ -274,6 +296,7 @@ public class SYS_DataCache {
         }
     }
     
+    //NOT USED
     public static void load(String primaryObj,List<sObject> objsList) {
             //String primaryObj; //TODO-fix this
             if(objectFieldSettingMap == null || objectFieldSettingMap.keySet().size() == 0) {
@@ -302,6 +325,7 @@ public class SYS_DataCache {
             return escCharMap.get(SYS_DataCache.INT_TYPE);
         }
     }
+
     public static void load(){ 
         List<IntegrationSetting__mdt> listObjSetting = [SELECT EscapeCharacter__c, BaseAPIEndPoint__c, ApexHandler__c, NamedCredential__c, 
                                                    UpdateMethod__c, AuthenticationType__c,
@@ -360,7 +384,10 @@ public class SYS_DataCache {
 
     public static string sObjectApiName;
 
+    // ONLY USED IN INVOCABLE HANDLER THAT TOO ONLY ASSIGNMENT
     public static String objectApiName;  
+    
+    //NOT USED
     public static List<ObjectSetting__mdt> objMap = new List<ObjectSetting__mdt>();
     public static List<ObjectSetting__mdt> objSettings {
         get{
@@ -393,6 +420,7 @@ public class SYS_DataCache {
         }
     }
 
+    //NOT USED
     public static Map<String, String> extFieldName = new Map<String, String>();
     public static Map<String, String> objExternalField {
         get{
@@ -519,6 +547,7 @@ public class SYS_DataCache {
     } 
 
     public static List<IntegrationEnablement__mdt> enableIntList = new List<IntegrationEnablement__mdt>();
+
     public static Map<String, Boolean> checkMap = new Map<String, Boolean>();
     public static Map<String, Boolean> enableCheck {
         get{
@@ -557,6 +586,7 @@ public class SYS_DataCache {
     }
 
 
+    // NOT USED/REQUIRED.
     public static String token = '';
     public static String webhookToken {
         get {

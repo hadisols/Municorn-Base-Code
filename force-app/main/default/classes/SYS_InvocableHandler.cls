@@ -64,7 +64,7 @@ global class SYS_InvocableHandler {
 
                 //TODO - QB specific change for bundle product  
 
-                SYS_IntegrationLog__c  newSysLog = SYS_ApplicationService.getLogsToInsert(finalJsonForOutbound);
+                SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
                 newSysLog.Status__c = 'NEW';
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;

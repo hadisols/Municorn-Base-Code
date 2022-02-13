@@ -3,9 +3,8 @@
     <fullName>ObjectSetting__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>ObjectSetting</label>
+    <label>Object Setting</label>
     <referenceTo>ObjectSetting__mdt</referenceTo>
-    <relationshipLabel>RelationshipSettings</relationshipLabel>
     <relationshipName>RelationshipSettings</relationshipName>
     <required>true</required>
     <type>MetadataRelationship</type>

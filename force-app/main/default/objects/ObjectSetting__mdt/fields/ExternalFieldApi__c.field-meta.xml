@@ -3,7 +3,7 @@
     <fullName>ExternalFieldApi__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ExternalFieldApi</label>
+    <label>External Field API</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

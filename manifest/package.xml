@@ -31,12 +31,12 @@
 		<members>SYS_IntegrationLogTriggerHandler</members>
 		<members>SYS_InvocableHandler</members>
 		<members>SYS_OAuthRedirectHandler</members>
+		<members>SYS_ParentingQueueable</members>
 		<members>SYS_QueueableForInboundChild</members>
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
-		<members>SYS_ParentingQueueable</members>
-		<!-- End Municorn Classes -->
+		<members>override_SYS_ApplicationService</members>
 		<name>ApexClass</name>
 	</types>
 	<types>

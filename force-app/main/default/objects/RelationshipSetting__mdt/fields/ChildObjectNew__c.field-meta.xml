@@ -3,7 +3,7 @@
     <fullName>ChildObjectNew__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ChildObjectNew</label>
+    <label>Child Object (New)</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

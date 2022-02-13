@@ -15,20 +15,16 @@
                 <field>DeveloperName</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>AuthenticationType__c</field>
+                <behavior>Edit</behavior>
+                <field>DebugCheck__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>BaseAPIEndPoint__c</field>
+                <behavior>Edit</behavior>
+                <field>ApexHandler__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
                 <field>UpdateMethod__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>webhookToken__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -42,23 +38,15 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ApexHandler__c</field>
+                <field>Hashing_Algo__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>DebugCheck__c</field>
+                <field>webhookToken__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>EscapeCharacter__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>NamedCredential__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Hashing_Algo__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -84,7 +72,43 @@
     </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>false</detailHeading>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Authorization</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>BaseAPIEndPoint__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>AuthenticationType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>OAuth_Config_Record_Id__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns/>
+        <style>TwoColumnsLeftToRight</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Not Used</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>NamedCredential__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns/>
+        <style>TwoColumnsLeftToRight</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
         <layoutColumns/>
@@ -92,18 +116,13 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <miniLayout>
-        <fields>AuthenticationType__c</fields>
-        <fields>BaseAPIEndPoint__c</fields>
-        <fields>UpdateMethod__c</fields>
-    </miniLayout>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h5j000001DaBk</masterLabel>
+        <masterLabel>00h5f00000CmIYo</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

@@ -4,7 +4,7 @@
     <description>This field is used to parse the inbound JSON to create sObject.</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ChildFieldApiName</label>
+    <label>Child Field API Name</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

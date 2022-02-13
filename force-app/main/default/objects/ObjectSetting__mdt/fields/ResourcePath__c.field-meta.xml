@@ -3,7 +3,7 @@
     <fullName>ResourcePath__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ResourcePath</label>
+    <label>Resource Path</label>
     <length>255</length>
     <required>true</required>
     <type>Text</type>

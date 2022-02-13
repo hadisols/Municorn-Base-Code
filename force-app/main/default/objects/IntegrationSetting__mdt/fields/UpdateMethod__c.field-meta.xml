@@ -4,7 +4,7 @@
     <defaultValue>&apos;POST&apos;</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>UpdateMethod</label>
+    <label>Update Method</label>
     <required>true</required>
     <type>Picklist</type>
     <valueSet>

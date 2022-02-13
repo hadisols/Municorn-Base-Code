@@ -3,7 +3,7 @@
     <fullName>ChildRelationshipFieldNew__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ChildRelationshipFieldNew</label>
+    <label>Child Relationship Field (New)</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

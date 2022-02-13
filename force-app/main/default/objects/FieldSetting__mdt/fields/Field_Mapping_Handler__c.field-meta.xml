@@ -3,7 +3,7 @@
     <fullName>Field_Mapping_Handler__c</fullName>
     <defaultValue>&quot;SYS_ApplicationService&quot;</defaultValue>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Field Mapping Handler</label>
     <length>255</length>
     <required>false</required>

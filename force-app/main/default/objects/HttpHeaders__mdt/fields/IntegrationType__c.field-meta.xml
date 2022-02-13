@@ -3,9 +3,8 @@
     <fullName>IntegrationType__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>IntegrationType</label>
+    <label>Integration Type</label>
     <referenceTo>IntegrationSetting__mdt</referenceTo>
-    <relationshipLabel>HttpHeaders</relationshipLabel>
     <relationshipName>HttpHeaders</relationshipName>
     <required>true</required>
     <type>MetadataRelationship</type>

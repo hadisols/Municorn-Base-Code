@@ -3,7 +3,7 @@
     <fullName>ChildFieldNew__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ChildFieldNew</label>
+    <label>Child Field (New)</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

@@ -98,7 +98,7 @@ global virtual class SYS_ApplicationService {
             SYS_debug.log(err.getStatusCode() + ': ' + err.getMessage());
             SYS_debug.log('Fields affected are: ' + err.getFields());
         }
-        SYS_ApplicationService.logException(SYS_DataCache.log, errMsg);
+        SYS_Helper.logException(SYS_DataCache.log, errMsg);
     }
 
     /**
@@ -298,7 +298,7 @@ global virtual class SYS_ApplicationService {
      */
     global virtual SYS_IntegrationLog__c generateLogForWebhookReq(String method) {
         String requestBody = RestContext.request.requestBody.toString();
-        SYS_IntegrationLog__c log = SYS_ApplicationService.getLogsToInsert(requestBody);
+        SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(requestBody);
 
         String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
         if(algo!=NULL && algo!='')
@@ -309,7 +309,7 @@ global virtual class SYS_ApplicationService {
         log.Flat_Key_for_Resource__c = 'attributes.type';
         log.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
         log.Status__c = 'NEW';
-        log.External_Id_Field_API_Name__c = 'SYS_Key__c';
+        //log.External_Id_Field_API_Name__c = 'SYS_Key__c';
         log.How_to_process__c = 'use_custom_apex_handler';
         log.Custom_Apex_Handler__c = 'SYS_ApplicationService';
 
@@ -322,7 +322,7 @@ global virtual class SYS_ApplicationService {
      * Override if custom log generation is required
      */
     global virtual SYS_IntegrationLog__c generateLogForChildRecords(String parentLogId,String resource,String recordsJson,String integrationSetting) {
-        SYS_IntegrationLog__c log = SYS_ApplicationService.getLogsToInsert(recordsJson);
+        SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(recordsJson);
 
         String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
         if(algo!=NULL && algo!='')
@@ -344,7 +344,7 @@ global virtual class SYS_ApplicationService {
         log.On_Complete_Handler__c = 'SYS_ApplicationService';
         /** */
 
-        log.External_Id_Field_API_Name__c = 'SYS_Child_Key__c';
+        //log.External_Id_Field_API_Name__c = 'SYS_Child_Key__c';
         log.How_to_process__c = 'use_custom_apex_handler';
         log.Custom_Apex_Handler__c = 'SYS_ApplicationService';
 
@@ -398,7 +398,7 @@ global virtual class SYS_ApplicationService {
         }
         else{
             //Key mentioned in Flat_Key_for_Resource__c identifies Resource
-            Map<String, Object> flatKeyMap = getFlatKeys(jsonBody);
+            Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody);
             System.debug('-- MS flatKeyMap in getResourceFromJSON:'+flatKeyMap);
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }
@@ -424,16 +424,16 @@ global virtual class SYS_ApplicationService {
                     log.data9__c != null ? log.data9__c : '' ;
 
         jsonBody = preprocessJSONForInbound(log,jsonBody);
-        List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, getResourceFromJSON(log,jsonBody));
+        String resource = getResourceFromJSON(log,jsonBody);
+        List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, resource);
+
+        SYS_debug.log('\n\n ------------------------------- \n\n Application Service resource:'+resource);
 
         SYS_debug.log('\n\n ------------------------------- \n\n Application Service sObjects to DML:'+sObjectsToDML);
+        SYS_debug.log('\n\n ------------------------------- \n\n Application Service externalKeyByResourceMap:'+SYS_DataCache.externalKeyByResourceMap);
 
-        String externalIdFieldAPIName = log.External_Id_Field_API_Name__c!=NULL?log.External_Id_Field_API_Name__c:'';
-        //Schema.SObjectField externalIdField = Schema.getGlobalDescribe().get(SYS_DataCache.sObjectApiName).getDescribe().fields.getMap().get(externalIdFieldAPIName);
-
-        //TODO DML Based on log operation type
-        //Database.UpsertResult[] results = Database.upsert(sObjectsToDML,externalIdField, false);
-        
+        String externalIdFieldAPIName = SYS_DataCache.externalKeyByResourceMap.get(resource);
+        //String externalIdFieldAPIName = log.External_Id_Field_API_Name__c!=NULL?log.External_Id_Field_API_Name__c:'';
                
         return doDML(sObjectsToDML,log.SYS_Operation_Type__c,externalIdFieldAPIName);
     }
@@ -575,7 +575,7 @@ global virtual class SYS_ApplicationService {
     global virtual void fixParent(String parentLogId,SYS_IntegrationLog__c childLog){
 
         List<FieldSetting__mdt> fsm = new List<FieldSetting__mdt>();
-        fsm = [SELECT ParentField__c,ObjectApiName__c FROM FieldSetting__mdt WHERE RestResource__c = :childLog.Resource__c AND Get_value_from_Log__c=true];
+        fsm = [SELECT FieldApiName__c,ParentField__c,ObjectApiName__c FROM FieldSetting__mdt WHERE RestResource__c = :childLog.Resource__c AND Is_Lookup__c=true];
         System.debug('MS Fixing Relationship:'+fsm);
         List<sObject> childRecords = new List<sObject>();
         
@@ -585,7 +585,7 @@ global virtual class SYS_ApplicationService {
             System.debug('MS cLog:'+cLog);
             System.debug('MS cLog.Parent__r.WhatId__c:'+cLog.Parent__r.WhatId__c);
             sObj.put('Id',cLog.WhatId__c);
-            sObj.put(fsm[0].ParentField__c,cLog.Parent__r.WhatId__c);
+            sObj.put(fsm[0].FieldApiName__c,cLog.Parent__r.WhatId__c);
             childRecords.add(sObj);
         }
         System.debug('MS Child Records for Parenting:'+childRecords);
@@ -599,7 +599,7 @@ global virtual class SYS_ApplicationService {
 
     global virtual SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
 
-        SYS_IntegrationLog__c logResp = getLogsToInsert(resp.getBody());
+        SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
         if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
             SYS_debug.log('#### resp status: '+resp.getStatus());
             SYS_debug.log('#### resp code: '+resp.getStatusCode()); 
@@ -680,52 +680,9 @@ global virtual class SYS_ApplicationService {
     
     /************************** C O N C R E T E    M E T H O D S    S T A R T **************************/
 
+     /* ------------------------------------------------------------------------ */
 
-    /* ------------------------------------------------------------------------ */
-
-    public static SYS_IntegrationLog__c getLogsToInsert(String requestBody) {
-        SYS_IntegrationLog__c integrationLog = new SYS_IntegrationLog__c();
-        List<String> data = getJSONChunckedValues(requestBody);
-        integer i = 0;
-        for(String json:data){
-            integrationLog.put('data'+i+'__c',json);
-            i++;
-        }
-        return integrationLog;
-    }
-
-
-    /* ------------------------------------------------------------------------ */
-
-    public static List<String> getJSONChunckedValues(String body){
-        List<String> data = new List<String>{'','','','','','','','','',''};
-        
-        if (body.length() <= SYS_Constants.TEXT_AREA_MAX_SIZE){
-			data[0] = body;
-        } else {
-            SYS_debug.log('json needs chunking');
-            Integer di = 0;
-            String jsonSubStrng;
-            Integer endIndex = SYS_Constants.TEXT_AREA_MAX_SIZE;
-            String outboundJSON = body;
-            do {
-                jsonSubStrng = outboundJSON.substring(0,endIndex);
-                outboundJSON = outboundJSON.substring(endIndex);
-                SYS_debug.log('substr= '+outboundJSON+' index='+endIndex+' '+jsonSubStrng);
-                endIndex = (outboundJSON.length() < SYS_Constants.TEXT_AREA_MAX_SIZE) ? outboundJSON.length() : SYS_Constants.TEXT_AREA_MAX_SIZE;
-                data[di] = jsonSubStrng;
-                di++;
-                if(di == SYS_Constants.MAX_DATA_FIELDS - 1 && body.length() > SYS_Constants.TEXT_AREA_MAX_SIZE){
-                    SYS_debug.log('JSON too large. Truncated');
-                    break;
-                }
-            } while (outboundJSON.length() > 0);
-        }
-        return data;
-    }
-    /* ------------------------------------------------------------------------ */
-
-    public Boolean doDML(List<sObject> records,String dmlType,String additionalSetting) {
+     public Boolean doDML(List<sObject> records,String dmlType,String additionalSetting) {
         
         switch on dmlType.toUpperCase() {
             when 'INSERT'{
@@ -764,69 +721,6 @@ global virtual class SYS_ApplicationService {
         } catch ( Exception e ) {
             setErrorHttpResponse(e.getStackTraceString());
         }
-    }
-
-    /* ------------------------------------------------------------------------ */
-
-    public static void logException(SYS_IntegrationLog__c log,String stackTrace){
-        //log.Type__c = 'EXCEPTION';
-        log.Status__c = 'FAIL';
-        log.Message__c = stackTrace;
-        upsert log;
-    }
-
-    /* ------------------------------------------------------------------------ */
-
-    public static Map<String, Object> getFlatKeys(String jsonObj) {
-        Object result = JSON.deserializeUntyped(jsonObj);
-        Map<String, Object> flatKeyMap = new Map<String, Object>();
-        if (result instanceof Map<String, Object>) {
-            recursiveJsonParser((Map<String, Object>)result, new List<String>(), flatKeyMap);
-        }
-        return flatKeyMap;
-    }
-    
-    private static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result) {
-        for(String key : jsonObject.keySet()) {
-            Object currentObj = jsonObject.get(key);
-            if (currentObj instanceof Map<String, Object>) {
-                Map<String, Object> child = (Map<String, Object>)currentObj;
-                parents.add(key);
-                recursiveJsonParser(child, parents, result);
-                parents.remove(parents.size() - 1);
-           
-            } else {
-                String parentKey = '';
-                if(parents.size() > 0) {
-                    parentKey = String.join(parents, '.');
-                } 
-                if (currentObj instanceof Decimal) {
-                    //Add
-                	result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Decimal) currentObj);
-                } else if (currentObj instanceof Integer) {
-                    //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Integer) currentObj);
-                }
-                else if (currentObj instanceof String) {
-                    //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key,  currentObj);
-                } else if (currentObj instanceof Boolean) {
-                    //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Boolean) currentObj);
-                } 
-                else if (currentObj == null) {
-                    //TODO - Verify accuracy on what needs to be done
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, null);
-                }
-                else{
-                	//TODO
-                }
-                
-            }
-            
-        }
-        return;
-        
     }
 
     /************************** C O N C R E T E    M E T H O D S    E N D *****************************/

@@ -3,7 +3,7 @@
     <fullName>RestResource__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>RestResource</label>
+    <label>Rest Resource</label>
     <length>255</length>
     <required>true</required>
     <type>Text</type>

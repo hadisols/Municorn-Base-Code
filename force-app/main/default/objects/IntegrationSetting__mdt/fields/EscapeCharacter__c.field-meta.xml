@@ -3,7 +3,7 @@
     <fullName>EscapeCharacter__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>EscapeCharacter</label>
+    <label>Escape Character</label>
     <length>10</length>
     <required>false</required>
     <type>Text</type>

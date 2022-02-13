@@ -28,7 +28,6 @@ public class SYS_IntegrationLogOutboundImmediate{
                                                 data9__c,
                                                 Custom_Field_Value__c,
                                                 Requires_process_on_complete__c,
-                                                External_Id_Field_API_Name__c,
                                                 How_to_process__c,Custom_Apex_Handler__c,
                                                 Type__c,WhatId__c,Parent__c,Order__c,ObjectSettingId__c,SYS_IntegrationSettings__c
                                             FROM SYS_IntegrationLog__c WHERE Id in:sysLogIds];
@@ -71,7 +70,7 @@ public class SYS_IntegrationLogOutboundImmediate{
                     System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
                 }
             }catch(Exception e){
-                SYS_ApplicationService.logException(log, e.getStackTraceString()+'\n'+e.getMessage());
+                SYS_Helper.logException(log, e.getStackTraceString()+'\n'+e.getMessage());
             }
             
         }// For Loop ends

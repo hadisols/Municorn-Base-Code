@@ -3,7 +3,7 @@
     <fullName>ObjectApiName__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ObjectApiName</label>
+    <label>Object API Name</label>
     <length>255</length>
     <required>true</required>
     <type>Text</type>

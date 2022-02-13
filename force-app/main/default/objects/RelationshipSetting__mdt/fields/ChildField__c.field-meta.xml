@@ -3,7 +3,7 @@
     <fullName>ChildField__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>ChildField</label>
+    <label>Child Field</label>
     <metadataRelationshipControllingField>RelationshipSetting__mdt.ChildObject__c</metadataRelationshipControllingField>
     <referenceTo>FieldDefinition</referenceTo>
     <relationshipLabel>RelationshipSettings</relationshipLabel>
