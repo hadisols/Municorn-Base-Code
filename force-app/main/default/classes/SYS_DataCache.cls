@@ -73,7 +73,6 @@ public class SYS_DataCache {
 
     public static String INT_TYPE;
     public static String OBJ_TYPE;
-
     
     private static Map<String, String> external_key;
     public static Map<String, String> externalKeyByResourceMap {

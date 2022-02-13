@@ -299,6 +299,7 @@ public virtual class SYS_Transformer {
     //Router makes sure that if the json is List, it breaks it down and passes to this method
     //Also, each resource gets broken down - TODO see if we can enhance this.
     public static List<sObject> getSObjectsToUpsert(List<String> jsonList, String resource) {
+
         List<sObject> objectsToUpsert = new List<sObject>();
         //TODO filters based on INBOUND, OUTBOUND etc
         // List<FieldSetting__mdt> mappings = [Select Id, ChildFieldApiName__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c,
@@ -340,6 +341,7 @@ public virtual class SYS_Transformer {
             sObjectApiName = mappings[0].ObjectApiName__c;
             SYS_DataCache.sObjectApiName = sObjectApiName;
             SYS_DataCache.OBJ_TYPE = mappings[0].ObjectSetting__r.DeveloperName;
+            
         }
 
         System.debug('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer:'+SYS_DataCache.sObjectApiName);
@@ -473,7 +475,15 @@ public virtual class SYS_Transformer {
     //
 
     public static sObject parseJsonToObject(String jsonObj, String sObjectApiName, Map<String, FieldSetting__mdt> mapOfPaths) {
-        Map<String, Object> flatKeyMap = makeJsonIntoKeyValuePairs(jsonObj);
+        Map<String, Object> flatKeyMapWithCaseSensitiveKeys = makeJsonIntoKeyValuePairs(jsonObj);
+
+        // MS Added to avoid dependency on Casing of key in JSON [
+        Map<String, Object> flatKeyMap = new Map<String,Object>();
+        for(String casedKey : flatKeyMapWithCaseSensitiveKeys.keySet()){
+            flatKeyMap.put(casedKey.toLowerCase(),flatKeyMapWithCaseSensitiveKeys.get(casedKey));
+        }
+        // MS Added to avoid dependency on Casing of key in JSON ]
+
         System.debug('SYS_DataCache.sObjectApiName in parseJsonToObject:'+SYS_DataCache.sObjectApiName);
         sObject sObj = Schema.getGlobalDescribe().get(SYS_DataCache.sObjectApiName).newSObject();
         if(SYS_Transformer.isChild){
@@ -526,7 +536,7 @@ public virtual class SYS_Transformer {
                 }
 
                 SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(fieldMappingHandler).newInstance();
-                appService.processFieldMapping(mapping,sObj,flatKeyMap.get(key),sObjectApiName);
+                appService.processFieldMapping(mapping,sObj,flatKeyMap.get(key.toLowerCase()),sObjectApiName);
 
                 
             } 

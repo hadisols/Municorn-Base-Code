@@ -3,6 +3,7 @@
     <fullName>ResourcePath__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Do not add any forward slash (/) at the end</inlineHelpText>
     <label>Resource Path</label>
     <length>255</length>
     <required>true</required>

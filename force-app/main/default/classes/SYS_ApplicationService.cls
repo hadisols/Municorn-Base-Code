@@ -406,7 +406,18 @@ global virtual class SYS_ApplicationService {
         return resource;
     }
 
-    /* ------------------------------------------------------------------------ */ 
+    /* ------------------------------------------------------------------------ */
+
+    global virtual List<sObject> getMissingIdForUpdate(List<sObject> sObjectsToDML) {
+        for(sObject s:sObjectsToDML){
+            if(s.Id == NULL){
+                s.Id = SYS_DataCache.log.WhatId__c;
+            }
+        }
+        return sObjectsToDML;
+    }
+
+    /* ------------------------------------------------------------------------ */
 
     global virtual Boolean doInbound(SYS_IntegrationLog__c log) {
         
@@ -428,7 +439,6 @@ global virtual class SYS_ApplicationService {
         List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, resource);
 
         SYS_debug.log('\n\n ------------------------------- \n\n Application Service resource:'+resource);
-
         SYS_debug.log('\n\n ------------------------------- \n\n Application Service sObjects to DML:'+sObjectsToDML);
         SYS_debug.log('\n\n ------------------------------- \n\n Application Service externalKeyByResourceMap:'+SYS_DataCache.externalKeyByResourceMap);
 
@@ -467,7 +477,7 @@ global virtual class SYS_ApplicationService {
             SYS_debug.log('MS Header:'+req.getHeader('Authorization'));
         }
 
-        String resourceUrl = integrationSetting.BaseAPIEndPoint__c+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
+        String resourceUrl = integrationSetting.BaseAPIEndPoint__c+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c+'/';
         req.setEndpoint(resourceUrl);
         return req;
     }
@@ -692,7 +702,8 @@ global virtual class SYS_ApplicationService {
                 return doUpsert(records, additionalSetting);
             }
             when 'UPDATE'{
-                return doUpdate(records);
+                System.debug('MS getMissingIdForUpdate:'+getMissingIdForUpdate(records));
+                return doUpdate(getMissingIdForUpdate(records));
             }
             when 'DELETE'{
                 return doDelete(records);

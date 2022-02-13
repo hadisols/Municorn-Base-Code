@@ -9,7 +9,7 @@ public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.
         
         List<sObject> outboundResultLogs = new List<sObject>();
         List<SYS_IntegrationLog__c> sysLogs = 
-        Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+' FROM SYS_IntegrationLog__c WHERE Id in (' + '\'' + String.join(sysLogIds,'\',\'') + '\')');
+        Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c WHERE Id in (' + '\'' + String.join(sysLogIds,'\',\'') + '\')');
                                             
         /*
         [SELECT 
