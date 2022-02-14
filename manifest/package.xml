@@ -108,6 +108,8 @@
 		-->
 		<!-- End PMA Fields -->
 		<!-- Start Municorn Fields -->
+		<members>Account.SYS_Key__c</members>
+		<members>Contact.SYS_Child_Key__c</members>
 		<members>FieldSetting__mdt.ChildFieldApiName__c</members>
 		<members>FieldSetting__mdt.ChildRootElement__c</members>
 		<members>FieldSetting__mdt.Direction__c</members>
@@ -126,7 +128,9 @@
 		<members>FieldSetting__mdt.RestResource__c</members>
 		<members>FieldSetting__mdt.StaticValue__c</members>
 		<members>HttpHeaders__mdt.IntegrationType__c</members>
+		<members>HttpHeaders__mdt.header_name__c</members>
 		<members>HttpHeaders__mdt.Value__c</members>
+		<members>IntegrationEnablement__mdt.Integration_Setting__c</members>
 		<members>IntegrationEnablement__mdt.Enable__c</members>
 		<members>IntegrationEnablement__mdt.ExpiryDate__c</members>
 		<members>IntegrationSetting__mdt.ApexHandler__c</members>
@@ -151,6 +155,7 @@
 		<members>ObjectSetting__mdt.ResourcePath__c</members>
 		<members>ObjectSetting__mdt.Trigger_Condition__c</members>
 		<members>ObjectSetting__mdt.TriggerEvents__c</members>
+		<members>ObjectSetting__mdt.url_params__c</members>
 		<members>RelationshipSetting__mdt.ChildField__c</members>
 		<members>RelationshipSetting__mdt.ChildFieldNew__c</members>
 		<members>RelationshipSetting__mdt.ChildObject__c</members>
@@ -381,6 +386,7 @@
 		<members>CustomLabels</members>
 		<name>CustomLabels</name>
 	</types>
+	<!--
 	<types>
 		<members>FieldSetting.Card_Address_Postal_Code</members>
 		<members>FieldSetting.Card_Address_Postal_Code_Check</members>
@@ -436,16 +442,25 @@
 		<members>FieldSetting.Transaction_Status</members>
 		<members>FieldSetting.Transaction_Stripe_Customer</members>
 		<members>FieldSetting.Transaction_Stripe_Receipt_Link</members>
-		<members>HttpHeaders.content_type</members>
-		<members>HttpHeaders.stripe_content_type</members>
+		<members>HttpHeaders.Plivo_Content_Type</members>
+		<members>HttpHeaders.Stripe_Content_Type</members>
+		<members>HttpHeaders.SYS_Test_Header</members>
 		<members>IntegrationEnablement.Plivo</members>
 		<members>IntegrationEnablement.Stripe</members>
+		<members>IntegrationEnablement.SYS_Test_Integration_Enablement</members>
 		<members>IntegrationSetting.Plivo</members>
 		<members>IntegrationSetting.Stripe</members>
+		<members>IntegrationSetting.SYS_Test_IntegrationSetting</members>
 		<members>ObjectSetting.PlivoSMS</members>
 		<members>ObjectSetting.Stripe_Cards</members>
 		<members>ObjectSetting.StripeCustomer</members>
 		<members>ObjectSetting.Stripe_Transaction</members>
+		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>
+		<name>CustomMetadata</name>
+	</types>
+	-->
+	<types>
+		<members>*</members>
 		<name>CustomMetadata</name>
 	</types>
 	<types>

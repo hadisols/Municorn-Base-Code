@@ -84,7 +84,7 @@ public with sharing class St_Customer_Out_SYS_ApplicationService  extends SYS_Ap
     //Add Immediate Outbound Response Syslog to Upsert Using Custom Apex Handler
     // Added Custom Apex handler and resource path identifier
     public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
-        SYS_IntegrationLog__c logResp = getLogsToInsert(resp.getBody());
+        SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
         //Added Status 202 - Accepted in Creteria
         if(resp.getStatusCode() != 202 && resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
             SYS_debug.log('#### resp status: '+resp.getStatus());

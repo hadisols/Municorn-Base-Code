@@ -11,7 +11,7 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
     }
     //Add Immediate Outbound Response Syslog to Upsert Using Custom Apex Handler
     public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
-        SYS_IntegrationLog__c logResp = getLogsToInsert(resp.getBody());
+        SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
         //Added Status 202 - Accepted in Creteria
         if(resp.getStatusCode() != 202 && resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
             SYS_debug.log('#### resp status: '+resp.getStatus());
@@ -73,7 +73,11 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
                 log.Custom_Apex_Handler__c = 'Plivo_Outbound_SYS_ApplicationService';
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.SYS_Operation_Type__c.isCreateable()) {
-                logResp.SYS_Operation_Type__c = 'UPSERT';
+                System.debug('MS log.SYS_Operation_Type__c:'+log.Parent__r.SYS_Operation_Type__c);
+                if(log.SYS_Operation_Type__c == 'INSERT')
+                    logResp.SYS_Operation_Type__c = 'UPDATE';
+                else
+                    logResp.SYS_Operation_Type__c = log.SYS_Operation_Type__c;
             }
 
             List<sObject> sObjectsToDML = new List<sObject>();
@@ -89,12 +93,7 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
                         logResp.data7__c != null ? logResp.data7__c : '' +
                         logResp.data8__c != null ? logResp.data8__c : '' +
                         logResp.data9__c != null ? logResp.data9__c : '' ;
-           SYS_IntegrationLog__c requestsysLog= 
-                        [SELECT 
-                            Id,SYS_Operation_Type__c,ObjectSettingId__c,SYS_IntegrationSettings__c
-                        FROM SYS_IntegrationLog__c 
-                        WHERE Id =:log.Id];
-            if( (recordId !='' || recordId != null) && requestsysLog.SYS_Operation_Type__c =='INSERT')
+            if( (recordId !='' || recordId != null) && log.SYS_Operation_Type__c =='INSERT')
             {
                 PlivoMessage plivoRespObj = (PlivoMessage)System.JSON.deserialize(jsonBody, PlivoMessage.class);
                 String messageUUID = String.valueof(plivoRespObj.message_uuid[0]);

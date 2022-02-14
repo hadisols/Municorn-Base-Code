@@ -1,0 +1,2 @@
+IntegrationType__c,Label,Value__c,header_name__c
+SYS_Test_IntegrationSetting,SYS Test Header,application/json,content-type

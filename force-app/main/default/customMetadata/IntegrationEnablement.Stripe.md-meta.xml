@@ -10,4 +10,8 @@
         <field>ExpiryDate__c</field>
         <value xsi:nil="true"/>
     </values>
+    <values>
+        <field>Integration_Setting__c</field>
+        <value xsi:type="xsd:string">Stripe</value>
+    </values>
 </CustomMetadata>

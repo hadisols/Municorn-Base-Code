@@ -50,4 +50,8 @@
         <field>isInboundList__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
+    <values>
+        <field>url_params__c</field>
+        <value xsi:nil="true"/>
+    </values>
 </CustomMetadata>

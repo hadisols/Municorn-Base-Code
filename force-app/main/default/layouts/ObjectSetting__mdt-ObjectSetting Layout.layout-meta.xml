@@ -34,6 +34,10 @@
                 <behavior>Required</behavior>
                 <field>ResourcePath__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>url_params__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

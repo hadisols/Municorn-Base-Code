@@ -457,8 +457,8 @@ global virtual class SYS_ApplicationService {
         List<HttpHeaders__mdt> httpHeader = SYS_DataCache.headerSetting;
         req.setMethod(integrationSetting.UpdateMethod__c);
         for(HttpHeaders__mdt head:httpHeader){
-            SYS_debug.log('header is = '+head.MasterLabel + ''+head.Value__c);
-            req.setHeader(String.valueOf(head.MasterLabel), String.valueOf(head.Value__c));       
+            SYS_debug.log('header is = '+head.header_name__c + ''+head.Value__c);
+            req.setHeader(String.valueOf(head.header_name__c), String.valueOf(head.Value__c));       
         }
         
         String oauthGrantType = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).AuthenticationType__c;
@@ -477,7 +477,14 @@ global virtual class SYS_ApplicationService {
             SYS_debug.log('MS Header:'+req.getHeader('Authorization'));
         }
 
-        String resourceUrl = integrationSetting.BaseAPIEndPoint__c+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c+'/';
+        String resourceUrl = 
+            integrationSetting.BaseAPIEndPoint__c+
+            SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c+'/';
+        String urlParams='';
+        if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
+                urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
+            
+        resourceUrl+=urlParams;
         req.setEndpoint(resourceUrl);
         return req;
     }

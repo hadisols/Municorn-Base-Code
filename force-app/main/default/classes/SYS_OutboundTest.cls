@@ -10,7 +10,7 @@ public class SYS_OutboundTest {
         }
         insert parents;
 
-        SYS_IntegrationLog__c  newSysLog = SYS_ApplicationService.getLogsToInsert('{\"Text_Field__c\":\"OB Async 2\"}');
+        SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Text_Field__c\":\"OB Async 2\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
         newSysLog.SYS_IntegrationSettings__c = 'SFsource';
@@ -23,7 +23,7 @@ public class SYS_OutboundTest {
     }
 
     @IsTest
-    static void testSingleSobject(){
+    static void testSingleRecord(){
         
         
         List<sObject> parents = [SELECT Id, Text_Field__c,SYS_Key__c FROM Custom_Parent__c];
@@ -48,6 +48,21 @@ public class SYS_OutboundTest {
         List<SYS_IntegrationLog__c> log = [SELECT Id FROM SYS_IntegrationLog__c];
         System.assert(log.size()>0);
         
+    }
+
+    @isTest
+    public static void testMultipleRecords(){
+
+    }
+
+    @isTest
+    public static void testSingleParentMultipleChildRecords(){
+
+    }
+
+    @isTest
+    public static void testOutboundboundImmediate(){
+
     }
 
 
