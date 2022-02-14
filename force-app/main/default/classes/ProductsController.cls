@@ -24,11 +24,14 @@ public with sharing class ProductsController {
     @AuraEnabled
     public static List < SelectedProductWrapper > getselectedProducts() {
         List < SelectedProductWrapper > selectedproductWrapper = new List < SelectedProductWrapper >();
-        SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
-        selectedproduct.product=[SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 Limit 1];
-        selectedproduct.quantity=2;
-        selectedproductWrapper.add(selectedproduct);
         return selectedproductWrapper;
+    }
+    @AuraEnabled
+    public static SelectedProductWrapper getselectedProductbyId(Id prodId) {
+        SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
+        selectedproduct.product=[SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 WHERE Id =: prodId];
+        selectedproduct.quantity=1;
+        return selectedproduct;
     }
 
     // wrapper class
@@ -50,11 +53,11 @@ public with sharing class ProductsController {
         public Product2 product = new Product2 ();
         @AuraEnabled
         public Double productPrice{
-            get { return product.PricebookEntries[0].UnitPrice; }
+            get { return (product != null) ? product.PricebookEntries[0].UnitPrice : 0; }
         }
         @AuraEnabled
         public Double totalProductPrice{
-            get { return productPrice * quantity; }
+            get { return (product != null) ? productPrice * quantity : 0; }
         }
         @AuraEnabled
         public String message;

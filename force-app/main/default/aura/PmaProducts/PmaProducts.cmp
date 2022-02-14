@@ -42,7 +42,7 @@
         <div class="sfappwrapper">
             <div class="d-flex flex-row justify-content-start flex-wrap my-2">
                 <aura:iteration items="{!v.productData}" var="prod">
-                    <div class="col col-lg-2 mx-3 my-2 product-wrapper" data-id="{! prod.Id}" data-prodObj="{! prod}" onclick="{!c.fireApplicationEvent}">
+                    <div class="col col-lg-2 mx-3 my-2 product-wrapper" data-id="{! prod.Id}" onclick="{!c.fireApplicationEvent}">
                         <!-- <button type="button"  data-id="{! prod.Id}" onclick="{!c.fireApplicationEvent}" >Add to  Cart</button> -->
                         <div class="d-flex flex-column justify-content-start flex-wrap">
                             <div class="overflow-hidden mx-auto image-wrapper max-height">

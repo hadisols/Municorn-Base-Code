@@ -4,9 +4,11 @@
     <!-- <ltng:require styles="{!join(',', 
     $Resource.Bootstrap, 
     $Resource.FontAwesome + '/FontAwesome/css/all.css')}" afterScriptsLoaded="{!c.setup}" /> -->
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
     
     <aura:attribute name="messageFromEvent" type="String"/>
-    <aura:attribute name="selectedproducts" type="ProductsController.SelectedProductWrapper[]" />
+    <aura:attribute name="selectedproducts" type="String" />
+    <aura:attribute name="SelectedProductWrapper" type="ProductsController.SelectedProductWrapper[]" />
     <aura:attribute name="numEvents" type="Integer" default="0"/>
 
     <aura:handler event="c:posCommunicationEvent" action="{!c.handleApplicationEvent}"/>
@@ -34,21 +36,20 @@
                                 <div class="col-lg-12">
                                     <h5 class="mb-3 text-body">Cart Items</h5>
                                     <hr/>
-                                    <aura:if isTrue="{! !empty(v.selectedproducts)}">
+                                    <aura:if isTrue="{! !empty(v.SelectedProductWrapper)}">
 <!-- 
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <div>
                                             <p class="mb-0">You have 4 items in your cart</p>
                                         </div>
                                     </div> -->
-                                    <aura:iteration items="{!v.selectedproducts}" var="selectedproduct">
+                                    <aura:iteration items="{!v.SelectedProductWrapper}" var="selectedproduct">
                                         <div class="card mb-3">
                                             <div class="card-body px-1 py-1">
                                                 <div class="d-flex justify-content-between">
                                                     <div class="d-flex flex-row align-items-center">
                                                         <div class="ms-3">
-                                                            <h5>{!selectedproduct.product.Name}<span> x </span>{!selectedproduct.product.quantity}</h5>
-                                                            <!-- <p class="small mb-0">256GB, Navy Blue</p> -->
+                                                            <h5 class="slds-truncate">{!selectedproduct.product.Name}<span> x </span>{!selectedproduct.quantity}</h5>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-row align-items-center">
@@ -56,7 +57,7 @@
                                                             <h5 class="fw-normal mb-0">2</h5>
                                                         </div> -->
                                                         <div style="width: 80px;">
-                                                            <h5 class="mb-0">$ <lightning:formattedNumber value="{!selectedproduct.product.totalProductPrice}" maximumFractionDigits="2" currencyCode="USD"/></h5>
+                                                            <h5 class="mb-0">$ <lightning:formattedNumber value="{!selectedproduct.totalProductPrice}" maximumFractionDigits="2" currencyCode="USD"/></h5>
                                                         </div>
                                                         <div class="slds-text-color_destructive">
                                                             <i class="fas fa-trash-alt"></i>
@@ -66,54 +67,7 @@
                                             </div>
                                         </div>
                                     </aura:iteration>    
-                                    <div class="card mb-3">
-                                        <div class="card-body px-1 py-1">
-                                            <div class="d-flex justify-content-between">
-                                                <div class="d-flex flex-row align-items-center">
-                                                    <div class="ms-3">
-                                                        <h5>Iphone 11 pro<span> x </span>1</h5>
-                                                        <!-- <p class="small mb-0">256GB, Navy Blue</p> -->
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex flex-row align-items-center">
-                                                    <!-- <div style="width: 50px;">
-                                                        <h5 class="fw-normal mb-0">2</h5>
-                                                    </div> -->
-                                                    <div style="width: 80px;">
-                                                        <h5 class="mb-0">$900</h5>
-                                                    </div>
-                                                    <div class="slds-text-color_destructive">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="card mb-3 mb-lg-0">
-                                        <div class="card-body px-1 py-1">
-                                            <div class="d-flex justify-content-between">
-                                                <div class="d-flex flex-row align-items-center">
-                                                    <div class="ms-3">
-                                                        <h5>MacBook Pro<span> x </span>2</h5>
-                                                        <!-- <p class="small mb-0">1TB, Graphite</p> -->
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex flex-row align-items-center">
-                                                    <!-- <div style="width: 50px;">
-                                                        <h5 class="fw-normal mb-0">1</h5>
-                                                    </div> -->
-                                                    <div style="width: 80px;">
-                                                        <h5 class="mb-0">$1799</h5>
-                                                    </div>
-                                                    <div class="slds-text-color_destructive">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
 
                                     </aura:if>
 
