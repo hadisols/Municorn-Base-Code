@@ -1,0 +1,18 @@
+<aura:component
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+    access="global">
+    <ltng:require styles="{!join(',', 
+    $Resource.Bootstrap, 
+    $Resource.FontAwesome + '/FontAwesome/css/all.css')}" afterScriptsLoaded="{!c.setup}" />
+    
+    <div>
+        <lightning:layout>
+            <lightning:layoutItem size="8">
+                <c:PmaProducts />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="4">
+                <c:pmaCart />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

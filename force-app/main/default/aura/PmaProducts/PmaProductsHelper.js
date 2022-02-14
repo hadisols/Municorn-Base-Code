@@ -21,6 +21,7 @@
                     });
                     // set the updated response on productData aura attribute  
                     component.set("v.productData", productList);
+                    console.table(productList[0].PricebookEntries[0].UnitPrice);
                     // display a success message  
                     toastReference.setParams({
                         "type": "Success",

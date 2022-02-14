@@ -1,7 +1,8 @@
 .THIS .product-wrapper {
     padding: 0.5em;
     border-radius: 5px 5px 0 0;
-	max-height: 135px;
+	/* max-height: 165px;*/
+    max-width: 150px;
     box-shadow: 0 0 5px rgb(0 0 0 / 30%);
     transition: all 200ms ease-in-out;
 }
@@ -9,10 +10,12 @@
     box-shadow:0 2px 5px rgba(0,0,0,0.5);
 }
 .THIS .image-wrapper.max-height{
-    max-height: 100px;
+    /* max-height: 100px; */
+    min-width: 100%;
 }
 .THIS .prodctimage {
     margin: 0 auto;
+    width: 100%;
 }
 .THIS .prodctimage:hover{
     transform: scale(1.2);

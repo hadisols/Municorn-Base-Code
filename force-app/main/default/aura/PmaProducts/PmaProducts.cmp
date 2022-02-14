@@ -1,90 +1,63 @@
 <aura:component
     implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
     access="global" controller="ProductsController">
-    <ltng:require styles="{!$Resource.Bootstrap}" afterScriptsLoaded="{!c.setup}" />
+    <!-- <ltng:require styles="{!$Resource.Bootstrap}" afterScriptsLoaded="{!c.setup}" /> -->
 
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
 
     <!--Aura Attributes START-->
-    <aura:attribute name="accountColums" type="List" />
     <aura:attribute name="productData" type="Object" />
+    <aura:attribute name="Loading" type="boolean" default="true"/>
     <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" />
     <aura:attribute name="initialRows" type="Integer" default="10" />
     <aura:attribute name="currentCount" type="Integer" default="10" />
     <aura:attribute name="totalRows" type="Integer" default="0" />
     <aura:attribute name="loadOffset" type="Integer" default="1" />
+        
+    <aura:registerEvent name="appEvent" type="c:posCommunicationEvent"/>
+    <aura:attribute name="selectedProducts" type="ProductsController.SelectedProductWrapper[]" />
+    <aura:registerEvent name="appEventLtngSendMessage" type="ltng:sendMessage"/>
+
+    <!-- <div class="slds-card">
+        <p>
+            <lightning:button
+                    label="Click here to fire an application event"
+                    onclick="{!c.fireApplicationEvent}"/>
+        </p>
+        <p>
+            <lightning:button
+                    label="Click here to fire an application event using ltng:sendMessage"
+                    onclick="{!c.fireApplicationEventUsingLtngSendMessage}"/>
+        </p>
+    </div> -->
     <!--Set when to trigger loading of more rows-->
     <!--Aura Attributes END-->
-
-    <div class="slds-page-header" role="banner">
+    
+    <!-- <div class="slds-page-header" role="banner">
         <span class="slds-page-header__title">Products List</span>
-    </div>
+    </div> -->
+    <aura:if isTrue="{! !empty(v.productData)}">
     <div class="slds-card my-2">
         <!--Start Bootstrap Products data markup-->
         <div class="sfappwrapper">
             <div class="d-flex flex-row justify-content-start flex-wrap my-2">
-                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
-                    <div class="d-flex flex-column justify-content-start flex-wrap">
-                        <div class="overflow-hidden mx-auto image-wrapper max-height">
-                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
-                                alt="Book" />
+                <aura:iteration items="{!v.productData}" var="prod">
+                    <div class="col col-lg-2 mx-3 my-2 product-wrapper" data-id="{! prod.Id}" data-prodObj="{! prod}" onclick="{!c.fireApplicationEvent}">
+                        <!-- <button type="button"  data-id="{! prod.Id}" onclick="{!c.fireApplicationEvent}" >Add to  Cart</button> -->
+                        <div class="d-flex flex-column justify-content-start flex-wrap">
+                            <div class="overflow-hidden mx-auto image-wrapper max-height">
+                                <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
+                                    alt='{!prod.Name}' />
+                            </div>
+                            <div class="product-title text-center slds-truncate" title='{!prod.Name}'>{!prod.Name}</div>
+                            <div class="product-title text-center slds-truncate" title='{!prod.Name}'>$ <lightning:formattedNumber value="{!prod.PricebookEntries[0].UnitPrice}" maximumFractionDigits="2" currencyCode="USD"/></div>
                         </div>
-                        <div class="product-title text-center slds-truncate">Book</div>
                     </div>
-                </div>
-                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
-                    <div class="d-flex flex-column justify-content-start flex-wrap">
-                        <div class="overflow-hidden mx-auto image-wrapper max-height">
-                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100" alt="Book" />
-                        </div>
-                        <div class="product-title text-center slds-truncate">Book</div>
-                    </div>
-                </div>
-                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
-                    <div class="d-flex flex-column justify-content-start flex-wrap">
-                        <div class="overflow-hidden mx-auto image-wrapper max-height">
-                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100" alt="Book" />
-                        </div>
-                        <div class="product-title text-center slds-truncate">Book</div>
-                    </div>
-                </div>
-                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
-                    <div class="d-flex flex-column justify-content-start flex-wrap">
-                        <div class="overflow-hidden mx-auto image-wrapper max-height">
-                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?laptop"
-                                alt="Book" />
-                        </div>
-                        <div class="product-title text-center slds-truncate">Book</div>
-                    </div>
-                </div>
-                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
-                    <div class="d-flex flex-column justify-content-start flex-wrap">
-                        <div class="overflow-hidden mx-auto image-wrapper max-height">
-                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?book"
-                                alt="Book" />
-                        </div>
-                        <div class="product-title text-center slds-truncate">Book</div>
-                    </div>
-                </div>
-                <div class="col col-lg-2 mx-3 my-2 product-wrapper">
-                    <div class="d-flex flex-column justify-content-start flex-wrap">
-                        <div class="overflow-hidden mx-auto image-wrapper max-height">
-                            <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?avatar"
-                                alt="Book" />
-                        </div>
-                        <div class="product-title text-center slds-truncate">Book</div>
-                    </div>
-                </div>
-
+                </aura:iteration>
             </div>
         </div>
     </div>
-
+    </aura:if>
     <!--End Bootstrap Products data markup-->
-    <!--Lightning data table markup-->
-    <div style="height:250px">
-        <lightning:datatable aura:id="dataTableID" keyField="Id" hideCheckboxColumn="true" columns="{!v.accountColums}"
-            data="{!v.productData}" enableInfiniteLoading="{!v.enableInfiniteLoading}" loadMoreOffset="{!v.loadOffset}"
-            onloadmore="{!c.handleLoadMore}" />
-    </div>
+    
 </aura:component>
