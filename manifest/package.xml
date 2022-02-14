@@ -25,6 +25,12 @@
 		<members>SYS_ApplicationService</members>
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
+		<members>SYS_Helper</members>
+		<!--
+		<members>SYS_InboundTest</members>
+		<members>SYS_OutboundTest</members>
+		<members>SYS_MockServer</members>
+		-->
 		<members>SYS_IntegrationLogInboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundQueueable</members>
@@ -36,7 +42,11 @@
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
+		<members>SYS_ExceptionHandler</members>
+		<!-- 
 		<members>override_SYS_ApplicationService</members>
+		-->
+		<!-- End Municorn Classes -->
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -50,7 +60,11 @@
 	</types>
 	<types>
 		<members>pageTemplate_2_7_3</members>
-		<members>PmaProducts</members>
+		<members>pageTemplate_8_4</members>
+		<members>pmaContainer</members>
+		<members>pmaProducts</members>
+		<members>pmaCart</members>
+		<members>posCommunicationEvent</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
@@ -100,9 +114,12 @@
 		<members>FieldSetting__mdt.FieldApiName__c</members>
 		<members>FieldSetting__mdt.Field_Mapping_Handler__c</members>
 		<members>FieldSetting__mdt.Get_value_from_Log__c</members>
-		<members>FieldSetting__mdt.Is_Active__c</members>
 		<members>FieldSetting__mdt.IsChild__c</members>
+		<members>FieldSetting__mdt.Is_Active__c</members>		
+		<members>FieldSetting__mdt.Is_External_Field__c</members>
+		<members>FieldSetting__mdt.Is_Lookup__c</members>
 		<members>FieldSetting__mdt.Key__c</members>
+		<members>FieldSetting__mdt.Log_API_for_field_mapping__c</members>
 		<members>FieldSetting__mdt.ObjectApiName__c</members>
 		<members>FieldSetting__mdt.ObjectSetting__c</members>
 		<members>FieldSetting__mdt.ParentField__c</members>
@@ -144,6 +161,26 @@
 		<members>RelationshipSetting__mdt.ParentObject__c</members>
 		<members>SYS_enable__c.Enable__c</members>
 		<members>SYS_IntegrationLog__c.Custom_Apex_Handler__c</members>
+		<members>SYS_IntegrationLog__c.Custom_Field_Value__c</members>
+		<members>SYS_IntegrationLog__c.Flat_Key_for_Resource__c</members>
+		<members>SYS_IntegrationLog__c.How_to_process__c</members>
+		<members>SYS_IntegrationLog__c.Link__c</members>
+		<members>SYS_IntegrationLog__c.Message__c</members>
+		<members>SYS_IntegrationLog__c.ObjectSettingId__c</members>
+		<members>SYS_IntegrationLog__c.On_Complete_Handler__c</members>
+		<members>SYS_IntegrationLog__c.Order__c</members>
+		<members>SYS_IntegrationLog__c.Parent__c</members>
+		<members>SYS_IntegrationLog__c.Request_Digest__c</members>
+		<members>SYS_IntegrationLog__c.Requires_process_on_complete__c</members>
+		<members>SYS_IntegrationLog__c.Resource__c</members>
+		<members>SYS_IntegrationLog__c.SYS_Http_Status__c</members>
+		<members>SYS_IntegrationLog__c.SYS_IntegrationSettings__c</members>
+		<members>SYS_IntegrationLog__c.SYS_Operation_Type__c</members>
+		<members>SYS_IntegrationLog__c.SYS_RequestId__c</members>
+		<members>SYS_IntegrationLog__c.Sobject_Link__c</members>
+		<members>SYS_IntegrationLog__c.Status__c</members>
+		<members>SYS_IntegrationLog__c.Type__c</members>
+		<members>SYS_IntegrationLog__c.WhatId__c</members>
 		<members>SYS_IntegrationLog__c.data0__c</members>
 		<members>SYS_IntegrationLog__c.data1__c</members>
 		<members>SYS_IntegrationLog__c.data2__c</members>
@@ -154,26 +191,6 @@
 		<members>SYS_IntegrationLog__c.data7__c</members>
 		<members>SYS_IntegrationLog__c.data8__c</members>
 		<members>SYS_IntegrationLog__c.data9__c</members>
-		<members>SYS_IntegrationLog__c.External_Id_Field_API_Name__c</members>
-		<members>SYS_IntegrationLog__c.Flat_Key_for_Resource__c</members>
-		<members>SYS_IntegrationLog__c.How_to_process__c</members>
-		<members>SYS_IntegrationLog__c.Link__c</members>
-		<members>SYS_IntegrationLog__c.Message__c</members>
-		<members>SYS_IntegrationLog__c.ObjectSettingId__c</members>
-		<members>SYS_IntegrationLog__c.On_Complete_Handler__c</members>
-		<members>SYS_IntegrationLog__c.Order__c</members>
-		<members>SYS_IntegrationLog__c.Parent__c</members>
-		<members>SYS_IntegrationLog__c.QB_Entity__c</members>
-		<members>SYS_IntegrationLog__c.Request_Digest__c</members>
-		<members>SYS_IntegrationLog__c.Requires_process_on_complete__c</members>
-		<members>SYS_IntegrationLog__c.Sobject_Link__c</members>
-		<members>SYS_IntegrationLog__c.Status__c</members>
-		<members>SYS_IntegrationLog__c.SYS_Http_Status__c</members>
-		<members>SYS_IntegrationLog__c.SYS_IntegrationSettings__c</members>
-		<members>SYS_IntegrationLog__c.SYS_Operation_Type__c</members>
-		<members>SYS_IntegrationLog__c.SYS_RequestId__c</members>
-		<members>SYS_IntegrationLog__c.Type__c</members>
-		<members>SYS_IntegrationLog__c.WhatId__c</members>
 		<members>SYS_OAuthConfig__c.Access_Token__c</members>
 		<members>SYS_OAuthConfig__c.Additional_URL_Parameters__c</members>
 		<members>SYS_OAuthConfig__c.Authorize_Endpoint__c</members>
@@ -182,9 +199,10 @@
 		<members>SYS_OAuthConfig__c.Grant_Type__c</members>
 		<members>SYS_OAuthConfig__c.Redirect_URL__c</members>
 		<members>SYS_OAuthConfig__c.Refresh_Token__c</members>
+		<members>SYS_OAuthConfig__c.Schedule_Refresh_Token__c</members>
 		<members>SYS_OAuthConfig__c.Scope__c</members>
-		<members>SYS_OAuthConfig__c.State__c</members>
 		<members>SYS_OAuthConfig__c.Token_Endpoint__c</members>
+		<members>SYS_OAuthConfig__c.Token_Expiry_Date__c</members>
 		<members>SYS_OAuthConfig__c.Token_Expiry_Time__c</members>
 		<members>SYS_OAuthConfig__c.Token_Last_Refresh_Date__c</members>
 		<members>SYS_OAuthConfig__c.Token_type__c</members>
@@ -505,14 +523,8 @@
 		<name>FlexiPage</name>
 	</types>
 	<types>
-		<!-- Start Plivo Integration Specific Flows-->
-		<members>SYS_SMS_Activity</members>
-		<!-- End Plivo Integration Specific Flows-->
-		<!-- Start Stripe Integration Specific Flows-->
 		<members>SYS_Customer</members>
-		<members>SYS_Payment_Method</members>
-		<members>SYS_Transaction</members>
-		<!-- End Stripe Integration Specific Flows-->
+		<members>SYS_SMS_Activity</members>
 		<name>Flow</name>
 	</types>
 	<types>
@@ -566,7 +578,6 @@
 		<members>SYS_IntegrationLog__c.All</members>
 		<members>SYS_IntegrationLog__c.Error_Logs</members>
 		<members>SYS_OAuthConfig__c.All</members>
-		<members>SYS_OAuthConfig__c.All1</members>
 		<!-- End Municorn ListView -->
 		<!-- Start Inventory ListView -->
 		<members>Catalog__c.All</members>

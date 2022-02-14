@@ -60,10 +60,6 @@
                 <field>data9__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>QB_Entity__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>Sobject_Link__c</field>
             </layoutItems>
