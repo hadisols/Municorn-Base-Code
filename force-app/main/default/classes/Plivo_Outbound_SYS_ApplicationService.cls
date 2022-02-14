@@ -67,7 +67,6 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
                 logResp.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.How_To_Process__c.isCreateable()) {
-                //logResp.How_To_Process__c = 'ignore_log';
                 log.How_to_process__c = 'use_custom_apex_handler';
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Custom_Apex_Handler__c.isCreateable()) {
@@ -76,29 +75,101 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.SYS_Operation_Type__c.isCreateable()) {
                 logResp.SYS_Operation_Type__c = 'UPSERT';
             }
-        }
 
+            List<sObject> sObjectsToDML = new List<sObject>();
+            String jsonBody = '';
+            String recordId = log.WhatId__c;
+            jsonBody =  logResp.data0__c != null ? logResp.data0__c : '' +
+                        logResp.data1__c != null ? logResp.data1__c : '' +
+                        logResp.data2__c != null ? logResp.data2__c : '' +
+                        logResp.data3__c != null ? logResp.data3__c : '' +
+                        logResp.data4__c != null ? logResp.data4__c : '' +
+                        logResp.data5__c != null ? logResp.data5__c : '' +
+                        logResp.data6__c != null ? logResp.data6__c : '' +
+                        logResp.data7__c != null ? logResp.data7__c : '' +
+                        logResp.data8__c != null ? logResp.data8__c : '' +
+                        logResp.data9__c != null ? logResp.data9__c : '' ;
+           SYS_IntegrationLog__c requestsysLog= 
+                        [SELECT 
+                            Id,SYS_Operation_Type__c,ObjectSettingId__c,SYS_IntegrationSettings__c
+                        FROM SYS_IntegrationLog__c 
+                        WHERE Id =:log.Id];
+            if( (recordId !='' || recordId != null) && requestsysLog.SYS_Operation_Type__c =='INSERT')
+            {
+                PlivoMessage plivoRespObj = (PlivoMessage)System.JSON.deserialize(jsonBody, PlivoMessage.class);
+                String messageUUID = String.valueof(plivoRespObj.message_uuid[0]);
+                
+                String ObjectName = ((Id)recordId).getsobjecttype() + '';
+                sObject record = Schema.getGlobalDescribe().get(ObjectName).newSObject(((Id)recordId)); 
+                record.put('Id' , recordId);
+                record.put('UUID__c' , messageUUID);
+                sObjectsToDML.add(record);
+                Boolean upsertStatus = doDML(sObjectsToDML,logResp.SYS_Operation_Type__c,'');
+            }
+        }
+        
         return logResp;
     }
+    /*
+    //Custom mapping for outbound response
+    public override sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
+
+        SObjectType r = ((SObject)(Type.forName('Schema.'+sObjectApiName).newInstance())).getSObjectType();
+        DescribeSObjectResult d = r.getDescribe();
+                
+        String fieldType = d.fields
+                            .getMap()
+                            .get(mapping.FieldApiName__c)
+                            .getDescribe()
+                            .getType()+'';
+
+        
+        //TODO add other field types
+        if(fieldType=='DATE'){
+            try{
+                sObj.put(mapping.FieldApiName__c, date.valueOf((String)value));
+            }catch(Exception e){
+                
+            }
+        }else if (fieldType == 'STRING') {
+            sObj.put(mapping.FieldApiName__c, String.valueof(value));
+        }else if (fieldType == 'BOOLEAN') {
+            sObj.put(mapping.FieldApiName__c, Boolean.valueof(value));
+        }
+        else{
+            sObj.put(mapping.FieldApiName__c, value);
+        }
+
+        SYS_debug.log('MS FINAL SOBJ:'+sObj);
+        return sObj;
+    }
+    */
+    /*
     // For Outbound. Called from doInbound() in ApplicationService
      //Upsert Outbound Response using WhattID
     public override List<sObject> transformJsonToSObject(String jsonBody,String resource) {
         //Custom Code to Upsert Outbound Response
         SYS_IntegrationLog__c log = SYS_DataCache.log;
+        SYS_debug.log('transformJsonToSObject log for Conversion:'+log);
         String recordId = log.WhatId__c;
+        List<sObject> sObjectsToDML = new List<sObject>();
+        if(recordId !='' || recordId != null)
+        {
         PlivoMessage plivoRespObj = (PlivoMessage)System.JSON.deserialize(jsonBody, PlivoMessage.class);
         String messageUUID = String.valueof(plivoRespObj.message_uuid[0]);
         
-        List<sObject> sObjectsToDML = new List<sObject>();
         String ObjectName = ((Id)recordId).getsobjecttype() + '';
         sObject record = Schema.getGlobalDescribe().get(ObjectName).newSObject(((Id)recordId)); 
         record.put('Id' , recordId);
         record.put('UUID__c' , messageUUID);
         sObjectsToDML.add(record);
-
-        //List < sObject > sObjectsToDML = SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource);
+        } else{
+            sObjectsToDML = SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource);
+        }
+        SYS_debug.log('transformJsonToSObject sObjects to DML:'+sObjectsToDML);
         return sObjectsToDML;
     }
+    */
 
     //Upsert Immediate Response using WhattID
     //User SYS_DataCache.log and transformJsonToSObject() override

@@ -37,9 +37,10 @@ public class PMA_ContactTriggerHandler {
             Id opportunityId = null;
             String email = g.Email;
             String paymentName = 'Request ' + g.FirstName + ' ' + g.LastName + ' For $2';
-            if (g.Phone_Number__c != '' && contactId != '') {
+
+            if (g.Phone_Number__c != '' && contactId != null) {
                 PaymentRequest__c payreq = paymentsService.createNewPaymentRequest(paymentName, contactId, accountId, opportunityId, paymentType, amount, email, frequency, firstChargeDate, itemNumber, paymentRequestGroupId);
-                if (payreq.Id != '') {
+                if (payreq.Id != null) {
                     Activity__c activity = new Activity__c();
                     activity.Customer__c = g.Id;
                     //activity.UUID__c = activity_UUID;
@@ -49,7 +50,7 @@ public class PMA_ContactTriggerHandler {
                     activity.Subject__c = 'Outbound SMS to ' + g.LastName + ' - ' + g.Phone_Number__c + ' For PMA Agreement';
                     activity.When__c = System.now();
                     activity.Phone__c = PMA_ExternalSiteFormsUtility.formatPhone(g.Phone_Number__c);
-                    activity.Message__c = 'Please Pay $' + payreq.Amount__c + ' to Start PMA Membership ' + PMA_ExternalSiteFormsUtility.getGuestSiteUrl(guestPageUrl) + '' + payreq.PaymentRequests__r.uuid__c;
+                    activity.Message__c = 'Please Pay $' + payreq.Amount__c + ' to Start PMA Membership ' + PMA_ExternalSiteFormsUtility.getIframeSiteUrl(guestPageUrl) + '' + payreq.PaymentRequests__r.uuid__c;
                     activityList.add(activity);
                 }
             }

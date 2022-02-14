@@ -12,12 +12,12 @@ public with sharing class Stripe_Inbound_SYS_ApplicationService extends SYS_Appl
     public override SYS_IntegrationLog__c generateLogForWebhookReq(String method) {
         String keyForResource = 'data.object.object';
         String requestBody = RestContext.request.requestBody.toString();
-        SYS_IntegrationLog__c log = SYS_ApplicationService.getLogsToInsert(requestBody);
+        SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(requestBody);
         //To Identify the ExternalId Field and add it to syslog 
         Map < String, Object > flatKeyMap = SYS_Transformer.makeJsonIntoKeyValuePairs(requestBody);
         System.debug('-- MS flatKeyMap in generateLogForWebhookReq:' + flatKeyMap);
         String objectName = (String) flatKeyMap.get(keyForResource);
-        switch on objectName.toLowerCase() {
+        /* switch on objectName.toLowerCase() {
             when 'customer' {
                 log.External_Id_Field_API_Name__c = 'StripeCustomerId__c';
             }
@@ -32,7 +32,7 @@ public with sharing class Stripe_Inbound_SYS_ApplicationService extends SYS_Appl
                 SYS_debug.log('Not found any external Id based on Webhook JSON: ' + objectName);
             }
 
-        }
+        } */
 
         String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
         if (algo != NULL && algo != '')
