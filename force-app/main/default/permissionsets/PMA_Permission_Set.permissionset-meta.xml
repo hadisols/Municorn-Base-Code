@@ -472,7 +472,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SYS_IntegrationLog__c.External_Id_Field_API_Name__c</field>
+        <field>SYS_IntegrationLog__c.Custom_Field_Value__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -513,11 +513,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_IntegrationLog__c.Parent__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SYS_IntegrationLog__c.QB_Entity__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -662,6 +657,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>SYS_OAuthConfig__c.Schedule_Refresh_Token__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>SYS_OAuthConfig__c.Scope__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -673,6 +673,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_OAuthConfig__c.Token_Endpoint__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SYS_OAuthConfig__c.Token_Expiry_Date__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

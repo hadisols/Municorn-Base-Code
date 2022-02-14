@@ -35,8 +35,20 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
+        <field>Is_External_Field__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Lookup__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>Key__c</field>
         <value xsi:type="xsd:string">data.object.last4</value>
+    </values>
+    <values>
+        <field>Log_API_for_field_mapping__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>ObjectApiName__c</field>

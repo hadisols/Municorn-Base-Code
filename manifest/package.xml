@@ -62,7 +62,7 @@
 		<members>pageTemplate_2_7_3</members>
 		<members>pageTemplate_8_4</members>
 		<members>pmaContainer</members>
-		<members>pmaProducts</members>
+		<members>PmaProducts</members>
 		<members>pmaCart</members>
 		<members>posCommunicationEvent</members>
 		<name>AuraDefinitionBundle</name>

@@ -29,12 +29,12 @@
         <quickActionLayoutColumns>
             <quickActionLayoutItems>
                 <emptySpace>false</emptySpace>
-                <field>Email</field>
+                <field>Phone_Number__c</field>
                 <uiBehavior>Edit</uiBehavior>
             </quickActionLayoutItems>
             <quickActionLayoutItems>
                 <emptySpace>false</emptySpace>
-                <field>Phone</field>
+                <field>Email</field>
                 <uiBehavior>Edit</uiBehavior>
             </quickActionLayoutItems>
             <quickActionLayoutItems>

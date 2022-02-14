@@ -11,7 +11,6 @@
     <columns>SYS_Operation_Type__c</columns>
     <columns>Type__c</columns>
     <columns>Status__c</columns>
-    <columns>QB_Entity__c</columns>
     <columns>CREATEDBY_USER</columns>
     <filterScope>Everything</filterScope>
     <filters>

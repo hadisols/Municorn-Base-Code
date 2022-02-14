@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
+        <apexClass>SYS_OAuthRedirectHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>SYS_Webservice</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -467,8 +471,8 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SYS_IntegrationLog__c.External_Id_Field_API_Name__c</field>
-        <readable>true</readable>
+        <field>SYS_IntegrationLog__c.Custom_Field_Value__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -498,7 +502,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_IntegrationLog__c.On_Complete_Handler__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -512,23 +516,18 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SYS_IntegrationLog__c.QB_Entity__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>SYS_IntegrationLog__c.Request_Digest__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_IntegrationLog__c.Requires_process_on_complete__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_IntegrationLog__c.Resource__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -657,6 +656,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>SYS_OAuthConfig__c.Schedule_Refresh_Token__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>SYS_OAuthConfig__c.Scope__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -668,6 +672,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_OAuthConfig__c.Token_Endpoint__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SYS_OAuthConfig__c.Token_Expiry_Date__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
