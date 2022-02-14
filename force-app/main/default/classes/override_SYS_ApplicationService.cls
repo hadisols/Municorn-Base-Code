@@ -82,12 +82,10 @@ public class override_SYS_ApplicationService extends SYS_ApplicationService {
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.SYS_Operation_Type__c.isCreateable()) {
                 System.debug('MS log.SYS_Operation_Type__c:'+log.Parent__r.SYS_Operation_Type__c);
-                if(log.SYS_Operation_Type__c == 'INSERT'){
+                if(log.SYS_Operation_Type__c == 'INSERT')
                     logResp.SYS_Operation_Type__c = 'UPDATE';
-                }
-                else{
+                else
                     logResp.SYS_Operation_Type__c = log.SYS_Operation_Type__c;
-                }
             }
     
             //logResp.Custom_Apex_Handler__c = 'SYS_ApplicationService';
