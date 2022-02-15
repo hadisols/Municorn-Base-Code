@@ -1,10 +1,10 @@
-public class Override_SYS_ApplicationService extends SYS_ApplicationService {
-    public Override_SYS_ApplicationService() {
+public class SYS_Override_ApplicationService extends SYS_ApplicationService{
+    public SYS_Override_ApplicationService() {
 
     }
 
     public override HttpResponse doOutbound(SYS_IntegrationLog__c log){
-        System.debug('\n In Override_SYS_ApplicationService');
+        System.debug('\n In SYS_Override_ApplicationService');
         return super.doOutbound(log);
     }
 
@@ -14,7 +14,7 @@ public class Override_SYS_ApplicationService extends SYS_ApplicationService {
         if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
             SYS_debug.log('#### resp status: '+resp.getStatus());
             SYS_debug.log('#### resp code: '+resp.getStatusCode()); 
-            SYS_debug.log('#### resp: '+resp.getBody());
+            SYS_debug.log('#### resp: '+resp.getBody()); 
     
             
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
@@ -126,7 +126,4 @@ public class Override_SYS_ApplicationService extends SYS_ApplicationService {
         }
         
     }
-
-    
-
 }

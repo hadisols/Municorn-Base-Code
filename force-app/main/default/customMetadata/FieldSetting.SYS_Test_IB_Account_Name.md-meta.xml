@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>
-        <value xsi:type="xsd:string">override_SYS_ApplicationService</value>
+        <value xsi:type="xsd:string">SYS_Override_ApplicationService</value>
     </values>
     <values>
         <field>Get_value_from_Log__c</field>

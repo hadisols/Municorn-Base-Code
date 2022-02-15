@@ -15,17 +15,9 @@ public class SYS_InboundTest {
     @IsTest
     static void testSingleRecord(){
         
-        Test.setMock(HttpCalloutMock.class, new SYS_MockServer());
-
-        Test.startTest();
-        //Call to webhook
-        //HttpRequest req = new HttpRequest();
-        //req.setEndpoint('https://municor-base-org-developer-edition.na163.force.com/services/apexrest/municorn/v1/SFsource?token=9LR99107DF7343549');
-        //req.setMethod('PUT');
-        String body = '{\"attributes\":{\"type\":\"Custom_Parent__c\",\"url\":\"/services/data/v53.0/sobjects/Custom_Parent__c/a015f00000Jfa4jAAB\"},\"LastModifiedDate\":\"2022-01-13T14:17:42.000+0000\",\"IsDeleted\":false,\"OwnerId\":\"0055f000007trpAAAQ\",\"CreatedById\":\"0055f000007trpAAAQ\",\"Text_Field__c\":\"DML\",\"CreatedDate\":\"2022-01-13T13:57:25.000+0000\",\"Id\":\"a015f00000KOYkRAAX\",\"LastModifiedById\":\"0055f000007trpAAAQ\",\"Name\":\"P-00033\",\"SystemModstamp\":\"2022-01-13T14:17:42.000+0000\",\"children\":[{\"description\":\"SquidGame\",\"key\":\"a015f00000KOYkRAAX\"},{\"description\":\"Blacklist\",\"key\":\"new123\"},{\"description\":\"GameofThrones\",\"key\":\"NEW456\"}]}';
-        //req.setBody(body);
-        //Http h = new Http();
-
+        //Test.setMock(HttpCalloutMock.class, new SYS_MockServer());
+        String body = '{\"attributes\":{\"type\":\"Account\",\"url\":\"/services/data/v53.0/sobjects/Account/a015f00000Jfa4jAAB\"},\"LastModifiedDate\":\"2022-01-13T14:17:42.000+0000\",\"IsDeleted\":false,\"OwnerId\":\"0055f000007trpAAAQ\",\"CreatedById\":\"0055f000007trpAAAQ\",\"Name\":\"Municorn Test Account - Inbound with contacts\",\"CreatedDate\":\"2022-01-13T13:57:25.000+0000\",\"Id\":\"a015f00000KOYkRAAX\",\"LastModifiedById\":\"0055f000007trpAAAQ\",\"SystemModstamp\":\"2022-01-13T14:17:42.000+0000\",\"Contact\":[{\"LastName\":\"Municorn Test Contact 1\",\"key\":\"EXTCHILDKEY1\"},{\"LastName\":\"Municorn Test Contact 2\",\"key\":\"EXTCHILDKEY2\"},{\"LastName\":\"Municorn Test Contact 3\",\"key\":\"EXTCHILDKEY3\"}]}';
+      
         RestRequest request = new RestRequest();
         RestResponse actualres = new RestResponse();
         request.requestURI = '/municorn/v1/SFsource';
@@ -33,7 +25,8 @@ public class SYS_InboundTest {
         request.requestBody = Blob.valueOf(body);
         request.httpMethod = 'PUT';
         RestContext.request = request;
-        //HttpResponse res = h.send(req);
+
+        Test.startTest();
         SYS_Webservice.postRequest();
         Test.stopTest();
 

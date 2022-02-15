@@ -28,7 +28,7 @@ public class SYS_MockServer implements HttpCalloutMock{
 
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
-        res.setBody('{"example":"test"}');
+        res.setBody('{"Name":"Test update from Response","Id":"EXTERNAL_ID"}');
         res.setStatusCode(200);
         
         return res;//router.get(req.getEndpoint());

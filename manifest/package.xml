@@ -43,7 +43,7 @@
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
 		<members>SYS_ExceptionHandler</members>
-		<members>Override_SYS_ApplicationService</members>
+		<members>SYS_Override_ApplicationService</members>
 		<!-- End Municorn Classes -->
 		<name>ApexClass</name>
 	</types>

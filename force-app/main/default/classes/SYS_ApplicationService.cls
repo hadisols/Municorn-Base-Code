@@ -423,17 +423,8 @@ global virtual class SYS_ApplicationService {
         
         String jsonBody = '';
         
-        jsonBody =  log.data0__c != null ? log.data0__c : '' +
-                    log.data1__c != null ? log.data1__c : '' +
-                    log.data2__c != null ? log.data2__c : '' +
-                    log.data3__c != null ? log.data3__c : '' +
-                    log.data4__c != null ? log.data4__c : '' +
-                    log.data5__c != null ? log.data5__c : '' +
-                    log.data6__c != null ? log.data6__c : '' +
-                    log.data7__c != null ? log.data7__c : '' +
-                    log.data8__c != null ? log.data8__c : '' +
-                    log.data9__c != null ? log.data9__c : '' ;
-
+        jsonBody =  SYS_Helper.getDataFrom(log); 
+        
         jsonBody = preprocessJSONForInbound(log,jsonBody);
         String resource = getResourceFromJSON(log,jsonBody);
         List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, resource);
@@ -498,18 +489,7 @@ global virtual class SYS_ApplicationService {
         Http http = new Http();
         HttpRequest req = buildOutboundHttpRequest(log);
 
-        String body = log.data0__c != null ? log.data0__c : '' +
-                            log.data1__c != null ? log.data1__c : '' +
-                            log.data2__c != null ? log.data2__c : '' +
-                            log.data3__c != null ? log.data3__c : '' +
-                            log.data4__c != null ? log.data4__c : '' +
-                            log.data5__c != null ? log.data5__c : '' +
-                            log.data6__c != null ? log.data6__c : '' +
-                            log.data7__c != null ? log.data7__c : '' + 
-                            log.data8__c != null ? log.data8__c : '' +
-                            log.data9__c != null ? log.data9__c : '' ; 
-        
-        
+        String body = SYS_Helper.getDataFrom(log); 
 
         body = preprocessJSONForOutbound(log,body);
         req.setBody(body);

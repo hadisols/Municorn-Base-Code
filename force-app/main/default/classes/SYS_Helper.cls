@@ -1,7 +1,5 @@
 public class SYS_Helper {
-    public SYS_Helper() {
 
-    }
     /* ------------------------------------------------------------------------ */
     public static String getAllFieldsFor(String objName){
 
@@ -15,6 +13,21 @@ public class SYS_Helper {
         }
 
         return (String.join(fields,', '));
+    }
+
+    public static String getDataFrom(SYS_IntegrationLog__c log){
+        String data='';
+        for(Integer i=0;i<10;i++){
+            if(log.get('data'+i+'__c')!=NULL){
+                data+=log.get('data'+i+'__c');
+            }
+            else{
+                break;
+            }
+            
+        }
+        return  data;
+        
     }
 
 
