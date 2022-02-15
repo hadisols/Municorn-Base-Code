@@ -32,7 +32,7 @@
     </values>
     <values>
         <field>OAuth_Config_Record_Id__c</field>
-        <value xsi:type="xsd:string">9LR99107DF7343549</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>UpdateMethod__c</field>
@@ -40,6 +40,6 @@
     </values>
     <values>
         <field>webhookToken__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">9LR99107DF7343549</value>
     </values>
 </CustomMetadata>

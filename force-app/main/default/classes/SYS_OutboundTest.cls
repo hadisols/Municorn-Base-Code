@@ -18,7 +18,7 @@ public class SYS_OutboundTest {
         newSysLog.whatid__c = 'a005f000007K9hlAAC';
         newSysLog.ObjectSettingId__c = 'Custom_Parent_Object_Setting';
         newSysLog.How_to_process__c = 'use_custom_apex_handler';
-        newSysLog.Custom_Apex_Handler__c = 'override_SYS_ApplicationService';
+        newSysLog.Custom_Apex_Handler__c = 'Override_SYS_ApplicationService';
         insert newSysLog;
     }
 

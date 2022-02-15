@@ -82,7 +82,4 @@ global class SYS_InvocableHandler {
         }
     }
 
-    public class productWrapper {
-        public String Type;
-    }
 }

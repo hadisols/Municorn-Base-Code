@@ -1,8 +1,8 @@
-ChildFieldApiName__c,ChildRootElement__c,Direction__c,FieldApiName__c,Field_Mapping_Handler__c,Get_value_from_Log__c,IsChild__c,Is_Active__c,Is_External_Field__c,Is_Lookup__c,Key__c,Label,Log_API_for_field_mapping__c,ObjectApiName__c,ObjectSetting__c,ParentField__c,QualifiedApiName,RestResource__c,StaticValue__c
-,,INBOUND,Trigger_Flow__c,SYS_ApplicationService,true,false,true,false,false,###,IB CHKBX on Custom Parent,Custom_Field_Value__c,Custom_Parent__c,m045f000000mxPRAAY,,IN_CHKBX_Field_on_Custom_Parent,Custom_Parent__c,
-,,OUTBOUND,Text_Field__c,,false,false,true,false,false,Text_Field__c,OB Text Field on Custom Parent,,Custom_Parent__c,m045f000000mxPRAAY,,OB_Text_Field_on_Custom_Parent,Custom_Parent__c,
-,,INBOUND,SYS_Key__c,,false,false,true,true,false,id,IB Id Field on Custom Parent,,Custom_Parent__c,m045f000000mxPRAAY,,Id_Field_on_Custom_Parent,Custom_Parent__c,
-,,INBOUND,Text_Field__c,override_SYS_ApplicationService,false,false,true,false,false,Text_Field__c,IB Text Field on Custom Parent,,Custom_Parent__c,m045f000000mxPRAAY,,IN_Text_Field_on_Custom_Parent,Custom_Parent__c,
-,children,INBOUND,Description__c,SYS_ApplicationService,false,true,true,false,false,description,IB Child Obj Text Field,,Custom_Child_Object__c,m045f000000mxPRAAY,Custom_Parent__c,IB_Child_Obj_Text_Field,children,
-,children,INBOUND,Custom_Parent__c,SYS_ApplicationService,true,true,true,false,true,###,IB Child Obj Lookup,WhatId__c,Custom_Child_Object__c,m045f000000mxPRAAY,,IB_Child_Obj_Lookup,children,
-,children,INBOUND,SYS_Child_Key__c,SYS_ApplicationService,false,true,true,true,false,key,IB Child Obj SYS Key,,Custom_Child_Object__c,m045f000000mxPRAAY,Custom_Parent__c,IB_Child_Obj_SYS_Key,children,
+ChildRootElement__c,Direction__c,FieldApiName__c,Field_Mapping_Handler__c,Get_value_from_Log__c,IsChild__c,Is_Active__c,Is_External_Field__c,Is_Lookup__c,Key__c,Label,Log_API_for_field_mapping__c,ObjectApiName__c,ObjectSetting__c,ParentField__c,RestResource__c,StaticValue__c
+,INBOUND,SYS_Child_Key__c,SYS_ApplicationService,false,true,true,true,false,key,SYS Test IB Contact SYS Key,,Contact,m045f000000mxx0AAA,,Contact,
+,INBOUND,AccountId,SYS_ApplicationService,true,true,true,false,true,NoKey2,SYS Test IB Contact Account Lookup,WhatId__c,Contact,m045f000000mxx0AAA,,Contact,
+,INBOUND,Trigger_Flow__c,SYS_ApplicationService,true,false,true,false,false,NoKey1,SYS Test IB Account Flow Check,Custom_Field_Value__c,Account,m045f000000mxx0AAA,,Account,
+,INBOUND,SYS_Key__c,SYS_ApplicationService,false,false,true,true,false,id,SYS Test IB Account SYS Key,,Account,m045f000000mxx0AAA,,Account,
+,INBOUND,Name,Override_SYS_ApplicationService,false,false,true,false,false,Name,SYS Test IB Account Name,,Account,m045f000000mxx0AAA,,Account,
+Contact,TWOWAY,LastName,SYS_ApplicationService,false,true,true,false,false,LastName,SYS Test TW Contact LastName,,Contact,m045f000000mxx0AAA,AccountId,Contact,
+,OUTBOUND,Name,SYS_ApplicationService,false,false,true,false,false,Name,SYS Test OB Account Name,,Account,m045f000000mxx0AAA,,Account,

@@ -1,2 +1,2 @@
 IntegrationType__c,Label,ObjectApiName__c,Object__c,isInboundList__c,url_params__c,ResourcePath__c,ExternalFieldApi__c,Direction__c,ApexHandler__c
-SYS_Test_IntegrationSetting,SYS Test Account Object Setting,Account,Account,FALSE,?testParam=testVal&new=123,Account,SYS_Key__c,TWOWAY,override_SYS_ApplicationService
+SYS_Test_IntegrationSetting,SYS Test Account Object Setting,Account,Account,FALSE,?testParam=testVal&new=123,Account,SYS_Key__c,TWOWAY,Override_SYS_ApplicationService

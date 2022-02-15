@@ -547,10 +547,13 @@ public class SYS_DataCache {
     public static Map<String, Boolean> enableCheck {
         get{
             if(enableIntList.isEmpty()) {
-                enableIntList = [SELECT Id, DeveloperName, MasterLabel, Language, NamespacePrefix, Label, QualifiedApiName, Enable__c, ExpiryDate__c 
+                enableIntList = [SELECT Id,Integration_Setting__r.DeveloperName, MasterLabel, Language, NamespacePrefix, Label, QualifiedApiName, Enable__c, ExpiryDate__c 
                                     FROM IntegrationEnablement__mdt];
+                System.debug('\n\n MS enableIntList:'+enableIntList);
                 for(IntegrationEnablement__mdt iter : enableIntList) {
-                    checkMap.put(iter.DeveloperName.toUpperCase() , iter.Enable__c);
+                    System.debug('\n\n MS enableIntList in loop:'+iter.Integration_Setting__r.DeveloperName.toUpperCase()+'='+iter.Enable__c);
+
+                    checkMap.put(iter.Integration_Setting__r.DeveloperName.toUpperCase() , iter.Enable__c);
                 }
             }
             return checkMap;
@@ -568,6 +571,7 @@ public class SYS_DataCache {
         }
     }
 
+    //NOT USED - Need to update. Create map for each INT_TYPE. Same as Enable checkbox
     public static Date expiry;
     public static Date expiryDate {
         get {

@@ -52,6 +52,6 @@
     </values>
     <values>
         <field>url_params__c</field>
-        <value xsi:type="xsd:string">?testParam=testVal&amp;new=123</value>
+        <value xsi:nil="true"/>
     </values>
 </CustomMetadata>

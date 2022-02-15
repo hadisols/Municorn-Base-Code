@@ -386,7 +386,7 @@ global virtual class SYS_ApplicationService {
 
         String resource = '';
         if(log.Resource__c!=NULL){
-            return log.Resource__c;
+            return log.Resource__c.toLowerCase();
         }
 
         if(log.Flat_Key_for_Resource__c == NULL || log.Flat_Key_for_Resource__c == ''){
@@ -403,7 +403,7 @@ global virtual class SYS_ApplicationService {
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }
 
-        return resource;
+        return resource.toLowerCase();
     }
 
     /* ------------------------------------------------------------------------ */

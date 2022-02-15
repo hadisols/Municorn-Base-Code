@@ -1,0 +1,3 @@
+SELECT ChildRootElement__c, Direction__c, FieldApiName__c, Field_Mapping_Handler__c, Get_value_from_Log__c, IsChild__c, Is_Active__c, Is_External_Field__c, Is_Lookup__c, Key__c, Label, Log_API_for_field_mapping__c, ObjectApiName__c, ObjectSetting__c, ParentField__c, RestResource__c, StaticValue__c
+  FROM FieldSetting__mdt
+  WHERE Label LIKE '%SYS Test%'
