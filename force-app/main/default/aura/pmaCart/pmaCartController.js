@@ -62,27 +62,37 @@
         var logApiResponses = true;
         var message = event.getParam("message");
         if (logApiResponses) { console.log('Received Message: ' + message); }
+        //Received JSON String
         var selectedproductsString = event.getParam("selectedproducts");
-
-        /* cmp.apiCall('processSelectedProductsWrapper', {selectedProductsString: selectedproductsString}, function (respWrapperSelectedProducts) {
-            cmp.set("v.SelectedProductWrapper", respWrapperSelectedProducts);
-        }, function (error) {
-            //cmp.set('v.Loading', false);
-            cmp.displayMessage('Failure!', 'Failed to Set WrapperSelected Products, Please try again!!!', 'error');
-        });
- */
-        cmp.set("v.SelectedProductWrapper", selectedproductsString);
-        var selectedproductsWrapper  = cmp.get("v.SelectedProductWrapper");
-
-        if (logApiResponses) { console.log('Received Wrapper String: '); }
-        if (logApiResponses) { console.log(selectedproductsString); }
-
-        if (logApiResponses) { console.log('Received Wrapper Object: '); }
-        if (logApiResponses) { console.table(selectedproductsWrapper); }
-
         // set the handler attributes based on event data
         cmp.set("v.messageFromEvent", message);
-        cmp.set("v.selectedproducts", selectedproductsString);
+        cmp.set("v.selectedproductsString", selectedproductsString);
+         
+        //Json String to JSON Object Conversion
+        let productObjectData = JSON.parse(selectedproductsString);
+        
+        // JSON Object To Map Conversion
+        let allSelectedProductsMap = new Map(); 
+        for (var value in productObjectData) {
+            allSelectedProductsMap.set(value, productObjectData[value])
+        }
+        cmp.set("v.selectedProductsMap", selectedProductsMap);
+
+        var selectedProductsValues = new Array();
+        for (var value in productObjectData) {
+            selectedProductsValues.push(productObjectData[value]);
+        }
+        cmp.set("v.selectedProductsValues", selectedProductsValues);
+
+        if (logApiResponses) { console.log('Received custs: '); }
+        if (logApiResponses) { console.table(selectedProductsValues); }
+
+        var selectedProductsMap  = cmp.get("v.selectedProductsMap");
+
+        if (logApiResponses) { console.log('Received Wrapper Object: '); }
+        if (logApiResponses) { console.table(selectedProductsMap); }
+
+        
         
         var numEventsHandled = parseInt(cmp.get("v.numEvents")) + 1;
         cmp.set("v.numEvents", numEventsHandled);

@@ -1,7 +1,6 @@
 <aura:component
     implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
     access="global" controller="ProductsController">
-    <!-- <ltng:require styles="{!$Resource.Bootstrap}" afterScriptsLoaded="{!c.setup}" /> -->
 
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
 
@@ -15,7 +14,8 @@
     <aura:attribute name="loadOffset" type="Integer" default="1" />
         
     <aura:registerEvent name="appEvent" type="c:posCommunicationEvent"/>
-    <aura:attribute name="selectedProducts" type="ProductsController.SelectedProductWrapper[]" />
+    <aura:attribute name="allProductsMap" type="Map" />
+    <aura:attribute name="selectedProductsMap" type="Map" />
     <aura:registerEvent name="appEventLtngSendMessage" type="ltng:sendMessage"/>
 
     <!-- <div class="slds-card">
@@ -41,16 +41,15 @@
         <!--Start Bootstrap Products data markup-->
         <div class="sfappwrapper">
             <div class="d-flex flex-row justify-content-start flex-wrap my-2">
-                <aura:iteration items="{!v.productData}" var="prod">
-                    <div class="col col-lg-2 mx-3 my-2 product-wrapper" data-id="{! prod.Id}" onclick="{!c.fireApplicationEvent}">
-                        <!-- <button type="button"  data-id="{! prod.Id}" onclick="{!c.fireApplicationEvent}" >Add to  Cart</button> -->
+                <aura:iteration items="{!v.productData}" var="prod" indexVar="key">
+                    <div class="col col-lg-2 mx-3 my-2 product-wrapper" data-id="{! prod.product.Id}" onclick="{!c.productClickHandler}">
                         <div class="d-flex flex-column justify-content-start flex-wrap">
                             <div class="overflow-hidden mx-auto image-wrapper max-height">
                                 <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
-                                    alt='{!prod.Name}' />
+                                    alt='{!prod.product.Name}' />
                             </div>
-                            <div class="product-title text-center slds-truncate" title='{!prod.Name}'>{!prod.Name}</div>
-                            <div class="product-title text-center slds-truncate" title='{!prod.Name}'>$ <lightning:formattedNumber value="{!prod.PricebookEntries[0].UnitPrice}" maximumFractionDigits="2" currencyCode="USD"/></div>
+                            <div class="product-title text-center slds-truncate" title='{!prod.product.Name}'>{!prod.product.Name}</div>
+                            <div class="product-title text-center slds-truncate" title='{!prod.productPrice}'>$ <lightning:formattedNumber value="{!prod.productPrice}" maximumFractionDigits="2" currencyCode="USD"/></div>
                         </div>
                     </div>
                 </aura:iteration>

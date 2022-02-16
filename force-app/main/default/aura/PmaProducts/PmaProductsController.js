@@ -1,7 +1,5 @@
 ({
     onInit: function (component, event, helper) {
-        // Call helper to set the data for Products Object
-        helper.getData(component);
         var logApiResponses = true;
 
         component.apiCall = function (controllerMethodName, params, success, failure) {
@@ -15,12 +13,14 @@
                 var errors = data.getError();
                 if (errors && Array.isArray(errors) && errors.length > 0) {
                     if (failure) {
-                        failure(errors[0].message);
+                        component.displayMessage('Error',  errors[0].message, 'error');
+                        failure(errors[0].message);                        
                     } else {
                         if (logApiResponses) {
                             console.log( controllerMethodName +' Callback Response Error: ' );
                             console.table( errors);
                         }
+                        component.displayMessage('Error',  controllerMethodName +' Callback Response Error: ', 'error');
                         component.set('v.Loading', false);
                     }
                 } else {
@@ -37,11 +37,14 @@
         component.fireApplicationEventCall = function (eventControllerName, message, wrapperObject) {
             if (logApiResponses) { console.log('***  ***'); }    
             if (logApiResponses) { console.log('***  ***' + eventControllerName); }    
-            if (logApiResponses) { console.log('*** '  + wrapperObject); }    
+            if (logApiResponses) { console.log(typeof wrapperObject); }    
+            if (logApiResponses) { console.table(wrapperObject); }  
             var appEvent = $A.get('e.c:' + eventControllerName);
+            var preprocessWrapperObject = Object.fromEntries(wrapperObject);
             appEvent.setParams({
                 "message" : message,
-                "selectedproducts":JSON.parse(JSON.stringify(wrapperObject))
+                //"selectedproducts":JSON.parse(JSON.stringify(wrapperObject))
+                "selectedproducts":JSON.stringify( preprocessWrapperObject)
             });
             if (logApiResponses) { console.log('*** ' + 'Sending application event' + ' ***'); }   
             appEvent.fire();
@@ -58,93 +61,79 @@
             });
             toastEvent.fire();
         };
-        
-        component.initCartProducts = function() {
-            component.apiCall('getselectedProducts', {}, function(selectedproductWrapper) {
-               component.set('v.selectedProducts', selectedproductWrapper);
-            });
-        };
-        component.initCartProducts();
+        var action = component.get("c.getAllProductRecords");
+        action.setCallback(this, function (response) {
+            //Init Map
+           var state = response.getState();
+           if (state == "SUCCESS") {
+               var allProductsMap = response.getReturnValue();
+                // set init Map of Id, Products on allProductsMap aura attribute 
+                component.set('v.allProductsMap',allProductsMap);
+                let productObjectData = Object.values(allProductsMap);
+                component.set('v.productData',productObjectData);
+                if (logApiResponses) { console.log('Init productData'); }
+                if (logApiResponses) { console.table(productObjectData); }
+              
+           } else { // if any callback error, display error msg
+            component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error');
+           }
+       });
+       $A.enqueueAction(action);
+
     },
 
-    handleLoadMore: function (component, event, helper) {
-        if (!(component.get("v.currentCount") >= component.get("v.totalRows"))) {
-            //To display the spinner
-            event.getSource().set("v.isLoading", true);
-            //To handle data returned from Promise function
-            helper.loadData(component).then(function (data) {
-                var currentData = component.get("v.productData");
-                var newData = currentData.concat(data);
-                component.set("v.productData", newData);
-                //To hide the spinner
-                event.getSource().set("v.isLoading", false);
-            });
-        } else {
-            //To stop loading more rows
-            component.set("v.enableInfiniteLoading", false);
-            event.getSource().set("v.isLoading", false);
-            var toastReference = $A.get("e.force:showToast");
-            toastReference.setParams({
-                "type": "Success",
-                "title": "Success",
-                "message": "All Products records are loaded",
-                "mode": "dismissible"
-            });
-            toastReference.fire();
-        }
-    },
-    fireApplicationEvent : function(component, event) {
+    productClickHandler : function(component, event) {
         var logApiResponses = true;
         var message = 'Product Added Successfully';
-        var selectedProductWrapper = component.get('v.selectedProducts');
+        //Init Products newMap.get(selectedProdId)
+        var productData = component.get('v.productData');
+        var allProductsMap = new Map( Object.entries( component.get('v.allProductsMap') ) );
+        //Log all products
+        if (logApiResponses) { console.log('Init allProductsMap '); }
+        if (logApiResponses) { console.table(allProductsMap); }
+        //Init Map
+        var selectedProductsMap = new Map(component.get('v.selectedProductsMap'));
+
         var selectedItem = event.currentTarget;
-        var selectedProdId = selectedItem.dataset.id; // Prodid
-        component.apiCall('getselectedProductbyId', {prodId : selectedProdId}, function(selectedproduct) {
-            
-            if(selectedProductWrapper.length >0){
-                var loop=0;
-                selectedProductWrapper.forEach(function (selectedProduct) {
-                    loop = loop+1;
-                    console.log('Loop Count::::: ' + loop + ' :::::::::');
-                    var currentprodId = selectedProduct.product.Id;
-                    if(currentprodId == selectedProdId){
-                        selectedProduct.quantity = selectedProduct.quantity + 1;
-                        if (logApiResponses) { console.log('inside already added product selectedProduct '); }
-                        if (logApiResponses) { console.table(selectedProduct); }
-                    }
-                    else
-                    {
-                        var curprod=selectedproduct;
-                        selectedProductWrapper.push(curprod);
-                         if (logApiResponses) { console.log('wrapper list not empty inside else new added product selectedProduct '); }
-                         if (logApiResponses) { console.table(selectedProduct); }
-                    }
-                    
-                    component.set('v.selectedProducts',selectedProductWrapper);
-                    if (logApiResponses) { console.log(' After Processing inside foreach selectedProductWrapper '); }
-                    if (logApiResponses) { console.table(selectedProductWrapper); }
-                    component.fireApplicationEventCall('posCommunicationEvent' , message, selectedProductWrapper );
-                });
-            }
-            else{
-                var curprod=selectedproduct;
-                selectedProductWrapper.push(curprod);
-                if (logApiResponses) { console.log('empty wrapper list add new inside else selectedProductWrapper ' ); }
-                if (logApiResponses) { console.table(selectedProductWrapper); }
-                component.set('v.selectedProducts',selectedProductWrapper);
-                component.fireApplicationEventCall('posCommunicationEvent' , message, selectedProductWrapper );
-            }
-            
-            
+        var selectedProdId = selectedItem.dataset.id; // Selected Product Id
+        var currentSelectedProductFromDataMap = allProductsMap.get(selectedProdId);
+        //var isAlreadyAdded = (currentSelectedProductFromDataMap.product.Id == selectedProdId) ? true : false; 
+        var productCartWrapper ; // init Product Wrapper
+        // Log Selected Products Data
+        if (logApiResponses) { console.log('Init selectedProdId ' + selectedProdId); }
+        if (logApiResponses) { console.table(currentSelectedProductFromDataMap); }
 
-        });
-        //component.fireApplicationEvent('posCommunicationEvent' , message, selectedProductWrapper );
-        if (logApiResponses) { console.log('selectedProdId fireApplicationEvent ' + selectedProdId); }
+        if( selectedProductsMap == null ){
+            selectedProductsMap.set(selectedProdId, currentSelectedProductFromDataMap); 
+            if (logApiResponses) { console.log('Inside If null new product add to selectedProductsMap '); }
+            if (logApiResponses) { console.log(selectedProductsMap); }
+        }
+        else if(selectedProductsMap.has(selectedProdId) ){
+            var productQuantity = currentSelectedProductFromDataMap.quantity + 1;
+            var singleProductPrice = currentSelectedProductFromDataMap.product.PricebookEntries[0].UnitPrice;
+            var netUnitPrice = singleProductPrice * productQuantity ;
+            currentSelectedProductFromDataMap.quantity = productQuantity;
+            currentSelectedProductFromDataMap.productPrice = singleProductPrice;
+            currentSelectedProductFromDataMap.totalProductPrice = netUnitPrice;
 
+                selectedProductsMap.set(selectedProdId, currentSelectedProductFromDataMap ); 
+                if (logApiResponses) { console.log('Inside else if has exist in cart selectedProductsMap '); }
+                if (logApiResponses) { console.log(selectedProductsMap); }
+        }
+        else{
+            selectedProductsMap.set(selectedProdId, currentSelectedProductFromDataMap ); 
+            if (logApiResponses) { console.log('Inside else new product add to selectedProductsMap '); }
+            if (logApiResponses) { console.log(selectedProductsMap); }
+        }
         
-        if (logApiResponses) { console.log('after get selectedProducts selectedProductWrapper '); }
-        if (logApiResponses) { console.table(selectedProductWrapper); }
-        if (logApiResponses) { console.log('selectedProductWrapper.length() ' + selectedProductWrapper.length); }
+        
+        component.set('v.selectedProductsMap',selectedProductsMap);
+        
+        // Log Selected Products Data
+        if (logApiResponses) { console.log('Processed selectedProductsMap '); }
+        if (logApiResponses) { console.table( component.get('v.selectedProductsMap') ); }
+
+        component.fireApplicationEventCall('posCommunicationEvent' , message, selectedProductsMap );
         
     },
 
