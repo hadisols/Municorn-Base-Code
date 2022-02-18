@@ -1,5 +1,10 @@
 public class PMA_ContactTriggerHandler {
-    public static void handleTrigger(List < Contact > contactList, System.TriggerOperation triggerEvent) {
+    private System.TriggerOperation triggerEvent;
+    public static void handle() {
+        handleByOperation(Trigger.New, Trigger.operationType);
+    }
+    public static void handleByOperation(List < Contact > contactList, System.TriggerOperation triggerEvent) {
+        
         switch on triggerEvent {
             when BEFORE_INSERT {
                 updateContactUUID(contactList);
@@ -41,6 +46,7 @@ public class PMA_ContactTriggerHandler {
             if (g.Phone_Number__c != '' && contactId != null) {
                 PaymentRequest__c payreq = paymentsService.createNewPaymentRequest(paymentName, contactId, accountId, opportunityId, paymentType, amount, email, frequency, firstChargeDate, itemNumber, paymentRequestGroupId);
                 if (payreq.Id != null) {
+                    //TODO move to Activity trigger
                     Activity__c activity = new Activity__c();
                     activity.Customer__c = g.Id;
                     //activity.UUID__c = activity_UUID;
@@ -52,7 +58,11 @@ public class PMA_ContactTriggerHandler {
                     activity.Phone__c = PMA_ExternalSiteFormsUtility.formatPhone(g.Phone_Number__c);
                     activity.Message__c = 'Please Pay $' + payreq.Amount__c + ' to Start PMA Membership ' + PMA_ExternalSiteFormsUtility.getIframeSiteUrl(guestPageUrl) + '' + payreq.PaymentRequests__r.uuid__c;
                     activityList.add(activity);
+                } else{
+                    //TODO write handler if failure
                 }
+            } else{
+                //TODO write handler if failure
             }
         }
         if (activityList.size() > 0) {

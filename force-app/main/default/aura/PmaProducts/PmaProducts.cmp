@@ -5,33 +5,41 @@
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
 
     <!--Aura Attributes START-->
-    <aura:attribute name="productData" type="Object" />
-    <aura:attribute name="Loading" type="boolean" default="true"/>
-    <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" />
-    <aura:attribute name="initialRows" type="Integer" default="10" />
-    <aura:attribute name="currentCount" type="Integer" default="10" />
-    <aura:attribute name="totalRows" type="Integer" default="0" />
-    <aura:attribute name="loadOffset" type="Integer" default="1" />
-        
-    <aura:registerEvent name="appEvent" type="c:posCommunicationEvent"/>
+    <!-- Init() Products Map<Id, Wrapper> from Apex Controller -->
     <aura:attribute name="allProductsMap" type="Map" />
+    <!-- Init() Extract Values form allProductsMap to Itereate over Products -->
+    <aura:attribute name="productData" type="Object" />        
+    
+    <!-- Store Incoming Message of Map<Id,Wrapper> -->
+        <aura:attribute name="selectedproductsString" type="String" />
+    <!-- **EventVariable** Store Selected Products as Map<Id , Wrapper> with updated price and quantity-->
     <aura:attribute name="selectedProductsMap" type="Map" />
-    <aura:registerEvent name="appEventLtngSendMessage" type="ltng:sendMessage"/>
+    
 
-    <!-- <div class="slds-card">
-        <p>
-            <lightning:button
-                    label="Click here to fire an application event"
-                    onclick="{!c.fireApplicationEvent}"/>
-        </p>
-        <p>
-            <lightning:button
-                    label="Click here to fire an application event using ltng:sendMessage"
-                    onclick="{!c.fireApplicationEventUsingLtngSendMessage}"/>
-        </p>
-    </div> -->
-    <!--Set when to trigger loading of more rows-->
+    <!-- Info:: Log Incoming Event Message-->    
+    <aura:attribute name="messageFromEvent" type="String"/>
+    <!-- Info::Count No Of Times Event Fired -->
+    <aura:attribute name="numEvents" type="Integer" default="0"/>
+
+    <!-- Register Products Selection Application Event -->
+    <aura:registerEvent name="appEvent" type="c:posCommunicationEvent"/>
+    <!-- Handler for Cart Product Deletion Application Event -->
+    <aura:handler event="c:cartCommunicationEvent" action="{!c.handleProductDeletionCartEvent}"/>
+
+    <!-- Register Products Selection Ltng Sendmessage Event -->
+    <!-- <aura:registerEvent name="appEventLtngSendMessage" type="ltng:sendMessage"/> -->
+
+    <!-- Handler for Cart Product Deletion Ltng Sendmessage Event -->
+    <!-- <aura:handler event="ltng:sendMessage" action="{!c.handleLtngSendMessageEvent}"/> -->
+
     <!--Aura Attributes END-->
+    
+   <!--  <div style="border: 1px black solid">
+        <p>products Component</p>
+        <p>{!v.messageFromEvent}</p>
+        <p>Number of events: {!v.numEvents}</p>
+    </div> -->
+
     
     <!-- <div class="slds-page-header" role="banner">
         <span class="slds-page-header__title">Products List</span>

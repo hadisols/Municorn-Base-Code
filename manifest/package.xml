@@ -63,6 +63,7 @@
 		<members>PmaProducts</members>
 		<members>pmaCart</members>
 		<members>posCommunicationEvent</members>
+		<members>cartCommunicationEvent</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>

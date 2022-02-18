@@ -5,6 +5,7 @@ public with sharing class ProductsController {
         List < Product2 > productsList = new List < Product2 >();
         Map <Id, SelectedProductWrapper > mapProductsList = new Map <Id, SelectedProductWrapper >();
         try {
+            //TODO  - change query from PBE instead of product
             productsList = [SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 ORDER BY Name ASC];
             for( Product2 prod: productsList){
                 SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
@@ -13,6 +14,7 @@ public with sharing class ProductsController {
                 mapProductsList.put(prod.Id, selectedproduct);
             }
         } catch (Exception e) {
+            //TODO add  to wrapper to pmaexception wrapper(class,method ,exception) and insert into log
             System.debug('Got Exception: ' + e.getMessage());
         }
         return mapProductsList;
@@ -74,7 +76,7 @@ public with sharing class ProductsController {
         selectedproduct.quantity=1;
         return selectedproduct;
     }
-    */
+   
     // wrapper class
     public class ProductWrapper {
         @AuraEnabled
@@ -86,6 +88,7 @@ public with sharing class ProductsController {
         @AuraEnabled
         public Boolean success;
     }
+     */
 
     // wrapper class selectedProduct.PricebookEntries[0].UnitPrice
     public class SelectedProductWrapper {

@@ -1,2 +1,10 @@
-.THIS {
+.THIS .sm-text-highlight{
+    font-weight: bolder;
+    font-size: 18px;
+}
+.THIS .skyblue-text{
+    color: #007fec;
+}
+.THIS .grey-text{
+    color: #5c5c5c;
 }

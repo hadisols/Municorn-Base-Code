@@ -72,6 +72,9 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Custom_Apex_Handler__c.isCreateable()) {
                 log.Custom_Apex_Handler__c = 'Plivo_Outbound_SYS_ApplicationService';
             }
+            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Custom_Field_Value__c.isCreateable()) {
+                log.Custom_Field_Value__c = 'false';
+            }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.SYS_Operation_Type__c.isCreateable()) {
                 System.debug('MS log.SYS_Operation_Type__c:'+log.Parent__r.SYS_Operation_Type__c);
                 if(log.SYS_Operation_Type__c == 'INSERT')

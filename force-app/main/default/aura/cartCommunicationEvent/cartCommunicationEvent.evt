@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Cart Communication Event">
+	<aura:attribute name="message" type="String" default="/"></aura:attribute> <!-- attribute of event -->
+	<aura:attribute name="selectedproducts" type="String"></aura:attribute> <!-- attribute of event -->
+</aura:event>

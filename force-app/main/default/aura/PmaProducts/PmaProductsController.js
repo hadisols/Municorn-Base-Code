@@ -34,21 +34,16 @@
             $A.enqueueAction(action);
         };
         
-        component.fireApplicationEventCall = function (eventControllerName, message, wrapperObject) {
-            if (logApiResponses) { console.log('***  ***'); }    
-            if (logApiResponses) { console.log('***  ***' + eventControllerName); }    
-            if (logApiResponses) { console.log(typeof wrapperObject); }    
-            if (logApiResponses) { console.table(wrapperObject); }  
+        component.fireApplicationEventCall = function (eventControllerName, message, processedObjectToString) {
             var appEvent = $A.get('e.c:' + eventControllerName);
-            var preprocessWrapperObject = Object.fromEntries(wrapperObject);
             appEvent.setParams({
                 "message" : message,
-                //"selectedproducts":JSON.parse(JSON.stringify(wrapperObject))
-                "selectedproducts":JSON.stringify( preprocessWrapperObject)
+                "selectedproducts":processedObjectToString
             });
-            if (logApiResponses) { console.log('*** ' + 'Sending application event' + ' ***'); }   
+            if (logApiResponses) { console.log('*** ' + 'Sending messagedata' + ' *** ' + processedObjectToString ); }   
+            if (logApiResponses) { console.log('*** ' + 'Sending application event' + ' *** ' + eventControllerName ); }   
             appEvent.fire();
-            if (logApiResponses) { console.log('*** ' + 'Sent application event successfully' + ' ***'); }   
+            if (logApiResponses) { console.log('*** ' + 'Sent application event successfully' + ' *** ' + eventControllerName); } 
         };
 
         component.displayMessage = function (title, message, type) {
@@ -66,11 +61,13 @@
             //Init Map
            var state = response.getState();
            if (state == "SUCCESS") {
+               // Init() Map of <Id, Wrapper> Onetime Load From Database
                var allProductsMap = response.getReturnValue();
-                // set init Map of Id, Products on allProductsMap aura attribute 
                 component.set('v.allProductsMap',allProductsMap);
+                //For Aura attribute Iterate for UI
                 let productObjectData = Object.values(allProductsMap);
                 component.set('v.productData',productObjectData);
+
                 if (logApiResponses) { console.log('Init productData'); }
                 if (logApiResponses) { console.table(productObjectData); }
               
@@ -86,7 +83,6 @@
         var logApiResponses = true;
         var message = 'Product Added Successfully';
         //Init Products newMap.get(selectedProdId)
-        var productData = component.get('v.productData');
         var allProductsMap = new Map( Object.entries( component.get('v.allProductsMap') ) );
         //Log all products
         if (logApiResponses) { console.log('Init allProductsMap '); }
@@ -97,8 +93,6 @@
         var selectedItem = event.currentTarget;
         var selectedProdId = selectedItem.dataset.id; // Selected Product Id
         var currentSelectedProductFromDataMap = allProductsMap.get(selectedProdId);
-        //var isAlreadyAdded = (currentSelectedProductFromDataMap.product.Id == selectedProdId) ? true : false; 
-        var productCartWrapper ; // init Product Wrapper
         // Log Selected Products Data
         if (logApiResponses) { console.log('Init selectedProdId ' + selectedProdId); }
         if (logApiResponses) { console.table(currentSelectedProductFromDataMap); }
@@ -126,17 +120,57 @@
             if (logApiResponses) { console.log(selectedProductsMap); }
         }
         
-        
         component.set('v.selectedProductsMap',selectedProductsMap);
-        
         // Log Selected Products Data
         if (logApiResponses) { console.log('Processed selectedProductsMap '); }
         if (logApiResponses) { console.table( component.get('v.selectedProductsMap') ); }
 
-        component.fireApplicationEventCall('posCommunicationEvent' , message, selectedProductsMap );
+        var preprocessMapToObject= Object.fromEntries(selectedProductsMap);
+        var processedObjectToString = JSON.stringify(preprocessMapToObject);       
+
+        component.fireApplicationEventCall('posCommunicationEvent' , message, processedObjectToString );
         
     },
 
+    handleProductDeletionCartEvent : function (cmp, event) {
+        var logApiResponses = true;
+        var message = event.getParam("message");
+        if (logApiResponses) { console.log('Received Message: ' + message); }
+        //Received JSON String
+        var selectedproductsString = event.getParam("selectedproducts");
+        // set the handler attributes based on event data
+        cmp.set("v.messageFromEvent", message);
+        cmp.set("v.selectedproductsString", selectedproductsString);
+         
+        //1 Json String to JSON Object Conversion
+        let productObjectData = JSON.parse(selectedproductsString);
+        console.log('ObjType:: ' + typeof productObjectData);
+
+        // 2 JSON Object To Map Conversion
+        let allSelectedProductsMap = new Map(); 
+        for (var value in productObjectData) {
+            allSelectedProductsMap.set(value, productObjectData[value]);
+        }
+        cmp.set("v.selectedProductsMap", allSelectedProductsMap);
+        //Not able to Assign map to Aura Attribute 
+        console.log('ObjType:: ' + typeof allSelectedProductsMap);
+        if (logApiResponses) { console.log('Received selectedProductsMap: '); }
+        if (logApiResponses) { console.table( cmp.get("v.selectedProductsMap") ); }
+        
+        var numEventsHandled = parseInt(cmp.get("v.numEvents")) + 1;
+        cmp.set("v.numEvents", numEventsHandled);
+        //cmp.displayMessage('Success!', message, 'success');
+    },
+   /*  handleLtngSendMessageEvent : function (cmp, event) {
+        var message = event.getParam("message");
+        if (logApiResponses) { console.log('Received Message from Cart: '); }
+        if (logApiResponses) { console.log(message); }
+        // set the handler attributes based on event data
+        cmp.set("v.messageFromEvent", message);
+        var numEventsHandled = parseInt(cmp.get("v.numEvents")) + 1;
+        cmp.set("v.numEvents", numEventsHandled);
+    }, */
+/* 
     fireApplicationEventUsingLtngSendMessage : function(cmp, event) {
         var logApiResponses = true;
         var selectedItem = event.currentTarget;
@@ -150,5 +184,5 @@
         });
         console.log('*** ' + 'sending ltng:sendMsg event' + ' ***');
         sendMsgEvent.fire();
-    }
+    } */
 })
