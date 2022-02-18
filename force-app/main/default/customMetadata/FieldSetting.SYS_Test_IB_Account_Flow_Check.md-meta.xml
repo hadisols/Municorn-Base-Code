@@ -51,6 +51,14 @@
         <value xsi:type="xsd:string">Custom_Field_Value__c</value>
     </values>
     <values>
+        <field>Lookup_External_Key__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Lookup_Object_API_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>ObjectApiName__c</field>
         <value xsi:type="xsd:string">Account</value>
     </values>
@@ -64,7 +72,7 @@
     </values>
     <values>
         <field>RestResource__c</field>
-        <value xsi:type="xsd:string">Account</value>
+        <value xsi:type="xsd:string">account</value>
     </values>
     <values>
         <field>StaticValue__c</field>

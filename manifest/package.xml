@@ -37,14 +37,12 @@
 		<members>SYS_IntegrationLogTriggerHandler</members>
 		<members>SYS_InvocableHandler</members>
 		<members>SYS_OAuthRedirectHandler</members>
+		<members>SYS_Override_ApplicationService</members>
 		<members>SYS_ParentingQueueable</members>
 		<members>SYS_QueueableForInboundChild</members>
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
-		<members>SYS_ExceptionHandler</members>
-		<members>SYS_Override_ApplicationService</members>
-		<!-- End Municorn Classes -->
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -64,6 +62,9 @@
 		<members>pmaCart</members>
 		<members>posCommunicationEvent</members>
 		<members>cartCommunicationEvent</members>
+		<!-- Start Municorn Component -->
+		<members>SYS_Aura_JWTAuthFlow</members>
+		<!-- End Municorn Component -->
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
@@ -615,6 +616,10 @@
 	<types>
 		<members>Plivo</members>
 		<members>Stripe</members>
+		<!-- Municorn Name Credentials -->
+		<members>GCPJWT</members>
+		<members>Municorn_Destination_NC</members>
+		<!-- Municorn Name Credentials -->
 		<name>NamedCredential</name>
 	</types>
 	<types>
@@ -631,6 +636,10 @@
 	</types>
 	<types>
 		<members>dummyimages</members>
+		<!-- Municorn RemoteSiteSetting -->
+		<members>DrChrono</members>
+		<members>Gmail_Token_API</members>
+		<!-- Municorn RemoteSiteSetting -->
 		<name>RemoteSiteSetting</name>
 	</types>
 	<types>
@@ -659,6 +668,11 @@
 		<members>verification_error</members>
 		<members>verified</members>
 		<members>visa</members>
+		<!-- Municorn Static Resource-->
+		<members>SYS_Test_Inbound_Body</members>
+		<members>SYS_Test_Inbound_Body_Large</members>
+		<members>SYS_Test_Outbound_Response_Body</members>
+		<!-- Municorn Static Resource-->
 		<name>StaticResource</name>
 	</types>
 	<types>

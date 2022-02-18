@@ -1,36 +1,25 @@
-public class SYS_MockServer implements HttpCalloutMock{
+@IsTest
+public class SYS_MockServer{
 
     Map<String, HttpResponse> router;
 
-    public void startServer(){
-        HttpResponse res = new HttpResponse();
-        res.setHeader('Content-Type', 'application/json');
-        res.setBody('{"example":"test"}');
-        res.setStatusCode(200);
+    public static MultiStaticResourceCalloutMock startServer(){
+        MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
+        multimockServer.setStaticResource('https://get_large_mock_body.inbound', 'SYS_Test_Inbound_Body_Large');
+        multimockServer.setStaticResource('https://get_mock_body.inbound', 'SYS_Test_Inbound_Body');
+
         
-        //TODO - get records from metadata. separate keys based on http method
-        this.router = new Map<String,HttpResponse>();
-        this.router.put('https://municor-base-org-developer-edition.na163.force.com/services/apexrest/municorn/v1/SFsource?token=9LR99107DF7343549',res);
-        
-        
-        
-        this.router.put('callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Custom_Parent__c/Id/NEW123',res);
+        multimockServer.setStaticResource('callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account/', 'SYS_Test_Outbound_Response_Body');
+        multimockServer.setStatusCode(200);
+        multimockServer.setHeader('Content-Type', 'application/json');
+        return multimockServer;
     }
 
-    public HTTPResponse respond(HTTPRequest req) {
-
-        startServer();
-        // Optionally, only send a mock response for a specific endpoint
-        // and method.
-        System.debug('MS OB Test - Endpoint:'+req.getEndpoint());
-        System.debug('MS OB Test - Method'+req.getMethod());
-        //SYS_Webservice.postRequest();
-
-        HttpResponse res = new HttpResponse();
-        res.setHeader('Content-Type', 'application/json');
-        res.setBody('{"Name":"Test update from Response","Id":"EXTERNAL_ID"}');
-        res.setStatusCode(200);
-        
-        return res;//router.get(req.getEndpoint());
+    public static MultiStaticResourceCalloutMock stopServer(){
+        MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
+        multimockServer.setStaticResource('callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account/', 'SYS_Test_Outbound_Response_Body');
+        multimockServer.setStatusCode(500);
+        multimockServer.setHeader('Content-Type', 'application/json');
+        return multimockServer;
     }
 }

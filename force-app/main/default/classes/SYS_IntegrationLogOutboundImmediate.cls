@@ -43,6 +43,7 @@ public class SYS_IntegrationLogOutboundImmediate{
                     SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                     SYS_ApplicationService appService;
                     
+                    System.debug('appService Handler:'+log.How_to_process__c+'::'+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c);
 
                     if(log.How_to_process__c == 'use_object_setting')
                         appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();

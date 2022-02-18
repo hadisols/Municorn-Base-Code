@@ -4,7 +4,7 @@ public class SYS_TestDataFactory {
         List<Account> accts = new List<Account>();
         
         for(Integer i=0;i<numAccts;i++) {
-            Account a = new Account(Name='TestAccount' + i);
+            Account a = new Account(Name='Municorn Test Account' + i);
             accts.add(a);
         }
         insert accts;
@@ -14,8 +14,8 @@ public class SYS_TestDataFactory {
             Account acct = accts[j];            
             // For each account just inserted, add contacts
             for (Integer k=numContactsPerAcct*j;k<numContactsPerAcct*(j+1);k++) {
-                cons.add(new Contact(firstname='Test'+k,
-                                     lastname='Test'+k,
+                cons.add(new Contact(firstname='Municorn'+k,
+                                     lastname='Test Contact'+k,
                                      AccountId=acct.Id));
             }
         }
@@ -35,18 +35,31 @@ public class SYS_TestDataFactory {
         insert newSysLog;
     }
 
+    public static void createObjectSettingLog(){
+        SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
+        newSysLog.Status__c = 'NEW';
+        newSysLog.Type__c = 'OUTBOUND';
+        newSysLog.SYS_IntegrationSettings__c = 'SYS_Test_IntegrationSetting';
+        newSysLog.SYS_Operation_Type__c = 'INSERT';
+        newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
+        newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
+        newSysLog.How_to_process__c = 'use_object_setting';
+        insert newSysLog;
+    }
+
     public static void createCustomApexHandlerLog(){
         SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
         newSysLog.SYS_IntegrationSettings__c = 'SYS_Test_IntegrationSetting';
         newSysLog.SYS_Operation_Type__c = 'INSERT';
-        newSysLog.whatid__c = 'a005f000007K9hlAAC';
+        newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
         newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
         newSysLog.How_to_process__c = 'use_custom_apex_handler';
-        newSysLog.Custom_Apex_Handler__c = 'SYS_Override_ApplicationService';
+        newSysLog.Custom_Apex_Handler__c = 'SYS_ApplicationService';
         insert newSysLog;
 
     }
+
 
 }

@@ -28,7 +28,7 @@
     </values>
     <values>
         <field>NamedCredential__c</field>
-        <value xsi:type="xsd:string">POST</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>OAuth_Config_Record_Id__c</field>

@@ -1,0 +1,6 @@
+<aura:documentation>
+	<aura:description>Documentation</aura:description>
+	<aura:example name="ExampleName" ref="exampleComponentName" label="Label">
+		Button to start auth flow for JWT base OAuth configuration
+	</aura:example>
+</aura:documentation>

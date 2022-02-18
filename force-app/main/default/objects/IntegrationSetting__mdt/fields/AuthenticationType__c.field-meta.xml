@@ -12,23 +12,30 @@
             <sorted>false</sorted>
             <value>
                 <fullName>Oauth</fullName>
-                <default>true</default>
-                <label>Oauth</label>
+                <default>false</default>
+                <label>Custom OAuth</label>
             </value>
             <value>
                 <fullName>NamedCredential</fullName>
                 <default>false</default>
-                <label>NamedCredential</label>
+                <label>Named Credential</label>
             </value>
             <value>
-                <fullName>UsernamePassword</fullName>
+                <fullName>public</fullName>
                 <default>false</default>
-                <label>UsernamePassword</label>
+                <label>Public</label>
             </value>
             <value>
                 <fullName>AccessToken</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>AccessToken</label>
+            </value>
+            <value>
+                <fullName>UsernamePassword</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Username Password</label>
             </value>
         </valueSetDefinition>
     </valueSet>
