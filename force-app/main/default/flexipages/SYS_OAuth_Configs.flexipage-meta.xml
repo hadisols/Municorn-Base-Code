@@ -149,6 +149,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Token_type__c</fieldItem>
+                <identifier>RecordToken_type_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Redirect_URL__c</fieldItem>
                 <identifier>RecordRedirect_URL_cField1</identifier>
                 <visibilityRule>
@@ -168,6 +178,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Additional_URL_Parameters__c</fieldItem>
                 <identifier>RecordAdditional_URL_Parameters_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Schedule_Refresh_Token__c</fieldItem>
+                <identifier>RecordSchedule_Refresh_Token_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -263,20 +283,17 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Token_type__c</fieldItem>
-                <identifier>RecordToken_type_cField1</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Refresh_Token__c</fieldItem>
                 <identifier>RecordRefresh_Token_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Grant_Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>authorization_code</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -287,6 +304,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Token_Expiry_Time__c</fieldItem>
                 <identifier>RecordToken_Expiry_Time_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Grant_Type__c}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>jwt</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -297,6 +321,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Token_Expiry_Date__c</fieldItem>
                 <identifier>RecordToken_Expiry_Date_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Grant_Type__c}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>jwt</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -307,16 +338,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Token_Last_Refresh_Date__c</fieldItem>
                 <identifier>RecordToken_Last_Refresh_Date_cField1</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Schedule_Refresh_Token__c</fieldItem>
-                <identifier>RecordSchedule_Refresh_Token_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Grant_Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>authorization_code</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-929ffce9-88bd-49b0-a6d1-aba23c59b41d</name>
@@ -351,6 +379,13 @@
             <fieldInstance>
                 <fieldItem>Record.Private_Key__c</fieldItem>
                 <identifier>RecordPrivate_Key_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Grant_Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>jwt</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-00329e38-536c-4b67-8f8b-c554cc3bc25a</name>

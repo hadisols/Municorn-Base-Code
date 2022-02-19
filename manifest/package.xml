@@ -46,6 +46,7 @@
 		<members>ObjectSetting__mdt</members>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
+		<members>RelationshipSetting__mdt</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
@@ -64,7 +65,6 @@
 	</types>
 	<types>
 		<members>GCPJWT</members>
-		<members>Municorn_Destination_NC</members>
 		<name>NamedCredential</name>
 	</types>
 	<types>
