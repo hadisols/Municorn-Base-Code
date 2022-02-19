@@ -16,6 +16,8 @@
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
+		<members>SYS_JWTAuth_ApplicationService</members>
+		<members>SYS_Helper</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
