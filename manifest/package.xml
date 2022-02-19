@@ -21,8 +21,9 @@
 
 		<members>SYS_OutboundTest</members>
 		<members>SYS_InboundTest</members>
-		<members>SYS_TestUtil</members>
+		<members>SYS_TestUtil</members> 
 		<members>SYS_TestDataFactory</members>
+		<members>SYS_MockServer</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
