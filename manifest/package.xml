@@ -36,6 +36,7 @@
 		<members>SYS_IntegrationLogOutboundQueueable</members>
 		<members>SYS_IntegrationLogTriggerHandler</members>
 		<members>SYS_InvocableHandler</members>
+		<members>SYS_JWTAuth_ApplicationService</members>
 		<members>SYS_OAuthRedirectHandler</members>
 		<members>SYS_Override_ApplicationService</members>
 		<members>SYS_ParentingQueueable</members>
@@ -480,7 +481,6 @@
 		<members>IntegrationSetting__mdt</members>
 		<members>ObjectSetting__mdt</members>
 		<members>RelationshipSetting__mdt</members>
-		<members>SYS_enable__c</members>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
 		<!-- End Municorn Objects-->
@@ -632,6 +632,7 @@
 	</types>
 	<types>
 		<members>Account.New_Customer</members>
+		<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
 		<name>QuickAction</name>
 	</types>
 	<types>
