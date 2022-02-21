@@ -8,3 +8,6 @@
 .THIS .grey-text{
     color: #5c5c5c;
 }
+.THIS .height72{
+    min-height: 72vh;
+}

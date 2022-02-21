@@ -34,7 +34,6 @@ public class Plivo_Inbound_SYS_ApplicationService extends SYS_ApplicationService
         log.Flat_Key_for_Resource__c = 'type';
         log.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
         log.Status__c = 'NEW';
-        //log.External_Id_Field_API_Name__c = 'UUID__c';
         log.How_to_process__c = 'use_custom_apex_handler';
         log.Custom_Apex_Handler__c = 'Plivo_Inbound_SYS_ApplicationService';
 

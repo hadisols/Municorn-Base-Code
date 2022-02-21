@@ -112,13 +112,9 @@
         let productObjectData = JSON.parse(selectedproductsString);
         // 2 JSON Object To Map Conversion
         let allSelectedProductsMap = new Map();
-        var chargeAmount = 0; 
         for (var value in productObjectData) {
             allSelectedProductsMap.set(value, productObjectData[value]);
-            chargeAmount = chargeAmount + productObjectData[value].totalProductPrice;
         }
-        if (logApiResponses) { console.log('Current chargeAmount: ' + chargeAmount); }
-        cmp.set("v.totalChargeAmount", chargeAmount);
         //Not able to Assign map to Aura Attribute 
 
         //3 extract valuesfrom map to store in Aura attribute List
@@ -151,6 +147,13 @@
         var processedObjectToString = JSON.stringify(preprocessMapToObject);
         cmp.set('v.selectedproductsString',processedObjectToString);
         cmp.set("v.selectedProductsValues", selectedProductsValues);
+
+        var chargeAmount = 0; 
+        for (let allSelectedProductsMapValue of allSelectedProductsMap.values()) {
+            chargeAmount = chargeAmount + allSelectedProductsMapValue.totalProductPrice;
+        }
+        if (logApiResponses) { console.log('Current chargeAmount: ' + chargeAmount); }
+        cmp.set("v.totalChargeAmount", chargeAmount);
 
         cmp.fireApplicationEventCall('cartCommunicationEvent' , message, processedObjectToString );
         if (logApiResponses) { console.log('Called Cart Event Call: '); }
