@@ -630,10 +630,10 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
-		<members>Municorn_Guest_User_SysLog_Permission_set</members>
-		<members>Municorn_SysLog_Permission_set</members>
-		<members>PMA_Guest_User_Permission_Set</members>
-		<members>PMA_Permission_Set</members>
+		<members>SYS_Municorn_Guest_User_Permission_Set</members>
+		<members>SYS_Municorn_Permission_Set</members>
+		<members>SYS_PMA_Guest_User_Permission_Set</members>
+		<members>SYS_PMA_Permission_Set</members>
 		<members>User_Password_Never_Expires</members>
 		<name>PermissionSet</name>
 	</types>
