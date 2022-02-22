@@ -53,6 +53,7 @@
 		<members>RelationshipSetting__mdt</members>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
+		<members>SYS_Tracker__c</members>
 
 		<members>Connected_Account__c</members>
 		<members>Dispute_Evidence__c</members>
@@ -70,7 +71,7 @@
 		<members>Subscription_Schedule__c</members>
 		<members>Subscription__c</members>
 		<members>Tier__c</members>
-		<members>Transaction__c</members>	
+		<members>Transaction__c</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
