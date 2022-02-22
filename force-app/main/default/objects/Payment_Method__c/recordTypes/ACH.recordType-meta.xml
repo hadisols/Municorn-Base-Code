@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ACH</fullName>
+    <active>true</active>
+    <description>Automated Clearing House or ACH payments allow you to receive debit payments directly from a customer&apos;s bank account instead of using credit or debit cards.</description>
+    <label>ACH</label>
+</RecordType>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Other</fullName>
+    <active>true</active>
+    <description>Use for all non-card or ACH payment methods.</description>
+    <label>Other</label>
+</RecordType>

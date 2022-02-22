@@ -5,25 +5,24 @@
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
 		<members>SYS_Helper</members>
+		<members>SYS_InboundTest</members>
 		<members>SYS_IntegrationLogInboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundQueueable</members>
 		<members>SYS_IntegrationLogTriggerHandler</members>
 		<members>SYS_InvocableHandler</members>
 		<members>SYS_JWTAuth_ApplicationService</members>
+		<members>SYS_MockServer</members>
 		<members>SYS_OAuthRedirectHandler</members>
+		<members>SYS_OutboundTest</members>
 		<members>SYS_Override_ApplicationService</members>
 		<members>SYS_ParentingQueueable</members>
 		<members>SYS_QueueableForInboundChild</members>
+		<members>SYS_TestDataFactory</members>
+		<members>SYS_TestUtil</members>
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
-
-		<members>SYS_OutboundTest</members>
-		<members>SYS_InboundTest</members>
-		<members>SYS_TestUtil</members> 
-		<members>SYS_TestDataFactory</members>
-		<members>SYS_MockServer</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -32,6 +31,7 @@
 	</types>
 	<types>
 		<members>SYS_Aura_JWTAuthFlow</members>
+		<members>SYS_PYMT_Aura_ChargeButton</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
@@ -53,6 +53,24 @@
 		<members>RelationshipSetting__mdt</members>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
+
+		<members>Connected_Account__c</members>
+		<members>Dispute_Evidence__c</members>
+		<members>Dispute__c</members>
+		<members>Payment_Gateway_Customer__c</members>
+		<members>Payment_Gateway__c</members>
+		<members>Payment_Intent__c</members>
+		<members>Payment_Method__c</members>
+		<members>Payment_Schedule__c</members>
+		<members>Payment_User_Override__c</members>
+		<members>Relationship_Settings__c</members>
+		<members>SalesDocument__c</members>
+		<members>Stripe_Price__c</members>
+		<members>Subscription_Item__c</members>
+		<members>Subscription_Schedule__c</members>
+		<members>Subscription__c</members>
+		<members>Tier__c</members>
+		<members>Transaction__c</members>	
 		<name>CustomObject</name>
 	</types>
 	<types>
@@ -76,6 +94,7 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
+		<members>Opportunity.SYS_PYMT_ChargeQuickAction</members>
 		<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
 		<name>QuickAction</name>
 	</types>
