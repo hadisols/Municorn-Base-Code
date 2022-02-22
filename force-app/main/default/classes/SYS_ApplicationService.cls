@@ -243,6 +243,9 @@ global virtual class SYS_ApplicationService {
         if(mapping.Is_Lookup__c && mapping.Lookup_External_Key__c!=NULL && mapping.Lookup_Object_API_Name__c!=NULL){
             value = getIdFromExternalKey(mapping.Lookup_Object_API_Name__c,mapping.Lookup_External_Key__c,String.valueOf(value));
         }
+
+        if(mapping.StaticValue__c != NULL)
+            value = mapping.StaticValue__c;
             
 
         if(value==NULL) return sObj;
