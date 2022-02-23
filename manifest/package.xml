@@ -45,26 +45,25 @@
 		<name>CustomMetadata</name>
 	</types>
 	<types>
+		<members>Connected_Account__c</members>
+		<members>Dispute_Evidence__c</members>
+		<members>Dispute__c</members>
 		<members>FieldSetting__mdt</members>
 		<members>HttpHeaders__mdt</members>
 		<members>IntegrationEnablement__mdt</members>
 		<members>IntegrationSetting__mdt</members>
 		<members>ObjectSetting__mdt</members>
-		<members>RelationshipSetting__mdt</members>
-		<members>SYS_IntegrationLog__c</members>
-		<members>SYS_OAuthConfig__c</members>
-		<members>SYS_Tracker__c</members>
-
-		<members>Connected_Account__c</members>
-		<members>Dispute_Evidence__c</members>
-		<members>Dispute__c</members>
 		<members>Payment_Gateway_Customer__c</members>
 		<members>Payment_Gateway__c</members>
 		<members>Payment_Intent__c</members>
 		<members>Payment_Method__c</members>
 		<members>Payment_Schedule__c</members>
 		<members>Payment_User_Override__c</members>
+		<members>RelationshipSetting__mdt</members>
 		<members>Relationship_Settings__c</members>
+		<members>SYS_IntegrationLog__c</members>
+		<members>SYS_OAuthConfig__c</members>
+		<members>SYS_Tracker__c</members>
 		<members>SalesDocument__c</members>
 		<members>Stripe_Price__c</members>
 		<members>Subscription_Item__c</members>
