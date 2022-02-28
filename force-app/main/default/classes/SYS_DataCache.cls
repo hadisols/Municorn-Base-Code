@@ -78,7 +78,9 @@ public class SYS_DataCache {
     /******* NEW VARIABLES START*******/
 
     public static String INT_TYPE;
+
     public static String OBJ_TYPE;
+    
     
     private static Map<String, String> external_key;
     public static Map<String, String> externalKeyByResourceMap {
@@ -151,7 +153,7 @@ public class SYS_DataCache {
         get{
             if(integrationSetting == null){
                 intMap = new Map<String,IntegrationSetting__mdt>();
-                for(IntegrationSetting__mdt is : [SELECT Id,OAuth_Config_Record_Id__c,Hashing_Algo__c,ApexHandler__c,webhookToken__c, DeveloperName, Label, UpdateMethod__c, DebugCheck__c,
+                for(IntegrationSetting__mdt is : [SELECT Id,OAuth_Config_Record_Id__c, Inbound_Custom_Apex_Handler__c, Flat_Key_for_Resource__c,Hashing_Algo__c,ApexHandler__c,webhookToken__c, DeveloperName, Label, UpdateMethod__c, DebugCheck__c,
                                      AuthenticationType__c, BaseAPIEndPoint__c, 
                                      QualifiedApiName, EscapeCharacter__c FROM IntegrationSetting__mdt 
                                      LIMIT 100]){

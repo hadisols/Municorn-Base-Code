@@ -4,6 +4,7 @@
 		<members>SYS_ApplicationService</members>
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
+		<members>SYS_ForceSync_Controller</members>
 		<members>SYS_Helper</members>
 		<members>SYS_InboundTest</members>
 		<members>SYS_IntegrationLogInboundImmediate</members>
@@ -30,8 +31,8 @@
 		<name>ApexTrigger</name>
 	</types>
 	<types>
+		<members>SYS_Aura_ForceSync</members>
 		<members>SYS_Aura_JWTAuthFlow</members>
-		<members>SYS_PYMT_Aura_ChargeButton</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
@@ -41,42 +42,55 @@
 		<name>CustomField</name>
 	</types>
 	<types>
-		<members>*</members>
+		<members>FieldSetting.SYS_Auth_IB_Access_Token</members>
+		<members>FieldSetting.SYS_Auth_OB_Audience</members>
+		<members>FieldSetting.SYS_Auth_OB_Expiry_Time</members>
+		<members>FieldSetting.SYS_Auth_OB_Issued_at</members>
+		<members>FieldSetting.SYS_Auth_OB_Issuer</members>
+		<members>FieldSetting.SYS_Auth_OB_Subject</members>
+		<members>FieldSetting.SYS_Auth_OB_Target_Audience</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Flow_Check</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Name</members>
+		<members>FieldSetting.SYS_Test_IB_Account_SYS_Key</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_Account_Lookup</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_LastName</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_SYS_Key</members>
+		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
+		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
+		
+		<members>HttpHeaders.SYS_Auth_Header</members>
+		<members>HttpHeaders.SYS_Test_Header</members>
+		
+		<members>IntegrationEnablement.SYS_Auth_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_Test_Integration_Enablement</members>
+		
+		<members>IntegrationSetting.SYS_Auth_Integration_Setting</members>
+		<members>IntegrationSetting.SYS_Test_IntegrationSetting</members>
+		
+		<members>ObjectSetting.SYS_Auth_JWT_Object_Setting</members>
+		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>	
 		<name>CustomMetadata</name>
 	</types>
 	<types>
-		<members>Connected_Account__c</members>
-		<members>Dispute_Evidence__c</members>
-		<members>Dispute__c</members>
 		<members>FieldSetting__mdt</members>
 		<members>HttpHeaders__mdt</members>
 		<members>IntegrationEnablement__mdt</members>
 		<members>IntegrationSetting__mdt</members>
 		<members>ObjectSetting__mdt</members>
-		<members>Payment_Gateway_Customer__c</members>
-		<members>Payment_Gateway__c</members>
-		<members>Payment_Intent__c</members>
-		<members>Payment_Method__c</members>
-		<members>Payment_Schedule__c</members>
-		<members>Payment_User_Override__c</members>
 		<members>RelationshipSetting__mdt</members>
-		<members>Relationship_Settings__c</members>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
 		<members>SYS_Tracker__c</members>
-		<members>SalesDocument__c</members>
-		<members>Stripe_Price__c</members>
-		<members>Subscription_Item__c</members>
-		<members>Subscription_Schedule__c</members>
-		<members>Subscription__c</members>
-		<members>Tier__c</members>
-		<members>Transaction__c</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
 		<members>SYS_IntegrationLog_Record_Page</members>
 		<members>SYS_OAuth_Configs</members>
 		<name>FlexiPage</name>
+	</types>
+	<types>
+		<members>SYS_Flow_for_log_retry</members>
+		<name>Flow</name>
 	</types>
 	<types>
 		<members>FieldSetting__mdt-FieldSetting Layout</members>
@@ -94,7 +108,6 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
-		<members>Opportunity.SYS_PYMT_ChargeQuickAction</members>
 		<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
 		<name>QuickAction</name>
 	</types>

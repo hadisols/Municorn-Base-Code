@@ -3,6 +3,7 @@
     <fullName>Key__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>This can be dummy when Direction is Inbound AND value is either Static OR derived from a field on log OR the setting is for a parent lookup</inlineHelpText>
     <label>JSON Key</label>
     <length>255</length>
     <required>true</required>

@@ -1,0 +1,26 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction"
+                controller="SYS_ForceSync_Controller" 
+                access="global">
+
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="message" type="String"/>
+
+    <!--Design Attribute-->
+    <aura:attribute name="objectSetting" type="String"/>
+    <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller"/>
+   
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+    <article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner">
+            <button class="slds-button slds-button_brand" onclick="{!c.invokeFlowJS}">Sync</button>
+        </div>
+        
+        <footer class="slds-card__footer">
+            <span class="slds-badge">{!v.message}</span>
+        </footer>
+    </article>
+
+
+</aura:component>

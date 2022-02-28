@@ -1,0 +1,6 @@
+<design:component >
+
+    <design:attribute name="objectSetting" label="Object Setting Developer Name"/>
+    <design:attribute name="apexHandler" label="Custom Apex Handler" />
+
+</design:component>
