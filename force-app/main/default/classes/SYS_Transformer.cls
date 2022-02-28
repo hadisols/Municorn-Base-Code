@@ -524,9 +524,9 @@ public virtual class SYS_Transformer {
                         System.debug('in else=='+result);
                         System.debug('MS Child Objects to be processed:'+childRecList);
                         
-                        //24 jan 2022
-                        
-                        ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
+                        //AP-106
+                        if(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase()))
+                            ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
                         //System.debug('job id is==='+jobID);
                     }
                 }

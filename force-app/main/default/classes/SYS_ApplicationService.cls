@@ -217,6 +217,15 @@ global virtual class SYS_ApplicationService {
         }
         return fvalue;
     }
+
+    //TODO Test coverage
+    global virtual String getIdFromExternalKey(String objectApiName, String externalKey, String externalId){
+        sObject parentRecord = Database.query('SELECT Id FROM '+objectApiName+' WHERE '+externalKey+'= \''+externalId+'\'');
+        if(parentRecord!=NULL)
+            return String.valueOf(parentRecord.get('Id'));
+        else
+            return '';
+    }
     
     /**
      * INBOUND
@@ -230,6 +239,13 @@ global virtual class SYS_ApplicationService {
         System.debug(mapping.FieldApiName__c+' +MS+ '+value);
         if(mapping.Get_value_from_Log__c)
             value = SYS_DataCache.log.get(mapping.Log_API_for_field_mapping__c);
+
+        if(mapping.Is_Lookup__c && mapping.Lookup_External_Key__c!=NULL && mapping.Lookup_Object_API_Name__c!=NULL){
+            value = getIdFromExternalKey(mapping.Lookup_Object_API_Name__c,mapping.Lookup_External_Key__c,String.valueOf(value));
+        }
+
+        if(mapping.StaticValue__c != NULL)
+            value = mapping.StaticValue__c;
             
 
         if(value==NULL) return sObj;
@@ -372,7 +388,7 @@ global virtual class SYS_ApplicationService {
     }
 
     global virtual String preprocessJSONForOutbound(SYS_IntegrationLog__c log,String jsonBody) {
-
+        System.debug('Default preprocessJSONForOutbound called');
         return jsonBody;
     }
 
@@ -440,13 +456,27 @@ global virtual class SYS_ApplicationService {
     }
     /* ------------------------------------------------------------------------ */
 
-    global virtual HttpRequest buildOutboundHttpRequest(SYS_IntegrationLog__c log){
-        HttpRequest req = new HttpRequest();
-        IntegrationSetting__mdt integrationSetting = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE);
-        String baseEndpoint = integrationSetting.BaseAPIEndPoint__c;
+    global virtual String getHttpRequestEndpoint(){
+        String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+        String resourceUrl = 
+            baseEndpoint+
+            SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c+'/';
+        String urlParams='';
+        if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
+                urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
+            
+        resourceUrl+=urlParams;
+        return resourceUrl;
+    }
 
+    global virtual String getHttpRequestMethod(){
+        
+        return SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).UpdateMethod__c;
+    }
+
+    global virtual void setHttpRequestHeaders(HttpRequest req){
+        
         List<HttpHeaders__mdt> httpHeader = SYS_DataCache.headerSetting;
-        req.setMethod(integrationSetting.UpdateMethod__c);
         for(HttpHeaders__mdt head:httpHeader){
             SYS_debug.log('header is = '+head.header_name__c + ''+head.Value__c);
             req.setHeader(String.valueOf(head.header_name__c), String.valueOf(head.Value__c));       
@@ -467,16 +497,15 @@ global virtual class SYS_ApplicationService {
             }
             SYS_debug.log('MS Header:'+req.getHeader('Authorization'));
         }
+    }
 
-        String resourceUrl = 
-            integrationSetting.BaseAPIEndPoint__c+
-            SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c+'/';
-        String urlParams='';
-        if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
-                urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
-            
-        resourceUrl+=urlParams;
-        req.setEndpoint(resourceUrl);
+    global virtual HttpRequest buildOutboundHttpRequest(SYS_IntegrationLog__c log){
+        HttpRequest req = new HttpRequest();
+        
+        req.setEndpoint(getHttpRequestEndpoint());
+        req.setMethod(getHttpRequestMethod());
+        setHttpRequestHeaders(req);
+ 
         return req;
     }
     
@@ -572,7 +601,13 @@ global virtual class SYS_ApplicationService {
     global virtual void fixParent(String parentLogId,SYS_IntegrationLog__c childLog){
 
         List<FieldSetting__mdt> fsm = new List<FieldSetting__mdt>();
-        fsm = [SELECT FieldApiName__c,ParentField__c,ObjectApiName__c FROM FieldSetting__mdt WHERE RestResource__c = :childLog.Resource__c AND Is_Lookup__c=true];
+        fsm = [SELECT FieldApiName__c,
+                        ObjectApiName__c 
+                        FROM FieldSetting__mdt 
+                        WHERE RestResource__c = :childLog.Resource__c 
+                        AND Is_Lookup__c=true 
+                        AND Lookup_External_Key__c=NULL 
+                        AND Lookup_Object_API_Name__c=NULL];
         System.debug('MS Fixing Relationship:'+fsm);
         List<sObject> childRecords = new List<sObject>();
         
@@ -635,7 +670,13 @@ global virtual class SYS_ApplicationService {
 
 
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
-                logResp.Status__c = 'DONE';
+                
+                if(log.SYS_Operation_Type__c == 'INSERT'){
+                    logResp.Status__c = 'NEW';
+                }
+                else{
+                    logResp.Status__c = 'DONE';
+                }
             }
             
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.SYS_Http_Status__c.isCreateable()) {
@@ -654,10 +695,23 @@ global virtual class SYS_ApplicationService {
                 logResp.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.How_To_Process__c.isCreateable()) {
-                logResp.How_To_Process__c = 'ignore_log';
+                if(log.SYS_Operation_Type__c == 'INSERT'){
+                    logResp.How_To_Process__c = 'use_custom_apex_handler';
+                    logResp.Custom_Apex_Handler__c = 'SYS_ApplicationService';
+                }
+                else{
+                    logResp.How_To_Process__c = 'ignore_log';
+                }
             }
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.SYS_Operation_Type__c.isCreateable()) {
-                logResp.SYS_Operation_Type__c = 'RESPONSE';
+                if(log.SYS_Operation_Type__c == 'INSERT'){
+                    logResp.SYS_Operation_Type__c = 'UPDATE';
+                    logResp.Resource__c = SYS_DataCache.fieldSettingMappingUsingObjSetting[0].RestResource__c;
+                    //SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
+                }
+                else{
+                    logResp.SYS_Operation_Type__c = 'RESPONSE';
+                }
             }
         }
 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Patient</label>
+    <protected>true</protected>
+    <values>
+        <field>ApexHandler__c</field>
+        <value xsi:type="xsd:string">SYS_ApplicationService</value>
+    </values>
+    <values>
+        <field>BypassTrigger__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Custom_Field_Value__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Direction__c</field>
+        <value xsi:type="xsd:string">TWOWAY</value>
+    </values>
+    <values>
+        <field>ExternalFieldApi__c</field>
+        <value xsi:type="xsd:string">External_ID__c</value>
+    </values>
+    <values>
+        <field>IntegrationType__c</field>
+        <value xsi:type="xsd:string">Drchrono</value>
+    </values>
+    <values>
+        <field>ObjectApiName__c</field>
+        <value xsi:type="xsd:string">Patient__c</value>
+    </values>
+    <values>
+        <field>Object__c</field>
+        <value xsi:type="xsd:string">Patient__c</value>
+    </values>
+    <values>
+        <field>QueryClause__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ResourcePath__c</field>
+        <value xsi:type="xsd:string">/api</value>
+    </values>
+    <values>
+        <field>TriggerEvents__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Trigger_Condition__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Unique_Name__c</field>
+        <value xsi:type="xsd:string">patients</value>
+    </values>
+    <values>
+        <field>isInboundList__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>url_params__c</field>
+        <value xsi:type="xsd:string">patients</value>
+    </values>
+</CustomMetadata>

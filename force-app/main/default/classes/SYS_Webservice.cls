@@ -31,6 +31,7 @@ global class SYS_Webservice{
     @HttpGet
     global static void getRequest(){
 
+       
         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.getExtension).newInstance();
         if(appService.doWebhookSignatureCheck()){
             appService.doGet();
@@ -38,6 +39,7 @@ global class SYS_Webservice{
         else {
             appService.setErrorHttpResponse('Signature Verification Failed in GET');
         }
+        
     }
     
     

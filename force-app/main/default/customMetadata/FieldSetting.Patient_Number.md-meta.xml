@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Patient Number</label>
+    <protected>true</protected>
+    <values>
+        <field>ChildFieldApiName__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ChildRootElement__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Direction__c</field>
+        <value xsi:type="xsd:string">TWOWAY</value>
+    </values>
+    <values>
+        <field>FieldApiName__c</field>
+        <value xsi:type="xsd:string">Patient_ID__c</value>
+    </values>
+    <values>
+        <field>Field_Mapping_Handler__c</field>
+        <value xsi:type="xsd:string">SYS_ApplicationService</value>
+    </values>
+    <values>
+        <field>Get_value_from_Log__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>IsChild__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Is_External_Field__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Lookup__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Key__c</field>
+        <value xsi:type="xsd:string">patient</value>
+    </values>
+    <values>
+        <field>Log_API_for_field_mapping__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Lookup_External_Key__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Lookup_Object_API_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ObjectApiName__c</field>
+        <value xsi:type="xsd:string">Medications__c</value>
+    </values>
+    <values>
+        <field>ObjectSetting__c</field>
+        <value xsi:type="xsd:string">Medications</value>
+    </values>
+    <values>
+        <field>ParentField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>RestResource__c</field>
+        <value xsi:type="xsd:string">/api/medications</value>
+    </values>
+    <values>
+        <field>StaticValue__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

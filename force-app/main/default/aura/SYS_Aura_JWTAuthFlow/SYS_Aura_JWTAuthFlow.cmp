@@ -1,0 +1,16 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction"
+                controller="SYS_JWTAuth_ApplicationService" 
+                access="global">
+
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="message" type="String"/>
+   
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+    <div>
+        {!v.message}
+    </div>
+    
+
+</aura:component>

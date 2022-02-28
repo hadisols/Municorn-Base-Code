@@ -4,7 +4,7 @@
     <protected>true</protected>
     <values>
         <field>IntegrationType__c</field>
-        <value xsi:type="xsd:string">SFsource</value>
+        <value xsi:type="xsd:string">Drchrono</value>
     </values>
     <values>
         <field>Value__c</field>
