@@ -33,6 +33,7 @@
 	<types>
 		<members>SYS_Aura_ForceSync</members>
 		<members>SYS_Aura_JWTAuthFlow</members>
+		<members>SYS_PYMT_Aura_ChargeButton</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
@@ -57,18 +58,14 @@
 		<members>FieldSetting.SYS_Test_IB_Contact_SYS_Key</members>
 		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
-		
 		<members>HttpHeaders.SYS_Auth_Header</members>
 		<members>HttpHeaders.SYS_Test_Header</members>
-		
 		<members>IntegrationEnablement.SYS_Auth_Integration_Enablement</members>
 		<members>IntegrationEnablement.SYS_Test_Integration_Enablement</members>
-		
 		<members>IntegrationSetting.SYS_Auth_Integration_Setting</members>
 		<members>IntegrationSetting.SYS_Test_IntegrationSetting</members>
-		
 		<members>ObjectSetting.SYS_Auth_JWT_Object_Setting</members>
-		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>	
+		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>
 		<name>CustomMetadata</name>
 	</types>
 	<types>
