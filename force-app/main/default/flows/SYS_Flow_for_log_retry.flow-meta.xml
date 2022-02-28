@@ -173,15 +173,11 @@
         <object>SYS_IntegrationLog__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <scheduledPaths>
-            <pathType>AsyncAfterCommit</pathType>
-        </scheduledPaths>
-        <scheduledPaths>
             <name>Time_based</name>
             <connector>
                 <targetReference>Is_retry_count_NULL</targetReference>
             </connector>
             <label>Time based</label>
-            <maxBatchSize>1</maxBatchSize>
             <offsetNumber>1</offsetNumber>
             <offsetUnit>Minutes</offsetUnit>
             <timeSource>RecordTriggerEvent</timeSource>
@@ -208,7 +204,7 @@
         <isOutput>false</isOutput>
         <scale>0</scale>
         <value>
-            <numberValue>3.0</numberValue>
+            <numberValue>5.0</numberValue>
         </value>
     </variables>
 </Flow>

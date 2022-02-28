@@ -257,9 +257,6 @@ global virtual class SYS_ApplicationService {
 
         if(value==NULL) return sObj;
 
-        System.debug('--MS In Field Mapping. Value check:'+mapping.Log_API_for_field_mapping__c);
-        System.debug('--MS In Field Mapping. Value check Log:'+SYS_DataCache.log);
-
         SObjectType r = ((SObject)(Type.forName('Schema.'+sObjectApiName).newInstance())).getSObjectType();
         DescribeSObjectResult d = r.getDescribe();
                 
@@ -429,6 +426,13 @@ global virtual class SYS_ApplicationService {
     }
 
     /* ------------------------------------------------------------------------ */
+    /**
+     * This method sets the id to records in sObjectsToDML if its missing
+     * Scenario: Record insert in SF triggers Outbound followed by Response Inbound to be processed
+     * Since the newly created SF records won't have the external Id, we cannot do an upsert
+     * on external key in the JSON (it will create duplicates). Hence we need to get the Id i.e.
+     * the WhatId on the log record.
+     */
 
     global virtual List<sObject> getMissingIdForUpdate(List<sObject> sObjectsToDML,SYS_IntegrationLog__c log) {
         for(sObject s:sObjectsToDML){
