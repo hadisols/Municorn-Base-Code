@@ -43,7 +43,7 @@ public class SYS_IntegrationLogOutboundImmediate{
                     SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                     SYS_ApplicationService appService;
                     
-                    System.debug('appService Handler:'+log.How_to_process__c+'::'+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c);
+                    System.debug('appService Handler:'+log.How_to_process__c+'::'+log.Custom_Apex_Handler__c);
 
                     if(log.How_to_process__c == 'use_object_setting')
                         appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
@@ -71,6 +71,7 @@ public class SYS_IntegrationLogOutboundImmediate{
                     System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
                 }
             }catch(Exception e){
+                SYS_DataCache.log.retry__c = true;
                 SYS_Helper.logException(log, e.getStackTraceString()+'\n'+e.getMessage());
             }
             
@@ -78,8 +79,8 @@ public class SYS_IntegrationLogOutboundImmediate{
         
         if(outboundResultLogs.size() > 0){
 
-            new SYS_ApplicationService().doDML(outboundResultLogs, 'UPSERT','');
-            
+            //new SYS_ApplicationService().doDML(outboundResultLogs, 'UPSERT','');
+            upsert outboundResultLogs;
         } 
         
     }

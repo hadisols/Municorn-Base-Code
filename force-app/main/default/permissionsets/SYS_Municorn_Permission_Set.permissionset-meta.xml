@@ -28,6 +28,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SYS_IntegrationLog__c.Force_Sync__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SYS_IntegrationLog__c.How_to_process__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -78,6 +83,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SYS_IntegrationLog__c.Retry_Count__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SYS_IntegrationLog__c.SYS_Http_Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -99,6 +109,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_IntegrationLog__c.Sobject_Link__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_IntegrationLog__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -154,6 +169,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SYS_IntegrationLog__c.data9__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_IntegrationLog__c.retry__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -219,11 +239,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SYS_OAuthConfig__c.Start_token_flow_on_save__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>SYS_OAuthConfig__c.State__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -341,10 +356,6 @@
     </tabSettings>
     <tabSettings>
         <tab>SYS_OAuthConfig__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>SYS_Tracker__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

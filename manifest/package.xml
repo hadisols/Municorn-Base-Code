@@ -25,31 +25,26 @@
 		<members>SYS_ApplicationService</members>
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
+		<members>SYS_ForceSync_Controller</members>
 		<members>SYS_Helper</members>
-		<!--
 		<members>SYS_InboundTest</members>
-		<members>SYS_OutboundTest</members>
-		<members>SYS_MockServer</members>
-		-->
 		<members>SYS_IntegrationLogInboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundQueueable</members>
 		<members>SYS_IntegrationLogTriggerHandler</members>
 		<members>SYS_InvocableHandler</members>
 		<members>SYS_JWTAuth_ApplicationService</members>
+		<members>SYS_MockServer</members>
 		<members>SYS_OAuthRedirectHandler</members>
+		<members>SYS_OutboundTest</members>
 		<members>SYS_Override_ApplicationService</members>
 		<members>SYS_ParentingQueueable</members>
 		<members>SYS_QueueableForInboundChild</members>
+		<members>SYS_TestDataFactory</members>
+		<members>SYS_TestUtil</members>
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
-
-		<members>SYS_OutboundTest</members>
-		<members>SYS_InboundTest</members>
-		<members>SYS_TestUtil</members>
-		<members>SYS_TestDataFactory</members>
-		<members>SYS_MockServer</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -70,6 +65,7 @@
 		<members>posCommunicationEvent</members>
 		<members>cartCommunicationEvent</members>
 		<!-- Start Municorn Component -->
+		<members>SYS_Aura_ForceSync</members>
 		<members>SYS_Aura_JWTAuthFlow</members>
 		<!-- End Municorn Component -->
 		<name>AuraDefinitionBundle</name>
@@ -469,6 +465,29 @@
 	-->
 	<types>
 		<members>*</members>
+		<members>FieldSetting.SYS_Auth_IB_Access_Token</members>
+		<members>FieldSetting.SYS_Auth_OB_Audience</members>
+		<members>FieldSetting.SYS_Auth_OB_Expiry_Time</members>
+		<members>FieldSetting.SYS_Auth_OB_Issued_at</members>
+		<members>FieldSetting.SYS_Auth_OB_Issuer</members>
+		<members>FieldSetting.SYS_Auth_OB_Subject</members>
+		<members>FieldSetting.SYS_Auth_OB_Target_Audience</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Flow_Check</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Name</members>
+		<members>FieldSetting.SYS_Test_IB_Account_SYS_Key</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_Account_Lookup</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_LastName</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_SYS_Key</members>
+		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
+		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
+		<members>HttpHeaders.SYS_Auth_Header</members>
+		<members>HttpHeaders.SYS_Test_Header</members>
+		<members>IntegrationEnablement.SYS_Auth_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_Test_Integration_Enablement</members>
+		<members>IntegrationSetting.SYS_Auth_Integration_Setting</members>
+		<members>IntegrationSetting.SYS_Test_IntegrationSetting</members>
+		<members>ObjectSetting.SYS_Auth_JWT_Object_Setting</members>
+		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>
 		<name>CustomMetadata</name>
 	</types>
 	<types>
@@ -548,6 +567,7 @@
 	<types>
 		<members>SYS_Customer</members>
 		<members>SYS_SMS_Activity</members>
+		<members>SYS_Flow_for_log_retry</members>
 		<name>Flow</name>
 	</types>
 	<types>
@@ -601,6 +621,7 @@
 		<members>SYS_IntegrationLog__c.All</members>
 		<members>SYS_IntegrationLog__c.Error_Logs</members>
 		<members>SYS_OAuthConfig__c.All</members>
+		<members>SYS_Tracker__c.All</members>
 		<!-- End Municorn ListView -->
 		<!-- Start Inventory ListView -->
 		<members>Catalog__c.All</members>

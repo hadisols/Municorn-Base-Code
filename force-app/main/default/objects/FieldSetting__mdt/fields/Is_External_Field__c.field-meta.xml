@@ -4,6 +4,7 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>It is used to create a map of External Key by resource and is relevant for inbound only</inlineHelpText>
     <label>Is External Field?</label>
     <type>Checkbox</type>
 </CustomField>

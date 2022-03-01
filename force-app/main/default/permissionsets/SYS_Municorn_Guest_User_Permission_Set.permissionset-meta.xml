@@ -229,11 +229,7 @@
         <field>SYS_OAuthConfig__c.Start_token_flow_on_save__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SYS_OAuthConfig__c.State__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
+    
     <fieldPermissions>
         <editable>false</editable>
         <field>SYS_OAuthConfig__c.Test_Formula__c</field>

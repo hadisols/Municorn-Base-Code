@@ -4,7 +4,7 @@
     <defaultValue>&quot;NEW&quot;</defaultValue>
     <externalId>false</externalId>
     <label>Status</label>
-    <required>true</required>
+    <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
@@ -30,12 +30,12 @@
             <value>
                 <fullName>ERROR</fullName>
                 <default>false</default>
-                <label>ERROR</label>
+                <label>CALLOUT ERROR</label>
             </value>
             <value>
                 <fullName>PENDING_PARENT</fullName>
                 <default>false</default>
-                <label>PENDING_PARENT</label>
+                <label>PENDING PARENT</label>
             </value>
             <value>
                 <fullName>READY_FOR_PROCESSING</fullName>
@@ -43,10 +43,9 @@
                 <label>READY FOR PROCESSING</label>
             </value>
             <value>
-                <fullName>INPROGRESS</fullName>
+                <fullName>ENQUEUED_FOR_RETRY</fullName>
                 <default>false</default>
-                <isActive>false</isActive>
-                <label>INPROGRESS</label>
+                <label>ENQUEUED FOR RETRY</label>
             </value>
             <value>
                 <fullName>READY_FOR_PARENT</fullName>
