@@ -61,7 +61,7 @@
                                                             <!-- <div style="width: 50px;">
                                                                 <h5 class="fw-normal mb-0">2</h5>
                                                             </div> -->
-                                                            <h5 class="mb-0 px-2 sm-text-highlight grey-text">$ <lightning:formattedNumber value="{!selectedproduct.totalProductPrice}" maximumFractionDigits="2" currencyCode="USD"/></h5>
+                                                            <h5 class="mb-0 px-2 sm-text-highlight grey-text">$ <lightning:formattedNumber value="{!selectedproduct.totalProductPrice}" minimumFractionDigits="2" maximumFractionDigits="2" currencyCode="USD"/></h5>
                                                             <div class="slds-text-color_destructive">
                                                                 <i class="fas fa-trash-alt"></i>
                                                             </div>

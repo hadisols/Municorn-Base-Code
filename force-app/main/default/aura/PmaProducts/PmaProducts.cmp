@@ -53,11 +53,13 @@
                     <div class="col col-lg-2 mx-3 my-2 product-wrapper" data-id="{! prod.product.Id}" onclick="{!c.productClickHandler}">
                         <div class="d-flex flex-column justify-content-start flex-wrap">
                             <div class="overflow-hidden mx-auto image-wrapper max-height">
-                                <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
-                                    alt='{!prod.product.Name}' />
+                                <img src="{!prod.pictureURL}" alt='{!prod.product.Name}'/>
+
+                                <!-- <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
+                                    alt='{!prod.product.Name}' /> -->
                             </div>
                             <div class="product-title text-center slds-truncate" title='{!prod.product.Name}'>{!prod.product.Name}</div>
-                            <div class="product-title text-center slds-truncate" title='{!prod.productPrice}'>$ <lightning:formattedNumber value="{!prod.productPrice}" maximumFractionDigits="2" currencyCode="USD"/></div>
+                            <div class="product-title text-center slds-truncate" title='{!prod.productPrice}'>$ <lightning:formattedNumber value="{!prod.productPrice}" minimumFractionDigits="2" maximumFractionDigits="2" currencyCode="USD"/></div>
                         </div>
                     </div>
                 </aura:iteration>

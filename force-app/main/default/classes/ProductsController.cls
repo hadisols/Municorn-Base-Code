@@ -2,15 +2,22 @@ public with sharing class ProductsController {
     //To return initial records
     @AuraEnabled
     public static Map <Id, SelectedProductWrapper > getAllProductRecords() {
-        List < Product2 > productsList = new List < Product2 >();
+        List < Product__c > productsList = new List < Product__c >();
         Map <Id, SelectedProductWrapper > mapProductsList = new Map <Id, SelectedProductWrapper >();
         try {
             //TODO  - change query from PBE instead of product
-            productsList = [SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 ORDER BY Name ASC];
-            for( Product2 prod: productsList){
+           // productsList = Database.query('SELECT '+ SYS_Helper.getAllFieldsFor('Product__c') + '\')');
+           
+            productsList = [SELECT Id,Name,Unit_Price__c,Account__c,Account__r.Name,Active__c,Contact__c,Display_URL__c,External_ID__c,Product_Code__c,Product_Description__c,Product_Family__c,Product_SKU__c,Quantity_Unit_Of_Measure__c,SystemModstamp,OwnerId,CreatedById,CreatedDate,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate FROM Product__c ORDER BY Name ASC];
+            //productsList = [SELECT Id, Name, Unit_Price__c, Account__c, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId FROM Product2 ORDER BY Name ASC];
+           
+            for( Product__c prod: productsList){
+                String recordPictureURL = ImageController.getSysTrackRecordPictureURL(prod.Id);
+                System.debug('Prod Name ' + prod.Name + ' recordPictureURL '+ recordPictureURL);
                 SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
                 selectedproduct.product=prod;
                 selectedproduct.quantity=1;
+                selectedproduct.pictureURL=recordPictureURL;
                 mapProductsList.put(prod.Id, selectedproduct);
             }
         } catch (Exception e) {
@@ -19,90 +26,21 @@ public with sharing class ProductsController {
         }
         return mapProductsList;
     }
-/* 
-    @AuraEnabled
-    public static ProductWrapper getProductRecords(Integer initialRows) {
-        ProductWrapper productWrapper = new ProductWrapper();
-        try {
-            productWrapper.productsList = [SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 ORDER BY Name ASC LIMIT: initialRows OFFSET 0];
-            productWrapper.totalRecords = [SELECT COUNT() FROM Product2];
-            productWrapper.message = 'Product records are loaded';
-            productWrapper.success = true;
-        } catch (Exception e) {
-            productWrapper.message = e.getMessage();
-            productWrapper.success = false;
-        }
-        return productWrapper;
-    }
-
-    //To return additional records based on offset
-    @AuraEnabled
-    public static List < Product2 > loadProductRecords(Integer rowLimit, Integer rowOffset) {
-        return [SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 ORDER BY Name ASC LIMIT: rowLimit OFFSET: rowOffset];
-    } */
-    //To return initial Empty Cart
-    /*
-    @AuraEnabled
-    public static Map <Id, SelectedProductWrapper > getselectedProductsMap() {
-        Map <Id, SelectedProductWrapper > selectedproductWrapperMap = new Map <Id, SelectedProductWrapper >();
-        return selectedproductWrapperMap;
-    }
-    @AuraEnabled
-    public static Map <Id, SelectedProductWrapper > getselectedProductbyIdMap(Id prodId) {
-        Map <Id, SelectedProductWrapper > selectedproductWrapperMap = new Map <Id, SelectedProductWrapper >();
-        SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
-        selectedproduct.product=[SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 WHERE Id =: prodId];
-        selectedproduct.quantity=1;
-        Double pp = selectedproduct.productPrice;
-        Double ptp = selectedproduct.totalProductPrice;
-        selectedproductWrapperMap.put(prodId, selectedproduct);
-        System.debug('selectedproduct: '+ selectedproduct);
-        System.debug('selectedproductWrapperMap.keySet(): '+ selectedproductWrapperMap.keySet());
-        System.debug('selectedproductWrapperMap: '+ selectedproductWrapperMap);
-        System.debug('selectedproductWrapperMap.selectedproduct.product: '+ selectedproduct.product.PricebookEntries[0].UnitPrice);
-        System.debug('selectedproductWrapperMap.Id: '+ selectedproductWrapperMap.get(prodId));
-        return selectedproductWrapperMap;
-    }
-
-    @AuraEnabled
-    public static List < SelectedProductWrapper > getselectedProducts() {
-        List < SelectedProductWrapper > selectedproductWrapper = new List < SelectedProductWrapper >();
-        return selectedproductWrapper;
-    }
-    @AuraEnabled
-    public static SelectedProductWrapper getselectedProductbyId(Id prodId) {
-        SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
-        selectedproduct.product=[SELECT Id, Name, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId,(SELECT id, UnitPrice FROM PricebookEntries order by createddate DESC LIMIT 1) FROM Product2 WHERE Id =: prodId];
-        selectedproduct.quantity=1;
-        return selectedproduct;
-    }
-   
-    // wrapper class
-    public class ProductWrapper {
-        @AuraEnabled
-        public Integer totalRecords = 0;
-        @AuraEnabled
-        public List < Product2 > productsList = new List < Product2 > ();
-        @AuraEnabled 
-        public String message;
-        @AuraEnabled
-        public Boolean success;
-    }
-     */
-
     // wrapper class selectedProduct.PricebookEntries[0].UnitPrice
     public class SelectedProductWrapper {
         @AuraEnabled
         public Integer quantity;
         @AuraEnabled
-        public Product2 product = new Product2 ();
+        public Product__c product = new Product__c ();
         @AuraEnabled
         public Double productPrice{
-            get { return (product != null) ? product.PricebookEntries[0].UnitPrice : 0; }
+            get { return (product != null) ? product.Unit_Price__c : 0; }
         }
         @AuraEnabled
         public Double totalProductPrice{
             get { return (productPrice != null) ? productPrice * quantity : 0; }
         }
+        @AuraEnabled
+        public String pictureURL;
     }
 }

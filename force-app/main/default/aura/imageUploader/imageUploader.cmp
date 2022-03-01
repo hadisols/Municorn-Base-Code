@@ -1,0 +1,34 @@
+<aura:component description="ImageUploader" controller="ImageController"
+    implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
+    <aura:attribute name="multiple" type="Boolean" default="false" />
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="recordId" type="String" />
+    <lightning:spinner aura:id="mySpinner" class="slds-hide" />
+
+    <aura:attribute name="fileName" type="String" />
+    <aura:attribute name="contentDocumentId" type="String" />
+    <div class="c-container slds-card">
+        <lightning:layout>
+            <lightning:layoutItem padding="around-small" size="12">
+                <div class=" slds-box">
+                    <div class="slds-grid slds-grid_vertical slds-grid_align-center">
+
+                        <div class="slds-col slds-var-m-bottom_medium">
+                            <!--<lightning:fileCard> to preview file using content document Id -->
+                            <lightning:fileCard fileId="{!v.contentDocumentId}" />
+                        </div>
+
+                        <div class="slds-col slds-var-m-bottom_medium">
+                            <lightning:fileUpload label="Upload Image" name="ImageUploader" multiple="{!v.multiple}"
+                                accept="{!v.filetype}" recordId="{!v.recordId}"
+                                onuploadfinished="{!c.handleUploadFinished}" disabled="{!v.disabled}" />
+                        </div>
+
+                    </div>
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

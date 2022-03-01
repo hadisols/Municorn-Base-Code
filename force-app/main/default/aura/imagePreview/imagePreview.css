@@ -1,0 +1,20 @@
+.THIS .fixedwidthdiv{
+    width:300px;
+    height:auto;
+}
+.THIS img{
+    border:1px solid grey;
+}
+.THIS img.image-square{
+    Width:200px;
+    height:200px;
+}
+.THIS img.image-round{
+    Width:200px;
+    height:200px;
+    border-radius: 50%;
+}
+.THIS img.image-fullwidth{
+    Width:100%!important;
+    height:auto!important;
+}

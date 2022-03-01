@@ -104,7 +104,7 @@
         }
         else if(selectedProductsMap.has(selectedProdId) ){
             var productQuantity = currentSelectedProductFromDataMap.quantity + 1;
-            var singleProductPrice = currentSelectedProductFromDataMap.product.PricebookEntries[0].UnitPrice;
+            var singleProductPrice = currentSelectedProductFromDataMap.product.Unit_Price__c;
             var netUnitPrice = singleProductPrice * productQuantity ;
             currentSelectedProductFromDataMap.quantity = productQuantity;
             currentSelectedProductFromDataMap.productPrice = singleProductPrice;

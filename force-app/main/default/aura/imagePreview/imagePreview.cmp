@@ -1,0 +1,38 @@
+<aura:component description="Image Preview" controller="ImageController" implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="imageURL" type="String" />
+    <aura:attribute name="shape" type="String" default="square" />
+    <aura:attribute name="imgWidth" type="integer" default="200"/>
+    <aura:attribute name="imgHeight" type="integer" default="200"/>
+
+    <div class="c-container slds-card">
+        <lightning:layout>
+            <lightning:layoutItem padding="around-small" size="12">
+                <div class="slds-grid slds-grid_vertical slds-grid_vertical-align-center slds-grid_align-center">
+                    <div class="slds-col slds-grid slds-var-m-bottom_medium">
+                        <lightning:select aura:id="select" name="select" label="Select a Style" onchange="{! c.changeImageStyle }" >
+                            <option value="">Style...</option>
+                            <option value="square">Square</option>
+                            <option value="round">Rounded</option>
+                            <option value="fullwidth">Full Width</option>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-grid slds-size_1-of-2 slds-var-m-bottom_medium">
+                        <div class="slds-col slds-size_1-of-2 slds-var-m-bottom_medium slds-var-m-right_medium">
+                            <ui:inputNumber label="Image Width: " value="{!v.imgWidth}" aura:id="imageWidth" change="{! c.changeImageWidth }" updateOn="change" /> <br/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-var-m-bottom_medium">
+                            <ui:inputNumber label="Image Height: " value="{!v.imgHeight}" aura:id="imageHeight" change="{! c.changeImageHeight }" updateOn="change" /> <br/>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-grid slds-size_1-of-2">
+                        <div class="imagewrapper">
+                            <img src="{!v.imageURL}" alt='{!v.recordId}' class="{!'image-' + v.shape}" style="{!'Width:'+v.imgWidth+'px; height:'+v.imgHeight+'px'}"/>
+                        </div>
+                    </div>
+                  </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>	
