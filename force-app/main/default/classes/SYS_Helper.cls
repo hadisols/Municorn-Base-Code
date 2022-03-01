@@ -1,6 +1,15 @@
 public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
+    public static String getUUID()
+    {
+        Blob b = Crypto.GenerateAESKey(128);
+        String h = EncodingUtil.ConvertTohex(b);
+        String guid = h.SubString(0,8)+ '-' + h.SubString(8,12) + '-' + h.SubString(12,16) + '-' + h.SubString(16,20) + '-' + h.substring(20);
+        return guid;
+    }
+
+    /* ------------------------------------------------------------------------ */
     public static String getAllFieldsFor(String objName){
 
         List<String> fields = new List<String>();
@@ -79,9 +88,24 @@ public class SYS_Helper {
 
     public static void logException(SYS_IntegrationLog__c log,String stackTrace){
         //log.Type__c = 'EXCEPTION';
+
+        flagLogForRetry(log.Id);
+        
         log.Status__c = 'FAIL';
         log.Message__c = stackTrace;
+        
         upsert log;
+    }
+
+    @future
+    public static void flagLogForRetry(Id logId){
+        if(logId!=NULL){
+            SYS_IntegrationLog__c log = new SYS_IntegrationLog__c(Id=logId);
+            log.retry__c = true;
+            update log;
+        }else{
+            //TODO - How to update the log record?
+        }
     }
 
     /* ------------------------------------------------------------------------ */

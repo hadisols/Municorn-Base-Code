@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction"
+                controller="SYS_ForceSync_Controller" 
+                access="global">
+
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="messageType" type="string" default="slds-badge"/>
+
+    <!--Design Attribute-->
+    <aura:attribute name="objectSetting" type="String"/>
+    <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller"/>
+    <aura:attribute name="apexHandlerOut" type="String" default="SYS_ApplicationService"/>
+    <aura:attribute name="syncIn" type="Boolean" default="true"/>
+    <aura:attribute name="syncOut" type="Boolean" default="true" />
+
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+    <article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner">
+            <aura:if isTrue="{!v.syncIn}">
+                <button class="slds-button slds-button_brand" data-handler="{!v.apexHandler}" data-direction="IN" onclick="{!c.invokeFlowJS}">Sync In</button>
+            </aura:if>
+
+            <aura:if isTrue="{!v.syncOut}">
+                <button class="slds-button slds-button_brand" data-handler="{!v.apexHandlerOut}" data-direction="OUT" onclick="{!c.invokeFlowJS}">Sync Out</button>
+            </aura:if>
+        </div>
+        
+        <footer class="slds-card__footer">
+            <span class="{!v.messageType}">{!v.message}</span>
+        </footer>
+    </article>
+
+
+</aura:component>

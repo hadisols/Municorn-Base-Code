@@ -87,6 +87,17 @@
                 <behavior>Edit</behavior>
                 <field>Custom_Field_Value__c</field>
             </layoutItems>
+<<<<<<< HEAD
+=======
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Retry_Count__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>retry__c</field>
+            </layoutItems>
+>>>>>>> de9b49cb974fca105e9f58d02354e770eb3a9413
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

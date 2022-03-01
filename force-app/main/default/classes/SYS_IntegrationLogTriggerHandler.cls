@@ -8,7 +8,7 @@ public class SYS_IntegrationLogTriggerHandler {
                 newOutboundLogIds.add(log.Id);
             }
 
-            if(log.Type__c == 'INBOUND' && log.Status__c == 'NEW'){
+            if((log.Type__c == 'INBOUND' || log.Type__c == 'RESPONSE') && log.Status__c == 'NEW'){
                 newInboundLogIds.add(log.Id);
             }
 
@@ -30,7 +30,7 @@ public class SYS_IntegrationLogTriggerHandler {
                 newOutboundLogIds.add(log.Id);
             }
 
-            if(log.Type__c == 'INBOUND' && log.Status__c == 'READY_FOR_PROCESSING'){
+            if((log.Type__c == 'INBOUND' || log.Type__c == 'RESPONSE') && log.Status__c == 'READY_FOR_PROCESSING'){
                 newInboundLogIds.add(log.Id);
             }
 

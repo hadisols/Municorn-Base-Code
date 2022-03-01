@@ -92,10 +92,10 @@ public virtual class SYS_Transformer {
             System.debug('\n\n -------------- \n Object check:'+mapping.ObjectApiName__c +' vs. '+primaryObj+'\n -------------- \n\n');
             if(mapping.ObjectApiName__c == primaryObj){
                 System.debug('\n\n -------------- \n Object check:'+mapping.ObjectApiName__c +' vs. '+mapping.FieldApiName__c+'\n -------------- \n\n');
-                if(primaryObjFieldsMap.get(mapping.ObjectApiName__c) == null) {
-                    primaryObjFieldsMap.put(mapping.ObjectApiName__c, new List<String>()); 
+                if(primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()) == null) {
+                    primaryObjFieldsMap.put(mapping.ObjectApiName__c.toLowerCase(), new List<String>()); 
                 }
-				primaryObjFieldsMap.get(mapping.ObjectApiName__c).add(mapping.FieldApiName__c);
+				primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()).add(mapping.FieldApiName__c);
             }
             
             if(mapping.ParentField__c != null) {
@@ -123,22 +123,24 @@ public virtual class SYS_Transformer {
         
         //TODO put this behind if condition
         //now query child objects
-        
+        System.debug('MS objsList='+objsList);
         List<String> parentIds = new List<String>();
         for(sObject obj : objsList) {
+            System.debug('MS obj from objsList='+obj);
         	parentIds.add((String)obj.get('Id'));
         }
 		
-        
+        System.debug('MS check 101:');
         //Dynamically fetch all metadata fields for the primary object
         List<sObject> objs = new List<sObject>();
         if(primaryObjFieldsMap.size()>0){
+            System.debug('MS check 101 2:'+primaryObj+' ');
             String qry = 'Select Id, '+ 
-                     String.join(primaryObjFieldsMap.get(primaryObj), ',') +
+                     String.join(primaryObjFieldsMap.get(primaryObj.toLowerCase()), ',') +
                      ' from ' + 
                      primaryObj + 
                      ' where Id in :parentIds';
-                    
+            
             System.debug('query res@@=='+qry);
        
         	objs = Database.query(qry);
@@ -368,8 +370,8 @@ public virtual class SYS_Transformer {
         for(String jsonObj : jsonList) {
             Map<String, Object> mapDeserialized = (Map<String, Object>)JSON.deserializeUntyped(jsonObj);
             rootKey = new List<String>(mapDeserialized.keySet())[0];
-            System.debug('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer b4 method call:'+SYS_DataCache.sObjectApiName);
-            objectsToUpsert.add(parseJsonToObject(jsonObj, SYS_DataCache.sObjectApiName, mapOfPaths));
+            System.debug('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer b4 method call:'+sObjectApiName);
+            objectsToUpsert.add(parseJsonToObject(jsonObj, sObjectApiName, mapOfPaths));
         }
         
         
@@ -389,8 +391,8 @@ public virtual class SYS_Transformer {
         }
         // MS Added to avoid dependency on Casing of key in JSON ]
 
-        System.debug('SYS_DataCache.sObjectApiName in parseJsonToObject:'+SYS_DataCache.sObjectApiName);
-        sObject sObj = Schema.getGlobalDescribe().get(SYS_DataCache.sObjectApiName).newSObject();
+        System.debug('SYS_DataCache.sObjectApiName in parseJsonToObject:'+sObjectApiName);
+        sObject sObj = Schema.getGlobalDescribe().get(sObjectApiName).newSObject();
         if(SYS_Transformer.isChild){
         	System.debug('\n\n++++++++++++ flatKeyMap: '+flatKeyMap);
             System.debug('\n\n++++++++++++ mapOfPaths: '+mapOfPaths);
@@ -523,10 +525,46 @@ public virtual class SYS_Transformer {
                         }
                         System.debug('in else=='+result);
                         System.debug('MS Child Objects to be processed:'+childRecList);
+                        System.debug('MS condition for Key: '+key+' = '+(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase())));
                         
                         //AP-106
+<<<<<<< HEAD
                         if(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase()))
                             ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
+=======
+                        if( SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase()) && 
+                                    Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs()
+                        )
+                        {
+                            ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
+                        }
+                        else{
+
+                            //SYS_Helper.logException(SYS_DataCache.log, 'Out of Queue Limits. Need to retry');
+
+                            
+                            SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
+
+                            List<SYS_IntegrationLog__c> childRecordsToInsert = new List<SYS_IntegrationLog__c>();
+        
+                            for(String singleChildJSON : childRecList){
+                                if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
+                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log.Id,key,singleChildJSON,SYS_DataCache.INT_TYPE);
+                                    newLog.Status__c = 'ENQUEUED_FOR_RETRY';
+                                    newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
+                                    newlog.retry__c = true;
+                                    if(newlog!=NULL)
+                                        childRecordsToInsert.add(newlog);
+                                }
+                            }
+                            if(!childRecordsToInsert.isEmpty()){
+                                //appService.doDML(childRecordsToInsert, 'INSERT', '');
+                                insert childRecordsToInsert;
+                            }
+                            
+
+                        }
+>>>>>>> de9b49cb974fca105e9f58d02354e770eb3a9413
                         //System.debug('job id is==='+jobID);
                     }
                 }

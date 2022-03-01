@@ -1,0 +1,10 @@
+<design:component >
+
+    <design:attribute name="objectSetting" label="Object Setting Developer Name"/>
+    <design:attribute name="apexHandler" label="Apex Handler for Sync In" />
+    <design:attribute name="syncIn" label="Enable Sync In"/>
+    <design:attribute name="apexHandlerOut" label="Apex Handler for Sync Out" />
+    <design:attribute name="syncOut" label="Enable Sync Out"/>
+
+
+</design:component>

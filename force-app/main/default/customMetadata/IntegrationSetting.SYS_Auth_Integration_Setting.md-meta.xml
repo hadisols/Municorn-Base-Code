@@ -19,12 +19,12 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>Enable__c</field>
-        <value xsi:type="xsd:boolean">false</value>
-    </values>
-    <values>
         <field>EscapeCharacter__c</field>
         <value xsi:type="xsd:string">#</value>
+    </values>
+    <values>
+        <field>Flat_Key_for_Resource__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Hashing_Algo__c</field>
@@ -36,10 +36,6 @@
     </values>
     <values>
         <field>OAuth_Config_Record_Id__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
-        <field>SYS_Test_IntegrationSetting__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>

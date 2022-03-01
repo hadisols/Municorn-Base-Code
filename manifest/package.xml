@@ -1,103 +1,142 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-<types>
-<members>SYS_ApplicationService</members>
-<members>SYS_Constants</members>
-<members>SYS_DataCache</members>
-<members>SYS_Helper</members>
-<members>SYS_IntegrationLogInboundImmediate</members>
-<members>SYS_IntegrationLogOutboundImmediate</members>
-<members>SYS_IntegrationLogOutboundQueueable</members>
-<members>SYS_IntegrationLogTriggerHandler</members>
-<members>SYS_InvocableHandler</members>
-<members>SYS_JWTAuth_ApplicationService</members>
-<members>SYS_OAuthRedirectHandler</members>
-<members>SYS_Override_ApplicationService</members>
-<members>SYS_ParentingQueueable</members>
-<members>SYS_QueueableForInboundChild</members>
-<members>SYS_Transformer</members>
-<members>SYS_Webservice</members>
-<members>SYS_debug</members>
-
-<members>SYS_OutboundTest</members>
-<members>SYS_InboundTest</members>
-<members>SYS_TestUtil</members>
-<members>SYS_TestDataFactory</members>
-<members>SYS_MockServer</members>
-<name>ApexClass</name>
-</types>
-<types>
-<members>SYS_IntegrationLogTrigger</members>
-<name>ApexTrigger</name>
-</types>
-<types>
-<members>SYS_Aura_JWTAuthFlow</members>
-<name>AuraDefinitionBundle</name>
-</types>
-<types>
-<members>Account.SYS_Key__c</members>
-<members>Account.Trigger_Flow__c</members>
-<members>Contact.SYS_Child_Key__c</members>
-<name>CustomField</name>
-</types>
-<types>
-<members>*</members>
-<name>CustomMetadata</name>
-</types>
-<types>
-<members>FieldSetting__mdt</members>
-<members>HttpHeaders__mdt</members>
-<members>IntegrationEnablement__mdt</members>
-<members>IntegrationSetting__mdt</members>
-<members>ObjectSetting__mdt</members>
-<members>RelationshipSetting__mdt</members>
-<members>SYS_IntegrationLog__c</members>
-<members>SYS_OAuthConfig__c</members>
-<members>SYS_Tracker__c</members>
-<name>CustomObject</name>
-</types>
-<types>
-<members>SYS_IntegrationLog_Record_Page</members>
-<members>SYS_OAuth_Configs</members>
-<name>FlexiPage</name>
-</types>
-<types>
-<members>FieldSetting__mdt-FieldSetting Layout</members>
-<members>HttpHeaders__mdt-HttpHeader Layout</members>
-<members>IntegrationEnablement__mdt-IntegrationEnablement Layout</members>
-<members>IntegrationSetting__mdt-IntegrationSetting Layout</members>
-<members>ObjectSetting__mdt-ObjectSetting Layout</members>
-<members>RelationshipSetting__mdt-RelationshipSetting Layout</members>
-<members>SYS_IntegrationLog__c-SYS_IntegrationLog Layout</members>
-<members>SYS_OAuthConfig__c-SYS_OAuthConfig Layout</members>
-<name>Layout</name>
-</types>
-<types>
-<members>GCPJWT</members>
-<name>NamedCredential</name>
-</types>
-<types>
-<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
-<name>QuickAction</name>
-</types>
-<types>
-<members>DrChrono</members>
-<members>Gmail_Token_API</members>
-<name>RemoteSiteSetting</name>
-</types>
-<types>
-<members>SYS_Test_Inbound_Body</members>
-<members>SYS_Test_Inbound_Body_Large</members>
-<members>SYS_Test_Outbound_Response_Body</members>
-<name>StaticResource</name>
-</types>
-<types>
-<members>SYS_OAuthConfig__c.Start_Authentication_Flow</members>
-<name>WebLink</name>
-</types>
-<types>
-     <members>SYS_DrChrono_Permission_Set</members>
-     <name>PermissionSet</name>
-    </types>    
-<version>53.0</version>
+	<types>
+		<members>SYS_ApplicationService</members>
+		<members>SYS_Constants</members>
+		<members>SYS_DataCache</members>
+		<members>SYS_ForceSync_Controller</members>
+		<members>SYS_Helper</members>
+		<members>SYS_InboundTest</members>
+		<members>SYS_IntegrationLogInboundImmediate</members>
+		<members>SYS_IntegrationLogOutboundImmediate</members>
+		<members>SYS_IntegrationLogOutboundQueueable</members>
+		<members>SYS_IntegrationLogTriggerHandler</members>
+		<members>SYS_InvocableHandler</members>
+		<members>SYS_JWTAuth_ApplicationService</members>
+		<members>SYS_MockServer</members>
+		<members>SYS_OAuthRedirectHandler</members>
+		<members>SYS_OutboundTest</members>
+		<members>SYS_Override_ApplicationService</members>
+		<members>SYS_ParentingQueueable</members>
+		<members>SYS_QueueableForInboundChild</members>
+		<members>SYS_TestDataFactory</members>
+		<members>SYS_TestUtil</members>
+		<members>SYS_Transformer</members>
+		<members>SYS_Webservice</members>
+		<members>SYS_debug</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>SYS_IntegrationLogTrigger</members>
+		<name>ApexTrigger</name>
+	</types>
+	<types>
+		<members>SYS_Aura_ForceSync</members>
+		<members>SYS_Aura_JWTAuthFlow</members>
+		<name>AuraDefinitionBundle</name>
+	</types>
+	<types>
+		<members>Account.SYS_Key__c</members>
+		<members>Account.Trigger_Flow__c</members>
+		<members>Contact.SYS_Child_Key__c</members>
+		<name>CustomField</name>
+	</types>
+	<types>
+		<members>FieldSetting.SYS_Auth_IB_Access_Token</members>
+		<members>FieldSetting.SYS_Auth_OB_Audience</members>
+		<members>FieldSetting.SYS_Auth_OB_Expiry_Time</members>
+		<members>FieldSetting.SYS_Auth_OB_Issued_at</members>
+		<members>FieldSetting.SYS_Auth_OB_Issuer</members>
+		<members>FieldSetting.SYS_Auth_OB_Subject</members>
+		<members>FieldSetting.SYS_Auth_OB_Target_Audience</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Flow_Check</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Name</members>
+		<members>FieldSetting.SYS_Test_IB_Account_SYS_Key</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_Account_Lookup</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_LastName</members>
+		<members>FieldSetting.SYS_Test_IB_Contact_SYS_Key</members>
+		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
+		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
+		<members>HttpHeaders.SYS_Auth_Header</members>
+		<members>HttpHeaders.SYS_Test_Header</members>
+		<members>IntegrationEnablement.SYS_Auth_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_Test_Integration_Enablement</members>
+		<members>IntegrationSetting.SYS_Auth_Integration_Setting</members>
+		<members>IntegrationSetting.SYS_Test_IntegrationSetting</members>
+		<members>ObjectSetting.SYS_Auth_JWT_Object_Setting</members>
+		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>
+		<name>CustomMetadata</name>
+	</types>
+	<types>
+		<members>FieldSetting__mdt</members>
+		<members>HttpHeaders__mdt</members>
+		<members>IntegrationEnablement__mdt</members>
+		<members>IntegrationSetting__mdt</members>
+		<members>ObjectSetting__mdt</members>
+		<members>RelationshipSetting__mdt</members>
+		<members>SYS_IntegrationLog__c</members>
+		<members>SYS_OAuthConfig__c</members>
+		<members>SYS_Tracker__c</members>
+		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>SYS_IntegrationLog__c</members>
+		<members>SYS_OAuthConfig__c</members>
+		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>SYS_IntegrationLog_Record_Page</members>
+		<members>SYS_OAuth_Configs</members>
+		<name>FlexiPage</name>
+	</types>
+	<types>
+		<members>SYS_Flow_for_log_retry</members>
+		<name>Flow</name>
+	</types>
+	<types>
+		<members>FieldSetting__mdt-FieldSetting Layout</members>
+		<members>HttpHeaders__mdt-HttpHeader Layout</members>
+		<members>IntegrationEnablement__mdt-IntegrationEnablement Layout</members>
+		<members>IntegrationSetting__mdt-IntegrationSetting Layout</members>
+		<members>ObjectSetting__mdt-ObjectSetting Layout</members>
+		<members>RelationshipSetting__mdt-RelationshipSetting Layout</members>
+		<members>SYS_IntegrationLog__c-SYS_IntegrationLog Layout</members>
+		<members>SYS_OAuthConfig__c-SYS_OAuthConfig Layout</members>
+		<name>Layout</name>
+	</types>
+	<types>
+		<members>SYS_IntegrationLog__c.All</members>
+		<members>SYS_OAuthConfig__c.All</members>
+		<members>SYS_Tracker__c.All</members>
+		<name>ListView</name>
+	</types>
+	<types>
+		<members>GCPJWT</members>
+		<name>NamedCredential</name>
+	</types>
+	<types>
+		<members>SYS_Municorn_Permission_Set</members>
+		<members>SYS_DrChrono_Permission_Set</members>
+		<name>PermissionSet</name>
+	</types>
+	<types>
+		<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
+		<name>QuickAction</name>
+	</types>
+	<types>
+		<members>DrChrono</members>
+		<members>Gmail_Token_API</members>
+		<name>RemoteSiteSetting</name>
+	</types>
+	<types>
+		<members>SYS_Test_Inbound_Body</members>
+		<members>SYS_Test_Inbound_Body_Large</members>
+		<members>SYS_Test_Outbound_Response_Body</members>
+		<name>StaticResource</name>
+	</types>
+	<types>
+		<members>SYS_OAuthConfig__c.Start_Authentication_Flow</members>
+		<name>WebLink</name>
+	</types>
+	<version>53.0</version>
 </Package>

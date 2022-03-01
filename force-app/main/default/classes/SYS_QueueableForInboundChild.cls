@@ -50,7 +50,8 @@ public class SYS_QueueableForInboundChild implements Queueable {
         System.debug('MS pendingChildRecords:'+pendingChildRecords);
         System.debug('MS childRecordsToInsert:'+childRecordsToInsert);
         if(!childRecordsToInsert.isEmpty()){
-            appService.doDML(childRecordsToInsert, 'INSERT', '');
+            //appService.doDML(childRecordsToInsert, 'INSERT', '');
+            insert childRecordsToInsert;
         }
 
         /**
