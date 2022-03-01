@@ -528,10 +528,6 @@ public virtual class SYS_Transformer {
                         System.debug('MS condition for Key: '+key+' = '+(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase())));
                         
                         //AP-106
-<<<<<<< HEAD
-                        if(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase()))
-                            ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
-=======
                         if( SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase()) && 
                                     Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs()
                         )
@@ -564,7 +560,6 @@ public virtual class SYS_Transformer {
                             
 
                         }
->>>>>>> de9b49cb974fca105e9f58d02354e770eb3a9413
                         //System.debug('job id is==='+jobID);
                     }
                 }

@@ -10,11 +10,7 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
         return output;
     }
 
-<<<<<<< HEAD
-    public override String preprocessJSONForOutbound(SYS_IntegrationLog__c log, String jsonBody){
-=======
     public override String preprocessJSONForOutbound(SYS_IntegrationLog__c log, String jsonBody,HttpRequest req){
->>>>>>> de9b49cb974fca105e9f58d02354e770eb3a9413
 
         // TODO add other supported algos. Handle RSA-SHA256 using Certificate
 
