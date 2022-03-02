@@ -128,13 +128,6 @@
                 <behavior>Edit</behavior>
                 <field>Token_Last_Refresh_Date__c</field>
             </layoutItems>
-<<<<<<< HEAD
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Authorize_link__c</field>
-            </layoutItems>
-=======
->>>>>>> de9b49cb974fca105e9f58d02354e770eb3a9413
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
@@ -200,11 +193,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-<<<<<<< HEAD
-        <masterLabel>00h8c00000fDmFp</masterLabel>
-=======
         <masterLabel>00h5f00000CmSIp</masterLabel>
->>>>>>> de9b49cb974fca105e9f58d02354e770eb3a9413
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
