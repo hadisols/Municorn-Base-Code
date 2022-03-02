@@ -41,6 +41,8 @@ global virtual class SYS_ApplicationService {
      */
     global virtual void setErrorHttpResponse(String stackTrace){
         SYS_debug.log('Webhook Error:'+stackTrace);
+        RestContext.response.responseBody = Blob.valueOf(stackTrace);
+
     }
 
 
@@ -291,7 +293,7 @@ global virtual class SYS_ApplicationService {
      */
     global virtual String getOperationTypeFor(String method) {
 
-        Map<String,String> methodToOperationMap = new Map<String,String>{'POST'=>'INSERT','PUT'=>'UPSERT','DELETE'=>'DELETE','PATCH'=>'UPDATE'};
+        Map<String,String> methodToOperationMap = new Map<String,String>{'POST'=>'UPSERT','PUT'=>'UPSERT','DELETE'=>'DELETE','PATCH'=>'UPDATE'};
         return methodToOperationMap.get(method);
     }
 
@@ -330,7 +332,7 @@ global virtual class SYS_ApplicationService {
         log.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
         log.Status__c = 'NEW';
         log.How_to_process__c = 'use_custom_apex_handler';
-        log.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Inbound_Custom_Apex_Handler__c;
+        log.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
 
         return log;
     }
@@ -365,7 +367,7 @@ global virtual class SYS_ApplicationService {
 
         //log.External_Id_Field_API_Name__c = 'SYS_Child_Key__c';
         log.How_to_process__c = 'use_custom_apex_handler';
-        log.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Inbound_Custom_Apex_Handler__c;
+        log.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
 
         return log;
     }
@@ -397,18 +399,24 @@ global virtual class SYS_ApplicationService {
             String formUrlEncodedBody=''; 
             Map<String,Object> jsonobj = (Map<String,Object>)JSON.deserializeUntyped(jsonBody);
             List<String> reqkeymap = new List<String>(jsonobj.keySet());
+            List<String> keyValueList = new List<String>();
             reqkeymap.sort();
-            Integer i=0;
+
             for (String key: reqkeymap) {
-                if (!String.isBlank(key) && jsonobj.get(key) != '' && (jsonobj.get(key)) instanceOf String)
-                if(i==0){
-                    formUrlEncodedBody += '?' + key.toLowerCase() + '=' + jsonobj.get(key);
-                } else {
-                    formUrlEncodedBody += '&' + key.toLowerCase() + '=' + jsonobj.get(key);
+                if (!String.isBlank(key) && jsonobj.get(key) != '' && (jsonobj.get(key)) instanceOf String){
+                    keyValueList.add(key.toLowerCase() + '=' + EncodingUtil.urlEncode(String.valueOf(jsonobj.get(key)),'UTF-8'));
                 }
-                i++;
             }
+            formUrlEncodedBody = String.join(keyValueList,'&');
+            //log.data1__c = formUrlEncodedBody; 
+
             jsonBody = formUrlEncodedBody;
+        }
+        else if(req.getHeader('content-type') == 'multipart/form-data'){
+            //TODO form-data with boundary calculation
+        }
+        else{
+            //TODO throw exception invalid header or just log
         }
         return jsonBody;
     }
@@ -482,29 +490,52 @@ global virtual class SYS_ApplicationService {
                
         return doDML(sObjectsToDML,log.SYS_Operation_Type__c,externalIdFieldAPIName,log);
     }
+
     /* ------------------------------------------------------------------------ */
 
-    global virtual String getHttpRequestEndpoint(){
-        String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
-        String resourceUrl = 
-            baseEndpoint+
-            SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
-        String urlParams='';
-        if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
-                urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
-        if(urlParams!=''){
-            resourceUrl+='/'+urlParams;
+    global virtual String getHttpRequestMethod(SYS_IntegrationLog__c log,String externalId){
+
+        if(log.SYS_Operation_Type__c == 'DELETE'){
+            return 'DELETE';
         }
+        else if(externalId != NULL && externalId != ''){
+            return SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).UpdateMethod__c;
+        }
+        else{
+            return 'POST';
+        }
+
+    }
+    
+    /* ------------------------------------------------------------------------ */
+
+    global virtual String getHttpRequestEndpoint(HttpRequest req,SYS_IntegrationLog__c log, String externalId){
+        String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+        String resourceUrl = baseEndpoint + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
+        
+        System.debug('====== MS Endpoint check:'+resourceUrl);
+
+        //Log is to create resource
+        if(req.getMethod() == 'POST' && (externalId == NULL || externalId == '')){
+            String urlParams='';
+            if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
+                    urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
+            
+            if(urlParams!=''){
+                resourceUrl+='/'+urlParams;
+            }
+        }
+        else{
+            //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
+            resourceUrl+= '/'+ externalId;
+        }
+        System.debug('====== MS Endpoint check:'+resourceUrl);
         
         return resourceUrl;
     }
 
-    global virtual String getHttpRequestMethod(){
-        
-        return SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).UpdateMethod__c;
-    }
-
-    global virtual void setHttpRequestHeaders(HttpRequest req){
+    /* ------------------------------------------------------------------------ */
+    global virtual void setHttpRequestHeaders(HttpRequest req,SYS_IntegrationLog__c log){
         
         List<HttpHeaders__mdt> httpHeader = SYS_DataCache.headerSetting;
         for(HttpHeaders__mdt head:httpHeader){
@@ -529,13 +560,21 @@ global virtual class SYS_ApplicationService {
         }
     }
 
+    /* ------------------------------------------------------------------------ */
+
     global virtual HttpRequest buildOutboundHttpRequest(SYS_IntegrationLog__c log){
         HttpRequest req = new HttpRequest();
+
+        List<sObject> recList = 
+            Database.query( 'SELECT '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c+
+                            ' FROM '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c+
+                            ' WHERE Id = \'' + log.WhatId__c + '\'');
+ 
+        String externalId = String.valueOf(recList[0].get(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c));
         
-        req.setEndpoint(getHttpRequestEndpoint());
-        req.setMethod(getHttpRequestMethod());
-        System.debug('Final method set in buildOutboundHttpRequest() is:'+req.getMethod());
-        setHttpRequestHeaders(req);
+        req.setMethod(getHttpRequestMethod(log,externalId));
+        req.setEndpoint(getHttpRequestEndpoint(req,log,externalId));
+        setHttpRequestHeaders(req,log);
  
         return req;
     }
@@ -715,6 +754,10 @@ global virtual class SYS_ApplicationService {
 
         SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
 
+        String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
+        if(algo!=NULL && algo!='')
+            logResp.Request_Digest__c = generateHash(resp.getBody(),algo);
+
         if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
 
             SYS_debug.log('#### resp status: '+resp.getStatus());
@@ -742,7 +785,7 @@ global virtual class SYS_ApplicationService {
                 logResp.SYS_Operation_Type__c = 'UPDATE';
                 logResp.Resource__c = SYS_DataCache.fieldSettingMappingUsingObjSetting[0].RestResource__c;
                 logResp.How_To_Process__c = 'use_custom_apex_handler';
-                logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Inbound_Custom_Apex_Handler__c;
+                logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
             }
             else{
                 logResp.Status__c = 'DONE';

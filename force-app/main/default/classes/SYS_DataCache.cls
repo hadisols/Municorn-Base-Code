@@ -44,7 +44,7 @@ public class SYS_DataCache {
                 RestRequest req = RestContext.request;
                 String intSettingFromUrl = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
                 INT_TYPE = intSettingFromUrl;
-
+                System.debug('MS Stripe extension check:'+integrationSetting);
                 String extFromUrl = integrationSetting.get(INT_TYPE).ApexHandler__c;
                 System.debug('\nintegrationSetting.get(INT_TYPE):'+integrationSetting.get(INT_TYPE));
                 System.debug('\nApexHandler__c:'+integrationSetting.get(INT_TYPE).ApexHandler__c);
@@ -151,9 +151,9 @@ public class SYS_DataCache {
     public static Map<String,IntegrationSetting__mdt> intMap;
     public static Map<String,IntegrationSetting__mdt> integrationSetting {
         get{
-            if(integrationSetting == null){
+            if(intMap == null){
                 intMap = new Map<String,IntegrationSetting__mdt>();
-                for(IntegrationSetting__mdt is : [SELECT Id,OAuth_Config_Record_Id__c, Inbound_Custom_Apex_Handler__c, Flat_Key_for_Resource__c,Hashing_Algo__c,ApexHandler__c,webhookToken__c, DeveloperName, Label, UpdateMethod__c, DebugCheck__c,
+                for(IntegrationSetting__mdt is : [SELECT Id,OAuth_Config_Record_Id__c, Flat_Key_for_Resource__c,Hashing_Algo__c,ApexHandler__c,webhookToken__c, DeveloperName, Label, UpdateMethod__c, DebugCheck__c,
                                      AuthenticationType__c, BaseAPIEndPoint__c, 
                                      QualifiedApiName, EscapeCharacter__c FROM IntegrationSetting__mdt 
                                      LIMIT 100]){
@@ -196,8 +196,8 @@ public class SYS_DataCache {
                 System.debug('Field Settings #### 1:'+mappings);
                 mappings = [Select Id,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
                             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c 
-                            from FieldSetting__mdt /*where Is_Active__c=true where FieldApiName__c != null*/
-                            WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'INBOUND'];
+                            from FieldSetting__mdt WHERE Is_Active__c=true  
+                            AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'INBOUND'];
                 System.debug('Field Settings #### 2:'+mappings);
                 for(FieldSetting__mdt item : mappings) {
                     System.debug('Field Settings #### 3:'+item);
@@ -224,7 +224,7 @@ public class SYS_DataCache {
                 String query = 'SELECT Id,StaticValue__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c, ObjectSetting__r.DeveloperName,ChildFieldApiName__c,Field_Mapping_Handler__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,' +                
                 ' ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c ' + 
                 ' from FieldSetting__mdt '+
-                ' WHERE ObjectSetting__r.IntegrationType__r.developername =\''+SYS_DataCache.INT_TYPE+'\' AND Direction__c != \'OUTBOUND\' '; 
+                ' WHERE ObjectSetting__r.IntegrationType__r.developername =\''+SYS_DataCache.INT_TYPE+'\' AND Direction__c != \'OUTBOUND\' AND Is_Active__c = true'; 
                 
                 System.debug('----WS FieldMappingOutbound Query:'+query);
                 mappingOut = Database.query(query);

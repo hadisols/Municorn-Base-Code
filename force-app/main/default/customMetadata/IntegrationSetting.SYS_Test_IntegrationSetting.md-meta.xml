@@ -31,10 +31,6 @@
         <value xsi:type="xsd:string">SHA1</value>
     </values>
     <values>
-        <field>Inbound_Custom_Apex_Handler__c</field>
-        <value xsi:type="xsd:string">SYS_ApplicationService</value>
-    </values>
-    <values>
         <field>NamedCredential__c</field>
         <value xsi:nil="true"/>
     </values>

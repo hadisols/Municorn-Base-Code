@@ -2,25 +2,8 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
 
     private static SYS_IntegrationLog__c log;
 
-    public override String getHttpRequestMethod(){
+    public override String getHttpRequestMethod(SYS_IntegrationLog__c log,String externalId){
         return 'GET';
-    }
-
-    public override String getHttpRequestEndpoint(){
-
-        String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
-        String resourceUrl = 
-            baseEndpoint+
-            SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c+'/';
-        
-        List<sObject> recList = 
-            Database.query( 'SELECT '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c+
-                            ' FROM '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c+
-                            ' WHERE Id = \'' + log.WhatId__c + '\'');
- 
-        String externalId = String.valueOf(recList[0].get(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c));
-        resourceUrl+=externalId;
-        return resourceUrl;
     }
 
     @AuraEnabled
@@ -84,7 +67,7 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
                 newSysLog.Status__c = 'NEW';
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
-                newSysLog.SYS_Operation_Type__c = 'INSERT';
+                newSysLog.SYS_Operation_Type__c = 'UPSERT';
                 newSysLog.WhatId__c = recId;
                 newSysLog.How_to_process__c = 'use_custom_apex_handler';
                 newSysLog.Custom_Apex_Handler__c = apexHandler;
