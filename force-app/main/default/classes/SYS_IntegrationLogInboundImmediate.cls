@@ -43,7 +43,7 @@ public class SYS_IntegrationLogInboundImmediate{
                 
                 SYS_DataCache.INT_TYPE = log.SYS_IntegrationSettings__c;
                 SYS_debug.log('MS SYS_DataCache.log in Inbound queueable:'+SYS_DataCache.log);
-                // NA SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
+                SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                 SYS_ApplicationService appService;
 
                 System.debug('How to process:'+log.How_to_process__c);

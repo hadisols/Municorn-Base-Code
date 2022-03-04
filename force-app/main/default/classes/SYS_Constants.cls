@@ -10,6 +10,12 @@ public class SYS_Constants {
             return 10;
         }
     }
+
+    public static Integer MAX_CHILD_NESTING_DEPTH {
+        get{
+            return 5;
+        }
+    }
     
     
 }

@@ -12,7 +12,8 @@ global class SYS_OAuthRedirectHandler {
         
         List<SYS_OAuthConfig__c> configs = [SELECT 
                                                 Id, 
-                                                Name, 
+                                                Name,
+                                                Scope__c, 
                                                 Access_Token__c, 
                                                 Authorize_Endpoint__c, 
                                                 Client_Secret__c, 
@@ -39,7 +40,12 @@ global class SYS_OAuthRedirectHandler {
             String clientId = configs[0].Client_Id__c;
             String clientSecret = configs[0].Client_Secret__c;
             String redirect_uri = configs[0].Redirect_URL__c;
-            String payload = 'client_id='+EncodingUtil.urlEncode(clientId,'UTF-8')+'&client_secret='+EncodingUtil.urlEncode(clientSecret,'UTF-8')+'&code='+EncodingUtil.urlEncode(code,'UTF-8')+'&state='+EncodingUtil.urlEncode(state,'UTF-8')+'&grant_type=authorization_code'+'&redirect_uri='+EncodingUtil.urlEncode(redirect_uri ,'UTF-8');
+            String payload =    'client_id='+EncodingUtil.urlEncode(clientId,'UTF-8')+
+                                '&client_secret='+EncodingUtil.urlEncode(clientSecret,'UTF-8')+
+                                '&code='+EncodingUtil.urlEncode(code,'UTF-8')+
+                                '&state='+EncodingUtil.urlEncode(state,'UTF-8')+
+                                '&grant_type=authorization_code'+
+                                '&redirect_uri='+EncodingUtil.urlEncode(redirect_uri ,'UTF-8');
             
             req.setBody(payload);
             System.debug('----- Token Request Body:'+req.getBody());

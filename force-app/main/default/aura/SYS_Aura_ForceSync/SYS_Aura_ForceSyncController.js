@@ -10,7 +10,7 @@
         let action = component.get("c.invokeFlow");
         action.setParams({
                             "recId" : component.get("v.recordId"),
-                            "objSetting" : component.get("v.objectSetting"),
+                            "objSetting" : event.target.getAttribute("data-objsetting"),
                             "apexHandler" : event.target.getAttribute("data-handler"),
                             "direction" : event.target.getAttribute("data-direction")
                         });

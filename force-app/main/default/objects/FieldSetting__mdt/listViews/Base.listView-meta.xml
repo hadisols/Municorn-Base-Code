@@ -7,6 +7,8 @@
     <columns>NamespacePrefix</columns>
     <columns>IsChild__c</columns>
     <columns>Key__c</columns>
+    <columns>Level__c</columns>
+    <columns>ParentField__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>ObjectSetting__c</field>
