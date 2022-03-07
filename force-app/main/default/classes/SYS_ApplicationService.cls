@@ -156,17 +156,19 @@ global virtual class SYS_ApplicationService {
     }
 
     global virtual Boolean doUpsert(List<sObject> records,String additionalSetting,SYS_IntegrationLog__c log){
+        system.debug('App1--');
         Database.UpsertResult[] results;
         Boolean success = true;
         if(additionalSetting=='')
             results = Database.upsert(records, false);
         else{
             System.debug('--MS externalIdField for:'+records[0]);
+            system.debug('App2--');
             //Schema.SObjectField externalIdField = Schema.getGlobalDescribe().get(SYS_DataCache.sObjectApiName).getDescribe().fields.getMap().get(additionalSetting); 
-            
+            system.debug('App3--');
             Schema.SObjectField externalIdField = records[0].getSObjectType().getDescribe().fields.getMap().get(additionalSetting); 
             System.debug('--MS externalIdField in doUpsert:'+externalIdField);
-            
+            system.debug('App4--');
             results = Database.upsert(records, externalIdField, false);
         }
         

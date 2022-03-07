@@ -2,6 +2,7 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
 		<members>SYS_ApplicationService</members>
+		<members>Drchrono_ApplicationService</members>
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
 		<members>SYS_ForceSync_Controller</members>

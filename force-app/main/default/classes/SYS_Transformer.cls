@@ -228,7 +228,14 @@ public virtual class SYS_Transformer {
                         jsonMapObject.put(nodeList[0], mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
                     }
                     else {
-                        jsonMapObject.put(nodeList[0], obj.get(mapping.FieldApiName__c));
+                        System.debug('new changes');
+                        String fieldMappingHandler = 'SYS_ApplicationService';
+                        if(mapping.Field_Mapping_Handler__c != '' && mapping.Field_Mapping_Handler__c != NULL){
+                            fieldMappingHandler = mapping.Field_Mapping_Handler__c;
+                        }
+                        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(fieldMappingHandler).newInstance();
+                        
+                        jsonMapObject.put(nodeList[0], appService.getFieldValues(obj, mapping, mapping.FieldApiName__c));
                     }
                     
                 }
