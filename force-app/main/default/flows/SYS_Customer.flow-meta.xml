@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Log_to_Make_Callout_Stripe_Update_Customer</name>
-        <label>Log to Make Callout Stripe Update Customer</label>
-        <locationX>833</locationX>
-        <locationY>198</locationY>
-        <actionName>SYS_InvocableHandler</actionName>
+        <name>PMA_Contact_Trigger</name>
+        <label>PMA Contact Trigger</label>
+        <locationX>686</locationX>
+        <locationY>108</locationY>
+        <actionName>PMA_ContactInvocableHandler</actionName>
         <actionType>apex</actionType>
-        <dataTypeMappings>
-            <typeName>T__newVal</typeName>
-            <typeValue>Contact</typeValue>
-        </dataTypeMappings>
-        <dataTypeMappings>
-            <typeName>T__oldVal</typeName>
-            <typeValue>Contact</typeValue>
-        </dataTypeMappings>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>newVal</name>
@@ -29,18 +21,6 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>integrationSetting</name>
-            <value>
-                <stringValue>Stripe</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>objectSetting</name>
-            <value>
-                <stringValue>StripeCustomer</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
             <name>oldVal</name>
             <value>
                 <elementReference>$Record</elementReference>
@@ -49,7 +29,7 @@
         <inputParameters>
             <name>operationType</name>
             <value>
-                <stringValue>UPDATE</stringValue>
+                <stringValue>INSERT</stringValue>
             </value>
         </inputParameters>
     </actionCalls>
@@ -57,25 +37,45 @@
     <decisions>
         <name>Limit_Flow_start</name>
         <label>Limit Flow start</label>
-        <locationX>545</locationX>
-        <locationY>137</locationY>
+        <locationX>502</locationX>
+        <locationY>285</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>gender_is_changed</name>
+            <name>New_Contact_Created</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.Gender__c</leftValueReference>
-                <operator>IsChanged</operator>
+                <leftValueReference>IsNew</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>$Record.Phone_Number__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Member</stringValue>
+                </rightValue>
+            </conditions>
             <connector>
-                <targetReference>Log_to_Make_Callout_Stripe_Update_Customer</targetReference>
+                <targetReference>PMA_Contact_Trigger</targetReference>
             </connector>
-            <label>gender is changed</label>
+            <label>New Contact Created</label>
         </rules>
     </decisions>
+    <formulas>
+        <description>Check IsNew()</description>
+        <name>IsNew</name>
+        <dataType>Boolean</dataType>
+        <expression>IsNew()</expression>
+    </formulas>
     <interviewLabel>SYS Customer {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SYS Customer</label>
     <processMetadataValues>
@@ -103,17 +103,9 @@
         <connector>
             <targetReference>Limit_Flow_start</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>LastName</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
         <object>Contact</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
 </Flow>

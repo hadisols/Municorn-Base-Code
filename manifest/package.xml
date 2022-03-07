@@ -11,7 +11,10 @@
 		<members>TransactionService</members>
 		<!-- End Payment Classes -->
 		<!-- Start PMA Classes -->
+		<members>PMA_ContactInvocableHandler</members>
+		<!--
 		<members>PMA_ContactTriggerHandler</members>
+		-->
 		<members>PMA_ExternalSiteFormsUtility</members>
 		<members>ProductsController</members>
 		<!-- End PMA Classes -->
