@@ -186,7 +186,7 @@
 		<members>SYS_IntegrationLog__c.Requires_process_on_complete__c</members>
 		<members>SYS_IntegrationLog__c.Resource__c</members>
 		<members>SYS_IntegrationLog__c.SYS_Http_Status__c</members>
-		<members>SYS_IntegrationLog__c.SYS_IntegrationSettings__c</members>
+		<members>SYS_IntegrationLog__c.Integration_Setting__c</members>
 		<members>SYS_IntegrationLog__c.SYS_Operation_Type__c</members>
 		<members>SYS_IntegrationLog__c.SYS_RequestId__c</members>
 		<members>SYS_IntegrationLog__c.Sobject_Link__c</members>

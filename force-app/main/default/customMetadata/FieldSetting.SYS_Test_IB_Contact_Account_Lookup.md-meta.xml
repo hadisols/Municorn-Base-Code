@@ -48,7 +48,7 @@
     </values>
     <values>
         <field>Level__c</field>
-        <value xsi:type="xsd:string">1</value>
+        <value xsi:type="xsd:string">0</value>
     </values>
     <values>
         <field>Log_API_for_field_mapping__c</field>
@@ -76,7 +76,7 @@
     </values>
     <values>
         <field>RestResource__c</field>
-        <value xsi:type="xsd:string">contact</value>
+        <value xsi:type="xsd:string">Contact</value>
     </values>
     <values>
         <field>StaticValue__c</field>

@@ -198,7 +198,7 @@ public class StripeService {
         txn.PaymentBankName__c = errorResp == null && charge.payment_method_details.type == 'ach_debit' ? charge.payment_method_details.ach_debit.bank_name : null;
         /*
         SYS_IntegrationLog__c logResp = SYS_integrationLogHandler.getLogsToInsert(JSON.serialize(charge));
-        logResp.SYS_IntegrationSettings__c = SYS_Constants.INT_TYPE;
+        logResp.Integration_Setting__c = SYS_Constants.INT_TYPE;
         logResp.Type__c = 'INBOUND';
         logResp.SYS_Operation_Type__c = 'RESPONSE';
         logResp.Status__c = 'NEW';

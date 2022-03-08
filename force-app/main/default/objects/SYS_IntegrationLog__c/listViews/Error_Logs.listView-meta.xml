@@ -7,7 +7,7 @@
     <columns>LAST_UPDATE</columns>
     <columns>SYS_Http_Status__c</columns>
     <columns>SYS_RequestId__c</columns>
-    <columns>SYS_IntegrationSettings__c</columns>
+    <columns>Integration_Setting__c</columns>
     <columns>SYS_Operation_Type__c</columns>
     <columns>Type__c</columns>
     <columns>Status__c</columns>

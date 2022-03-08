@@ -23,12 +23,24 @@
         <value xsi:type="xsd:string">#</value>
     </values>
     <values>
+        <field>Flat_Key_for_Resource_Child__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Flat_Key_for_Resource__c</field>
+        <value xsi:type="xsd:string">data.object.object</value>
+    </values>
+    <values>
         <field>Hashing_Algo__c</field>
         <value xsi:type="xsd:string">SHA1</value>
     </values>
     <values>
+        <field>Inbound_Custom_Apex_Handler__c</field>
+        <value xsi:type="xsd:string">SYS_ApplicationService</value>
+    </values>
+    <values>
         <field>NamedCredential__c</field>
-        <value xsi:type="xsd:string">Stripe</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>OAuth_Config_Record_Id__c</field>

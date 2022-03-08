@@ -47,7 +47,19 @@
         <value xsi:type="xsd:string">data.object.billing_details.address.state</value>
     </values>
     <values>
+        <field>Level__c</field>
+        <value xsi:type="xsd:string">0</value>
+    </values>
+    <values>
         <field>Log_API_for_field_mapping__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Lookup_External_Key__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Lookup_Object_API_Name__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
