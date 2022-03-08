@@ -98,7 +98,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>SYS_IntegrationLog__c.SYS_IntegrationSettings__c</field>
+        <field>SYS_IntegrationLog__c.Integration_Setting__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

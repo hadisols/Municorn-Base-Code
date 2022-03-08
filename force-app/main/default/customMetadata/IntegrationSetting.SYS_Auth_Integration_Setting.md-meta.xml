@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>ApexHandler__c</field>
-        <value xsi:type="xsd:string">SYS_ApplicationService</value>
+        <value xsi:type="xsd:string">SYS_JWTAuth_ApplicationService</value>
     </values>
     <values>
         <field>AuthenticationType__c</field>
@@ -21,6 +21,10 @@
     <values>
         <field>EscapeCharacter__c</field>
         <value xsi:type="xsd:string">#</value>
+    </values>
+    <values>
+        <field>Flat_Key_for_Resource_Child__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Flat_Key_for_Resource__c</field>

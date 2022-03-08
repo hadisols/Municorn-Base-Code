@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>RequestId</label>
     <referenceTo>SYS_IntegrationLog__c</referenceTo>
-    <relationshipLabel>SYS_IntegrationLogs (RequestId)</relationshipLabel>
+    <relationshipLabel>Callout Response Logs</relationshipLabel>
     <relationshipName>RequestId</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>

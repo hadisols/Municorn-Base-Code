@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>Parent</label>
     <referenceTo>SYS_IntegrationLog__c</referenceTo>
-    <relationshipLabel>SYS_IntegrationLogs</relationshipLabel>
+    <relationshipLabel>Child Logs</relationshipLabel>
     <relationshipName>SYS_IntegrationLogs</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>

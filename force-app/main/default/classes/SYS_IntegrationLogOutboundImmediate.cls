@@ -29,7 +29,7 @@ public class SYS_IntegrationLogOutboundImmediate{
                                                 Custom_Field_Value__c,
                                                 Requires_process_on_complete__c,
                                                 How_to_process__c,Custom_Apex_Handler__c,
-                                                Type__c,WhatId__c,Parent__c,Order__c,ObjectSettingId__c,SYS_IntegrationSettings__c
+                                                Type__c,WhatId__c,Parent__c,Order__c,ObjectSettingId__c,Integration_Setting__c
                                             FROM SYS_IntegrationLog__c WHERE Id in:sysLogIds];
         */
         
@@ -39,7 +39,7 @@ public class SYS_IntegrationLogOutboundImmediate{
             try{
                 SYS_DataCache.log = log;
                 if(Limits.getCallouts() < Limits.getLimitCallouts() - 1){
-                    SYS_DataCache.INT_TYPE = log.SYS_IntegrationSettings__c;
+                    SYS_DataCache.INT_TYPE = log.Integration_Setting__c;
                     SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                     SYS_ApplicationService appService;
                     

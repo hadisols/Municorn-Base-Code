@@ -44,7 +44,7 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
                         newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
                         newSysLog.Status__c = 'NEW';
                         newSysLog.Type__c = 'OUTBOUND';
-                        newSysLog.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
+                        newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
                         newSysLog.SYS_Operation_Type__c = 'UPSERT';
                         newSysLog.WhatId__c = jsonRecordId;
                         newSysLog.How_to_process__c = 'use_custom_apex_handler';
@@ -66,7 +66,7 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
                 
                 newSysLog.Status__c = 'NEW';
                 newSysLog.Type__c = 'OUTBOUND';
-                newSysLog.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
+                newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = 'UPSERT';
                 newSysLog.WhatId__c = recId;
                 newSysLog.How_to_process__c = 'use_custom_apex_handler';

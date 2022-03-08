@@ -333,7 +333,7 @@ global virtual class SYS_ApplicationService {
         log.Type__c = 'INBOUND';
         log.SYS_Operation_Type__c = getOperationTypeFor(method);
         log.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
-        log.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
+        log.Integration_Setting__c = SYS_DataCache.INT_TYPE;
         log.Status__c = 'NEW';
         log.How_to_process__c = 'use_custom_apex_handler';
         log.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
@@ -376,7 +376,7 @@ global virtual class SYS_ApplicationService {
             log.Resource__c = resource;
             log.Flat_Key_for_Resource__c = '';
         }
-        log.SYS_IntegrationSettings__c = integrationSetting;
+        log.Integration_Setting__c = integrationSetting;
         log.Status__c = 'NEW';
         /**
          * Applies when the child records require parenting after creation
@@ -422,12 +422,12 @@ global virtual class SYS_ApplicationService {
             reqkeymap.sort();
 
             for (String key: reqkeymap) {
-                if (!String.isBlank(key) && jsonobj.get(key) != '' && (jsonobj.get(key)) instanceOf String){
+                if (!String.isBlank(key) && jsonobj.get(key) != '' /*&& (jsonobj.get(key)) instanceOf String*/){
                     keyValueList.add(key.toLowerCase() + '=' + EncodingUtil.urlEncode(String.valueOf(jsonobj.get(key)),'UTF-8'));
                 }
             }
             formUrlEncodedBody = String.join(keyValueList,'&');
-            //log.data1__c = formUrlEncodedBody; 
+            log.data1__c = formUrlEncodedBody; 
 
             jsonBody = formUrlEncodedBody;
         }
@@ -498,9 +498,10 @@ global virtual class SYS_ApplicationService {
         
         jsonBody = preprocessJSONForInbound(log,jsonBody);
         String resource = getResourceFromJSON(log,jsonBody);
+        SYS_debug.log('\n\n ------------------------------- \n\n Application Service resource:'+resource);
+
         List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, resource);
 
-        SYS_debug.log('\n\n ------------------------------- \n\n Application Service resource:'+resource);
         SYS_debug.log('\n\n ------------------------------- \n\n Application Service sObjects to DML:'+sObjectsToDML);
         SYS_debug.log('\n\n ------------------------------- \n\n Application Service externalKeyByResourceMap:'+SYS_DataCache.externalKeyByResourceMap);
 
@@ -793,7 +794,7 @@ global virtual class SYS_ApplicationService {
             logResp.WhatId__c = log.WhatId__c;
             logResp.Type__c = 'RESPONSE';
             logResp.How_To_Process__c = 'ignore_log';
-            logResp.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
+            logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
             
         }
         else{
@@ -804,7 +805,7 @@ global virtual class SYS_ApplicationService {
                 logResp.SYS_Operation_Type__c = 'UPDATE';
                 logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
 
-                //logResp.Resource__c = SYS_DataCache.fieldSettingMappingUsingObjSetting[0].RestResource__c;
+                //logResp.Resource__c = SYS_DataCache.FieldMappingOutbound[0].RestResource__c;
                 logResp.How_To_Process__c = 'use_custom_apex_handler';
                 logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
             }
@@ -817,7 +818,8 @@ global virtual class SYS_ApplicationService {
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
             logResp.WhatId__c = log.WhatId__c;
             logResp.Type__c = 'RESPONSE';
-            logResp.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
+            logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+            logResp.ObjectSettingId__c = log.ObjectSettingId__c;
                
             
         }

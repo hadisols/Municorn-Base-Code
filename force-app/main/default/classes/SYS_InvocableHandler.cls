@@ -64,7 +64,7 @@ global class SYS_InvocableHandler {
                 SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
                 newSysLog.Status__c = 'NEW';
                 newSysLog.Type__c = 'OUTBOUND';
-                newSysLog.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
+                newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = operationType;
                 newSysLog.How_to_process__c = 'use_object_setting';
                 newSysLog.whatid__c = jsonRecordId;
