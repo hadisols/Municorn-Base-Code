@@ -36,7 +36,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>url_params__c</field>
+                <field>Resource_Name__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -59,6 +59,14 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ExternalFieldApi__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>All_OR_None__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>url_params__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

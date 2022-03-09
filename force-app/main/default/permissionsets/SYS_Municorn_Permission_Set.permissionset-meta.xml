@@ -18,6 +18,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SYS_IntegrationLog__c.Callout_URL__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SYS_IntegrationLog__c.Custom_Apex_Handler__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -38,7 +43,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SYS_IntegrationLog__c.HTTP_Method__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SYS_IntegrationLog__c.How_to_process__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_IntegrationLog__c.Integration_Setting__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -64,6 +79,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SYS_IntegrationLog__c.Order__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SYS_IntegrationLog__c.Parent_WhatId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -94,11 +114,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SYS_IntegrationLog__c.SYS_Http_Status__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>SYS_IntegrationLog__c.Integration_Setting__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -154,10 +154,10 @@ public class SYS_DataCache {
         get{
             if(intMap == null){
                 intMap = new Map<String,IntegrationSetting__mdt>();
-                for(IntegrationSetting__mdt is : [SELECT Id,OAuth_Config_Record_Id__c,Flat_Key_for_Resource_Child__c, Flat_Key_for_Resource__c,Hashing_Algo__c,ApexHandler__c,webhookToken__c, DeveloperName, Label, UpdateMethod__c, DebugCheck__c,
+                for(IntegrationSetting__mdt is : IntegrationSetting__mdt.getAll().values() /*[SELECT Id,OAuth_Config_Record_Id__c,Flat_Key_for_Resource_Child__c,Flat_Key_for_Resource_Response__c, Flat_Key_for_Resource__c,Hashing_Algo__c,ApexHandler__c,webhookToken__c, DeveloperName, Label, UpdateMethod__c, DebugCheck__c,
                                      AuthenticationType__c, BaseAPIEndPoint__c, 
                                      QualifiedApiName, EscapeCharacter__c FROM IntegrationSetting__mdt 
-                                     LIMIT 100]){
+                                     LIMIT 100]*/){
 
                     intMap.put(is.DeveloperName,is);
 
@@ -195,7 +195,7 @@ public class SYS_DataCache {
             if(AllFieldSettingsList == null){
                 AllFieldSettingsList = new List<FieldSetting__mdt>();
                 
-                AllFieldSettingsList = [Select Id,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+                AllFieldSettingsList = [Select Id,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
                             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c 
                             from FieldSetting__mdt WHERE Is_Active__c=true  
                             AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE/* AND Direction__c != 'INBOUND'*/];
@@ -382,11 +382,11 @@ public class SYS_DataCache {
     }
 
     public static void load(){ 
-        List<IntegrationSetting__mdt> listObjSetting = [SELECT EscapeCharacter__c, BaseAPIEndPoint__c, ApexHandler__c, NamedCredential__c, 
+        /*List<IntegrationSetting__mdt> listObjSetting = [SELECT EscapeCharacter__c, BaseAPIEndPoint__c, ApexHandler__c, NamedCredential__c, 
                                                    UpdateMethod__c, AuthenticationType__c,
                                                    MasterLabel, DeveloperName, Id, QualifiedApiName 
-                                                   FROM IntegrationSetting__mdt LIMIT 100];
-        for(IntegrationSetting__mdt val:listObjSetting){
+                                                   FROM IntegrationSetting__mdt LIMIT 100];*/
+        for(IntegrationSetting__mdt val: integrationSetting.values() /*listObjSetting*/){
             escCharMap.put(val.DeveloperName , val.EscapeCharacter__c);
         }
     }
@@ -501,11 +501,11 @@ public class SYS_DataCache {
     public static map<String, ObjectSetting__mdt> objectSettingInit = new Map<String, ObjectSetting__mdt>();
     public static map<String, ObjectSetting__mdt> objectSettingMap {
         get{
-            if( objectSettingInit.isEmpty()) {
-                List<ObjectSetting__mdt> objMap = [SELECT DeveloperName, ApexHandler__c,BypassTrigger__c, ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
+            if(objectSettingInit.isEmpty()) {
+                /*List<ObjectSetting__mdt> objMap = [SELECT DeveloperName,Resource_Name__c, ApexHandler__c,BypassTrigger__c, ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
                                     ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c,url_params__c FROM ObjectSetting__mdt LIMIT 10000];
-                
-                for(ObjectSetting__mdt obj : objMap) {
+                */
+                for(ObjectSetting__mdt obj : ObjectSetting__mdt.getAll().values()) {
                     objectSettingInit.put(obj.DeveloperName, obj);
                 }
             }
@@ -608,18 +608,17 @@ public class SYS_DataCache {
         }
     } 
 
-    public static List<IntegrationEnablement__mdt> enableIntList = new List<IntegrationEnablement__mdt>();
+    //public static List<IntegrationEnablement__mdt> enableIntList = new List<IntegrationEnablement__mdt>();
 
-    public static Map<String, Boolean> checkMap = new Map<String, Boolean>();
+    public static Map<String, Boolean> checkMap;
     public static Map<String, Boolean> enableCheck {
         get{
-            if(enableIntList.isEmpty()) {
-                enableIntList = [SELECT Id,Integration_Setting__r.DeveloperName, MasterLabel, Language, NamespacePrefix, Label, QualifiedApiName, Enable__c, ExpiryDate__c 
+            if(checkMap == NULL) {
+                checkMap = new Map<String, Boolean>();
+                /*enableIntList = [SELECT Id,Integration_Setting__r.DeveloperName, MasterLabel, Language, NamespacePrefix, Label, QualifiedApiName, Enable__c, ExpiryDate__c 
                                     FROM IntegrationEnablement__mdt];
-                System.debug('\n\n MS enableIntList:'+enableIntList);
-                for(IntegrationEnablement__mdt iter : enableIntList) {
-                    System.debug('\n\n MS enableIntList in loop:'+iter.Integration_Setting__r.DeveloperName.toUpperCase()+'='+iter.Enable__c);
-
+                                    */
+                for(IntegrationEnablement__mdt iter : IntegrationEnablement__mdt.getAll().values()) {
                     checkMap.put(iter.Integration_Setting__r.DeveloperName.toUpperCase() , iter.Enable__c);
                 }
             }

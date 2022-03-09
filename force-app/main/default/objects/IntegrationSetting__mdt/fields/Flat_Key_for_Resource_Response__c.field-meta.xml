@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Flat_Key_for_Resource_Response__c</fullName>
+    <description>Flat Key in JSON to identify the resource. This is useful when Webhook notification JSON is different from immediate Response. E.g. Force Sync</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Flat Key for Resource(Response)</label>
+    <length>100</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

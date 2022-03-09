@@ -113,7 +113,7 @@ public virtual class SYS_Transformer {
         List<sObject> objs = new List<sObject>();
         if(primaryObjFieldsMap.size()>0){
             System.debug('MS check 101 2:'+primaryObj+' ');
-            String qry = 'Select Id, '+ 
+            String qry = 'Select Id,'+
                      String.join(primaryObjFieldsMap.get(primaryObj.toLowerCase()), ',') +
                      ' from ' + 
                      primaryObj + 
@@ -127,7 +127,7 @@ public virtual class SYS_Transformer {
          
         
         for(String objectName : childFieldsMap.keySet()) {
-            String query = 'Select Id, '+ String.join(childFieldsMap.get(objectName), ',').removeEnd(',') +' from ' + objectName + ' where '+ childMappingsMap.get(objectName)[0].ParentField__c +' in :parentIds';
+            String query = 'Select Id,'+ String.join(childFieldsMap.get(objectName), ',').removeEnd(',') +' from ' + objectName + ' where '+ childMappingsMap.get(objectName)[0].ParentField__c +' in :parentIds';
            	System.debug('child query=='+query);
             List<sObject> childObjects = Database.query('Select Id, '+ String.join(childFieldsMap.get(objectName), ',') + ',' +childMappingsMap.get(objectName)[0].ParentField__c +' from ' + objectName + ' where '+ childMappingsMap.get(objectName)[0].ParentField__c +' in :parentIds');
            	
@@ -188,6 +188,9 @@ public virtual class SYS_Transformer {
                 
         for(FieldSetting__mdt mapping : mappings) {
 
+            if(fieldSettingIsToBeSkipped(obj,mapping))
+                continue;
+
             String fsLevel = (mapping.Level__c == NULL)?'0':mapping.Level__c;
             if(fsLevel == level){
                 //TODO handle .'s and nested
@@ -212,7 +215,8 @@ public virtual class SYS_Transformer {
                         System.debug('MS PBE If 1');
                         jsonMapObject.put(nodeList[0], mapping.StaticValue__c);
 
-                    } else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.IsChild__c == false) {
+                    }
+                    else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.IsChild__c == false) {
                         
                         System.debug('MS PBE If 2');
                         System.debug('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)+'obj api anme=='+mapping.ObjectApiName__c );
@@ -220,7 +224,7 @@ public virtual class SYS_Transformer {
 
                         jsonMapObject.put(nodeList[0], mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
                     }
-                    else {
+                    else{
                         System.debug('MS PBE If 3');
                         //-- SP jsonMapObject.put(nodeList[0], obj.get(mapping.FieldApiName__c));
                         String fieldMappingHandler = 'SYS_ApplicationService';
@@ -307,7 +311,7 @@ public virtual class SYS_Transformer {
      * Also, each resource gets broken down - TODO see if we can enhance this.
      */
 
-    public static List<sObject> getSObjectsToUpsert(List<String> jsonList, String resource) {
+    public static List<sObject> getSObjectsToUpsert(List<String> jsonList, String resource, Boolean isNotification) {
 
         List<sObject> objectsToUpsert = new List<sObject>();
        
@@ -320,13 +324,13 @@ public virtual class SYS_Transformer {
         for(FieldSetting__mdt item : SYS_DataCache.FieldMappingInbound) { 
             if(resource.equals(item.RestResource__c.toLowerCase()) /*&& item.ChildRootElement__c == null*/) {
                 mappings.add(item);
-                String newKey = item.Key__c;//--M .replace( SYS_DataCache.ESCAPE_CHAR, '.'); 
+                String newKey = (isNotification && item.Key_For_Events__c!=NULL)?item.Key_For_Events__c:item.Key__c;//--M .replace( SYS_DataCache.ESCAPE_CHAR, '.'); 
                 mapOfPaths.put(newKey, item);
                 System.debug('mapof name== '+newKey + ' value==' + item.FieldApiName__c +' obj=='+item.ObjectApiName__c);
             }
         }
         for(Integer i = 0; i < mappings.size() ; i++) {
-            System.debug('objApiname=='+mappings[i].FieldApiName__c);
+            System.debug('Field APIs for Inbound'+mappings[i].FieldApiName__c);
         }
         
         //If the current processing is not for child records the primary object is the Object setting value
@@ -475,10 +479,10 @@ public virtual class SYS_Transformer {
                 } 
                 System.debug('parentkey=='+parentKey + ' @@custom obj is==' +currentObj);
                 if (currentObj instanceof Decimal) {
-                //Add
+                    //Add
                 	result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Decimal) currentObj);
                 } else if (currentObj instanceof Integer) {
-                //Add
+                    //Add
                     result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Integer) currentObj);
                 }
                 else if (currentObj instanceof String) {
@@ -515,20 +519,16 @@ public virtual class SYS_Transformer {
                         System.debug('in else=='+result);
                         System.debug('MS Child Objects to be processed:'+childRecList);
                         System.debug('MS condition for Key: '+key+' = '+(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase())));
-                        
+
+                        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
+
+
                         //AP-106
-                        if( /*SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase()) &&*/
-                                    Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs()
-                        )
+                        if(Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs())
                         {
                             ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
                         }
                         else{
-
-                            //SYS_Helper.logException(SYS_DataCache.log, 'Out of Queue Limits. Need to retry');
-
-                            
-                            SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
 
                             List<SYS_IntegrationLog__c> childRecordsToInsert = new List<SYS_IntegrationLog__c>();
         
@@ -538,8 +538,10 @@ public virtual class SYS_Transformer {
                                     newLog.Status__c = 'ENQUEUED_FOR_RETRY';
                                     newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
                                     newlog.retry__c = true;
-                                    if(newlog!=NULL)
+                                    
+                                    if(newlog!=NULL){
                                         childRecordsToInsert.add(newlog);
+                                    }
                                 }
                             }
                             if(!childRecordsToInsert.isEmpty()){
@@ -571,5 +573,48 @@ public virtual class SYS_Transformer {
     }
 
     /* *************************************************************************************************************************** */
+
+    public static Boolean fieldSettingIsToBeSkipped(sObject sobj, FieldSetting__mdt mapping){
+
+        System.debug('MS fieldSettingIsToBeSkipped Mapping: '+mapping+', sobj:'+sobj);
+
+
+        List<FieldSetting__mdt> extIdMapping = [SELECT FieldApiName__c 
+                                                    FROM FieldSetting__mdt 
+                                                    WHERE ObjectSetting__c=:mapping.ObjectSetting__c 
+                                                    AND Is_Active__c = true 
+                                                    AND Is_External_Field__c = true
+                                                    AND Level__c =:mapping.Level__c
+                                                    ];
+
+        String externalIdField = extIdMapping[0].FieldApiName__c;
+        String mappingIsAllowedFor = mapping.Mapping_is_for__c;
+        
+        if(mappingIsAllowedFor == NULL|| mappingIsAllowedFor == 'All Records'){
+            return false;
+        }
+        else if(sobj.get(externalIdField) == NULL || sobj.get(externalIdField) == ''){
+            // Record doesn't exist in External system
+            if(mappingIsAllowedFor == 'Existing Records Only'){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            // Record exist in External system
+            if(mappingIsAllowedFor == 'New Records Only'){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        
+
+    }
+    /* *************************************************************************************************************************** */
+
 
 }

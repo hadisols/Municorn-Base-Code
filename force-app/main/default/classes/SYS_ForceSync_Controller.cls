@@ -1,10 +1,7 @@
 global class SYS_ForceSync_Controller extends SYS_ApplicationService {
 
     private static SYS_IntegrationLog__c log;
-
-    public override String getHttpRequestMethod(SYS_IntegrationLog__c log,String externalId){
-        return 'GET';
-    }
+    private static String syncDirection;
 
     @AuraEnabled
     public static SYS_IntegrationLog__c invokeFlow(Id recId,String objSetting,String apexHandler, String direction){
@@ -17,6 +14,8 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
             System.debug('======:'+recId);
             System.debug('======:'+apexHandler);
             System.debug('======:'+direction);
+            
+            syncDirection = direction;
 
             SYS_DataCache.OBJ_TYPE = objSetting;
             SYS_DataCache.INT_TYPE = SYS_DataCache.objectSettingMap.get(objSetting).IntegrationType__r.DeveloperName;
@@ -38,11 +37,13 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
                 if(jsonListForOutbound.values().size() > 0){
                     for(Id jsonRecordId:jsonListForOutbound.keyset()){ 
                         String finalJsonForOutbound;
+                        System.debug('MS jsonRecordId =========:'+jsonRecordId);
 
                         finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
 
                         newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
                         newSysLog.Status__c = 'NEW';
+                        //newSysLog.HTTP_Method__c = 'POST';
                         newSysLog.Type__c = 'OUTBOUND';
                         newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
                         newSysLog.SYS_Operation_Type__c = 'UPSERT';
@@ -65,6 +66,7 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
             }else if(direction == 'IN'){
                 
                 newSysLog.Status__c = 'NEW';
+                newSysLog.HTTP_Method__c = 'GET';
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = 'UPSERT';

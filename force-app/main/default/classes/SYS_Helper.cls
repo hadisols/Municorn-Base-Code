@@ -1,6 +1,7 @@
 public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
+
     public static String getUUID()
     {
         Blob b = Crypto.GenerateAESKey(128);
@@ -110,46 +111,82 @@ public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
-    public static Map<String, Object> getFlatKeys(String jsonObj) {
+    public static Map<String, Object> getFlatKeys(String jsonObj,String pattern) {
         Object result = JSON.deserializeUntyped(jsonObj);
         Map<String, Object> flatKeyMap = new Map<String, Object>();
         if (result instanceof Map<String, Object>) {
-            recursiveJsonParser((Map<String, Object>)result, new List<String>(), flatKeyMap);
+            recursiveJsonParser((Map<String, Object>)result, new List<String>(), flatKeyMap,pattern);
         }
         return flatKeyMap;
     }
     
-    public static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result) {
+    public static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result,String pattern) {
+        
+        //String pattern = 'A[B]';
+        pattern = pattern.rightPad(4);
+        String open = String.fromCharArray( new List<integer>{pattern.getChars()[1]});
+        String close = String.fromCharArray( new List<integer>{pattern.getChars()[3]});
+        close = close.trim();
+
         for(String key : jsonObject.keySet()) {
             Object currentObj = jsonObject.get(key);
             if (currentObj instanceof Map<String, Object>) {
                 Map<String, Object> child = (Map<String, Object>)currentObj;
                 parents.add(key);
-                recursiveJsonParser(child, parents, result);
+                recursiveJsonParser(child, parents, result,pattern);
                 parents.remove(parents.size() - 1);
            
-            } else {
+            }
+            else{
                 String parentKey = '';
                 if(parents.size() > 0) {
                     parentKey = String.join(parents, '.');
-                } 
-                if (currentObj instanceof Decimal) {
-                    //Add
-                	result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Decimal) currentObj);
-                } else if (currentObj instanceof Integer) {
-                    //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Integer) currentObj);
                 }
-                else if (currentObj instanceof String) {
-                    //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key,  currentObj);
-                } else if (currentObj instanceof Boolean) {
-                    //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Boolean) currentObj);
+
+                String resultKey = String.isBlank(parentKey) ? key : parentkey+ open + key + close;
+
+                if(pattern == 'A[B]'){
+                    for(Integer i=0; i < parentKey.countMatches('.'); i++){
+                        resultKey+= close;
+                    }
+    
+                    resultKey = resultKey.replace('.', open);
+                }
+                
+                
+
+                if(currentObj instanceof Decimal){
+
+                	result.put(resultKey, (Decimal) currentObj);
+
+                } else if (currentObj instanceof Integer){
+
+                    result.put(resultKey, (Integer) currentObj);
+                }
+                else if(currentObj instanceof String){
+
+                    result.put(resultKey,  currentObj);
+
+                } else if(currentObj instanceof Boolean){
+
+                    result.put(resultKey, (Boolean) currentObj);
+
                 } 
-                else if (currentObj == null) {
+                else if(currentObj == null) {
                     //TODO - Verify accuracy on what needs to be done
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, null);
+                    result.put(resultKey, null);
+                }
+                else if(currentObj instanceof List<Object>){
+
+                    List<Object> childArray = (List<Object>)currentObj;
+
+                    Integer arrLen = childArray.size();
+                    for (Integer i = 0; i < arrLen; i++){
+                        Map<String, Object> child = (Map<String, Object>)childArray[i];
+                        parents.add(key+'[' + i + ']');
+                        recursiveJsonParser(child, parents, result,pattern);
+                        parents.remove(parents.size() - 1);
+                    }
                 }
                 else{
                 	//TODO

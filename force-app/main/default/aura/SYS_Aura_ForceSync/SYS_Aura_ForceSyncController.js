@@ -4,7 +4,7 @@
     },
 
     invokeFlowJS : function(component, event, helper){
-        component.set("v.messageType", "slds-badge");
+        component.set("v.messageType", "slds-text-body_small");
         component.set("v.message", 'Please wait while we sync the record:'+component.get("v.recordId"));
         
         let action = component.get("c.invokeFlow");
@@ -48,13 +48,13 @@
                 var errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {
-                        component.set("v.message", 'Error while creating log record: '+errors[0].message);
+                        component.set("v.message", 'Error Details: '+errors[0].message);
                     }
                 }
                 else{
-                    component.set("v.message", 'Error while creating log record: Unknown error');
+                    component.set("v.message", 'Error Details: Unknown error');
                 }
-                component.set("v.messageType", "slds-badge slds-theme_error");
+                component.set("v.messageType", "slds-text-body_small slds-text-color_error");
 
             }
         });
