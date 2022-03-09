@@ -1,94 +1,80 @@
 global class PMA_ContactInvocableHandler {
     global class MyInvocableVariable {
-        @InvocableVariable(label='Id' required=true)  
+        @InvocableVariable(label='Contact Id' required=true)  
         global Id recId;
     
-        @InvocableVariable(label='Old Value' required=true)  
+        @InvocableVariable(label='Contact Old Value' required=true)  
         global Contact oldVal;
     
-        @InvocableVariable(label='Current Value' required=true)
+        @InvocableVariable(label='Contact Current Value' required=true)
         global Contact newVal;
 
-        @InvocableVariable(label= 'Operation Type' required = true)
+        @InvocableVariable(label='Order Id' required=true)  
+        global Id orderId;
+
+        @InvocableVariable(label= 'Contact Operation Type' required = true)
         global String operationType;
     }
-    @InvocableMethod(label='Capture Contact Change' description='To capture Activity and Payment Intent Record Creation')
+    @InvocableMethod(label='Capture Contact Change' description='To Create Order and Payment Intent Record and Activity')
     global static void captureContactChangeRequest(List<MyInvocableVariable> myInvocableVariableList) {
         List<Contact> newList = new List<Contact>();
         List<Contact> oldList = new List<Contact>();
+        Id orderId;
         
         List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
 
-        String operationType = myInvocableVariableList.size() > 0 ? myInvocableVariableList[0].operationType.toUppercase() : 'INSERT';
+        String operationType = myInvocableVariableList.size() > 0 ? myInvocableVariableList[0].operationType.toUppercase() : 'CREATE';
 
 
         for(MyInvocableVariable itr:myInvocableVariableList){
             newList.add(itr.newVal);   
             oldList.add(itr.oldVal);   
+            orderId = itr.orderId;
         } 
         for (Contact g: newList) {
-            g.UUID__c = PMA_ExternalSiteFormsUtility.getUUID();
+            g.UUID__c = SYS_Helper.getUUID();
         }
-        PaymentsService paymentsService = new PaymentsService();
+        Payment_Gateway__c pmasandBox = new Payment_Gateway__c();
         List < Activity__c > activityList = new List < Activity__c > ();
         SYS_IntegrationLog__c errorLog = new SYS_IntegrationLog__c();
-
-        //String activity_UUID;
-        String guestPageUrl = 'StripePaymentPage?reqid=';
-        //Payment Request Init
+        Order__c order = new Order__c();
+        order = [SELECT Id,Name,Account__c,Order_Type__c,Total_Price__c,CreatedDate,LastModifiedDate,OwnerId,
+                (SELECT Id,Name,Line_Total_Price__c,List_Price__c,Order__c,Product__c,Quantity__c,Total_Price__c,CreatedDate,LastModifiedDate FROM Order_Items__r)
+                FROM Order__c
+                WHERE Id = :orderId];
+        pmasandBox = [SELECT Access_Token__c,CreatedDate,Gateway_Public_Key__c,Id,LastModifiedDate,Name,OwnerId,Test_Mode__c FROM Payment_Gateway__c LIMIT 1];
+        //Payment Intent Init
         Date firstChargeDate = System.TODAY();
         String frequency = 'single';
         String paymentType = 'immediate';
-        String paymentRequestGroupId = PMA_ExternalSiteFormsUtility.getUUID();
-        Double amount = 2.0;
-        Integer itemNumber = 1;
-        //activity_UUID = PMA_ExternalSiteFormsUtility.getUUID();
         for (Contact g: newList) {
-
             Id accountId = g.AccountId;
             Id contactId = g.Id;
             Id opportunityId = null;
+            Double amount = order.Total_Price__c;
+            //String fromPhone = PMA_ExternalSiteFormsUtility.formatPhone(g.Plivo_Sender_Id__c);
+            String toPhone = PMA_ExternalSiteFormsUtility.formatPhone(g.Phone_Number__c);
             String email = g.Email;
-            String paymentName = 'Request ' + g.FirstName + ' ' + g.LastName + ' For $2';
-
-            if (g.Phone_Number__c != '' && contactId != null) {
-                PaymentRequest__c payreq = paymentsService.createNewPaymentRequest(paymentName, contactId, accountId, opportunityId, paymentType, amount, email, frequency, firstChargeDate, itemNumber, paymentRequestGroupId);
-                if (payreq.Id != null) {
-                    //TODO move to Activity trigger
-                    Activity__c activity = new Activity__c();
-                    activity.Customer__c = g.Id;
-                    //activity.UUID__c = activity_UUID;
-                    activity.Type__c = 'sms';
-                    activity.Email__c = g.Email;
-                    activity.Status__c = 'Queued';
-                    activity.Subject__c = 'Outbound SMS to ' + g.LastName + ' - ' + g.Phone_Number__c + ' For PMA Agreement';
-                    activity.When__c = System.now();
-                    activity.Phone__c = PMA_ExternalSiteFormsUtility.formatPhone(g.Phone_Number__c);
-                    activity.Message__c = 'Please Pay $' + payreq.Amount__c + ' to Start PMA Membership ' + PMA_ExternalSiteFormsUtility.getIframeSiteUrl(guestPageUrl) + '' + payreq.PaymentRequests__r.uuid__c;
-                    activityList.add(activity);
-                } else{
-                    //TODO write handler if failure
-                }
+            String paymentName = 'Payment for Membership Fees by ' + g.FirstName + ' ' + g.LastName;
+            Id paymentGatewayId = pmasandBox.Id;
+            Payment_Intent__c payreq = PaymentIntentService.createNewPaymentIntent(paymentName , paymentGatewayId , contactId, accountId, opportunityId, orderId, paymentType, amount, email, frequency, firstChargeDate);
+            if (payreq.Id != null) {
+                String subject = 'Outbound SMS to ' + g.LastName + ' - ' + toPhone + ' for PMA MemberShip Purchase';
+                String messageBody = 'Please Pay $' + payreq.Amount__c + ' to Start PMA Membership ' + payreq.Payment_Link__c;
+                Activity__c activityCreate = CustomActivityService.createNewSmsActivity(contactId, toPhone, email, subject, messageBody);
+                
             } else{
                 //TODO write handler if failure
-            }
-        }
-        if (activityList.size() > 0) {
-            try {
-                insert activityList;
-            } catch (Exception e) {
-                System.debug('Error in Storing Contact: ' + e.getMessage());
+                System.debug('DML Error in Creation of Payment Intent: ');
                 //Generate a Log record
-                errorLog.data0__c = 'Exception Type: ' + e.getTypeName() + ' Exception Message: ' + e.getMessage();
-                // errorLog = SYS_integrationLogHandler.getLogsToInsert( error_message.toString() );
-                errorLog.Type__c = 'OUTBOUND';
+                errorLog.data0__c = 'Exception Type: DML Error Exception Message: Error in Creation of Payment Intent';
+                errorLog.Type__c = 'RESPONSE';
                 errorLog.Status__c = 'ERROR';
                 errorLog.How_To_Process__c = 'ignore_log';
             }
-            if (errorLog != new SYS_IntegrationLog__c()) {
-                insert errorLog;
-            }
         }
-
+        if (errorLog != new SYS_IntegrationLog__c()) {
+            insert errorLog;
+        }
     }
 }

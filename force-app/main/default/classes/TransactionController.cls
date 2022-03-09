@@ -11,12 +11,12 @@ public with sharing class TransactionController {
     public String stripePaymentRequestJson { get; set; }
     public String error { get; set; }
     public String stripePublishableKey { get; set; }
-    public String appMode { get; set; }
+    public Boolean appMode { get; set; }
 
     public String labelsJson { get; set; }
     public Map<String, Object> labels { get; set; }
+    public Payment_Gateway__c stripePaymentGateway { get; set; }
     public List<PaymentRequest__c> paymentRequests { get; set; }
-
     public Stripe.Payments payments { get; set; }
     public Contact contact { get; set; }
 
@@ -31,9 +31,11 @@ public with sharing class TransactionController {
         }
         // TO DO Make it Dynamic
         // Integration Config
-        organization = 'PMA Sandbox';
-        stripePublishableKey = 'pk_test_51KH9E5LOYmne24XMvoh2W9GzFFTmNtc55HikJmvO0ZchotsFySezeamrZiI6o2yarDikjPxBMOQRU51PLN9J66M2004r9kXdXe';
-        appMode = 'test';
+        stripePaymentGateway = [SELECT Id,Name,Gateway_Public_Key__c,Access_Token__c,Test_Mode__c,CreatedDate,LastModifiedDate,OwnerId FROM Payment_Gateway__c WHERE Id = 'a0K5j000000lRqBEAU'];
+
+        organization = stripePaymentGateway.Name;
+        stripePublishableKey = stripePaymentGateway.Gateway_Public_Key__c;
+        appMode = stripePaymentGateway.Test_Mode__c;
         assert(organization != null, System.Label.error_message_invalid_organization);
         assert(stripePublishableKey != null, System.Label.error_message_stripe_setup_error);
 		

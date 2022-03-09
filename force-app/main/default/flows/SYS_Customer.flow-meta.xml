@@ -3,8 +3,8 @@
     <actionCalls>
         <name>PMA_Contact_Trigger</name>
         <label>PMA Contact Trigger</label>
-        <locationX>686</locationX>
-        <locationY>108</locationY>
+        <locationX>632</locationX>
+        <locationY>450</locationY>
         <actionName>PMA_ContactInvocableHandler</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -29,7 +29,13 @@
         <inputParameters>
             <name>operationType</name>
             <value>
-                <stringValue>INSERT</stringValue>
+                <stringValue>CREATE</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>orderId</name>
+            <value>
+                <elementReference>Create_Member_Register_Order</elementReference>
             </value>
         </inputParameters>
     </actionCalls>
@@ -37,8 +43,8 @@
     <decisions>
         <name>Limit_Flow_start</name>
         <label>Limit Flow start</label>
-        <locationX>502</locationX>
-        <locationY>285</locationY>
+        <locationX>590</locationX>
+        <locationY>232</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>New_Contact_Created</name>
@@ -58,14 +64,28 @@
                 </rightValue>
             </conditions>
             <conditions>
+                <leftValueReference>$Record.AccountId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
                 <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Member</stringValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>$Record.Active__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
-                <targetReference>PMA_Contact_Trigger</targetReference>
+                <targetReference>Create_Member_Register_Order</targetReference>
             </connector>
             <label>New Contact Created</label>
         </rules>
@@ -75,6 +95,12 @@
         <name>IsNew</name>
         <dataType>Boolean</dataType>
         <expression>IsNew()</expression>
+    </formulas>
+    <formulas>
+        <name>MembershipFee</name>
+        <dataType>Currency</dataType>
+        <expression>{!Get_Membership_Fee_Product_Based_on_Account.Unit_Price__c} * 1</expression>
+        <scale>2</scale>
     </formulas>
     <interviewLabel>SYS Customer {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SYS Customer</label>
@@ -97,6 +123,94 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Add_Membership_Fee_Product_to_Member_Registration_Order</name>
+        <label>Add Membership Fee Product to Member Registration Order</label>
+        <locationX>463</locationX>
+        <locationY>449</locationY>
+        <connector>
+            <targetReference>PMA_Contact_Trigger</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Order__c</field>
+            <value>
+                <elementReference>Create_Member_Register_Order</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Product__c</field>
+            <value>
+                <elementReference>Get_Membership_Fee_Product_Based_on_Account.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Quantity__c</field>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Total_Price__c</field>
+            <value>
+                <elementReference>MembershipFee</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Order_Item__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Member_Register_Order</name>
+        <label>Create Member Register Order</label>
+        <locationX>139</locationX>
+        <locationY>422</locationY>
+        <connector>
+            <targetReference>Get_Membership_Fee_Product_Based_on_Account</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Account__c</field>
+            <value>
+                <elementReference>$Record.AccountId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Order_Type__c</field>
+            <value>
+                <stringValue>Registration</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Order__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Membership_Fee_Product_Based_on_Account</name>
+        <label>Get Membership Fee Product Based on Account</label>
+        <locationX>303</locationX>
+        <locationY>449</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Add_Membership_Fee_Product_to_Member_Registration_Order</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Account__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.AccountId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Product_Family__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Membership Fees</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Product__c</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>50</locationY>

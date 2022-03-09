@@ -336,6 +336,8 @@
 		<name>CustomField</name>
 	</types>
 	<types>
+        <members>Authenticated_User_Payment_Link</members>
+		<members>GuestUserPaymentLink</members>
 		<members>ach_account_number</members>
 		<members>ach_account_number_reenter</members>
 		<members>ach_bank_status_error</members>
@@ -522,9 +524,7 @@
 		<!-- Start Inventory Objects-->
 		<members>Catalog__c</members>
 		<members>Options__c</members>
-		<!--
-		<members>Product2</members>
-		-->
+		<members>Product__c</members>
 		<members>Inventory__c</members>
 		<members>Inventory_Transaction__c</members>
 		<!-- End Inventory Objects-->
@@ -533,17 +533,21 @@
 	<types>
 		<!-- Start PMA Tabs-->
 		<members>Activity__c</members>
+		<members>Order__c</members>
+		<members>Order_Item__c</members>
 		<members>PMA_Products_POS</members>
 		<!-- End PMA Tabs-->
 		<!-- Start Inventory Tabs-->
+		<members>PMA_Products__c</members>
 		<members>Catalog__c</members>
 		<members>Options__c</members>
 		<members>Inventory__c</members>
 		<members>Inventory_Transaction__c</members>
 		<!-- End Inventory Tabs-->
 		<!-- Start Payment Tabs-->
+		<members>Payment_Gateway__c</members>
 		<members>Payment_Method__c</members>
-		<members>PaymentRequest__c</members>
+		<members>Payment_Intent__c</members>
 		<members>Transaction__c</members>
 		<!-- End Payment Tabs-->
 		<!-- Start Municorn Tabs-->
@@ -667,6 +671,7 @@
 		<name>QuickAction</name>
 	</types>
 	<types>
+		<members>StripeToken</members>
 		<members>dummyimages</members>
 		<!-- Municorn RemoteSiteSetting -->
 		<members>DrChrono</members>

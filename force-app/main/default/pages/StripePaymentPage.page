@@ -16,7 +16,7 @@
                 <apex:pageBlock rendered="{!not(isblank(error))}">
                     <apex:pageMessage summary="{!error}" severity="error"/>
                 </apex:pageBlock>
-                <apex:pageBlock rendered="{!appMode != 'live'}">
+                <apex:pageBlock rendered="{!appMode == True}">
                     <apex:pageMessage summary="{!$Label.test_mode_message}" severity="info"/>
                 </apex:pageBlock>
                 <apex:pageBlock rendered="{!isblank(error)}">

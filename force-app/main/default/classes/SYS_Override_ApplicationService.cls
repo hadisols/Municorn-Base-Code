@@ -23,8 +23,8 @@ public class SYS_Override_ApplicationService extends SYS_ApplicationService{
             List<HttpHeaders__mdt> httpHeader = SYS_DataCache.headerSetting;
             req.setMethod('PATCH');//req.setMethod(integrationSetting.UpdateMethod__c);
             for(HttpHeaders__mdt head:httpHeader){
-                SYS_debug.log('header is = '+head.MasterLabel + ''+head.Value__c);
-                req.setHeader(String.valueOf(head.MasterLabel), String.valueOf(head.Value__c));
+                SYS_debug.log('header is = '+head.header_name__c + ''+head.Value__c);
+                req.setHeader(String.valueOf(head.header_name__c), String.valueOf(head.Value__c));  
                     
             }
             String resourceUrl = 

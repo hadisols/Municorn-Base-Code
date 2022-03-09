@@ -3,7 +3,7 @@
     <fullName>AllCustomers</fullName>
     <columns>FULL_NAME</columns>
     <columns>ACCOUNT.NAME</columns>
-    <columns>CONTACT.PHONE1</columns>
+    <columns>Phone_Number__c</columns>
     <columns>CONTACT.EMAIL</columns>
     <columns>CORE.USERS.ALIAS</columns>
     <columns>CONTACT.CREATED_DATE</columns>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>AllProducts</fullName>
+    <fullName>All</fullName>
     <filterScope>Everything</filterScope>
-    <label>All Products</label>
+    <label>All</label>
 </ListView>

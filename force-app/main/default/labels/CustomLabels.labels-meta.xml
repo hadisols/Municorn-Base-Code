@@ -357,4 +357,18 @@
         <shortDescription>Message describing that the app is currently in test mode</shortDescription>
         <value>App is in test mode</value>
     </labels>
+    <labels>
+        <fullName>Authenticated_User_Payment_Link</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Authenticated User Payment Link</shortDescription>
+        <value>https://adisols-1d-dev-ed--c.visualforce.com/apex/StripePaymentPage?reqid=</value>
+    </labels>
+    <labels>
+        <fullName>GuestUserPaymentLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>GuestUserPaymentLink</shortDescription>
+        <value>https://selfscheduling-dev-developer-edition.ap27.force.com/StripePaymentPage?reqid=</value>
+    </labels>
 </CustomLabels>

@@ -90,6 +90,7 @@ global class SYS_OAuthRedirectHandler {
             Integer day = 86400;
             Integer hour = 3600;
             Integer minute = 60;
+            if(expiry=='' || expiry==null){expiry = '36544015';}
             Integer totalSeconds = Integer.valueOf(expiry);
             Integer daysout = Integer.valueOf(Math.floor(totalseconds / day));
             Integer hoursout = Integer.valueOf(Math.floor((totalseconds - daysout * day)/hour));
