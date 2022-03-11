@@ -2,7 +2,6 @@ public class StripeService {
 
     private static StripeRestService stripeRest = new StripeRestService();
     private static TransactionService txnService = new TransactionService();
-    private static PaymentsService paymentsService = new PaymentsService();
 
     public Stripe.PaymentMethods getPaymentMethods(Id contactId) {
         Stripe.PaymentMethods paymentMethods = new Stripe.PaymentMethods();
@@ -19,9 +18,9 @@ public class StripeService {
         return paymentMethods;
     }
 
-    public Stripe.Payments processPayments(List<PaymentRequest__c> paymentRequests, Stripe.UserPaymentRequest request) {
+    public Stripe.Payments processPayments(List<Payment_Intent__c> paymentRequests, Stripe.UserPaymentRequest request) {
         List<TxnResponseWrapper> txnResponses = new List<TxnResponseWrapper>();
-        List<PaymentRequest__c> paymentRequestsResponse = new List<PaymentRequest__c>();
+        List<Payment_Intent__c> paymentRequestsResponse = new List<Payment_Intent__c>();
 
         Stripe.Payments payments = new Stripe.Payments();
 
@@ -34,8 +33,8 @@ public class StripeService {
          System.debug('test stripeCustomerId proceess'+stripeCustomerId);
         String source = getSource(stripeCustomerId, request);
 		System.debug('test source proceess'+source);
-        for (PaymentRequest__c paymentRequest : paymentRequests) {
-            if (paymentRequest.PaymentType__c == 'immediate') {
+        for (Payment_Intent__c paymentRequest : paymentRequests) {
+            if (paymentRequest.Payment_Type__c == 'immediate') {
                 Stripe.ErrorResponse error;
                 Stripe.Charge charge = new Stripe.Charge();
                 try {
@@ -70,7 +69,7 @@ public class StripeService {
 
                 txnResponses.add(txnResponseWrapper);
                 paymentRequestsResponse.add(paymentRequest);
-            } else if (paymentRequest.PaymentType__c == 'subscription') {
+            } else if (paymentRequest.Payment_Type__c == 'subscription') {
                 Double amount = paymentRequest.Amount__c;
                 String interval = paymentRequest.Frequency__c;
 
@@ -78,16 +77,16 @@ public class StripeService {
                     Stripe.Product product = stripeRest.createProduct('defaultProduct');
                     Stripe.Plan plan = stripeRest.createPlan(getAmount(amount), UserInfo.getDefaultCurrency(), interval, product.name);
 
-                    Stripe.Subscription subscription = stripeRest.createSubscription(plan.id, customer.id, paymentRequest);
-                    paymentRequest.SubscriptionId__c = subscription.id;
+                    // Stripe.Subscription subscription = stripeRest.createSubscription(plan.id, customer.id, paymentRequest);
+                    //paymentRequest.SubscriptionId__c = subscription.id;
                 } catch (Stripe.RestException ex) {
                     Stripe.Error error = ex.errorResponse.error;
                     paymentRequest.Status__c = 'payment_failed';
-                    paymentRequest.Status_Message__c = error.message;
+                    // paymentRequest.Status_Message__c = error.message;
                 }
-                if (paymentRequest.ItemNumber__c == null) {
+                /* if (paymentRequest.ItemNumber__c == null) {
                     paymentRequest.ItemNumber__c = 1;
-                }
+                } */
                 paymentRequestsResponse.add(paymentRequest);
             }
         }
@@ -101,9 +100,9 @@ public class StripeService {
         }
         // update paymentRequestsResponse;
         // Todo Fix get Record details into  payments Wrapper
-        for (PaymentRequest__c paymentRequest: paymentRequestsResponse) {
+        for (Payment_Intent__c paymentRequest: paymentRequestsResponse) {
             System.debug('pymt id'+paymentRequest.Id);
-            payments.registerPayment(paymentsService.getPaymentRequest(paymentRequest.Id));
+            payments.registerPayment(PaymentIntentService.getPaymentIntent(paymentRequest.Id));
         }
         payments.payments.sort();
 
@@ -112,7 +111,7 @@ public class StripeService {
 
     public class TxnResponseWrapper {
         public Transaction__c txn;
-        public PaymentRequest__c paymentRequest;
+        public Payment_Intent__c paymentRequest;
         public Stripe.ErrorResponse error;
         public Stripe.Charge charge;
     }
@@ -135,7 +134,7 @@ public class StripeService {
         String paymentSource = request.selectedPaymentSource;
         String stripeToken = request.stripeToken == null ? request.bankToken : request.stripeToken;
         try {
-            Stripe.Customer customer = getCustomer(txn.PaymentRequestId__r.Contact__r.Id);
+            Stripe.Customer customer = getCustomer(txn.Payment_Intent__r.Contact__r.Id);
 
             String stripeCustomerId = customer.id;
 
@@ -152,16 +151,16 @@ public class StripeService {
             String description = 'Payment';
 
             Map<String, Object> metadata = new Map<String, Object>();
-            metadata.put('opportunityId', txn.PaymentRequestId__r.Opportunity__r.Id);
-            metadata.put('contactId', txn.PaymentRequestId__r.Contact__r.Id);
-            metadata.put('accountId', txn.PaymentRequestId__r.Account__r.Id);
+            metadata.put('opportunityId', txn.Payment_Intent__r.Opportunity__r.Id);
+            metadata.put('contactId', txn.Payment_Intent__r.Contact__r.Id);
+            metadata.put('accountId', txn.Payment_Intent__r.Account__r.Id);
             metadata.put('transactionId', txn.Id);
 
             charge = stripeRest.charge(amount, currencyType, description, source, metadata);
         } catch (Stripe.RestException ex) {
             error = ex.errorResponse;
         }
-        postProcessPayment(txn, paymentsService.getPaymentRequest(txn.PaymentRequestId__r.Id), error, charge);
+        postProcessPayment(txn, PaymentIntentService.getPaymentIntent(txn.Payment_Intent__r.Id), error, charge);
     }
 
     private Long getAmount(Decimal amount) {
@@ -170,8 +169,8 @@ public class StripeService {
         return Math.roundToLong((Stripe.zeroDecimalCurrencies.contains(currencyType)) ? amount : amount * 100);
     }
 
-    private void preProcessError(List<PaymentRequest__c> paymentRequests) {
-        for (PaymentRequest__c paymentRequest : paymentRequests) {
+    private void preProcessError(List<Payment_Intent__c> paymentRequests) {
+        for (Payment_Intent__c paymentRequest : paymentRequests) {
             paymentRequest.Status__c = 'payment_failed'; 
         }
 
@@ -180,7 +179,7 @@ public class StripeService {
 
     //TODO - migrate to municorn
     private void postProcessPayment(Transaction__c txn,
-            PaymentRequest__c sourcePaymentRequest,
+    Payment_Intent__c sourcePaymentRequest,
             Stripe.ErrorResponse errorResp,
             Stripe.Charge charge) {
         Boolean success = errorResp == null && charge.captured == true;
@@ -206,11 +205,11 @@ public class StripeService {
         System.debug('transaction==log');
         insert logResp;*/
 
-        PaymentRequest__c paymentRequest = [SELECT Id, Status__c, ItemNumber__c, Opportunity__r.Id FROM PaymentRequest__c WHERE Id = :sourcePaymentRequest.Id];
+        Payment_Intent__c paymentRequest = [SELECT Id, Status__c, Opportunity__r.Id FROM Payment_Intent__c WHERE Id = :sourcePaymentRequest.Id];
         paymentRequest.Status__c = success ? 'payment_done' : 'payment_failed';
-        if (paymentRequest.ItemNumber__c == null) {
+        /* if (paymentRequest.ItemNumber__c == null) {
             paymentRequest.ItemNumber__c = 1;
-        }
+        } */
 /*
         if (success) {
             Opportunity opp = [SELECT Id, StageName FROM Opportunity WHERE Id = :paymentRequest.Opportunity__r.Id];
@@ -222,7 +221,7 @@ public class StripeService {
         // update paymentRequest; 
     }
 
-    public void subscribe(PaymentRequest__c paymentRequest) {
+    public void subscribe(Payment_Intent__c paymentRequest) {
         Id contactId = paymentRequest.Contact__c;
         Double amount = paymentRequest.Amount__c;
         String interval = paymentRequest.Frequency__c;
@@ -232,12 +231,12 @@ public class StripeService {
             Stripe.Product product = stripeRest.createProduct('defaultProduct');
             Stripe.Plan plan = stripeRest.createPlan(getAmount(amount), UserInfo.getDefaultCurrency(), interval, product.name);
 
-            Stripe.Subscription subscription = stripeRest.createSubscription(plan.id, cus.id, paymentRequest);
-            paymentRequest.SubscriptionId__c = subscription.id;
+            // Stripe.Subscription subscription = stripeRest.createSubscription(plan.id, cus.id, paymentRequest);
+            // paymentRequest.SubscriptionId__c = subscription.id;
         } catch (Stripe.RestException ex) {
             Stripe.Error error = ex.errorResponse.error;
             paymentRequest.Status__c = 'payment_failed';
-            paymentRequest.Status_Message__c = error.message;
+            // paymentRequest.Status_Message__c = error.message;
         } finally {
             update paymentRequest;
         }

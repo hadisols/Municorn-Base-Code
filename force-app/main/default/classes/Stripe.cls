@@ -380,7 +380,7 @@ public class Stripe {
             payments.add(new Payment(txn));
         }
 
-        public void registerPayment(PaymentRequest__c paymentRequest) {
+        public void registerPayment(Payment_Intent__c paymentRequest) {
             payments.add(new Payment(paymentRequest));
         }
     }
@@ -388,19 +388,19 @@ public class Stripe {
     public class Payment implements Comparable {
         @AuraEnabled public String type { get; set; }
         @AuraEnabled public Transaction__c txn { get; set; }
-        @AuraEnabled public PaymentRequest__c paymentRequest { get; set; }
+        @AuraEnabled public Payment_Intent__c paymentRequest { get; set; }
         @AuraEnabled public Integer itemNumber { get; set; }
 
         public Payment(Transaction__c txn) {
             this.type = 'TXN';
             this.txn = txn;
-            this.itemNumber = txn.PaymentRequestId__r.ItemNumber__c.intValue();
+            //this.itemNumber = txn.Payment_Intent__r.ItemNumber__c.intValue();
         }
 
-        public Payment(PaymentRequest__c paymentRequest) {
+        public Payment(Payment_Intent__c paymentRequest) {
             this.type = 'OTHER';
             this.paymentRequest = paymentRequest;
-            this.itemNumber = paymentRequest.ItemNumber__c.intValue();
+            //this.itemNumber = paymentRequest.ItemNumber__c.intValue();
         }
 
         public Integer compareTo(Object param1) {

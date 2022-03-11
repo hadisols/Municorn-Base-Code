@@ -16,7 +16,7 @@
     </values>
     <values>
         <field>FieldApiName__c</field>
-        <value xsi:type="xsd:string">PaymentRequestId__c</value>
+        <value xsi:type="xsd:string">Payment_Intent__c</value>
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>
@@ -43,6 +43,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Key_For_Events__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Key__c</field>
         <value xsi:type="xsd:string">data.object.metadata.transactionId</value>
     </values>
@@ -60,6 +64,10 @@
     </values>
     <values>
         <field>Lookup_Object_API_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Mapping_is_for__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>

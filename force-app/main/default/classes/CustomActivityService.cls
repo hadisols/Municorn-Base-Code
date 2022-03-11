@@ -46,6 +46,13 @@ public class CustomActivityService {
 
         insert smsActivity;
 
+        SYS_Tracker__c sysTracker = new SYS_Tracker__c();
+        sysTracker.Type__c = 'Activity SMS';
+        sysTracker.WhatId__c = contactId;
+        sysTracker.WhoId__c = smsActivity.Id;
+        //sysTracker.Valid_till__c = Now() + 865; 
+        insert sysTracker;
+
         return getActivityIntent(smsActivity.Id);
     }
 

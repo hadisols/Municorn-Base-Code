@@ -31,9 +31,9 @@ global class PMA_ContactInvocableHandler {
             oldList.add(itr.oldVal);   
             orderId = itr.orderId;
         } 
-        for (Contact g: newList) {
+        /* for (Contact g: newList) {
             g.UUID__c = SYS_Helper.getUUID();
-        }
+        } */
         Payment_Gateway__c pmasandBox = new Payment_Gateway__c();
         List < Activity__c > activityList = new List < Activity__c > ();
         SYS_IntegrationLog__c errorLog = new SYS_IntegrationLog__c();

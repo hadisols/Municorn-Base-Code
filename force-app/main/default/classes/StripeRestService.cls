@@ -74,8 +74,8 @@ public class StripeRestService {
                 Stripe.Product.class);
     }
 
-    public Stripe.Subscription createSubscription(String plan, String customerId, PaymentRequest__c paymentRequest) {
-        Date startDate = paymentRequest.FirstChargeDate__c;
+    public Stripe.Subscription createSubscription(String plan, String customerId, Payment_Intent__c paymentRequest) {
+        DateTime startDate = paymentRequest.First_Charge_Date__c;
         DateTime startDateTime = DateTime.newInstance(startDate.year(), startDate.month(), startDate.day());
         return (Stripe.Subscription) post(
                 'subscriptions',

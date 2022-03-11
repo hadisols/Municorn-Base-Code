@@ -24,7 +24,7 @@
                         <span>{!organization}</span></h3>
                     <apex:pageBlockTable value="{!paymentRequests}" var="req" id="theTable" styleClass="payment-summary">
                         <apex:column >
-                            <apex:facet name="header">{!$ObjectType.PaymentRequest__c.fields.Frequency__c.Label}</apex:facet>
+                            <apex:facet name="header">{!$ObjectType.Payment_Intent__c.fields.Frequency__c.Label}</apex:facet>
                             <apex:outputlabel rendered="{!req.Frequency__c == 'single'}"
                                               value="{!$Label.frequency_single}"/>
                             <apex:outputlabel rendered="{!req.Frequency__c == 'month'}" value="{!$Label.frequency_month}"/>
@@ -33,7 +33,7 @@
                             <apex:outputlabel rendered="{!req.Frequency__c == 'year'}" value="{!$Label.frequency_year}"/>
                         </apex:column>
                         
-                        <apex:column value="{!req.FirstChargeDate__c}"/>
+                        <apex:column value="{!req.First_Charge_Date__c}"/>
                     </apex:pageBlockTable>
                     <div id="tabs">
                         <ul>
@@ -159,7 +159,7 @@
                     <apex:outputPanel styleClass="charge-output-panel" rendered="{!payment.type == 'OTHER'}">
                         <!-- <apex:outputPanel styleClass="charge-output-panel" > -->
                         <apex:outputPanel styleClass="charge-output-header">
-                            <apex:outputText value="{!$ObjectType.PaymentRequest__c.Label} {!payment.itemNumber}"
+                            <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label} {!payment.itemNumber}"
                                              styleClass="payment-label"/>
                             <apex:image url="{!$Resource.success_icon}" width="25" height="25"
                                         styleClass="status-icon success-icon"
@@ -170,13 +170,13 @@
                         </apex:outputPanel>
                         <apex:outputPanel styleClass="payment-details-panel">
                             <apex:panelGrid columns="2" styleClass="transaction-details">
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Payment_Reference_Id__c.Label}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Payment_Reference_Id__c.Label}"/>
                                 <apex:outputText value="{!req.Payment_Reference_Id__c}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Amount__c.Label}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Amount__c.Label}"/>
                                 <apex:outputText value="{!req.Amount__c} {!req.Currency_Code__c}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.PaymentType__c.Label}"/>
-                                <apex:outputText value="{!req.PaymentType__c}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Frequency__c.Label}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Payment_Type__c.Label}"/>
+                                <apex:outputText value="{!req.Payment_Type__c}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Frequency__c.Label}"/>
                                 <apex:outputText rendered="{!req.Frequency__c == 'single'}"
                                                  value="{!$Label.frequency_single}"/>
                                 <apex:outputText rendered="{!req.Frequency__c == 'month'}"
@@ -184,15 +184,15 @@
                                 <apex:outputText rendered="{!req.Frequency__c == 'quarter'}"
                                                  value="{!$Label.frequency_quarter}"/>
                                 <apex:outputText rendered="{!req.Frequency__c == 'year'}" value="{!$Label.frequency_year}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.FirstChargeDate__c.Label}"/>
-                                <apex:outputText value="{!req.FirstChargeDate__c}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Status__c.Label}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.First_Charge_Date__c.Label}"/>
+                                <apex:outputText value="{!req.First_Charge_Date__c}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Status__c.Label}"/>
                                 <apex:outputText value="{!req.Status__c}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Status_Message__c.Label}"/>
-                                <apex:outputText value="{!req.Status_Message__c}"/>
+                                <!-- <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Status_Message__c.Label}"/>
+                                <apex:outputText value="{!req.Status_Message__c}"/> -->
                                 <apex:outputText value="{!$ObjectType.Contact.Label}"/>
                                 <apex:outputText value="{!req.Contact__r.Name}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Email__c.Label}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Email__c.Label}"/>
                                 <apex:outputText value="{!req.Email__c}"/>
                                 <apex:outputText value="{!$ObjectType.Opportunity.Label}"/>
                                 <apex:outputText value="{!req.Opportunity__r.Name}"/>
@@ -203,7 +203,7 @@
                     </apex:outputPanel>
                     <apex:outputPanel styleClass="charge-output-panel" rendered="{!payment.type == 'TXN'}">
                         <apex:outputPanel styleClass="charge-output-header">
-                            <apex:outputText value="{!$ObjectType.PaymentRequest__c.Label} {!payment.itemNumber}"
+                            <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label} {!payment.itemNumber}"
                                              styleClass="payment-label"/>
                             <apex:image url="{!$Resource.success_icon}" width="25" height="25"
                                         styleClass="status-icon success-icon"
@@ -219,8 +219,8 @@
                                 <apex:outputText value="{!txn.TransactionReference__c}"/>
                                 <apex:outputText value="{!$ObjectType.Transaction__c.fields.Amount__c.Label}"/>
                                 <apex:outputText value="{!txn.Amount__c} {!txn.CurrencyCode__c}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.PaymentType__c.Label}"/>
-                                <apex:outputText value="{!IF(txn.PaymentRequestId__r.PaymentType__c == 'immediate', 'One time payment', 'Recurring')}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Payment_Type__c.Label}"/>
+                                <apex:outputText value="{!IF(txn.Payment_Intent__r.Payment_Type__c == 'immediate', 'One time payment', 'Recurring')}"/>
                                 <apex:outputText value="{!$ObjectType.Transaction__c.fields.Status__c.Label}"/>
                                 <apex:outputText value="{!txn.Status__c}"/>
                                 <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionDate__c.Label}"/>
@@ -240,13 +240,13 @@
                                 <apex:outputText value="{!txn.PaymentBankName__c}"
                                                  rendered="{!txn.PaymentBankName__c != null}"/>
                                 <apex:outputText value="{!$ObjectType.Contact.Label}"/>
-                                <apex:outputText value="{!txn.PaymentRequestId__r.Contact__r.Name}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.Email__c.Label}"/>
-                                <apex:outputText value="{!txn.PaymentRequestId__r.Email__c}"/>
+                                <apex:outputText value="{!txn.Payment_Intent__r.Contact__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Email__c.Label}"/>
+                                <apex:outputText value="{!txn.Payment_Intent__r.Email__c}"/>
                                 <apex:outputText value="{!$ObjectType.Opportunity.Label}"/>
-                                <apex:outputText value="{!txn.PaymentRequestId__r.Opportunity__r.Name}"/>
+                                <apex:outputText value="{!txn.Payment_Intent__r.Opportunity__r.Name}"/>
                                 <apex:outputText value="{!$ObjectType.Account.Label}"/>
-                                <apex:outputText value="{!txn.PaymentRequestId__r.Account__r.Name}"/>
+                                <apex:outputText value="{!txn.Payment_Intent__r.Account__r.Name}"/>
                             </apex:panelGrid>
                             <apex:panelGrid columns="2" id="failure-grid" styleClass="transaction-details"
                                             rendered="{!txn.Status__c == 'failed'}">
@@ -254,14 +254,14 @@
                                 <apex:outputText value="{!txn.TransactionReference__c}"/>
                                 <apex:outputText value="{!$ObjectType.Transaction__c.fields.Amount__c.Label}"/>
                                 <apex:outputText value="{!txn.Amount__c} {!txn.CurrencyCode__c}"/>
-                                <apex:outputText value="{!$ObjectType.PaymentRequest__c.fields.PaymentType__c.Label}"/>
-                                <apex:outputText value="{!IF(txn.PaymentRequestId__r.PaymentType__c == 'immediate', 'One time payment', 'Recurring')}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Payment_Type__c.Label}"/>
+                                <apex:outputText value="{!IF(txn.Payment_Intent__r.Payment_Type__c == 'immediate', 'One time payment', 'Recurring')}"/>
                                 <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentMethodType__c.Label}"
                                                  rendered="{!txn.PaymentMethodType__c != null}"/>
                                 <apex:outputText value="{!txn.PaymentMethodType__c}"
                                                  rendered="{!txn.PaymentMethodType__c != null}"/>
                                 <apex:outputText value="{!$ObjectType.Contact.Label}"/>
-                                <apex:outputText value="{!txn.PaymentRequestId__r.Contact__r.Name}"/>
+                                <apex:outputText value="{!txn.Payment_Intent__r.Contact__r.Name}"/>
                                 <apex:outputText value="{!$ObjectType.Transaction__c.fields.Status__c.Label}"/>
                                 <apex:outputText value="{!txn.Status__c}"/>
                                 <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionDate__c.Label}"/>

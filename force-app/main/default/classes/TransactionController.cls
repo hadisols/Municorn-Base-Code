@@ -1,7 +1,6 @@
 public with sharing class TransactionController {
     private static StripeService stripeService = new StripeService();
     private static CustomLabelsService customLabelsService = new CustomLabelsService();
-    private static PaymentsService paymentsService = new PaymentsService();
 	private static TransactionService txnService = new TransactionService();
     
     public List<Stripe.Card> cards { get; set; }
@@ -16,13 +15,13 @@ public with sharing class TransactionController {
     public String labelsJson { get; set; }
     public Map<String, Object> labels { get; set; }
     public Payment_Gateway__c stripePaymentGateway { get; set; }
-    public List<PaymentRequest__c> paymentRequests { get; set; }
+    public List<Payment_Intent__c> paymentRequests { get; set; }
     public Stripe.Payments payments { get; set; }
     public Contact contact { get; set; }
 
     public TransactionController() {
         //Get Payment Request Details
-        paymentRequests = paymentsService.getPaymentRequestByGroupId(ApexPages.currentPage().getParameters().get('reqid'));
+        paymentRequests = PaymentIntentService.getPaymentRequestByUUID(ApexPages.currentPage().getParameters().get('reqid'));
         System.debug('test paymentRequests '+paymentRequests);
         assert(!paymentRequests.isEmpty(), 'No payment requests found');
         if(!paymentRequests.isEmpty()){
@@ -64,7 +63,8 @@ public with sharing class TransactionController {
         Stripe.UserPaymentRequest stripePaymentRequest = new Stripe.UserPaymentRequest();
         try {
             stripePaymentRequest = (Stripe.UserPaymentRequest) JSON.deserialize(stripePaymentRequestJson, Stripe.UserPaymentRequest.class);
-
+            System.debug('test paymentRequests Request'+ paymentRequests);
+            System.debug('test StripePayment Request'+ stripePaymentRequest);
             payments = stripeService.processPayments(paymentRequests, stripePaymentRequest);
             System.debug('Bulk payment response : ' + JSON.serialize(payments));
             /*

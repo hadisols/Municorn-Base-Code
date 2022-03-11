@@ -30,14 +30,12 @@ public with sharing class Stripe_Inbound_SYS_ApplicationService extends SYS_Appl
 
     // For Outbound. Called from doInbound() in ApplicationService
     //Upsert Webhook Response using externalid and preprocess values in sobject
-    public override List<sObject> transformJsonToSObject(String jsonBody,String resource) {
-        List < sObject > sObjectsToDML = SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource);
+    public override List<sObject> transformJsonToSObject(String jsonBody,String resource,SYS_IntegrationLog__c log) {
+        List < sObject > sObjectsToDML = SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource,(log.Type__c=='INBOUND'));
         if (sObjectsToDML.size() > 0) {
             for (sObject currentObj: sObjectsToDML) {
                 if (currentObj instanceOf Transaction__c) {
                     String contactId = (String) currentObj.get('Contact__c');
-                    String paymentRequestId = (String) currentObj.get('PaymentRequestId__c');
-                    String txstatus = (String) currentObj.get('Status__c');
                     Double amount = (Double) currentObj.get('Amount__c');
                     Double amountCaptured = (Double) currentObj.get('Amount_Captured__c');
                     Double amountRefunded = (Double) currentObj.get('AmountRefunded__c');
