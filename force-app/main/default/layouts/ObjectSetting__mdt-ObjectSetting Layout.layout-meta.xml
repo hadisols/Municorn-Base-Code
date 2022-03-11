@@ -20,10 +20,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>Object__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Required</behavior>
                 <field>ObjectApiName__c</field>
             </layoutItems>
             <layoutItems>

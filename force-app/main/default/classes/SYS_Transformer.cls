@@ -111,9 +111,14 @@ public virtual class SYS_Transformer {
         System.debug('MS check 101:'+parentIds);
         //Dynamically fetch all metadata fields for the primary object
         List<sObject> objs = new List<sObject>();
+        System.debug('=============== external key by obj api name: '+ SYS_DataCache.externalKeyByObject);
         if(primaryObjFieldsMap.size()>0){
             System.debug('MS check 101 2:'+primaryObj+' ');
-            String qry = 'Select Id,'+
+            String externalIdField = SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())!=NULL ? ','+(SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())+','):',';
+            if(primaryObjFieldsMap.get(primaryObj.toLowerCase()).contains(externalIdField))
+                externalIdField = ',';
+            
+            String qry = 'Select Id'+ externalIdField +
                      String.join(primaryObjFieldsMap.get(primaryObj.toLowerCase()), ',') +
                      ' from ' + 
                      primaryObj + 
@@ -577,40 +582,39 @@ public virtual class SYS_Transformer {
     public static Boolean fieldSettingIsToBeSkipped(sObject sobj, FieldSetting__mdt mapping){
 
         System.debug('MS fieldSettingIsToBeSkipped Mapping: '+mapping+', sobj:'+sobj);
-
+        Boolean skip = false;
 
         List<FieldSetting__mdt> extIdMapping = [SELECT FieldApiName__c 
                                                     FROM FieldSetting__mdt 
                                                     WHERE ObjectSetting__c=:mapping.ObjectSetting__c 
                                                     AND Is_Active__c = true 
                                                     AND Is_External_Field__c = true
-                                                    AND Level__c =:mapping.Level__c
+                                                    AND ObjectApiName__c =:mapping.ObjectApiName__c
                                                     ];
 
-        String externalIdField = extIdMapping[0].FieldApiName__c;
-        String mappingIsAllowedFor = mapping.Mapping_is_for__c;
+        if(extIdMapping.size()>0){
+            String externalIdField = extIdMapping[0].FieldApiName__c;
+            String mappingIsAllowedFor = mapping.Mapping_is_for__c;
+            
+            if(mappingIsAllowedFor == NULL || mappingIsAllowedFor == 'All Records'){
+                return skip;
+            } 
+            
+            if(sobj.get(externalIdField) == NULL || sobj.get(externalIdField) == ''){
+                // Record doesn't exist in External system
+                if(mappingIsAllowedFor == 'Existing Records Only'){
+                    skip = true;
+                }
+            }
+            else{
+                // Record exist in External system
+                if(mappingIsAllowedFor == 'New Records Only'){
+                    skip = true;
+                }
+            }
+        }
         
-        if(mappingIsAllowedFor == NULL|| mappingIsAllowedFor == 'All Records'){
-            return false;
-        }
-        else if(sobj.get(externalIdField) == NULL || sobj.get(externalIdField) == ''){
-            // Record doesn't exist in External system
-            if(mappingIsAllowedFor == 'Existing Records Only'){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
-        else{
-            // Record exist in External system
-            if(mappingIsAllowedFor == 'New Records Only'){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
+        return skip;
         
 
     }

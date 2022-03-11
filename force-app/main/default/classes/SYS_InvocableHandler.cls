@@ -18,6 +18,9 @@ global class SYS_InvocableHandler {
 
         @InvocableVariable(label= 'Operation Type' required = true)
         global String operationType;
+
+        @InvocableVariable(label= 'Callout Method' required = false)
+        global String httpMethod;
     }
     
     
@@ -30,7 +33,9 @@ global class SYS_InvocableHandler {
         List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
 
         String operationType = myInvocableVariableList.size() > 0 ? myInvocableVariableList[0].operationType.toUppercase() : 'INSERT';
+        String httpMethod = myInvocableVariableList.size() > 0 ? myInvocableVariableList[0]?.httpMethod?.toUppercase() : '';
 
+        
         SYS_DataCache.INT_TYPE = myInvocableVariableList[0].integrationSetting;
         SYS_DataCache.OBJ_TYPE = myInvocableVariableList[0].objectSetting;
 
@@ -68,6 +73,7 @@ global class SYS_InvocableHandler {
                 newSysLog.SYS_Operation_Type__c = operationType;
                 newSysLog.How_to_process__c = 'use_object_setting';
                 newSysLog.whatid__c = jsonRecordId;
+                newSysLog.HTTP_Method__c = httpMethod;
                 newSysLog.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
                 insertSysLog.add(newSysLog);
             }

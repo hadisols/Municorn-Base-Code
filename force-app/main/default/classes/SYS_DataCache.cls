@@ -97,6 +97,22 @@ public class SYS_DataCache {
         }
     }
 
+    
+
+    private static Map<String, String> external_key_by_obj;
+    public static Map<String, String> externalKeyByObject {
+        get {
+            if(external_key_by_obj == null) {
+                external_key_by_obj = new Map<String, String>();
+                for(FieldSetting__mdt fs : AllFieldSettingMappings){
+                    if(fs.Is_External_Field__c && fs.ObjectSetting__r.DeveloperName == SYS_DataCache.OBJ_TYPE)
+                    external_key_by_obj.put(fs.ObjectApiName__c.toLowerCase(),fs.FieldApiName__c);
+                }
+            }
+            return external_key_by_obj;
+        }
+    }
+
     /******* NEW VARIABLES END*********/
 	
     //TODO - add a method checkAndLoad , called from every getter, single query on grand child and get 

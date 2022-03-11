@@ -434,8 +434,9 @@ global virtual class SYS_ApplicationService {
             reqkeymap.sort();
 
             for (String key: reqkeymap) {
-                if (!String.isBlank(key) && jsonobj.get(key) != '' /*&& (jsonobj.get(key)) instanceOf String*/){
-                    keyValueList.add(key.toLowerCase() + '=' + EncodingUtil.urlEncode(String.valueOf(jsonobj.get(key)),'UTF-8'));
+                if (!String.isBlank(key) /*&& jsonobj.get(key) != '' && (jsonobj.get(key)) instanceOf String*/){
+                    
+                    keyValueList.add(key.toLowerCase() + '=' + EncodingUtil.urlEncode(String.valueOf(jsonobj.get(key)!=NULL?jsonobj.get(key):''),'UTF-8'));
                 }
             }
             formUrlEncodedBody = String.join(keyValueList,'&');
@@ -611,11 +612,14 @@ global virtual class SYS_ApplicationService {
                             ' FROM '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c+
                             ' WHERE Id = \'' + log.WhatId__c + '\'');
  
-        String externalId = String.valueOf(recList[0].get(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c));
-        
-        req.setMethod(getHttpRequestMethod(log,externalId));
-        req.setEndpoint(getHttpRequestEndpoint(req,log,externalId));
-        setHttpRequestHeaders(req,log);
+        if(!recList.isEmpty()){
+ 
+            String externalId = String.valueOf(recList[0].get(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c));
+            
+            req.setMethod(getHttpRequestMethod(log,externalId));
+            req.setEndpoint(getHttpRequestEndpoint(req,log,externalId));
+            setHttpRequestHeaders(req,log);
+        }
  
         return req;
     }
@@ -654,42 +658,23 @@ global virtual class SYS_ApplicationService {
 
         if(!result){
             
-            String errorMessage = 'Error while processing inbound';
+            //-- Error message is set in handleDmlErrors
+            //String errorMessage = 'Error while processing inbound';
+
+            logResp.Status__c = 'FAIL';
+            SYS_Helper.flagLogForRetry(logResp.Id);
+            
+
             /*
-            String errorMessage = 'The following error has occurred.';
-            for(Database.Error err : result.getErrors()) {
-                errorMessage += err.getStatusCode() + ': ' + err.getMessage();
-                SYS_debug.log('Fields affected are: ' + err.getFields());
-            }
-            errorMessage += 'Fields affected are: ' + err.getFields();
-            */
-
-            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
-                logResp.Status__c = 'FAIL';
-                SYS_Helper.flagLogForRetry(logResp.Id);
-            }
-
             if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
                 logResp.Message__c = errorMessage;
             }
+            */
             
             logResp.Id = log.Id;
             
         }
         else{
-            
-            /**
-             * TODO For Guest user the fields are not creatable. 
-             * This won't cause any error becoz the rest service class is without sharing
-             */
-
-            //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
-                
-            //}
-
-            //if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
-            //}
-            
             
             //ID jobID = System.enqueueJob(new SYS_ParentChildRecordsQueueable(log,SYS_DataCache.INT_TYPE));
             logResp = log;

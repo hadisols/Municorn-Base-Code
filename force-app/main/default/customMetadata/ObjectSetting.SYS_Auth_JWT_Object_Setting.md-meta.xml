@@ -31,10 +31,6 @@
         <value xsi:type="xsd:string">SYS_OAuthConfig__c</value>
     </values>
     <values>
-        <field>Object__c</field>
-        <value xsi:type="xsd:string">SYS_OAuthConfig__c</value>
-    </values>
-    <values>
         <field>QueryClause__c</field>
         <value xsi:nil="true"/>
     </values>
