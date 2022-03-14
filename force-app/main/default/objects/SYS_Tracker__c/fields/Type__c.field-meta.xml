@@ -20,6 +20,11 @@
                 <default>false</default>
                 <label>Display Pic</label>
             </value>
+            <value>
+                <fullName>Activity SMS</fullName>
+                <default>false</default>
+                <label>Activity SMS</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

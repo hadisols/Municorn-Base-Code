@@ -91,12 +91,12 @@ public class PaymentIntentService {
 
         insert paymentIntent;
 
-        SYS_Tracker__c sysTracker = new SYS_Tracker__c();
-        sysTracker.Type__c = 'UUID';
-        sysTracker.WhatId__c = contactId;
-        sysTracker.WhoId__c = paymentIntent.Id;
-        //sysTracker.Valid_till__c = Now() + 865; 
-        insert sysTracker;
+        // SYS_Tracker__c sysTracker = new SYS_Tracker__c();
+        // sysTracker.Type__c = 'UUID';
+        // sysTracker.WhatId__c = contactId;
+        // sysTracker.WhoId__c = paymentIntent.Id;
+        // //sysTracker.Valid_till__c = Now() + 865; 
+        // insert sysTracker;
 
 
         return getPaymentIntent(paymentIntent.Id);
