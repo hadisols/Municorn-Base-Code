@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>SYS Auth JWT Object Setting</label>
+    <label>SYS OAuth Refresh Object Setting</label>
     <protected>false</protected>
     <values>
         <field>All_OR_None__c</field>
@@ -8,7 +8,7 @@
     </values>
     <values>
         <field>ApexHandler__c</field>
-        <value xsi:type="xsd:string">SYS_JWTAuth_ApplicationService</value>
+        <value xsi:type="xsd:string">SYS_OAuthRedirectHandler</value>
     </values>
     <values>
         <field>BypassTrigger__c</field>
@@ -24,7 +24,7 @@
     </values>
     <values>
         <field>IntegrationType__c</field>
-        <value xsi:type="xsd:string">SYS_Auth_Integration_Setting</value>
+        <value xsi:type="xsd:string">SYS_OAuth_Integration_Setting</value>
     </values>
     <values>
         <field>ObjectApiName__c</field>
@@ -40,7 +40,7 @@
     </values>
     <values>
         <field>Resource_Name__c</field>
-        <value xsi:type="xsd:string">token</value>
+        <value xsi:type="xsd:string">refreshtoken</value>
     </values>
     <values>
         <field>TriggerEvents__c</field>

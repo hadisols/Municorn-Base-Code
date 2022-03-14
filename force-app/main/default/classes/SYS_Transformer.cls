@@ -114,11 +114,16 @@ public virtual class SYS_Transformer {
         System.debug('=============== external key by obj api name: '+ SYS_DataCache.externalKeyByObject);
         if(primaryObjFieldsMap.size()>0){
             System.debug('MS check 101 2:'+primaryObj+' ');
-            String externalIdField = SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())!=NULL ? ','+(SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())+','):',';
-            if(primaryObjFieldsMap.get(primaryObj.toLowerCase()).contains(externalIdField))
-                externalIdField = ',';
+            String externalIdField = SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase());//!=NULL ? (SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())):',';
+            String finalSubQuery = '';
+            if(externalIdField != NULL ){
+                if(!primaryObjFieldsMap.get(primaryObj.toLowerCase()).contains(externalIdField.toLowerCase()))
+                finalSubQuery = externalIdField +',';
+            }
             
-            String qry = 'Select Id'+ externalIdField +
+            
+            
+            String qry = 'Select Id,'+ finalSubQuery +
                      String.join(primaryObjFieldsMap.get(primaryObj.toLowerCase()), ',') +
                      ' from ' + 
                      primaryObj + 

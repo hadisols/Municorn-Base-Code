@@ -477,6 +477,34 @@
 		<members>FieldSetting.SYS_Auth_OB_Issuer</members>
 		<members>FieldSetting.SYS_Auth_OB_Subject</members>
 		<members>FieldSetting.SYS_Auth_OB_Target_Audience</members>
+		<members>FieldSetting.SYS_CC_IB_Access_Token</members>
+		<members>FieldSetting.SYS_CC_OB_Client_Id</members>
+		<members>FieldSetting.SYS_CC_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_CC_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_OAuth_IB_Access_Token</members>
+		<members>FieldSetting.SYS_OAuth_IB_Expiry</members>
+		<members>FieldSetting.SYS_OAuth_IB_Expiry_Datetime</members>
+		<members>FieldSetting.SYS_OAuth_IB_RefreshToken</members>
+		<members>FieldSetting.SYS_OAuth_IB_Schedule_refresh</members>
+		<members>FieldSetting.SYS_OAuth_OB_Client_Id</members>
+		<members>FieldSetting.SYS_OAuth_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_OAuth_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_OAuth_OB_Redirect_URI</members>
+		<members>FieldSetting.SYS_OAuth_OB_State</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Access_Token</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Expiry</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Expiry_Datetime</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Schedule_refresh</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Client_Id</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Refresh_Token</members>
+		<members>FieldSetting.SYS_PWD_IB_Access_Token</members>
+		<members>FieldSetting.SYS_PWD_OB_Client_Id</members>
+		<members>FieldSetting.SYS_PWD_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_PWD_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_PWD_OB_Pwd</members>
+		<members>FieldSetting.SYS_PWD_OB_Username</members>
 		<members>FieldSetting.SYS_Test_IB_Account_Flow_Check</members>
 		<members>FieldSetting.SYS_Test_IB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_IB_Account_SYS_Key</members>
@@ -486,12 +514,25 @@
 		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
 		<members>HttpHeaders.SYS_Auth_Header</members>
+		<members>HttpHeaders.SYS_OAuth_CC_Header</members>
+		<members>HttpHeaders.SYS_OAuth_Header</members>
+		<members>HttpHeaders.SYS_OAuth_PWD_Header</members>
 		<members>HttpHeaders.SYS_Test_Header</members>
 		<members>IntegrationEnablement.SYS_Auth_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_CC_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_OAuth_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_Pwd_Integration_Enablement</members>
 		<members>IntegrationEnablement.SYS_Test_Integration_Enablement</members>
 		<members>IntegrationSetting.SYS_Auth_Integration_Setting</members>
+		<members>IntegrationSetting.SYS_OAuth_CC_IS</members>
+		<members>IntegrationSetting.SYS_OAuth_Integration_Setting</members>
+		<members>IntegrationSetting.SYS_OAuth_Pwd_IS</members>
 		<members>IntegrationSetting.SYS_Test_IntegrationSetting</members>
 		<members>ObjectSetting.SYS_Auth_JWT_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_CC_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_Pwd_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_Refresh_Object_Setting</members>
 		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>
 		<name>CustomMetadata</name>
 	</types>
@@ -574,6 +615,7 @@
 	<types>
 		<members>SYS_Customer</members>
 		<members>SYS_SMS_Activity</members>
+		<members>Invoke_refresh_token_flow</members>
 		<members>SYS_Flow_for_log_retry</members>
 		<name>Flow</name>
 	</types>
@@ -653,7 +695,9 @@
 		<members>Stripe</members>
 		<!-- Municorn Name Credentials -->
 		<members>GCPJWT</members>
-		<members>Municorn_Destination_NC</members>
+		<members>OAUTH_CLIENT_CREDS_NC</members>
+		<members>OAUTH_NC</members>
+		<members>OAUTH_PWD_NC</members>
 		<!-- Municorn Name Credentials -->
 		<name>NamedCredential</name>
 	</types>
@@ -713,6 +757,7 @@
 		<name>StaticResource</name>
 	</types>
 	<types>
+		<members>SYS_OAuthConfig__c.Get_Token</members>
 		<members>SYS_OAuthConfig__c.Start_Authentication_Flow</members>
 		<name>WebLink</name>
 	</types>

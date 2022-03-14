@@ -552,28 +552,35 @@ global virtual class SYS_ApplicationService {
     /* ------------------------------------------------------------------------ */
 
     global virtual String getHttpRequestEndpoint(HttpRequest req,SYS_IntegrationLog__c log, String externalId){
-        String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
-        String resourceUrl = baseEndpoint + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
         
-        System.debug('====== MS Endpoint check:'+resourceUrl);
-
-        //Log is to create resource
-        if(req.getMethod() == 'POST' && (externalId == NULL || externalId == '')){
-            String urlParams='';
-            if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
-                    urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
-            
-            if(urlParams!=''){
-                resourceUrl+='/'+urlParams;
-            }
+        if(log.Callout_URL__c!=NULL){
+            return log.Callout_URL__c;
         }
         else{
-            //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
-            resourceUrl+= '/'+ externalId;
+            String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+            String resourceUrl = baseEndpoint + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
+            
+            System.debug('====== MS Endpoint check:'+resourceUrl);
+
+            //Log is to create resource
+            if(req.getMethod() == 'POST' && (externalId == NULL || externalId == '')){
+                String urlParams='';
+                if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
+                        urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
+                
+                if(urlParams!=''){
+                    resourceUrl+='/'+urlParams;
+                }
+            }
+            else{
+                //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
+                resourceUrl+= '/'+ externalId;
+            }
+            System.debug('====== MS Endpoint check:'+resourceUrl);
+            log.Callout_URL__c = resourceUrl;
+            return resourceUrl;
         }
-        System.debug('====== MS Endpoint check:'+resourceUrl);
-        log.Callout_URL__c = resourceUrl;
-        return resourceUrl;
+        
     }
 
     /* ------------------------------------------------------------------------ */
@@ -610,7 +617,7 @@ global virtual class SYS_ApplicationService {
         List<sObject> recList = 
             Database.query( 'SELECT '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c+
                             ' FROM '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c+
-                            ' WHERE Id = \'' + log.WhatId__c + '\'');
+                            ' WHERE Id = \'' + log.WhatId__c + '\' ALL ROWS');
  
         if(!recList.isEmpty()){
  

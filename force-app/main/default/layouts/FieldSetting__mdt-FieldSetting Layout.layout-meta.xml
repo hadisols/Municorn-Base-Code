@@ -73,7 +73,7 @@
                 <emptySpace>true</emptySpace>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
+                <behavior>Edit</behavior>
                 <field>RestResource__c</field>
             </layoutItems>
             <layoutItems>

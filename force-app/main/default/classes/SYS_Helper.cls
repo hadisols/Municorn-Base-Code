@@ -2,6 +2,26 @@ public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
+    public static Datetime epochToDatetime(String expiry){
+        return epochToDatetime(Integer.valueOf(expiry));
+    }
+
+    public static Datetime epochToDatetime(Integer expiry){
+        Integer day = 86400;
+        Integer hour = 3600;
+        Integer minute = 60;
+        Integer totalSeconds = expiry;
+        Integer daysout = Integer.valueOf(Math.floor(totalseconds / day));
+        Integer hoursout = Integer.valueOf(Math.floor((totalseconds - daysout * day)/hour));
+        Integer minutesout = Integer.valueOf(Math.floor((totalseconds - daysout * day - hoursout * hour)/minute));
+        Integer secondsout = Integer.valueOf(totalseconds - daysout * day - hoursout * hour - minutesout * minute);
+        String inpputString = System.now().yearGmt()+'-'+System.now().monthGmt()+'-'+(System.now().dayGmt()+daysout)+'T'+(System.now().hourGmt()+hoursout)+':'+(System.now().minuteGmt()+minutesout)+':'+(System.now().secondGmt()+secondsout)+'.'+'000Z';
+        System.debug('MS Date time:'+inpputString);
+        DateTime resultDateTime = DateTime.valueof(inpputString.replace('T', ' '));
+        return resultDateTime;
+    }
+    /* ------------------------------------------------------------------------ */
+
     public static String getUUID()
     {
         Blob b = Crypto.GenerateAESKey(128);

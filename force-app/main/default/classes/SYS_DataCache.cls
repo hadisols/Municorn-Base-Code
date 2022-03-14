@@ -106,7 +106,7 @@ public class SYS_DataCache {
                 external_key_by_obj = new Map<String, String>();
                 for(FieldSetting__mdt fs : AllFieldSettingMappings){
                     if(fs.Is_External_Field__c && fs.ObjectSetting__r.DeveloperName == SYS_DataCache.OBJ_TYPE)
-                    external_key_by_obj.put(fs.ObjectApiName__c.toLowerCase(),fs.FieldApiName__c);
+                    external_key_by_obj.put(fs.ObjectApiName__c.toLowerCase(),fs.FieldApiName__c.toLowerCase());
                 }
             }
             return external_key_by_obj;

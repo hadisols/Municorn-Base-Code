@@ -62,9 +62,7 @@ global class SYS_InvocableHandler {
                 */
 
                 finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
-                System.debug('cleanJSON'+finalJsonForOutbound);
-
-                //TODO - QB specific change for bundle product  
+                System.debug('cleanJSON'+finalJsonForOutbound); 
 
                 SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
                 newSysLog.Status__c = 'NEW';

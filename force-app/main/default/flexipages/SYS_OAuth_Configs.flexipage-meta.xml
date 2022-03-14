@@ -7,12 +7,28 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
+                            <value>CustomButton.SYS_OAuthConfig__c.Get_Token</value>
+                            <visibilityRule>
+                                <booleanFilter>1 OR 2</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.Grant_Type__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>password</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Grant_Type__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>client_credentials</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
                             <value>CustomButton.SYS_OAuthConfig__c.Start_Authentication_Flow</value>
                             <visibilityRule>
                                 <criteria>
                                     <leftValue>{!Record.Grant_Type__c}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>jwt</rightValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>authorization_code</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -72,6 +88,18 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldItem>Record.Config_ID__c</fieldItem>
+                <identifier>RecordConfig_ID_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Object_Setting__c</fieldItem>
+                <identifier>RecordObject_Setting_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
                     <value>none</value>
@@ -107,6 +135,32 @@
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
                         <operator>NE</operator>
                         <rightValue>jwt</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Username__c</fieldItem>
+                <identifier>RecordUsername_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Grant_Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>password</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Password__c</fieldItem>
+                <identifier>RecordPassword_cField1</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Grant_Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>password</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>

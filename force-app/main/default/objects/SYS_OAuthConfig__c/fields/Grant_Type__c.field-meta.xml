@@ -22,29 +22,32 @@
                 <label>Client Credentials</label>
             </value>
             <value>
-                <fullName>device_code</fullName>
-                <default>false</default>
-                <label>Device Code</label>
-            </value>
-            <value>
-                <fullName>refresh_token</fullName>
-                <default>false</default>
-                <label>Refresh Token</label>
-            </value>
-            <value>
                 <fullName>password</fullName>
                 <default>false</default>
                 <label>Password</label>
             </value>
             <value>
-                <fullName>pkce</fullName>
-                <default>false</default>
-                <label>PKCE</label>
-            </value>
-            <value>
                 <fullName>jwt</fullName>
                 <default>false</default>
                 <label>JWT</label>
+            </value>
+            <value>
+                <fullName>device_code</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Device Code</label>
+            </value>
+            <value>
+                <fullName>pkce</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>PKCE</label>
+            </value>
+            <value>
+                <fullName>refresh_token</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Refresh Token</label>
             </value>
         </valueSetDefinition>
     </valueSet>

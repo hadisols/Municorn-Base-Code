@@ -233,6 +233,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SYS_OAuthConfig__c.Object_Setting__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_OAuthConfig__c.Password__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SYS_OAuthConfig__c.Private_Key__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -289,6 +299,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SYS_OAuthConfig__c.Token_type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_OAuthConfig__c.Username__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
