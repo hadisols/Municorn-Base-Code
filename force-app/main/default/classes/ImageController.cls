@@ -5,7 +5,8 @@ public with sharing class ImageController {
         List< SYS_Tracker__c > sysTrackerList = new List< SYS_Tracker__c >();
         List <ContentDocumentLink> updateFileList = new List <ContentDocumentLink>();
 
-        SYS_Tracker__c sysTracker = new SYS_Tracker__c();
+        List<SYS_Tracker__c> existingSysTracker = [SELECT Id, Name, Type__c, WhatId__c, WhoId__c FROM SYS_Tracker__c WHERE WhatId__c =: recordId  LIMIT 1];
+        SYS_Tracker__c sysTracker =(!existingSysTracker.isEmpty())? existingSysTracker[0] : new SYS_Tracker__c();
         sysTracker.Type__c = 'Display Pic';
         sysTracker.WhatId__c = recordId;
         sysTracker.WhoId__c = contentDocumentId;
@@ -25,7 +26,7 @@ public with sharing class ImageController {
         } 
 
         try {
-            upsert sysTracker WhatId__c;
+            update sysTracker;
             System.debug('SYS_Tracker Record Created Successfully: ' + sysTracker.Id);
             if (updateFileList.size() > 0) {
                 update updateFileList;
