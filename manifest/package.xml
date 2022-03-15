@@ -594,6 +594,7 @@
 		<!-- Start Municorn Tabs-->
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
+		<members>SYS_Tracker__c</members>
 		<!-- End Municorn Tabs-->
 		<name>CustomTab</name>
 	</types>
