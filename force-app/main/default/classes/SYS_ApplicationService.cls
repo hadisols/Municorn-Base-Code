@@ -203,8 +203,8 @@ global virtual class SYS_ApplicationService {
         if(fieldAPIName == null){
             fvalue = mapping.StaticValue__c;
         }
-        else if(fieldAPIName.contains('.')){
-            List<String> splitedFields = fieldAPIName.split('\\.');
+        else if(fieldAPIName.contains(SYS_DataCache.FLAT_KEY_SEPERATOR)){
+            List<String> splitedFields = fieldAPIName.split('\\'+SYS_DataCache.FLAT_KEY_SEPERATOR);
             try{
                 for(Integer i = 0; i < splitedFields.size() - 1; i++){
                     obj = obj.getSobject(splitedFields[i]);   
@@ -345,6 +345,32 @@ global virtual class SYS_ApplicationService {
     }
 
     /**
+     * This hook is called from Webservice methods when the Signature check fails
+     * Arguement: Http Verb - POST,GET,PATCH,DELETE,PUT and a String message
+     * Relies on Integration Setting in DataCache and RestContext
+     * Override if custom log generation is required
+     */
+    global virtual SYS_IntegrationLog__c generateLogForWebhookSigFail(String method, String msg) {
+        String requestBody = RestContext.request.requestBody.toString();
+        SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(requestBody);
+        log.Message__c = msg;
+
+        String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
+        if(algo!=NULL && algo!='')
+        log.Request_Digest__c = generateHash(requestBody,algo);
+
+        log.Type__c = 'INBOUND';
+        log.SYS_Operation_Type__c = getOperationTypeFor(method);
+        log.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
+        log.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+        log.Status__c = 'FAIL';
+        log.How_to_process__c = 'use_custom_apex_handler';
+        log.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+
+        return log;
+    }
+
+    /**
      * This hook is called from SYS_QueueableForInboundChild to generate logs for inbound child records
      * Arguement: record json and Integration setting
      * Override if custom log generation is required
@@ -427,8 +453,7 @@ global virtual class SYS_ApplicationService {
         
         if(req.getHeader('content-type') == 'application/x-www-form-urlencoded'){
             String formUrlEncodedBody='';
-            //String flatJSON = SYS_Helper.getFlatKeys(jsonBody, 'A[B]');
-            Map<String,Object> jsonobj = SYS_Helper.getFlatKeys(jsonBody, 'A[B]');//(Map<String,Object>)JSON.deserializeUntyped(flatJSON);
+            Map<String,Object> jsonobj = SYS_Helper.getFlatKeys(jsonBody,SYS_DataCache.FLAT_KEY_PATTERN);//(Map<String,Object>)JSON.deserializeUntyped(flatJSON);
             List<String> reqkeymap = new List<String>(jsonobj.keySet());
             List<String> keyValueList = new List<String>();
             reqkeymap.sort();
@@ -478,7 +503,7 @@ global virtual class SYS_ApplicationService {
         }
         else{
             //Key mentioned in Flat_Key_for_Resource__c identifies Resource
-            Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody,'A.B');
+            Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody,SYS_DataCache.FLAT_KEY_PATTERN);
             System.debug('-- MS flatKeyMap in getResourceFromJSON:'+flatKeyMap);
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }

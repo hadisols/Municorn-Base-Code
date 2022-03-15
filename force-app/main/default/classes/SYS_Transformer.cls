@@ -206,9 +206,9 @@ public virtual class SYS_Transformer {
                 //TODO handle .'s and nested
                 System.debug('*** hbdebug getRequestJsonSingle mapping.Key__c'+ JSON.serialize(mapping.Key__c));
                 List<String> nodeList = new List<String>();
-                for(String node : mapping.Key__c.split('\\.')) {
+                for(String node : mapping.Key__c.split('\\'+SYS_DataCache.FLAT_KEY_SEPERATOR)) {
                     if(SYS_DataCache.ESCAPE_CHAR != null) {
-                        nodeList.add(node.replace(SYS_DataCache.ESCAPE_CHAR, '.'));
+                        nodeList.add(node.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.FLAT_KEY_SEPERATOR));
                     } else {
                         nodeList.add(node);
                     }
@@ -485,26 +485,26 @@ public virtual class SYS_Transformer {
                 String parentKey = '';
                 System.debug('params=='+key+' =='+parents.size()+' res=='+result);
                 if(parents.size() > 0) {
-                    parentKey = String.join(parents, '.');
+                    parentKey = String.join(parents, SYS_DataCache.FLAT_KEY_SEPERATOR);
                 } 
                 System.debug('parentkey=='+parentKey + ' @@custom obj is==' +currentObj);
                 if (currentObj instanceof Decimal) {
                     //Add
-                	result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Decimal) currentObj);
+                	result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, (Decimal) currentObj);
                 } else if (currentObj instanceof Integer) {
                     //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Integer) currentObj);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, (Integer) currentObj);
                 }
                 else if (currentObj instanceof String) {
                     //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key,  currentObj);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key,  currentObj);
                 } else if (currentObj instanceof Boolean) {
                     //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, (Boolean) currentObj);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, (Boolean) currentObj);
                 } 
                 else if (currentObj == null) {
                     //TODO - Verify accuracy on what needs to be done
-                    result.put(String.isBlank(parentKey) ? key : parentkey+'.'+ key, null);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, null);
                 }
                 else if (currentObj instanceof List<Object> /*&& SYS_Transformer.isChild && key == childRootElement*/) {
                 	List<String> childRecList = new List<String>();

@@ -79,8 +79,32 @@ public class SYS_DataCache {
     /******* NEW VARIABLES START*******/
 
     public static String INT_TYPE;
-
     public static String OBJ_TYPE;
+
+    public static String FLAT_KEY_SEPERATOR{
+        get{
+            if(INT_TYPE != NULL){
+                return 
+                (integrationSetting.get(INT_TYPE).Flat_Key_Separator__c!=NULL)?integrationSetting.get(INT_TYPE).Flat_Key_Separator__c:'.';
+            }
+            else{
+                return '.';
+            }
+        }
+
+    }
+
+    public static String FLAT_KEY_PATTERN{
+        get{
+            if(INT_TYPE != NULL){
+                return 
+                (integrationSetting.get(INT_TYPE).Flat_Key_Pattern__c!=NULL)?integrationSetting.get(INT_TYPE).Flat_Key_Pattern__c:'A_B';
+            }
+            else{
+                return 'A_B';
+            }
+        }
+    }
     
     
     private static Map<String, String> external_key;

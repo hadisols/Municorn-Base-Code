@@ -8,7 +8,18 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
         if(SYS_DataCache.INT_TYPE !=NULL && SYS_DataCache.OBJ_TYPE !=NULL){
             String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String resourceUrl = baseEndpoint + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
+            
+            String urlParams='';
+            if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
+                        urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
+                
+            if(urlParams!=''){
+                resourceUrl+='/'+urlParams;
+            }
+            
+
             log.Callout_URL__c = resourceUrl;
+            
             return resourceUrl;
         }else{
             return super.getHttpRequestEndpoint(req, log, externalId);

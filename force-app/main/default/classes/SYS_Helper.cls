@@ -142,11 +142,14 @@ public class SYS_Helper {
     
     public static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result,String pattern) {
         
-        //String pattern = 'A[B]';
+        //String pattern = 'A.B';
+        
         pattern = pattern.rightPad(4);
         String open = String.fromCharArray( new List<integer>{pattern.getChars()[1]});
         String close = String.fromCharArray( new List<integer>{pattern.getChars()[3]});
+        open = open.replace('_', SYS_DataCache.FLAT_KEY_SEPERATOR);
         close = close.trim();
+        System.debug('*********** open:'+open+' '+'close:'+close);
 
         for(String key : jsonObject.keySet()) {
             Object currentObj = jsonObject.get(key);
@@ -160,17 +163,17 @@ public class SYS_Helper {
             else{
                 String parentKey = '';
                 if(parents.size() > 0) {
-                    parentKey = String.join(parents, '.');
+                    parentKey = String.join(parents, SYS_DataCache.FLAT_KEY_SEPERATOR);
                 }
 
-                String resultKey = String.isBlank(parentKey) ? key : parentkey+ open + key + close;
+                String resultKey = String.isBlank(parentKey) ? key : parentkey + open + key + close;
 
                 if(pattern == 'A[B]'){
-                    for(Integer i=0; i < parentKey.countMatches('.'); i++){
+                    for(Integer i=0; i < parentKey.countMatches(SYS_DataCache.FLAT_KEY_SEPERATOR); i++){
                         resultKey+= close;
                     }
     
-                    resultKey = resultKey.replace('.', open);
+                    resultKey = resultKey.replace(SYS_DataCache.FLAT_KEY_SEPERATOR, open);
                 }
                 
                 

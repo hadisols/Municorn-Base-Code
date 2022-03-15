@@ -27,7 +27,7 @@
                 <field>Direction__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
+                <behavior>Edit</behavior>
                 <field>ResourcePath__c</field>
             </layoutItems>
             <layoutItems>
