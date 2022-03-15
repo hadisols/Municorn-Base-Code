@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_OR_None__c</fullName>
+    <defaultValue>false</defaultValue>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Check this option if child records for this object setting should be inserted all at once after deleting the existing records.</inlineHelpText>
+    <label>Process Child records as All-OR-None</label>
+    <type>Checkbox</type>
+</CustomField>

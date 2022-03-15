@@ -31,7 +31,7 @@ public class SYS_IntegrationLogInboundImmediate{
                                                 On_Complete_Handler__c,
                                                 Requires_process_on_complete__c,
                                                 How_to_process__c,Custom_Apex_Handler__c,SYS_Operation_Type__c,Flat_Key_for_Resource__c,
-                                                Type__c,WhatId__c,Parent__c,Order__c,ObjectSettingId__c,SYS_IntegrationSettings__c
+                                                Type__c,WhatId__c,Parent__c,Order__c,ObjectSettingId__c,Integration_Setting__c
                                             FROM SYS_IntegrationLog__c 
                                             WHERE Id in:sysLogIds];
                                             */
@@ -41,9 +41,9 @@ public class SYS_IntegrationLogInboundImmediate{
             try{
                 SYS_DataCache.log = log;
                 
-                SYS_DataCache.INT_TYPE = log.SYS_IntegrationSettings__c;
+                SYS_DataCache.INT_TYPE = log.Integration_Setting__c;
                 SYS_debug.log('MS SYS_DataCache.log in Inbound queueable:'+SYS_DataCache.log);
-                // NA SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
+                SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                 SYS_ApplicationService appService;
 
                 System.debug('How to process:'+log.How_to_process__c);

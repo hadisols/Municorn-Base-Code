@@ -24,6 +24,8 @@
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
+
+		<members>SYS_Stripe_ApplicationService</members>
 		<name>ApexClass</name>
 	</types>
 	<types>

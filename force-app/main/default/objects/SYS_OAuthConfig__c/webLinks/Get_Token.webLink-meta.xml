@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Get_Token</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <hasMenubar>false</hasMenubar>
+    <hasScrollbars>true</hasScrollbars>
+    <hasToolbar>false</hasToolbar>
+    <height>600</height>
+    <isResizable>true</isResizable>
+    <linkType>url</linkType>
+    <masterLabel>Get Token</masterLabel>
+    <openType>newWindow</openType>
+    <position>none</position>
+    <protected>false</protected>
+    <showsLocation>false</showsLocation>
+    <showsStatus>false</showsStatus>
+    <url>{!URLFOR(SYS_OAuthConfig__c.Redirect_URL__c &amp; IF(ISNULL(SYS_OAuthConfig__c.Additional_URL_Parameters__c),&apos;?&apos;, SYS_OAuthConfig__c.Additional_URL_Parameters__c) &amp;&quot;&amp;scope=&quot;&amp; SYS_OAuthConfig__c.Scope__c &amp;&quot;&amp;state=&quot;&amp;SYS_OAuthConfig__c.Id)}</url>
+</WebLink>

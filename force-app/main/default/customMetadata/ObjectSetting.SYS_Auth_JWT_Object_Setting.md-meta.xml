@@ -3,6 +3,10 @@
     <label>SYS Auth JWT Object Setting</label>
     <protected>false</protected>
     <values>
+        <field>All_OR_None__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>ApexHandler__c</field>
         <value xsi:type="xsd:string">SYS_JWTAuth_ApplicationService</value>
     </values>
@@ -16,7 +20,7 @@
     </values>
     <values>
         <field>ExternalFieldApi__c</field>
-        <value xsi:type="xsd:string">Id</value>
+        <value xsi:type="xsd:string">Config_ID__c</value>
     </values>
     <values>
         <field>IntegrationType__c</field>
@@ -27,15 +31,15 @@
         <value xsi:type="xsd:string">SYS_OAuthConfig__c</value>
     </values>
     <values>
-        <field>Object__c</field>
-        <value xsi:type="xsd:string">SYS_OAuthConfig__c</value>
-    </values>
-    <values>
         <field>QueryClause__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
         <field>ResourcePath__c</field>
+        <value xsi:type="xsd:string">token</value>
+    </values>
+    <values>
+        <field>Resource_Name__c</field>
         <value xsi:type="xsd:string">token</value>
     </values>
     <values>

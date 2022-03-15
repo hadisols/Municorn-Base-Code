@@ -1,5 +1,97 @@
 @RestResource(urlMapping='/v1/callback/*')
-global class SYS_OAuthRedirectHandler {
+global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
+
+    private static String authCode;
+    private static String calloutUrl;
+
+    global override String getHttpRequestEndpoint(HttpRequest req,SYS_IntegrationLog__c log, String externalId){
+        if(SYS_DataCache.INT_TYPE !=NULL && SYS_DataCache.OBJ_TYPE !=NULL){
+            String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+            String resourceUrl = baseEndpoint + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
+            log.Callout_URL__c = resourceUrl;
+            return resourceUrl;
+        }else{
+            return super.getHttpRequestEndpoint(req, log, externalId);
+        }
+    }
+
+
+    global override sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
+        sObj.put(mapping.FieldApiName__c,SYS_Helper.epochToDatetime(String.valueOf(value)));
+        return sObj;
+    }
+
+    global override String preprocessJSONForOutbound(SYS_IntegrationLog__c log,String jsonBody,HttpRequest req) {
+        
+        String formUrlEncodedBody='';
+        Map<String,Object> jsonobj = SYS_Helper.getFlatKeys(jsonBody, 'A[B]');//(Map<String,Object>)JSON.deserializeUntyped(flatJSON);
+        List<String> reqkeymap = new List<String>(jsonobj.keySet());
+        List<String> keyValueList = new List<String>();
+        reqkeymap.sort();
+
+        for (String key: reqkeymap) {
+            if (!String.isBlank(key)){
+                keyValueList.add(key.toLowerCase() + '=' + EncodingUtil.urlEncode(String.valueOf(jsonobj.get(key)!=NULL?jsonobj.get(key):''),'UTF-8'));
+            }
+        }
+        if(authCode!=NULL)
+        keyValueList.add('code' + '=' + EncodingUtil.urlEncode(authCode,'UTF-8'));
+
+        formUrlEncodedBody = String.join(keyValueList,'&');
+        log.data1__c = formUrlEncodedBody; 
+
+        jsonBody = formUrlEncodedBody;
+        
+        return jsonBody;
+    }
+
+    public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
+
+        SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
+
+        String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
+        if(algo!=NULL && algo!='')
+            logResp.Request_Digest__c = generateHash(resp.getBody(),algo);
+
+        if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
+
+            log.Status__c = 'FAIL';
+
+            logResp.Status__c = 'ERROR';
+            
+            logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
+            logResp.WhatId__c = log.WhatId__c;
+            logResp.Type__c = 'RESPONSE';
+            logResp.How_To_Process__c = 'ignore_log';
+            logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+            
+        }
+        else{
+            log.Status__c = 'DONE';
+
+            logResp.Status__c = 'NEW';
+            logResp.SYS_Operation_Type__c = 'UPDATE';
+
+            logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
+            logResp.How_To_Process__c = 'use_custom_apex_handler';
+            logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+            
+            logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
+            logResp.WhatId__c = log.WhatId__c;
+            logResp.Type__c = 'RESPONSE';
+            logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+            logResp.ObjectSettingId__c = log.ObjectSettingId__c;
+
+            logResp.retry__c = false; 
+            
+        }
+
+        upsert log;
+        logResp.SYS_RequestId__c = log.Id;
+
+        return logResp;
+    }
+
 	@HttpGet
     global static void doGet(){
         
@@ -9,26 +101,59 @@ global class SYS_OAuthRedirectHandler {
         String state = RestContext.request.params.get('state');
         
         System.debug('Code:'+code);
+        authCode = code;
         
-        List<SYS_OAuthConfig__c> configs = [SELECT 
-                                                Id, 
-                                                Name, 
-                                                Access_Token__c, 
-                                                Authorize_Endpoint__c, 
-                                                Client_Secret__c, 
-                                                Grant_Type__c, 
-                                                Redirect_URL__c, 
-                                                Refresh_Token__c, 
-                                                Token_Endpoint__c, 
-                                                Client_Id__c,
-                                                Schedule_Refresh_Token__c,
-                                                Token_Expiry_Time__c,
-                                                Token_Expiry_Date__c,
-                                                Additional_URL_Parameters__c 
-                                            FROM SYS_OAuthConfig__c 
-                                           	WHERE Id =:state];
+        List<SYS_OAuthConfig__c> configs = 
+
+        Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c')+' FROM SYS_OAuthConfig__c WHERE Id =\''+state+'\'');
         
-        If(configs.size()>0){
+        if(configs.size()>0){
+            calloutUrl = configs[0].Token_Endpoint__c;
+            try{
+
+                SYS_DataCache.OBJ_TYPE = configs[0].Object_Setting__c;
+                SYS_DataCache.INT_TYPE = SYS_DataCache.objectSettingMap.get(configs[0].Object_Setting__c).IntegrationType__r.DeveloperName;
+                SYS_IntegrationLog__c  newSysLog = new SYS_IntegrationLog__c();
+                List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
+                
+                SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
+                Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(configs);
+                
+                if(jsonListForOutbound.values().size() > 0){
+                    for(Id jsonRecordId:jsonListForOutbound.keyset()){ 
+                        String finalJsonForOutbound;
+
+                        finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
+
+                        newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
+                        newSysLog.Status__c = 'NEW';
+                        newSysLog.HTTP_Method__c = 'POST';
+                        newSysLog.Type__c = 'OUTBOUND';
+                        newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+                        newSysLog.How_to_process__c = 'use_object_setting';
+                        newSysLog.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
+                        newSysLog.SYS_Operation_Type__c = 'INSERT';
+                        //newSysLog.Callout_URL__c = configs[0].Token_Endpoint__c;
+                        newSysLog.Custom_Field_Value__c = code;
+                        newSysLog.WhatId__c = state;
+                        
+                        newSysLog.retry__c = false;
+                        insertSysLog.add(newSysLog);
+                    }
+
+                    if(insertSysLog.size()>0 && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){
+                        new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
+                    }
+                    RestContext.response.responseBody = 
+                    Blob.valueOf('Token Generated succesfully.');
+                    
+                }
+            }catch(Exception e){
+                RestContext.response.responseBody = 
+                    Blob.valueOf('Something went wrong while trying to call token url \n'+e.getMessage() + '\n' +e.getStackTraceString());
+            }
+            
+            /*
             Http h = new Http();
     
             HttpRequest req = new HttpRequest();
@@ -39,7 +164,12 @@ global class SYS_OAuthRedirectHandler {
             String clientId = configs[0].Client_Id__c;
             String clientSecret = configs[0].Client_Secret__c;
             String redirect_uri = configs[0].Redirect_URL__c;
-            String payload = 'client_id='+EncodingUtil.urlEncode(clientId,'UTF-8')+'&client_secret='+EncodingUtil.urlEncode(clientSecret,'UTF-8')+'&code='+EncodingUtil.urlEncode(code,'UTF-8')+'&state='+EncodingUtil.urlEncode(state,'UTF-8')+'&grant_type=authorization_code'+'&redirect_uri='+EncodingUtil.urlEncode(redirect_uri ,'UTF-8');
+            String payload =    'client_id='+EncodingUtil.urlEncode(clientId,'UTF-8')+
+                                '&client_secret='+EncodingUtil.urlEncode(clientSecret,'UTF-8')+
+                                '&code='+EncodingUtil.urlEncode(code,'UTF-8')+
+                                '&state='+EncodingUtil.urlEncode(state,'UTF-8')+
+                                '&grant_type=authorization_code'+
+                                '&redirect_uri='+EncodingUtil.urlEncode(redirect_uri ,'UTF-8');
             
             req.setBody(payload);
             System.debug('----- Token Request Body:'+req.getBody());
@@ -100,17 +230,6 @@ global class SYS_OAuthRedirectHandler {
 
             RestContext.response.responseBody = Blob.valueOf('{"data":'+res.getBody()+'}');
             
-            /*
-            HttpRequest req2 = new HttpRequest();
-            req2.setEndpoint('https://drchrono.com/api/patients');
-            req2.setMethod('GET');
-            req2.setHeader('Content-Type', 'application/json');
-            req2.setHeader('Authorization', 'Bearer '+access_token);
-            HttpResponse res2 = h.send(req2);
-            
-            //--RestContext.response.addHeader('Content-type', 'text/html; charset=utf-8');
-            RestContext.response.responseBody = Blob.valueOf('{"data":'+res2.getBody()+'}');
-            //--RestContext.response.responseBody = Blob.valueOf('<html><head></head><body><h1>Hello World!</h1><hr/><p>WE DID IT!!</p></body></html>');
             */
 
         }else{

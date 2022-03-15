@@ -3,6 +3,10 @@
     <label>SYS Test Account Object Setting</label>
     <protected>false</protected>
     <values>
+        <field>All_OR_None__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>ApexHandler__c</field>
         <value xsi:type="xsd:string">SYS_ApplicationService</value>
     </values>
@@ -27,15 +31,15 @@
         <value xsi:type="xsd:string">Account</value>
     </values>
     <values>
-        <field>Object__c</field>
-        <value xsi:type="xsd:string">Account</value>
-    </values>
-    <values>
         <field>QueryClause__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
         <field>ResourcePath__c</field>
+        <value xsi:type="xsd:string">Account</value>
+    </values>
+    <values>
+        <field>Resource_Name__c</field>
         <value xsi:type="xsd:string">Account</value>
     </values>
     <values>

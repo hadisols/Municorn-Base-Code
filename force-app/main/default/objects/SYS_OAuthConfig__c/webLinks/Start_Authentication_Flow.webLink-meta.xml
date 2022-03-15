@@ -16,5 +16,5 @@
     <protected>false</protected>
     <showsLocation>false</showsLocation>
     <showsStatus>false</showsStatus>
-    <url>{!URLFOR(SYS_OAuthConfig__c.Authorize_Endpoint__c &amp;SYS_OAuthConfig__c.Additional_URL_Parameters__c&amp;&quot;&amp;scope=&quot;&amp; SYS_OAuthConfig__c.Scope__c &amp;&quot;&amp;redirect_uri=&quot;&amp;SYS_OAuthConfig__c.Redirect_URL__c&amp; &quot;&amp;client_id=&quot;&amp;SYS_OAuthConfig__c.Client_Id__c&amp;&quot;&amp;state=&quot;&amp;SYS_OAuthConfig__c.Id)}</url>
+    <url>{!URLFOR(SYS_OAuthConfig__c.Authorize_Endpoint__c &amp;SYS_OAuthConfig__c.Additional_URL_Parameters__c&amp;&quot;&amp;scope=&quot;&amp; SYS_OAuthConfig__c.Scope__c &amp;&quot;&amp;redirect_uri=&quot;&amp;SYS_OAuthConfig__c.Redirect_URL__c&amp; &quot;&amp;client_id=&quot;&amp;SYS_OAuthConfig__c.Client_Id__c&amp;&quot;&amp;state=&quot;&amp;SYS_OAuthConfig__c.Config_ID__c)}</url>
 </WebLink>

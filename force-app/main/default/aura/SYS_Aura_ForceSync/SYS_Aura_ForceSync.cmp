@@ -3,22 +3,36 @@
                 access="global">
 
     <aura:attribute name="recordId" type="String"/>
-    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="message" type="String" default="Use these buttons to override the changes in Salesforce or External System"/>
+    <aura:attribute name="messageType" type="string" default="slds-text-body_small"/>
 
     <!--Design Attribute-->
     <aura:attribute name="objectSetting" type="String"/>
+    <aura:attribute name="objectSettingOut" type="String"/>
     <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller"/>
-   
+    <aura:attribute name="syncIn" type="Boolean" default="true"/>
+    <aura:attribute name="apexHandlerOut" type="String" default="SYS_ForceSync_Controller"/>
+    <aura:attribute name="syncOut" type="Boolean" default="true" />
+
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
 
     <article class="slds-card">
         <div class="slds-card__body slds-card__body_inner">
-            <button class="slds-button slds-button_brand" onclick="{!c.invokeFlowJS}">Sync</button>
+            <aura:if isTrue="{!v.syncIn}">
+                <button class="slds-button slds-button_brand" data-objsetting="{!v.objectSetting}" data-handler="{!v.apexHandler}" data-direction="IN" onclick="{!c.invokeFlowJS}">Sync In</button>
+            </aura:if>
+
+            <aura:if isTrue="{!v.syncOut}">
+                <button class="slds-button slds-button_brand" data-objsetting="{!v.objectSettingOut}" data-handler="{!v.apexHandlerOut}" data-direction="OUT" onclick="{!c.invokeFlowJS}">Sync Out</button>
+            </aura:if>
         </div>
         
         <footer class="slds-card__footer">
-            <span class="slds-badge">{!v.message}</span>
+            <div class="{!v.messageType}">
+                {!v.message}
+            </div>
+            
         </footer>
     </article>
 

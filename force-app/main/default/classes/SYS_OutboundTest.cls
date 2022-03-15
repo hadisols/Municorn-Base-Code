@@ -75,7 +75,7 @@ public class SYS_OutboundTest {
         newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
-        newSysLog.SYS_IntegrationSettings__c = 'SYS_Test_IntegrationSetting';
+        newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
         newSysLog.SYS_Operation_Type__c = 'INSERT';
         newSysLog.whatid__c = 'a005f000007K9hlAAC';
         newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
@@ -86,7 +86,7 @@ public class SYS_OutboundTest {
         newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
-        newSysLog.SYS_IntegrationSettings__c = 'SYS_Test_IntegrationSetting';
+        newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
         newSysLog.SYS_Operation_Type__c = 'INSERT';
         newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
         newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
@@ -97,7 +97,7 @@ public class SYS_OutboundTest {
         newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
-        newSysLog.SYS_IntegrationSettings__c = 'SYS_Test_IntegrationSetting';
+        newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
         newSysLog.SYS_Operation_Type__c = 'INSERT';
         newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
         newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
