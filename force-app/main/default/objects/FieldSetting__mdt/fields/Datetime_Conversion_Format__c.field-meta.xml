@@ -13,8 +13,38 @@
             <sorted>false</sorted>
             <value>
                 <fullName>EPOCH</fullName>
-                <default>true</default>
+                <default>false</default>
                 <label>Epoch</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mm:ss_zh.zm</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mm:ss(+/-)zh.zm</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mm:ss_zh:zm</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mm:ss(+/-)zh:zm</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mm:ssZ</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mm:ssZ</label>
+            </value>
+            <value>
+                <fullName>YYYYMMDDThhmmssZ</fullName>
+                <default>false</default>
+                <label>YYYYMMDDThhmmssZ</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mmZ</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mmZ</label>
+            </value>
+            <value>
+                <fullName>YYYYMMDDThhmmZ</fullName>
+                <default>false</default>
+                <label>YYYYMMDDThhmmZ</label>
             </value>
         </valueSetDefinition>
     </valueSet>

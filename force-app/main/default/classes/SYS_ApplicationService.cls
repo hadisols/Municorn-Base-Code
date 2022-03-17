@@ -244,23 +244,83 @@ global virtual class SYS_ApplicationService {
 
     /* ---------------------------------------------------------------------------------------------------*/
 
-    global virtual Datetime getDatetimeValue(String format, String value){
+    global virtual Datetime getDatetimeValue(FieldSetting__mdt mapping, String dt){
 
-        switch on format{
+        String format = mapping.Datetime_Conversion_Format__c;
+        Datetime newDatetime;
 
-            when 'EPOCH'{
-                Long epoch =  Long.valueOf(value);
-                return DateTime.newInstance(epoch*1000);
+        if(format == 'EPOCH'){
+            Long epoch =  Long.valueOf(dt);
+            return DateTime.newInstance(epoch*1000);
                 
-            }
-            when else{
-                System.debug('\n Invalid Datetime or unsupported Datetime conversion format');
-                return null;
+        }
+        else{
+            
+            
+            Integer yearIndex = format.indexOf('YYYY');
+            Integer monthIndex = format.indexOf('MM');
+            Integer dateIndex = format.indexOf('DD');
+            Integer hoursIndex = format.indexOf('hh');
+            Integer minutesIndex = format.indexOf('mm');
+            Integer secondsIndex = format.indexOf('ss');
+            Integer millisecondsIndex = format.indexOf('sss');
+
+            Integer tzHours = format.indexOf('zh');
+            Integer tzMins = format.indexOf('zm');
+
+            String value =  dt.substring(yearIndex, yearIndex + 4) + '-' +
+                            dt.substring(monthIndex, monthIndex + 2) + '-' +
+                            dt.substring(dateIndex, dateIndex + 2) +
+                            ' ' +
+                            dt.substring(hoursIndex, hoursIndex + 2) + ':' +
+                            dt.substring(minutesIndex, minutesIndex + 2) + ':' +
+                            (secondsIndex > 0?dt.substring(secondsIndex, secondsIndex + 2):'00');
+
+            Integer tzHoursOffset = 0;
+            Integer tzMinsOffset = 0;
+            if(tzHours > 0 && tzMins > 0){
+                Integer tzSymbol = format.indexOf('_');
+
+                tzHoursOffset = Integer.valueOf((dt.substring(tzSymbol,tzSymbol+1) + dt.substring(tzHours,tzHours + 2)));
+                tzMinsOffset = Integer.valueOf((dt.substring(tzSymbol,tzSymbol+1) + dt.substring(tzMins)));
             }
 
+            newDatetime = DateTime.valueOfGmt(value).addHours(tzHoursOffset).addMinutes(tzMinsOffset);
+
+
+            return newDatetime;
+                
         }
 
     }
+
+    global virtual Date getDateValue(FieldSetting__mdt mapping, String value){
+       return Date.valueOf((String)value);
+    }
+
+    global virtual Time getTimeValue(FieldSetting__mdt mapping, String ts){
+        
+        String format = 'hh:mm:ss.sssZ';
+        
+        Integer hoursIndex = format.indexOf('hh');
+        Integer minutesIndex = format.indexOf('mm');
+        Integer secondsIndex = format.indexOf('ss');
+        Integer millisecondsIndex = format.indexOf('sss');
+
+        Integer hours = Integer.valueOf(ts.substring(hoursIndex, hoursIndex + 2));
+        Integer minutes = Integer.valueOf(ts.substring(minutesIndex, minutesIndex + 2));
+        Integer seconds = (secondsIndex > 0)?Integer.valueOf(ts.substring(secondsIndex, secondsIndex + 2)):0;
+        Integer ms = (millisecondsIndex > 0)?Integer.valueOf(ts.substring(millisecondsIndex, millisecondsIndex + 3)):0;
+
+        Time timeValue = 
+        Time.newInstance(   hours, 
+                            minutes, 
+                            seconds, 
+                            ms );
+        System.debug('=============== '+timeValue);
+
+        return timeValue;
+     }
 
     /* ------------------------------------------------------------------------ */
     
@@ -299,10 +359,13 @@ global virtual class SYS_ApplicationService {
         
         //TODO add other field types
         if(fieldType=='DATE'){
-            sObj.put(mapping.FieldApiName__c, Date.valueOf((String)value));
+            sObj.put(mapping.FieldApiName__c, getDateValue(mapping,(String)value) /*Date.valueOf((String)value)*/);
         }
         else if(fieldType=='DATETIME'){
-            sObj.put(mapping.FieldApiName__c,getDatetimeValue(mapping.Datetime_Conversion_Format__c, (String)value));
+            sObj.put(mapping.FieldApiName__c, getDatetimeValue(mapping, (String)value));
+        }
+        else if(fieldType=='TIME'){
+            sObj.put(mapping.FieldApiName__c, getTimeValue(mapping, (String)value));
         }
         else if (fieldType == 'STRING') {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
@@ -922,6 +985,12 @@ global virtual class SYS_ApplicationService {
 
                 if(SYS_DataCache.OBJ_TYPE!=NULL)
                     logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
+                
+                logResp.How_To_Process__c = 'use_custom_apex_handler';
+                logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+            
+            }
+            else{
 
                 if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Always_Ignore_Response__c){
                     logResp.How_To_Process__c = 'ignore_log';
@@ -931,10 +1000,8 @@ global virtual class SYS_ApplicationService {
                     logResp.How_To_Process__c = 'use_custom_apex_handler';
                     logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
                 }
-            }
-            else{
-                logResp.Status__c = 'DONE';
-                logResp.How_To_Process__c = 'ignore_log';
+                //logResp.Status__c = 'DONE';
+                //logResp.How_To_Process__c = 'ignore_log';
 
             }
         
