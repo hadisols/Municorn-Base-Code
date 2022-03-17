@@ -32,7 +32,7 @@
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
-                        <!-- <valueListItems>
+                        <valueListItems>
                             <value>SYS_OAuthConfig__c.Start_JWT_Flow</value>
                             <visibilityRule>
                                 <criteria>
@@ -41,7 +41,7 @@
                                     <rightValue>jwt</rightValue>
                                 </criteria>
                             </visibilityRule>
-                        </valueListItems> -->
+                        </valueListItems>
                         <valueListItems>
                             <value>Edit</value>
                         </valueListItems>
@@ -71,6 +71,7 @@
                     <value>5</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
+                <identifier>force_highlightsPanel</identifier>
             </componentInstance>
         </itemInstances>
         <name>header</name>
@@ -84,6 +85,7 @@
                     <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Name</fieldItem>
+                <identifier>RecordNameField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -105,6 +107,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Grant_Type__c</fieldItem>
+                <identifier>RecordGrant_Type_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -114,6 +117,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Client_Id__c</fieldItem>
+                <identifier>RecordClient_Id_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -130,6 +134,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Client_Secret__c</fieldItem>
+                <identifier>RecordClient_Secret_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -172,6 +177,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Authorize_Endpoint__c</fieldItem>
+                <identifier>RecordAuthorize_Endpoint_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -188,6 +194,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Token_Endpoint__c</fieldItem>
+                <identifier>RecordToken_Endpoint_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -207,6 +214,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Redirect_URL__c</fieldItem>
+                <identifier>RecordRedirect_URL_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -223,6 +231,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Additional_URL_Parameters__c</fieldItem>
+                <identifier>RecordAdditional_URL_Parameters_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -242,11 +251,13 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Scope__c</fieldItem>
+                <identifier>RecordScope_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.Algo__c</fieldItem>
+                <identifier>RecordAlgo_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -259,6 +270,7 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.iss__c</fieldItem>
+                <identifier>Recordiss_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -271,6 +283,7 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.sub__c</fieldItem>
+                <identifier>Recordsub_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -283,6 +296,7 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.aud__c</fieldItem>
+                <identifier>Recordaud_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -295,6 +309,7 @@
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.target_audience__c</fieldItem>
+                <identifier>Recordtarget_audience_cField1</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
@@ -315,6 +330,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Access_Token__c</fieldItem>
+                <identifier>RecordAccess_Token_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -396,6 +412,7 @@
                     <value>Facet-c96ee710-759a-4b92-a0b0-a677c6495fd4</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -405,6 +422,7 @@
                     <value>Facet-929ffce9-88bd-49b0-a6d1-aba23c59b41d</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column5</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-35b3f862-5469-4e24-8ebe-9427914f2805</name>
@@ -435,6 +453,7 @@
                     <value>Facet-00329e38-536c-4b67-8f8b-c554cc3bc25a</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column2</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-d47e40da-8204-4bd5-b559-c0c4b72050e2</name>
@@ -452,6 +471,7 @@
                     <value>Connected App Details</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -465,6 +485,7 @@
                     <value>Keys</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection3</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-704ac08a-5db1-4f52-b1e7-348faa5e2463</name>
@@ -478,6 +499,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.CreatedById</fieldItem>
+                <identifier>RecordCreatedByIdField1</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-61a5c920-1716-4475-ac8c-0a08b3dd99af</name>
@@ -491,6 +513,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LastModifiedById</fieldItem>
+                <identifier>RecordLastModifiedByIdField1</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-aad7db2a-c7e1-4956-b105-cc5040a748df</name>
@@ -504,6 +527,7 @@
                     <value>Facet-61a5c920-1716-4475-ac8c-0a08b3dd99af</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column3</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -513,6 +537,7 @@
                     <value>Facet-aad7db2a-c7e1-4956-b105-cc5040a748df</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column4</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-f642aa6d-d08b-41aa-8dc5-416447fb1183</name>
@@ -530,6 +555,7 @@
                     <value>System Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection2</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-d66e4990-56f2-4068-8aa0-80fe87273765</name>
@@ -551,6 +577,7 @@
                     <value>accordionSection1</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:accordionSection</componentName>
+                <identifier>flexipage_accordionSection1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -568,6 +595,7 @@
                     <value>accordionSection2</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:accordionSection</componentName>
+                <identifier>flexipage_accordionSection2</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-8e13eacf-fc26-400b-9d28-4807f1296719</name>
@@ -585,11 +613,13 @@
                     <value>accordionSection1</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:accordion</componentName>
+                <identifier>flexipage_accordion1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>force:recordDetailPanelMobile</componentName>
+                <identifier>force_recordDetailPanelMobile1</identifier>
             </componentInstance>
         </itemInstances>
         <name>detailTabContent</name>
@@ -611,6 +641,7 @@
                     <value>Standard.Tab.detail</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
+                <identifier>detailTab</identifier>
             </componentInstance>
         </itemInstances>
         <name>maintabs</name>
@@ -624,6 +655,7 @@
                     <value>maintabs</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
+                <identifier>flexipage_tabset</identifier>
             </componentInstance>
         </itemInstances>
         <name>main</name>
