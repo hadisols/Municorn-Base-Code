@@ -226,7 +226,7 @@ public virtual class SYS_Transformer {
                         jsonMapObject.put(nodeList[0], mapping.StaticValue__c);
 
                     }
-                    else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.IsChild__c == false) {
+                    else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.Level__c =='0' /*&& mapping.IsChild__c == false*/) {
                         
                         System.debug('MS PBE If 2');
                         System.debug('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)+'obj api anme=='+mapping.ObjectApiName__c );

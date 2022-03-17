@@ -86,6 +86,17 @@ global virtual class SYS_ApplicationService {
         
     }
 
+    /* ------------------------------------------------------------------------ */
+
+    //TODO Test coverage
+    global virtual String getIdFromExternalKey(String objectApiName, String externalKey, String externalId){
+        sObject parentRecord = Database.query('SELECT Id FROM '+objectApiName+' WHERE '+externalKey+'= \''+externalId+'\'');
+        if(parentRecord!=NULL)
+            return String.valueOf(parentRecord.get('Id'));
+        else
+            return '';
+    }
+
 
     /* ------------------------------------------------------------------------ */
 
@@ -199,7 +210,8 @@ global virtual class SYS_ApplicationService {
         //TODO - handle case - Account."CreatedBy".Name, where CreatedBy is not an sobject - This can be handled by overriding the current method and add the handler
         // on field setting
 
-        String fvalue='';
+        String fvalue= (mapping.Send_Blanks_as_Empty_String__c)?'':null;
+        
         if(fieldAPIName == null){
             fvalue = mapping.StaticValue__c;
         }
@@ -211,7 +223,7 @@ global virtual class SYS_ApplicationService {
                 } 
                 return obj.get(splitedFields[splitedFields.size()-1]);
             }catch(exception ex){
-               System.debug('******exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
+               System.debug('****** Exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
                return null;
             }
             
@@ -230,14 +242,27 @@ global virtual class SYS_ApplicationService {
         return fvalue;
     }
 
-    //TODO Test coverage
-    global virtual String getIdFromExternalKey(String objectApiName, String externalKey, String externalId){
-        sObject parentRecord = Database.query('SELECT Id FROM '+objectApiName+' WHERE '+externalKey+'= \''+externalId+'\'');
-        if(parentRecord!=NULL)
-            return String.valueOf(parentRecord.get('Id'));
-        else
-            return '';
+    /* ---------------------------------------------------------------------------------------------------*/
+
+    global virtual Datetime getDatetimeValue(String format, String value){
+
+        switch on format{
+
+            when 'EPOCH'{
+                Long epoch =  Long.valueOf(value);
+                return DateTime.newInstance(epoch*1000);
+                
+            }
+            when else{
+                System.debug('\n Invalid Datetime or unsupported Datetime conversion format');
+                return null;
+            }
+
+        }
+
     }
+
+    /* ------------------------------------------------------------------------ */
     
     /**
      * INBOUND
@@ -277,7 +302,7 @@ global virtual class SYS_ApplicationService {
             sObj.put(mapping.FieldApiName__c, Date.valueOf((String)value));
         }
         else if(fieldType=='DATETIME'){
-            sObj.put(mapping.FieldApiName__c,Datetime.valueOfGmt((String)value));
+            sObj.put(mapping.FieldApiName__c,getDatetimeValue(mapping.Datetime_Conversion_Format__c, (String)value));
         }
         else if (fieldType == 'STRING') {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
@@ -301,7 +326,19 @@ global virtual class SYS_ApplicationService {
     global virtual String getOperationTypeFor(String method) {
 
         Map<String,String> methodToOperationMap = new Map<String,String>{'POST'=>'UPSERT','PUT'=>'UPSERT','DELETE'=>'DELETE','PATCH'=>'UPDATE'};
+
+        String operationMapString = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Operation_Map__c;
+        if(operationMapString!=NULL){
+            List<String> kvPair = operationMapString.split('\n');
+            for(String kv:kvPair){
+                methodToOperationMap.put(kv.split(':')[0],kv.split(':')[1]);
+
+            }
+        }
+        
         return methodToOperationMap.get(method);
+        
+        
     }
 
     /**
@@ -403,11 +440,16 @@ global virtual class SYS_ApplicationService {
         log.Type__c = 'INBOUND';
  
         /**
+         * If there the Parent Resource Map is defined on IS the use it to derive the resource for child records else
          * If Flat key to identify resource for child records is defined on Integration Setting, consider that
          * Else take the root key as Resource that is passed on while processing parent record
          */
         String flat_key_for_child = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Child__c;
-        if(flat_key_for_child != NULL && flat_key_for_child!='')
+
+        if(SYS_DataCache.PARENT_RESOURCE_MAP != NULL){
+            log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(parentLog[0].Resource__c);
+        }
+        else if(flat_key_for_child != NULL && flat_key_for_child!='')
             log.Flat_Key_for_Resource__c = flat_key_for_child;
         else{
             log.Resource__c = resource;
@@ -503,7 +545,7 @@ global virtual class SYS_ApplicationService {
         }
         else{
             //Key mentioned in Flat_Key_for_Resource__c identifies Resource
-            Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody,SYS_DataCache.FLAT_KEY_PATTERN);
+            Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody,'A_B');
             System.debug('-- MS flatKeyMap in getResourceFromJSON:'+flatKeyMap);
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }
@@ -878,9 +920,17 @@ global virtual class SYS_ApplicationService {
                 logResp.SYS_Operation_Type__c = 'UPDATE';
                 logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Response__c;
 
-                //logResp.Resource__c = SYS_DataCache.FieldMappingOutbound[0].RestResource__c;
-                logResp.How_To_Process__c = 'use_custom_apex_handler';
-                logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+                if(SYS_DataCache.OBJ_TYPE!=NULL)
+                    logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
+
+                if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Always_Ignore_Response__c){
+                    logResp.How_To_Process__c = 'ignore_log';
+                    logResp.Status__c = 'DONE';
+                }
+                else{
+                    logResp.How_To_Process__c = 'use_custom_apex_handler';
+                    logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+                }
             }
             else{
                 logResp.Status__c = 'DONE';

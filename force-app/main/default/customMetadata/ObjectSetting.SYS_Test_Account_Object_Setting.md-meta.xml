@@ -7,6 +7,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Always_Ignore_Response__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>ApexHandler__c</field>
         <value xsi:type="xsd:string">SYS_Override_ApplicationService</value>
     </values>

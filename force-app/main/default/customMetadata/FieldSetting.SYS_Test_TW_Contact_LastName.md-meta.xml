@@ -11,6 +11,10 @@
         <value xsi:type="xsd:string">Contact</value>
     </values>
     <values>
+        <field>Datetime_Conversion_Format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">TWOWAY</value>
     </values>
@@ -85,6 +89,10 @@
     <values>
         <field>RestResource__c</field>
         <value xsi:type="xsd:string">Contact</value>
+    </values>
+    <values>
+        <field>Send_Blanks_as_Empty_String__c</field>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>StaticValue__c</field>

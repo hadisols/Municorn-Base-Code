@@ -52,6 +52,9 @@
                 <behavior>Edit</behavior>
                 <field>EscapeCharacter__c</field>
             </layoutItems>
+            <layoutItems>
+                <emptySpace>true</emptySpace>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
@@ -69,6 +72,10 @@
                 <behavior>Edit</behavior>
                 <field>Flat_Key_for_Resource_Child__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Parent_Resource_Map__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -78,6 +85,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ApexHandler__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Operation_Map__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>

@@ -2,11 +2,11 @@ public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
-    public static Datetime epochToDatetime(String expiry){
-        return epochToDatetime(Integer.valueOf(expiry));
+    public static Datetime secondsToDatetime(String expiry){
+        return secondsToDatetime(Integer.valueOf(expiry));
     }
 
-    public static Datetime epochToDatetime(Integer expiry){
+    public static Datetime secondsToDatetime(Integer expiry){
         Integer day = 86400;
         Integer hour = 3600;
         Integer minute = 60;

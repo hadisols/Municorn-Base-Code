@@ -28,7 +28,7 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
 
 
     global override sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
-        sObj.put(mapping.FieldApiName__c,SYS_Helper.epochToDatetime(String.valueOf(value)));
+        sObj.put(mapping.FieldApiName__c,SYS_Helper.secondsToDatetime(String.valueOf(value)));
         return sObj;
     }
 
