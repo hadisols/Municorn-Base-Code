@@ -26,7 +26,7 @@ public with sharing class ImageController {
         } 
 
         try {
-            update sysTracker;
+            upsert sysTracker;
             System.debug('SYS_Tracker Record Created Successfully: ' + sysTracker.Id);
             if (updateFileList.size() > 0) {
                 update updateFileList;
@@ -54,10 +54,11 @@ public with sharing class ImageController {
     @AuraEnabled
     public static String getSysTrackRecordPictureURL(String recordId) { 
         String pictureURL;
-        SYS_Tracker__c sysTracker =new SYS_Tracker__c();
-        ContentVersion cvRecord =new ContentVersion();
+        SYS_Tracker__c sysTracker = new SYS_Tracker__c();
+        ContentVersion cvRecord = new ContentVersion();
         //sysTracker = Database.query('SELECT '+ SYS_Helper.getAllFieldsFor('SYS_Tracker__c') + '  WHERE WhatId__c =' + '\'' + recordId+'\'' + ' LIMIT 1 ' + '\')');
-        sysTracker = [SELECT Id, Name, Type__c, WhatId__c, WhoId__c FROM SYS_Tracker__c WHERE WhatId__c =: recordId  LIMIT 1];
+        List<SYS_Tracker__c> sysTrackerList = [SELECT Id, Name, Type__c, WhatId__c, WhoId__c FROM SYS_Tracker__c WHERE WhatId__c =: recordId];
+        sysTracker = ( sysTrackerList.size()>0) ? sysTrackerList[0] : new SYS_Tracker__c() ;
         System.debug('( sysTracker!=NULL )' + ( sysTracker!=NULL ));
         if( sysTracker.WhoId__c !=NULL ){
             try{
@@ -74,6 +75,6 @@ public with sharing class ImageController {
         } else {
             pictureURL = PageReference.forResource('nopicture').getUrl();
         }        
-        return pictureURL;
+        return ( String.IsNotBlank(pictureURL) )? pictureURL : PageReference.forResource('nopicture').getUrl();
     }
 }
