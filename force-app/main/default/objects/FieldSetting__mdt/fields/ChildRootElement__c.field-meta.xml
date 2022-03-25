@@ -5,7 +5,7 @@
 { &quot;root&quot; : [ {obj1} , {obj2} ] }</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ChildRootElement</label>
+    <label>Child Root Element</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

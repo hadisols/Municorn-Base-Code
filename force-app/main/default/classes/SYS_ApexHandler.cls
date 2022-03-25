@@ -4,7 +4,7 @@ public virtual class SYS_ApexHandler extends SYS_Transformer {
         List<sObject> objects = getSObjectsToUpsert(jsonList , resource);
         return objects;
     }
-
+    /** 
     public static List<sObject> convertJSONToChildSObjects(List<String> jsonList, String resource) {
         List<sObject> objectsToUpsert = new List<sObject>();
         //TODO filters based on INBOUND, OUTBOUND etc
@@ -73,6 +73,7 @@ public virtual class SYS_ApexHandler extends SYS_Transformer {
         List<sObject> objects = getSObjectsToUpsert(new List<String>{jsonList} , resource);
         return objects;
     }
+    */
 
     // public static List<sObject> getSObjectsToUpsertChildQB(List<String> jsonList, String resource) {  
     //     List<sObject> objectsToUpsert = new List<sObject>();

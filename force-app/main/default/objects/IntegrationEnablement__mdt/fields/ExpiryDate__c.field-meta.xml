@@ -3,7 +3,7 @@
     <fullName>ExpiryDate__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>ExpiryDate</label>
+    <label>Expiry Date</label>
     <required>false</required>
     <type>Date</type>
 </CustomField>

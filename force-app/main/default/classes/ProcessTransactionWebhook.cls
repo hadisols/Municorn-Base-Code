@@ -32,7 +32,7 @@ public class ProcessTransactionWebhook implements Queueable, Database.AllowsCall
                                               Type__c,WhatId__c,Parent__c,Order__c
                                               FROM SYS_IntegrationLog__c WHERE Id in:sysLogIds];
 
-        for(SYS_IntegrationLog__c log : sysLog) {
+        /* for(SYS_IntegrationLog__c log : sysLog) {
             String body = log.data0__c+log.data1__c+log.data2__c+log.data3__c+
                     log.data4__c+log.data5__c+log.data6__c+log.data7__c+
                     log.data8__c+log.data9__c;
@@ -56,7 +56,7 @@ public class ProcessTransactionWebhook implements Queueable, Database.AllowsCall
                 System.debug('#### resp: '+resp.getBody());
 
                 if(resp.getStatusCode() == 200) {
-                    List<sObject> upsertTrans = SYS_ApexHandler.getSingleSobjectsToUpsert_QB(resp.getBody().replace('\uFEFF', ''), 'transaction');
+                    List<sObject> upsertTrans = new List<sObject>{Schema.getGlobalDescribe().get('Account').newSObject()};//SYS_ApexHandler.getSingleSobjectsToUpsert_QB(resp.getBody().replace('\uFEFF', ''), 'transaction');
                     paymentRequestId = (String)upsertTrans[0].get('PaymentRequestId__c');
                     
 
@@ -80,7 +80,7 @@ public class ProcessTransactionWebhook implements Queueable, Database.AllowsCall
                         Status__c = 'payment_done'
                     );
                     
-                    List<sObject> upsertMethod = SYS_ApexHandler.getSingleSobjectsToUpsert_QB(resp.getBody().replace('\uFEFF', ''), 'paymentMethod');
+                    List<sObject> upsertMethod = new List<sObject>{Schema.getGlobalDescribe().get('Account').newSObject()};//SYS_ApexHandler.getSingleSobjectsToUpsert_QB(resp.getBody().replace('\uFEFF', ''), 'paymentMethod');
                     upsertMethod[0].put('Account__c', getAccountId(paymentRequestId));
                     // List<Database.UpsertResult> resultsUpsert = Database.upsert(upsertMethod, Schema.getGlobalDescribe().get('Payment_Method__c').getDescribe().fields.getMap().get('Profile_Id__c'), false);
                     // for(Database.UpsertResult result : resultsUpsert){ 
@@ -186,7 +186,7 @@ public class ProcessTransactionWebhook implements Queueable, Database.AllowsCall
                 }
 
             }
-        }
+        } */
     }
 
     public class transactionWebhook {

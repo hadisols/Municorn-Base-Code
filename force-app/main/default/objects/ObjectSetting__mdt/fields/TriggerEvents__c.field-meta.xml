@@ -3,7 +3,7 @@
     <fullName>TriggerEvents__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>TriggerEvents</label>
+    <label>Trigger Events</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

@@ -27,16 +27,16 @@
         <value xsi:type="xsd:string">SHA1</value>
     </values>
     <values>
-        <field>Hashing_Algo__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
         <field>NamedCredential__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>OAuth_Config_Record_Id__c</field>
+        <value xsi:type="xsd:string">a035f000009HmhcAAC</value>
+    </values>
+    <values>
         <field>UpdateMethod__c</field>
-        <value xsi:type="xsd:string">PATCH</value>
+        <value xsi:type="xsd:string">POST</value>
     </values>
     <values>
         <field>webhookToken__c</field>

@@ -149,7 +149,7 @@
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>false</enableHistory>
+    <enableHistory>true</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
@@ -160,6 +160,7 @@
     <nameField>
         <displayFormat>I-{0000000000}</displayFormat>
         <label>SYS_IntegrationLog Name</label>
+        <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>SYS_IntegrationLogs</pluralLabel>

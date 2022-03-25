@@ -1,0 +1,24 @@
+<design:component label="Charge Button">
+    <design:attribute name="chargeButtonName" label="Button Name" default="Charge"/>
+    <design:attribute name="showACH" label="Enable Echeck" default="false" 
+    description="Select it to show echeck option." />
+    <design:attribute name="gatewayId" label="Gateway id" default=""/>
+    <design:attribute name="amountFieldApiName" label="Amount field Api Name"
+        description="Field API name of amount field in current sObject." default=""/>
+    <design:attribute name="emailFieldApiName" label="Email field Api Name"
+        description="Field API name of Email field in current sObject." />
+    <design:attribute name="accountFieldApiName" label="Account lookup field Api Name"
+        description="Field API name of Account lookup field in current sObject." />
+    <design:attribute name="chargeDateFieldApiName" label="Date field Api Name"
+        description="Field API name of Date field in current sObject." />
+    <design:attribute name="paymentIntentParentFieldApiName" label="Parent field in Payment Intent"
+        description="Field API name of parent field for current sObject." />
+    <design:attribute name="isAdhoc" label="Adhoc payment"
+        description="This field is used to check if it is an Adhoc payment" />
+    <design:attribute name="recurringAmountApiName" label="Field Api name of recurring amount field"
+        description="Field API name of recurring amount in current sObject." />
+    <design:attribute name="frequency" label="Frequency of subscription"
+        description="Select frequency of subscription." datasource="Monthly,Quarterly,Yearly" />
+    <design:attribute name="subscriptionParentFieldApiName" label="Parent field in Subscription"
+        description="Field API name of parent field for current sObject." />
+</design:component>

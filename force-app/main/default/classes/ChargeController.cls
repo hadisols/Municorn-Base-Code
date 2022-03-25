@@ -1,20 +1,169 @@
 public with sharing class ChargeController {
     
     @AuraEnabled
-    public static Account getObjectDetails(String objectId) {
-        System.debug('account-details');
-        List<Account> acc = [SELECT Id, Name, BillingStreet, BillingCity, BillingState, 
-                            BillingPostalCode, BillingCountry, Phone, 
-                            AccountSource, Email__c, Profile_Id__c FROM Account
-                            WHERE Id = :objectId];
-        Account result = new Account();
+    public static ObjectDetails getObjectDetails(String objectId, String accountLookupApiName) {
+        System.debug('object-details');
+        ObjectDetails details = new ObjectDetails();
         try {
-            result = acc[0];
-            System.debug('acc'+result);
+            if(accountLookupApiName == '') {
+                String accountQuery = 'SELECT '+ SYS_Helper.getAllFieldsFor('Account') + ' FROM Account ' +
+                ' WHERE Id =:objectId';
+                sObject accountRecord = Database.query(accountQuery);
+    
+                details.record = accountRecord;
+                details.accountRecord = accountRecord;
+            } else {
+                String sObjectApiName = ((Id)objectId).getSObjectType().getDescribe().getName() + '';
+                String objectQuery = 'SELECT '+ SYS_Helper.getAllFieldsFor(sObjectApiName) + ' FROM ' + sObjectApiName +
+                                        ' WHERE Id =:objectId';
+                System.debug('objectQuery '+objectQuery);
+                sObject objectRecord = Database.query(objectQuery);
+                String accountId = objectRecord.get(accountLookupApiName) + '';
+                String accountQuery = 'SELECT '+ SYS_Helper.getAllFieldsFor('Account') + ' FROM ' + 'Account' +
+                ' WHERE Id =:accountId';
+                System.debug('accountQuery '+accountQuery);
+                sObject accountRecord = Database.query(accountQuery);
+    
+                details.record = objectRecord;
+                details.accountRecord = accountRecord;
+            }
+            
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
-        return result;
+        return details;
+    }
+
+    public class ObjectDetails {
+        @AuraEnabled public Object record { get; set; }
+        @AuraEnabled public Object accountRecord { get; set; }
+    }
+
+    @AuraEnabled
+    public static void loadPaymentMethod(String accountId, String gatewayId) {
+        SYS_DataCache.INT_TYPE = 'Authorize';
+        SYS_DataCache.OBJ_TYPE = 'Athrz_Account';
+        Athrz_utility.syncPaymentMethod(accountId, gatewayId);
+    }
+
+    @AuraEnabled
+    public static List<Payment_Gateway__c> getPaymentGateway(String gatewayId) {
+        List<Payment_Gateway__c> gateways = [SELECT Id, Name, Athrz_Active__c, Athrz_Api_Login_Id__c, Athrz_Base_Endpoint__c, Athrz_Public_Client_Key__c 
+                                            FROM Payment_Gateway__c WHERE Id = :gatewayId];
+        return gateways;
+    }
+
+    @AuraEnabled
+    public static String createTransaction(String intentId, String gatewayId, String obj_type, Athrz_utility.Payload payload, String accountId, Decimal total) {
+        try{
+            System.debug(intentId+ ' '+gatewayId+' '+obj_type+' '+payload);
+            Athrz_utility.savePayment = payload.savePayment != null ?payload.savePayment : false;
+            Athrz_utility.saveAsDefault = payload.saveAsDefault != null ?payload.saveAsDefault : false;
+            Athrz_utility.token = payload.token;
+            Athrz_utility.amount = total;
+            Athrz_utility.chargePayment(intentId, gatewayId, obj_type, accountId);
+            Payment_Intent__c intent = new Payment_Intent__c(
+                Id = intentId,
+                Athrz_Amount__c = total
+            );
+            update intent;
+        } catch(Exception e) {
+            System.debug(e.getStackTraceString());
+            throw new AuraHandledException(e.getMessage());
+        }
+        
+        return Athrz_utility.error;
+    } 
+
+    @AuraEnabled
+    public static String requestSubscription(String subscriptionId, String gatewayId, String obj_type, Athrz_utility.Payload payload, String accountId, Decimal total) {
+        try{
+            System.debug(subscriptionId+ ' '+gatewayId+' '+obj_type+' '+payload);
+            Athrz_utility.savePayment = payload.savePayment != null ?payload.savePayment : false;
+            Athrz_utility.saveAsDefault = payload.saveAsDefault != null ?payload.saveAsDefault : false;
+            Athrz_utility.token = payload.token;
+            Athrz_utility.amount = total;
+            Athrz_utility.subscribeRequest(subscriptionId, gatewayId, obj_type, accountId);
+            Subscription__c sub = new Subscription__c(
+                Id = subscriptionId,
+                Athrz_Amount__c = total
+            );
+            update sub;
+        } catch(Exception e) {
+            System.debug(e.getStackTraceString());
+            throw new AuraHandledException(e.getMessage());
+        }
+
+        return Athrz_utility.error;
+    }
+
+    @AuraEnabled
+    public static string createSubscription(Athrz_utility.Payload payload, List<Athrz_utility.ChargeRequest> chargeRequests){
+        String subscriptionId;
+        String nonce = payload.token;
+
+        Subscription__c sub = new Subscription__c();
+        Decimal total = 0.00;
+
+        sub = Athrz_utility.getSubscription(chargeRequests[0]);
+        sub.Athrz_uuid__c = UUIDGenerator.createId();
+        sub.Athrz_Data_Value__c = payload.token;
+
+        for(Athrz_utility.ChargeRequest chg : chargeRequests) {
+            System.debug('req '+chg);
+            if(chg.paymentType != 'immediate')
+                total += chg.amount;
+        }
+
+        if(payload.isCreditCard) {
+            total = (total * 1.0399).setScale(2);
+        }
+        sub.Athrz_Amount__c = total;
+
+        try {
+            insert sub;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+        subscriptionId = sub.Id;
+        return subscriptionId;
+    }
+
+    @AuraEnabled
+    public static String createPaymentIntent(Athrz_utility.Payload payload, List<Athrz_utility.ChargeRequest> chargeRequests) {
+        String intentId;
+        String nonce = payload.token;
+        Payment_Intent__c intent = new Payment_Intent__c();
+        Decimal total = 0.00;
+
+        intent = Athrz_utility.getPaymentIntent(chargeRequests[0]);
+        intent.athrz_uuid__c = UUIDGenerator.createId();
+        intent.Athrz_Data_Value__c = payload.token;
+
+        intent.Name_on_Account__c = payload.nameOnAccount;
+        intent.Bank_Account_Number__c = payload.accountNumber;
+        intent.Account_Routing_Number__c = payload.accountRoutingNumber;
+        intent.Account_Type__c = payload.accountType;
+
+        for(Athrz_utility.ChargeRequest chg : chargeRequests) {
+            System.debug('req '+chg);
+            if(chg.paymentType == 'immediate')
+                total += chg.amount;
+        }
+
+        if(payload.isCreditCard) {
+            total = (total * 1.0399).setScale(2);
+        }
+
+        intent.Athrz_Amount__c = total;
+        try { 
+            insert intent;
+            intentId = intent.Id;
+        } catch(Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+
+        return intentId;
     }
 
     @AuraEnabled
@@ -27,138 +176,44 @@ public with sharing class ChargeController {
                                                     Billing_Country__c, Billing_Email__c, Billing_First_Name__c, 
                                                     Billing_Last_Name__c, Billing_Phone__c, Billing_Postal_Code__c, 
                                                     Billing_Salutation__c, Billing_State__c, Billing_Street__c, 
-                                                    Account__c FROM Payment_Method__c
+                                                    Account__c , Athrz_Bank_Account_Number__c, Athrz_Bank_Account_Type__c 
+                                                    FROM Payment_Method__c
                                                     WHERE Account__c = :objectId];
         
         return paymentMethods;
     }
 
     @AuraEnabled
-    public static string sendCheckoutEmail(List<ChargeRequest> chargeRequests){
+    public static string sendCheckoutEmail(List<Athrz_utility.ChargeRequest> chargeRequests){
         String result = '';
         System.debug('email checkout');
         Date today = Date.today();
-        List<PaymentRequest__c> requestListInsert = new List<PaymentRequest__c>();
-        PaymentRequest__c requestToSendEmail = new PaymentRequest__c();
+        Payment_Intent__c intent = new Payment_Intent__c();
         String uuid;
 
-        for(ChargeRequest chargeReq : chargeRequests) {
-            System.debug(chargeReq);
-            PaymentRequest__c request = new PaymentRequest__c();
-            request.Name = 'Payment for '+chargeReq.contactName;
-            request.Frequency__c = chargeReq.frequency;
-            request.Email__c = chargeReq.emailId;
-            request.Account__c = chargeReq.accountId;
-            request.Amount__c = chargeReq.amount;
-            request.Status__c = 'payment_new';
-            request.Scheduled_Payment__c = chargeReq.firstChargeDate;
-            request.uuid__c = UUIDGenerator.createId();
-            request.PaymentType__c = chargeReq.paymentType;
-
-            System.debug(today+' '+request.Scheduled_Payment__c);
-            if(today.day() == chargeReq.firstChargeDate.day() &&
-                today.month() == chargeReq.firstChargeDate.month() &&
-                today.year() == chargeReq.firstChargeDate.year()) {
-                uuid = request.uuid__c;
-            }
-            if(uuid == null)
-                uuid = request.uuid__c;
-            
-            requestListInsert.add(request);
+        Decimal total = 0.00;
+        uuid = UUIDGenerator.createId();
+        
+        intent = Athrz_utility.getPaymentIntent(chargeRequests[0]);
+        intent.athrz_uuid__c = uuid;
+        
+        for(Athrz_utility.ChargeRequest chg : chargeRequests) {
+            total += chg.amount;
         }
-        // try {
-            insert requestListInsert;
-            result = sendEmail(uuid).success ?
-                    ('Successfully sent payment request email to ' + requestToSendEmail.Email__c ) :
-                    ('Sending email failed to ' + requestToSendEmail.Email__c + ', please try again!');
+        intent.Athrz_Amount__c = total.setScale(2);
+        try {
+            insert intent;
+            result = Athrz_utility.sendEmail(uuid).success ?
+                    ('Successfully sent payment request email to ' + intent.Athrz_Email__c ) :
+                    ('Sending email failed to ' + intent.Athrz_Email__c + ', please try again!');
             
-        // } catch (Exception e) {
-        //     throw new AuraHandledException(e.getMessage());
-        // }
+        } catch (Exception e) {
+            System.debug('exception '+e.getStackTraceString());
+            throw new AuraHandledException(e.getMessage());
+        }
 
         return result;
     }
 
-    public static Messaging.SendEmailResult sendEmail(String uuid) {
-        EmailTemplate tempID = [SELECT Id,HTMLValue,Name FROM EmailTemplate WHERE Name ='Payment request email'];
-        System.debug(uuid);
-        PaymentRequest__c paymentRequest = [SELECT Id, Account__r.Name,Account__r.Email__c, Payment_Link_email__c,
-                                            Frequency__c, Amount__c,Currency_Code__c, Scheduled_Payment__c
-                                            FROM PaymentRequest__c WHERE uuid__c =:uuid];
-
-        String body = tempID.HTMLValue;
-        Messaging.SingleEmailMessage mail =  new Messaging.SingleEmailMessage();// create instance of SingleEmailMessage class 
-        
-        
-        mail.toAddresses = new String[] {paymentRequest.Account__r.Email__c};
-        
-        mail.setReplyTo(userinfo.getUserEmail());
-        mail.setSaveAsActivity(false);
-        mail.setSenderDisplayName(userinfo.getname());
-
-        String subject = System.Label.email_subject;
-        
-        mail.setSubject(subject);
-
-        mail.htmlBody = getDonationTemplate(body, paymentRequest);
-        
-        Messaging.SingleEmailMessage[] messages =   new List<Messaging.SingleEmailMessage> {mail};
-        Messaging.SendEmailResult[] results = Messaging.sendEmail(messages);
-        
-        return results[0];
-    }
-
-
-    public static String getDonationTemplate(String body, PaymentRequest__c paymentRequests) {
-        // StaticResource sr = [SELECT Id, Body FROM StaticResource WHERE Name = 'donation_template' LIMIT 1];
-        String emailMessage = System.Label.email_message;
-        String userSalutation = System.Label.email_user_salutation;
-        String orgName = 'Jason Emer MD';
-        return body
-                .replace('{{amount_field}}', PaymentRequest__c.fields.Amount__c.getDescribe().label)
-                .replace('{{frequency_field}}', PaymentRequest__c.fields.Frequency__c.getDescribe().label)
-                .replace('{{first_charge_date_field}}', PaymentRequest__c.fields.Scheduled_Payment__c.getDescribe().label)
-                .replace('{{pay_button_text}}', System.Label.email_pay_button_text)
-                .replace('{{email_message}}', emailMessage.replace('{{orgName}}', orgName))
-                .replace('{{user_salutation}}', userSalutation.replace('{{userName}}', paymentRequests.Account__r.Name))
-                .replace('{{userName}}', paymentRequests.Account__r.Name)
-                .replace('{{payments}}', getPayments(new List<PaymentRequest__c>{paymentRequests}))
-                .replace('{{link}}', paymentRequests.Payment_Link_email__c);
-                 
-    }
-
-    private static String getPayments(List<PaymentRequest__c> payments) {
-        String paymentList = '';
-        for (PaymentRequest__c paymentRequest : payments) {
-            paymentList += '<tr>' +
-                    '<td style="text-align:center">' + getFrequencyDisplayName(paymentRequest.Frequency__c) + '</td>' +
-                    '<td style="text-align:center">' + paymentRequest.Amount__c + ' ' + 'USD' + '</td>' +
-                    '<td style="text-align:center">' + paymentRequest.Scheduled_Payment__c.format() + '</td>' +
-                    '</tr>';
-        }
-        return paymentList;
-    }
-
-    private static String getFrequencyDisplayName(String frequency) {
-       return frequency == 'single' ? System.Label.frequency_single
-               : frequency == 'month' ? System.Label.frequency_month
-                       : frequency == 'quarter' ? System.Label.frequency_quarter
-                               : frequency == 'year' ? System.Label.frequency_year: null;
-    }
-
-    public class ChargeRequest {
-        @AuraEnabled public Id contactId { get; set; }
-        @AuraEnabled public Id accountId { get; set; }
-        @AuraEnabled public Id opportunityId { get; set; }
-        @AuraEnabled public Double amount { get; set; }
-        @AuraEnabled public Boolean newOpportunity { get; set; }
-        @AuraEnabled public String opportunityName { get; set; }
-        @AuraEnabled public String emailId { get; set; }
-        @AuraEnabled public String frequency { get; set; }
-        @AuraEnabled public Date firstChargeDate { get; set; }
-        @AuraEnabled public String paymentType { get; set; }
-        @AuraEnabled public String paymentRequestGroupId { get; set; }
-        @AuraEnabled public Integer itemNumber { get; set; }
-        @AuraEnabled public String contactName { get; set; }
-    }
+    
 }

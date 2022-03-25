@@ -4,6 +4,6 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>isInboundList</label>
+    <label>Is Inbound List?</label>
     <type>Checkbox</type>
 </CustomField>

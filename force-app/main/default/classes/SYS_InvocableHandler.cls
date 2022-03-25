@@ -20,30 +20,29 @@ global class SYS_InvocableHandler {
         global String operationType;
     }
     
-    //TODO - remove descriptio
+    
     @InvocableMethod(label='Capture Request for Outbound' description='To capture outbound request and create a SYS_IntegrationLog record for Municorn')
     global static void captureOutboundRequest(List<MyInvocableVariable> myInvocableVariableList) {
-    	List<sObject> newList = new List<sObject>();
+        
+        List<sObject> newList = new List<sObject>();
         List<sObject> oldList = new List<sObject>();
         
-        Map<String, Object> discountMap = new Map<String, Object>();
-        String objectApiName = '';
+        List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
+
         String operationType = myInvocableVariableList.size() > 0 ? myInvocableVariableList[0].operationType.toUppercase() : 'INSERT';
 
+        SYS_DataCache.INT_TYPE = myInvocableVariableList[0].integrationSetting;
+        SYS_DataCache.OBJ_TYPE = myInvocableVariableList[0].objectSetting;
+
         for(MyInvocableVariable itr:myInvocableVariableList){
-            objectApiName = ((Id)itr.recId).getSobjectType() + '';
             newList.add(itr.newVal);   
-            oldList.add(itr.oldVal);
-            SYS_DataCache.INT_TYPE = itr.integrationSetting;
-            SYS_DataCache.OBJ_TYPE = itr.objectSetting;
-            SYS_DataCache.objectApiName = objectApiName;
-            System.debug('SYS_DataCache.objectApiName:'+SYS_DataCache.objectApiName);
+            oldList.add(itr.oldVal);   
         } 
         
         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
         
         Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(newList);
-        List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
+        
        
         if(jsonListForOutbound.values().size() > 0){
             for(Id jsonRecordId:jsonListForOutbound.keyset()){ 
@@ -57,18 +56,17 @@ global class SYS_InvocableHandler {
                 by creating an extension class. Configure the new extended class in ObjectSettings metadata
                 */
 
-                
-
                 finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
                 System.debug('cleanJSON'+finalJsonForOutbound);
 
                 //TODO - QB specific change for bundle product  
 
-                SYS_IntegrationLog__c  newSysLog = SYS_ApplicationService.getLogsToInsert(finalJsonForOutbound);
+                SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
                 newSysLog.Status__c = 'NEW';
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.SYS_IntegrationSettings__c = SYS_DataCache.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = operationType;
+                newSysLog.How_to_process__c = 'use_object_setting';
                 newSysLog.whatid__c = jsonRecordId;
                 newSysLog.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
                 insertSysLog.add(newSysLog);
@@ -82,7 +80,4 @@ global class SYS_InvocableHandler {
         }
     }
 
-    public class productWrapper {
-        public String Type;
-    }
 }

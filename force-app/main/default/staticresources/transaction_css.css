@@ -144,7 +144,7 @@ label > span, #pouet > span {
     color: #FFFFFF !important;
     font-family: "Helvetica Neue", Helvetica !important;
   	font-size: .9rem !important;
-  	font-variant: normal !imporant;
+  	font-variant: normal !important;
     padding: 0.6rem 2.5rem !important;
     background: #004487 !important;
     text-decoration: none !important;
@@ -418,4 +418,24 @@ input[type=text]::placeholder {
 
 .payment-label {
     font-weight: bold;
+}
+
+.slds-input {
+    margin: 8px 0;
+}
+
+.hide {
+    display: none;
+}
+
+.selected-button {
+    background-color: #302f2f !important;
+    color:  rgb(255, 255, 255) !important;
+}
+.jm-color {
+    color:  rgb(20, 20, 20) !important;
+}
+
+.slds-button_neutral {
+    color:  rgb(31, 31, 31) ;
 }

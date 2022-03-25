@@ -1,0 +1,359 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0"
+    controller="PaymentFormController" action="{!initPage}">
+
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="x-ua-compatible" content="ie=edge" />
+      <title>Jason Emer MD</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+    <body>
+        <!-- REQUIRED SLDS WRAPPER -->
+        <apex:slds />
+        <div class="slds-scope">
+        <apex:outputPanel styleClass="charge-output-panel" id="error-panel">
+            <!-- <apex:outputText value="{!error}" /> -->
+            <input type="hidden" value="{!error}" id="error-panel-input" />
+            <input type="hidden" value="{!paymentMessage}" id="message-panel" />
+        </apex:outputPanel>
+
+        <div id="spinner" class="slds-spinner_container" style="display:none">
+            <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand">
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+        
+        <apex:pageBlock rendered="{!isblank(error)}" id="form-display">
+      
+        <div id="PaymentRequest:header" class="slds-align_absolute-center">
+            <img src="https://media.glassdoor.com/sqll/1899831/jason-emer-md-squarelogo-1527081876809.png"/>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--1-of-1 slds-small-size--2-of-2 slds-medium-size--4-of-4 slds-align_absolute-center">
+                <div class="slds-text-color_destructive" id="error-message-after-submission"></div>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size--1-of-1 slds-small-size--2-of-2 slds-medium-size--4-of-4 slds-align_absolute-center">
+                <div class="slds-text-heading_small" id="payment-message">{!paymentMessage}</div>
+            </div>
+        </div>
+        <apex:outputPanel rendered="{!isblank(paymentMessage)}" id="render-payment-form">
+
+        
+          <div class="myapp" id="payment-form-component">
+            <div class="slds-grid slds-wrap">
+              <div class="slds-col slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--2-of-4">
+                
+                <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around--x-small">
+                    <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">Invoice Number:</div>
+                        <br/>
+                    <div id='table-cc' class="invoice-table">
+                        <div class="container">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-12 col-md-offset-3 body-main">
+                                        <div class="col-md-12">
+                                            <div>
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                <h5>Description</h5>
+                                                            </th>
+                                                            <th>
+                                                                <h5>Amount</h5>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="col-md-9">Payable Amount</td>
+                                                            <td class="col-md-3"><i class="fas fa-dollar-sign"></i> <span class='payableamount'></span> </td>
+                                                        </tr>
+                                                        <tr class="cctax">
+                                                            <td class="col-md-9">Credit Card Tax + 3.99%</td>
+                                                            <td class="col-md-3"><i class="fas fa-dollar-sign"></i> <span class='ccamount'></span> </td>
+                                                        </tr>
+                                                        <tr class="jm-color">
+                                                            <td class="text-right">
+                                                                <h4><strong>Total:</strong></h4>
+                                                            </td>
+                                                            <td class="text-left">
+                                                                <h4><strong><i class="fas fa-dollar-sign"></i> <span class='totalamount'></span> </strong></h4>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div>
+                                                <div class="col-md-12">
+                                                    <p><b>Date :</b> 6 June 2019</p> <br />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+              </div>
+              <div class="slds-col slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--2-of-4 ">
+                
+                <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-4 ">
+                
+                    <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around--x-small">
+                        <div class="slds-button-group slds-text-align_center">
+                            <button class="slds-button slds-button_neutral selected-button" id="credit-card-button">Credit Card</button>
+                            <button class="slds-button slds-button_neutral" id="bank-button">Bank Payment</button>
+                            <button class="slds-button slds-button_neutral" id="saved-button">Saved Payment</button>
+                        </div>
+                    </div>
+                </div>
+             
+                <input type="hidden" value="{!apiLoginId}" id="api-login-id"/>
+                <input type="hidden" value="{!apiPublicKey}" id="api-public-key"/>
+                <input type="hidden" value="{!amount}" id="amount"/>
+                    
+                <!-- <input type="text" value="{!error}" /> -->
+                <input type="hidden" id="payment-type" />
+                <input type="hidden" id="payment-method" />
+
+                <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 billing-information ">
+                    <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
+                        <!-- <apex:outputPanel id="thePanel" layout="block">{!info.Name}</apex:outputPanel> -->
+                        <div class="slds-text-heading_small slds-text-align_center">{!$Label.Billing_Information} </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                            <input type="text" id="payment-street" placeholder="Address" required="" class="slds-input" value="{!street}"/>
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                            <input type="text" id="payment-city" placeholder="City" required="" class="slds-input" value="{!city}"/>
+                        </div>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                <input type="text" id="payment-state" placeholder="State" required="" class="slds-input" value="{!state}"/>
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                <input type="text" id="payment-zip" placeholder="Zipcode" required="" class="slds-input" value="{!zipcode}"/>
+                            </div>
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                            <input type="text" id="payment-country" placeholder="Country" required="" class="slds-input" value="{!country}"/>
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                            <input type="text" id="payment-email" placeholder="Email" required="" class="slds-input" value="{!email}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4">
+                    <div class="credit-card-view ">
+                        <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
+                            <div class="slds-text-heading_small slds-text-align_center">{!$Label.Payment_Information}</div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                <input type="text" id="payment-credit-card-holder-name" placeholder="Name on Card" required="" class="slds-input" />
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                <input type="text" id="payment-credit-card-number" placeholder="Card Number" required="" class="slds-input" />
+                            </div>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-form-element__control slds-col slds-grid slds-size_1-of-2 slds-p-around_x-small">
+                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                        <input type="text" id="payment-credit-card-expiry-mm" placeholder="MM" required="" class="slds-input" />
+                                    </div>
+                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                        <input type="text" id="payment-credit-card-expiry-yy" placeholder="YY" required="" class="slds-input" />
+                                    </div>
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                    <input type="text" id="payment-credit-card-cvv" placeholder="CVV" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element">
+                                        <input type="checkbox" id="save-card" checked="checked" class="slds-p-horizontal_medium"/>Save information for future checkouts
+                                    </div>
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element">
+                                        <input type="checkbox" id="save-card-default" checked="checked" class="slds-p-horizontal_medium"/>Save as default for future checkouts
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="bank-payment-view hide">
+                        <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
+                            <div class="slds-text-heading_small slds-text-align_center">{!$Label.Payment_Information}</div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                <input type="text" id="payment-bank-holder-name" placeholder="Name on Account" required="" class="slds-input" />
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                <input type="text" id="payment-bank-number" placeholder="Account Number" required="" class="slds-input" />
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                <input type="text" id="payment-bank-number-confirm" placeholder="Confirm account Number" required="" class="slds-input" />
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                <input type="text" id="payment-bank-routing-number" placeholder="Routing Number" required="" class="slds-input" />
+                            </div>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                    <input type="text" id="payment-bank-name" placeholder="Bank Name" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                    <input type="text" id="payment-bank-type" placeholder="Bank Type" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element">
+                                        <input type="checkbox" id="save-bank" checked="checked" class="slds-p-horizontal_medium"/>Save information for future checkouts
+                                    </div>
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <div class="slds-form-element">
+                                        <input type="checkbox" id="save-bank-default" checked="checked" class="slds-p-horizontal_medium"/>Save as default for future checkouts
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="saved-payment-view hide">
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-1">
+                    <apex:form>
+                    <apex:pageBlockSection columns="1">
+                            <apex:pageBlockSectionItem rendered="{!(cards != null && NOT(cards.empty))}">
+                                <apex:outputPanel >
+                                    <div class="payment-group">
+                                        <apex:repeat value="{!cards}" var="card">
+                                            <div class="payment-option">
+                                                <div class="saved-payment-method cards">
+                                                    <apex:panelGrid columns="6">
+                                                        <apex:outputPanel >
+                                                            <input type="radio" name="payment-source" value="{!card.Id}"
+                                                                   class="default-source"/>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel >
+                                                        <span class="card-brand-logo">
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Visa')}" value="{!$Resource.visa}"
+                                                    width="35" height="35" alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'MasterCard')}"
+                                                    value="{!$Resource.Mastercard}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Maestro')}"
+                                                    value="{!$Resource.Maestro}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Cirrus')}"
+                                                    value="{!$Resource.Cirrus}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'American')}"
+                                                    value="{!$Resource.AmericanExpress}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Discover')}"
+                                                    value="{!$Resource.Discover}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Diners')}"
+                                                    value="{!$Resource.DinersClub}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'JCB')}" value="{!$Resource.JCB}"
+                                                    width="35" height="35" alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'UnionPay')}"
+                                                    value="{!$Resource.UnionPay}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/>
+                                        <apex:image rendered="{!contains(card.Card_Type__c, 'unknown') || isBlank(card.Card_Type__c)}"
+                                                    value="{!$Resource.UnknownCard}" width="35" height="35"
+                                                    alt="{!card.Card_Type__c}"/></span>
+                                                            <span>xxxx xxxx xxxx {!card.Card_Number__c}</span>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel >
+                                                            <apex:outputText value="{!card.Card_Type__c}"/>
+                                                        </apex:outputPanel>
+                                                    </apex:panelGrid>
+                                                    <!-- <div class="button-container">
+                                                        <apex:commandbutton id="payment-button"
+                                                                            styleClass="payment-button pay"
+                                                                            value="{!$Label.process_cart_items}"
+                                                                            onclick="pay()"
+                                                                            reRender="none"/>
+                                                    </div> -->
+                                                </div>
+                                            </div>
+                                        </apex:repeat>
+                                    </div>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                        </apex:pageBlockSection>
+                    </apex:form>
+                </div>
+            </div>
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-1">
+                    <div class="slds-box slds-box_x-small slds-text-align_right slds-m-around--x-small">
+                        <button class="slds-button slds-button_neutral jm-color" id="cancel-button">Cancel</button>
+                        <button class="slds-button slds-button_neutral selected-button" id="pay-button">Pay&nbsp;<i class="fas fa-dollar-sign"></i> <span class='totalamount'></span></button>
+                    </div>
+                </div>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+          <!-- / RESPONSIVE GRID EXAMPLE -->
+        </apex:pageBlock>
+    </div>
+        <apex:pageMessages />
+    </body>
+  </html>
+    <apex:form >
+        <!-- Define the JavaScript function sayHello-->
+        <!-- <apex:actionFunction name="sayHello" action="{!sayHello}" rerender="out" status="myStatus"/> -->
+        <apex:actionFunction name="performCharge" action="{!charge}" oncomplete="chargeComplete()" reRender="error-panel, render-payment-form">
+            <apex:param name="token" assignTo="{!paymentToken}" value=""/>
+            <apex:param name="cardFlag" assignTo="{!isCreditcard}" value=""/>
+            <apex:param name="savePayment" assignTo="{!savePayment}" value=""/>
+            <apex:param name="saveAsDefault" assignTo="{!saveAsDefault}" value=""/>
+            <apex:param name="isPaymentMethod" assignTo="{!isPaymentMethod}" value=""/>
+        </apex:actionFunction>
+
+        <apex:actionFunction name="updateBankDetails" action="{!updateIntentBankDetails}" oncomplete="bankCharge()" reRender="error-panel, render-payment-form">
+            <apex:param name="nameOnAccount" assignTo="{!nameOnAccount}" value=""/>
+            <apex:param name="accountNumber" assignTo="{!accountNumber}" value=""/>
+            <apex:param name="accountRoutingNumber" assignTo="{!accountRoutingNumber}" value=""/>
+            <apex:param name="accountType" assignTo="{!accountType}" value=""/>
+
+        </apex:actionFunction>
+
+        <apex:actionFunction name="updatePaymentMethod" action="{!updatePaymentMethod}" oncomplete="paymentMethodCharge()" reRender="error-panel, render-payment-form">
+            <apex:param name="paymentMethodId" assignTo="{!paymentMethodId}" value=""/>
+
+        </apex:actionFunction>
+    </apex:form>
+
+
+    <script src="https://jstest.authorize.net/v1/Accept.js" charset="utf-8"></script>
+
+    <apex:stylesheet value="{!$Resource.transaction_css}"/>
+    <apex:includeScript value="{!$Resource.jquery}"/>
+    <apex:includeScript value="{!$Resource.payment_form_helper}"/>
+    
+
+    <apex:stylesheet value="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"/>
+     
+    <apex:includeScript value="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"/>
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"/>
+
+    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/fontawesome.min.css" />
+    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <apex:stylesheet value="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"/>
+    <apex:stylesheet value="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <apex:includeScript value="https://code.jquery.com/ui/1.12.1/jquery-ui.js"/>
+        
+    <apex:includeScript value="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"/>
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"/>
+       
+</apex:page>

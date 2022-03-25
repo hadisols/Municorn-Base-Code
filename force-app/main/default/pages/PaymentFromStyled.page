@@ -13,12 +13,12 @@
         <apex:pageBlock >
             <h3 style="margin-bottom: 20px;">Sandbox
                 <span>Payment </span></h3>
-            <apex:pageBlockTable value="{!paymentRequests}" var="req"  styleClass="payment-summary">
+            <apex:pageBlockTable value="{!paymentIntents}" var="req"  styleClass="payment-summary">
                 <apex:column >
                     <apex:facet name="header">Amount</apex:facet>
-                    <apex:outputlabel value="{!req.Amount__c}" />
-                    <input type="hidden" id="selected-amount" value="{!req.Amount__c}"/>
-                    <input type="hidden" id="selected-amount-ach" value="{!req.Amount__c}"/>
+                    <apex:outputlabel value="{!req.Athrz_Amount__c}" />
+                    <input type="hidden" id="selected-amount" value="{!req.Athrz_Amount__c}"/>
+                    <input type="hidden" id="selected-amount-ach" value="{!req.Athrz_Amount__c}"/>
           			<input type="hidden" id="selected-val" value="" />
                 </apex:column>
             </apex:pageBlockTable>

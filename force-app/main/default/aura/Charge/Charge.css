@@ -342,3 +342,9 @@
     font-size: 0.8rem !important;
     color: #2b2a2a !important;
 }
+.THIS .pay-button-align {
+    text-align: right;
+}
+.THIS .align-right {
+    text-align: right;
+}

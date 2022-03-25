@@ -3,7 +3,7 @@
     <fullName>StaticValue__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>StaticValue</label>
+    <label>Static Value</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

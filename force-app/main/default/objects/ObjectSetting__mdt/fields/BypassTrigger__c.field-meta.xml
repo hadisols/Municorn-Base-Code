@@ -4,6 +4,6 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>BypassTrigger</label>
+    <label>Bypass Trigger</label>
     <type>Checkbox</type>
 </CustomField>

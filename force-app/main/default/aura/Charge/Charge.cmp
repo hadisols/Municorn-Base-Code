@@ -1,14 +1,16 @@
-<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" 
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName,force:lightningQuickActionWithoutHeader" 
     access="global" 
     controller="ChargeController">
 	<aura:attribute name="obj" type="Object"/>
     <aura:attribute name="contacts" type="Contact"/>
     <aura:attribute name="opportunities" type="Opportunity"/>
     <aura:attribute name="ShowTransactionDetails" type="boolean" default="false"/>
+    <aura:attribute name="ShowEmailConfirmation" type="boolean" default="false"/>
+    <aura:attribute name="ShowDefaultPage" type="boolean" default="true"/>
+    <aura:attribute name="EnableAddToCardButton" type="boolean" default="true"/>
     <aura:attribute name="Loading" type="boolean" default="true"/>
     <aura:attribute name="PayNow" type="boolean" default="true"/>
     <aura:attribute name="RecordType" type="string"/>
-    <aura:attribute name="PaymentAmount" type="double"/>
     <aura:attribute name="EnterAmount" type="boolean" default="true"/>
     <aura:attribute name="NewOpportunityName" type="string"/>
     <aura:attribute name="SelectedOpportunity" type="Object"/>
@@ -21,224 +23,421 @@
     <aura:attribute name="CreateNewOpportunity" type="boolean" default="true"/>
     <aura:attribute name="ShowEmail" type="boolean" default="false"/>
     <aura:attribute name="Labels" type="Map"/>
-    <aura:attribute name="FrequencyOptions" type="List"/>
-    <aura:attribute name="SelectedFrequency" type="String" default="single"/>
-    <aura:attribute name="FirstChargeDate" type="String"/>
-    <aura:attribute name="UserCards" type="List"/>
-    <aura:attribute name="SelectedPaymentSource" type="String"/>
-    <aura:attribute name="UserBankAccounts" type="List"/>
+    
     <aura:attribute name="ShowPaymentOptions" type="Boolean" default="false"/>
     <aura:attribute name="DateToday" type="String"/>
     <aura:attribute name="StripePaymentRequest" type="Object"/>
     <aura:attribute name="TxnDetailsColumns" type="List"/>
     <aura:attribute name="TxnDetailsData" type="List"/>
     <aura:attribute name="Txn" type="Object"/>
-    <aura:attribute name="StripeCardUILoading" type="boolean" default="true"/>
-    <aura:attribute name="StripeCardUI" type="String"/>
     <aura:attribute name="PaymentMethodsLoading" type="boolean" default="true"/>
     <aura:attribute name="Properties" type="Map"/>
     <aura:attribute name="StripePublishableKey" type="String"/>
+    
     <aura:attribute name="CheckoutItems" type="List"/>
     <aura:attribute name="CheckoutItemsColumns" type="List"/>
     <aura:attribute name="CheckoutResponses" type="List"/>
     <aura:attribute name="PaymentRequestLabel" type="String"/>
-    <aura:attribute name="ShowEmailConfirmation" type="boolean" default="false"/>
-    <aura:attribute name="ShowDefaultPage" type="boolean" default="true"/>
-    <aura:attribute name="EnableAddToCardButton" type="boolean" default="true"/>
-    <aura:attribute name="selectedAccount" type="Object"/>
-    <aura:attribute name="currentPage" type="String" default="sc1"/>
-
-    <aura:html tag="style">
-        .cuf-content, .modal-body {
-        padding: 0 0rem !important;
-        }
-        .slds-p-around--medium {
-        padding: 0rem !important;
-        }
-        .slds-modal__content{
-        overflow-y:hidden !important;
-        height:unset !important;
-        max-height:unset !important;
-        }
-        .cuf-scroller-outside {
-        background-color: white !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        }
-    </aura:html>
-    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
-    <aura:handler event="force:refreshView" action="{!c.isRefreshed}"/>
+    <aura:attribute name="FrequencyOptions" type="List"/>
+    <aura:attribute name="SelectedFrequency" type="String" default="single"/>
+    <aura:attribute name="SelectedFrequencyDisplay" type="String" default="One time payment"/>
+    <aura:attribute name="FirstChargeDate" type="String"/>
+    <aura:attribute name="UserCards" type="List"/>
+    <aura:attribute name="SelectedPaymentSource" type="String"/>
+    <aura:attribute name="UserBankAccounts" type="List"/>
+    <aura:attribute name="selectedAccount" type="Object" />
+    <aura:attribute name="selectedObject" type="Object" />
+    <aura:attribute name="gateways" type="List" access="PRIVATE"/>
+    <aura:attribute name="selectedGateway" type="String" access="PRIVATE" />
+    <aura:attribute name="isAdhoc" type="Boolean" default="false" />
     
-    <div class="c-container slds-is-relative slds-grow slds-theme_default" style="min-height:250px;">
-        <lightning:layoutItem>
-            <aura:if isTrue="{!v.Loading}">
-                <div>
-                    <lightning:spinner alternativeText="Loading" size="medium"/>
-                </div>
-            </aura:if>
-        </lightning:layoutItem>
-        <aura:if isTrue="{!v.currentPage == 'sc1'}">
-                <lightning:layout multipleRows="true" class="charge-base-page">
-                    <lightning:layoutItem padding="around-small" class="frequency-button-group-wrapper"
-                                          flexibility="grow">
-                        <lightning:buttonGroup class="frequency-button-group">
-                            <aura:iteration items="{!v.FrequencyOptions}" var="option">
-                                <lightning:buttonStateful labelWhenOff="{!option.label}"
-                                                          labelWhenOn="{!option.label}"
-                                                          accesskey="{!option.value}"
-                                                          variant="{!v.SelectedFrequency == option.value ? 'brand' : 'neutral'}"
-                                                          iconNameWhenOff="standard:choice"
-                                                          iconNameWhenOn="utility:check"
-                                                          class="{!concat('frequency ', (v.SelectedFrequency == option.value ? 'selected' : ''))}"
-                                                          onclick="{!c.selectFrequency}"
-                                                          state="{!v.SelectedFrequency == option.value}">
-                                </lightning:buttonStateful>
-                            </aura:iteration>
-                        </lightning:buttonGroup>
-                    </lightning:layoutItem>
-                </lightning:layout>
+    
+    <aura:attribute name="selectedRow" type="List" default="[]" />
+    <aura:attribute name="cardUrl" type="String"/>
+    <aura:attribute name="bankUrl" type="String"/>
+    <aura:attribute name="bankUILoading" type="boolean" default="true"/>
+    <aura:attribute name="paymentCompleted" type="boolean" default="false"/>
+    <aura:attribute name="PaymentAmount" type="double"/>
+    <aura:attribute name="selectedAmount" type="double"/>
+    <aura:attribute name="intentUrl" type="String" default=""/>
+    <aura:attribute name="activeSections" type="List" default="['B','C']" />
+    <aura:attribute name="totalPaymentAmount" type="double"/>
+    <aura:attribute name="isCardActive" type="boolean" default="true"/>
+    <aura:attribute name="CardUILoading" type="boolean" default="true"/>
+    <aura:attribute name="paymentIntentId" type="String"/>
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="showCreditCardUI" type="boolean" default="false"/>
+    <aura:attribute name="showBankUI" type="boolean" default="false" />
+    <aura:attribute name="nameOnAccount" type="String" />
+    <aura:attribute name="accountNumber" type="String" />
+    <aura:attribute name="accountNumberConfirm" type="String" />
+    <aura:attribute name="accountRoutingNumber" type="String" />
+    <aura:attribute name="accountType" type="String" />
+    <aura:attribute name="saveAccount" type="Boolean" default="true" />
+    <aura:attribute name="saveAccountAsDefault" type="Boolean" default="true"/>
+    <aura:attribute name="subscriptionId" type="String" />
 
-                <lightning:layoutItem padding="around-small">
-                    <lightning:icon iconName="utility:email" size="xx-small"/>
-                    <span style="padding-left: 0.5rem; font-size: 0.8rem;">{!v.EmailId}</span>
-                    <span style="padding-left: 0.5rem; position:relative; top: -.1rem; cursor:pointer; color:lightblue;"
-                            onclick="{!c.editEmail}"><lightning:icon
-                                size="xx-small"
-                                iconName="utility:edit"/></span>
-                </lightning:layoutItem>
-            
-                <lightning:layoutItem padding="around-small" flexibility="grow" class="amount-input">
-                    <div class="amount-label">
-                        <span>Amount</span>
-                    </div>
-                    <lightning:input type="number" value="{!v.PaymentAmount}" formatter="currency"
-                                        step="0.01"
-                                        class="amount-input-field"
-                                        disabled="{!v.EnterAmount == false || v.RecordType == 'Opportunity'}"/>
-                    <aura:if isTrue="{!v.SelectedFrequency != 'single'}">
-                        <lightning:input class="first-charge-date" type="date" value="{!v.FirstChargeDate}"
-                                            label="First Charge Date" min="{!v.DateToday}"/>
-                    </aura:if>
-                </lightning:layoutItem>
-                <lightning:layoutItem flexibility="grow" padding="around-small"
-                                          class="add-to-cart-button-container">
-                        <lightning:button class="long-button" label="{!$Label.c.add_to_cart_text}" variant="brand"
-                                          iconName="utility:cart"
-                                          onclick="{!c.addToCart}"
-                                          disabled="{!v.EnableAddToCartButton}"/>
-                    </lightning:layoutItem>
-                <aura:if isTrue="{!(v.CheckoutItems.length > 0)}">
-                    <lightning:layoutItem class="payment-cart" flexibility="grow">
-                        <lightning:layoutItem flexibility="grow">
-                            <lightning:datatable
-                                    aura:id="CheckoutItemsTable"
-                                    class="payment-summary-table"
-                                    keyField="id"
-                                    data="{!v.CheckoutItems}"
-                                    columns="{!v.CheckoutItemsColumns}"
-                                    hideCheckboxColumn="true"
-                                    oncellchange="{!c.handleInlineEditOfCheckoutItems}"
-                                    suppressBottomBar="true"
-                                    onrowaction="{!c.handlePaymentSummaryAction}"/>
-                        </lightning:layoutItem>
-                    </lightning:layoutItem>
-                </aura:if>
-            </aura:if>
-            
-            <aura:if isTrue="{!v.currentPage == 'email'}">
-                <lightning:layout>
-                    <lightning:layoutItem flexibility="grow" padding="around-medium">
-                        <ui:message title="Info" severity="info">
-                            Successfully sent email to {!v.EmailId}!!!
-                        </ui:message>
-                    </lightning:layoutItem>
-                </lightning:layout>
-            </aura:if>
-            <aura:if isTrue="{!v.ShowPaymentOptions}">
-                <lightning:layoutItem flexibility="grow" padding="around-small">
-                    <lightning:buttonIcon iconName="utility:back" onclick="{!c.goToDefaultPage}"/>
-                </lightning:layoutItem>
-                <lightning:layoutItem flexibility="grow" class="payment-options-pane">
-                    <lightning:tabset selectedTabId="one">
-                        <lightning:tab label="{!$Label.c.saved_cards}" id="one">
-                            <aura:if isTrue="{!v.PaymentMethodsLoading}">
-                                <lightning:spinner alternativeText="Loading" size="small"/>
-                            </aura:if>
-                            <aura:if isTrue="{!empty(v.UserCards)}">
-                                <label style="margin-left: 20px">{!$Label.c.no_saved_cards_available}</label>
-                            </aura:if>
-                            <aura:iteration items="{!v.UserCards}" var="card">
-                                <div class="payment-option">
-                                    <div onclick="{!c.selectPaymentSource}" id="{!card.id}" title="{!card.name}"
-                                         class="payment-card-number slds-grow">
-                                        <span class="card-number payment-option-detail">{!'XXXX XXXX ' + card.Card_Number__c}</span>
-                                        <span class="card-expiry payment-option-detail">{!card.Card_Type__c}</span>
-                                        
+
+    <aura:attribute name="amountFieldApiName" type="String" />
+    <aura:attribute name="emailFieldApiName" type="String" />
+    <aura:attribute name="accountFieldApiName" type="String" default=""/>
+    <aura:attribute name="chargeDateFieldApiName" type="String" />
+    <aura:attribute name="paymentIntentParentFieldApiName" type="String" />
+    <aura:attribute name="chargeButtonName" type="String" />
+    <aura:attribute name="gatewayId" type="String" />
+    <aura:attribute name="frequency" type="String" />
+    <aura:attribute name="recurringAmountApiName" type="String" />
+    <aura:attribute name="subscriptionParentFieldApiName" type="String" />
+    <aura:attribute name="showACH" type="Boolean" />
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <!-- <aura:handler event="force:refreshView" action="{!c.isRefreshed}"/> -->
+    <force:recordData aura:id="recordLoader" recordId="{!v.recordId}" layoutType="FULL" targetFields="{!v.obj}"
+        targetError="{!v.recordError}" recordUpdated="{!c.recordLoaded}" />
+    
+
+    
+    <div class="slds-m-around_xx-large">
+        <lightning:button variant="brand" label="{!v.chargeButtonName}" title="{!v.chargeButtonName}"
+            onclick="{! c.openModel }" />
+        <aura:if isTrue="{!v.isModalOpen}">
+    
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close"
+                            variant="bare-inverse" class="slds-modal__close" />
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.chargeButtonName}</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="c-container slds-is-relative slds-grow slds-theme_default" style="min-height:250px;">
+                            <lightning:layoutItem>
+                                <aura:if isTrue="{!v.Loading}">
+                                    <div>
+                                        <lightning:spinner alternativeText="Loading" size="medium" />
                                     </div>
-                                    <aura:if isTrue="{!card.id == v.SelectedPaymentSource}">
-                                        <div style="text-align: center;">
-                                            <lightning:button label="{!$Label.c.process_cart_items}"
-                                                              onclick="{!c.onCardCharge}"
-                                                              class="payment-card-button" variant="brand"/>
+                                </aura:if>
+                            </lightning:layoutItem>
+                            <aura:if isTrue="{!v.ShowDefaultPage}">
+                        
+                                <lightning:layout multipleRows="true" class="charge-base-page">
+                                    <lightning:layoutItem padding="around-small" class="frequency-button-group-wrapper" flexibility="grow">
+                                        <!-- <lightning:select name="gateway" label="Select payment gateway:" aura:id="payment-gateway"
+                                            value="{!v.selectedGateway}" onchange="{!c.handleGatewayChange}">
+                                            <aura:iteration items="{!v.gateways}" var="option">
+                                                <option text="{!option.Name}" value="{!option.Id}" />
+                                            </aura:iteration>
+                                        </lightning:select> -->
+                                        <lightning:buttonGroup class="frequency-button-group">
+                                            <aura:iteration items="{!v.FrequencyOptions}" var="option">
+                                                <lightning:buttonStateful labelWhenOff="{!option.label}" labelWhenOn="{!option.label}"
+                                                    accesskey="{!option.value}"
+                                                    variant="{!v.SelectedFrequency == option.value ? 'brand' : 'neutral'}"
+                                                    iconNameWhenOff="standard:choice" iconNameWhenOn="utility:check"
+                                                    class="{!concat('frequency ', (v.SelectedFrequency == option.value ? 'selected' : ''))}"
+                                                    onclick="{!c.selectFrequency}" state="{!v.SelectedFrequency == option.value}">
+                                                </lightning:buttonStateful>
+                                            </aura:iteration>
+                                        </lightning:buttonGroup>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                        
+                                <lightning:layoutItem padding="around-small">
+                                    <aura:if isTrue="{!not(v.ShowEmail)}">
+                                        <lightning:icon iconName="utility:email" size="xx-small" />
+                                        <span style="padding-left: 0.5rem; font-size: 0.8rem;">{!v.EmailId}</span>
+                                        <span style="padding-left: 0.5rem; position:relative; top: -.1rem; cursor:pointer; color:lightblue;"
+                                            onclick="{!c.editEmail}">
+                                            <lightning:icon size="xx-small" iconName="utility:edit" />
+                                        </span>
+                                    </aura:if>
+                                    <aura:if
+                                    isTrue="{!v.ShowEmail}">
+                                    <lightning:layoutItem flexibility="grow" class="input-layout">
+                                        <lightning:input value="{!v.EmailId}" type="email" variant="label-hidden" label="Email" class="styled-input" placeholder="Contact email address" />
+                                    </lightning:layoutItem>
+                                </aura:if>
+                                </lightning:layoutItem>
+                                
+                        
+                                <lightning:layoutItem padding="around-small" flexibility="grow" class="amount-input">
+                                    <div class="amount-label">
+                                        <span>Amount</span>
+                                    </div>
+                                    <lightning:input type="number" value="{!v.PaymentAmount}" formatter="currency" step="0.01"
+                                        class="amount-input-field" disabled="{!v.EnterAmount == false || v.RecordType == 'Opportunity'}" />
+                                    <!-- <aura:if isTrue="{!v.SelectedFrequency == 'single'}">
+                                        <lightning:input class="first-charge-date" type="date" value="{!v.FirstChargeDate}"
+                                            label="First Charge Date" min="{!v.DateToday}" />
+                                    </aura:if> -->
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="grow" padding="around-small" class="add-to-cart-button-container">
+                                    <lightning:button class="long-button" label="{!$Label.c.add_to_cart_text}" variant="brand"
+                                        iconName="utility:cart" onclick="{!c.addToCart}" disabled="{!v.EnableAddToCartButton}" />
+                                </lightning:layoutItem>
+                                
+                            </aura:if>
+                        
+                            <aura:if isTrue="{!v.ShowEmailConfirmation}">
+                                <lightning:layout>
+                                    <lightning:layoutItem flexibility="grow" padding="around-medium">
+                                        <ui:message title="Info" severity="info">
+                                            Successfully sent email to {!v.EmailId}!!!
+                                        </ui:message>
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </aura:if>
+
+                            
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <aura:if isTrue="{!and(v.totalPaymentAmount != null, and(v.totalPaymentAmount > 0, not(v.ShowEmailConfirmation)))}">
+                                        <div class="slds-text-heading_small slds-m-around_x-small">
+                                            Total Amount
+                                            <lightning:formattedNumber value="{!v.totalPaymentAmount}" style="currency" currencyCode="USD" />
                                         </div>
                                     </aura:if>
                                 </div>
-                            </aura:iteration>
-                        </lightning:tab>
-                        <!-- <lightning:tab label="{!$Label.c.credit_or_debit_card}" id="two">
-                            <aura:if isTrue="{!v.StripeCardUILoading}">
-                                <lightning:spinner alternativeText="Loading" size="small"/>
-                            </aura:if>
-                            <iframe id="stripeCardUI" src="{!v.StripeCardUI}" onload="{!c.stripeCardLoaded}"/>
-                        </lightning:tab> -->
-                        <!-- <lightning:tab label="{!$Label.c.ach_saved_accounts}" id="three">
-                            <aura:if isTrue="{!v.PaymentMethodsLoading}">
-                                <lightning:spinner alternativeText="Loading" size="small"/>
-                            </aura:if>
-                            <aura:if isTrue="{!empty(v.UserBankAccounts)}">
-                                <label style="margin-left: 20px">{!$Label.c.no_saved_cards_available}</label>
-                            </aura:if>
-                            <aura:iteration items="{!v.UserBankAccounts}" var="bank">
-                                <aura:if isTrue="{!bank.status == 'verified'}">
-                                    <div class="payment-option">
-                                        <div onclick="{!c.selectPaymentSource}" id="{!bank.id}"
-                                             title="{!bank.name}"
-                                             class="payment-bank-number slds-grow">
-                                            <span class="bank-number payment-option-detail">{!bank.last4}</span>
-                                            <span class="bank-name payment-option-detail">{!bank.bank_name}</span>
-                                            <span class="bank-account-holder-name payment-option-detail">{!bank.account_holder_name}</span>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <aura:if isTrue="{!v.ShowPaymentOptions}">
+                                        <div class="slds-m-around_x-small align-right">
+                                            <lightning:button variant="Brand" label="Edit" title="Edit" onclick="{! c.handleEditLineItems }" />
                                         </div>
-                                        <aura:if isTrue="{!bank.id == v.SelectedPaymentSource}">
-                                            <div style="text-align: center;">
-                                                <lightning:button label="{!$Label.c.process_cart_items}"
-                                                                  onclick="{!c.onBankCharge}"
-                                                                  class="payment-bank-button" variant="brand"/>
-                                            </div>
-                                        </aura:if>
-                                    </div>
-                                </aura:if>
-                            </aura:iteration>
-                        </lightning:tab> -->
-                    </lightning:tabset>
-                </lightning:layoutItem>
-            </aura:if>
+                                    </aura:if>
+                                </div>
+                            </div>
 
+                            <!-- <aura:if isTrue="{!and(v.totalPaymentAmount != null, and(v.totalPaymentAmount > 0, not(v.ShowEmailConfirmation)))}">
+                                <div class="slds-text-heading_small">
+                                    Total Amount <lightning:formattedNumber value="{!v.totalPaymentAmount}" style="currency" currencyCode="USD"/>
+                                </div>    
+                            </aura:if> -->
+                            <aura:if isTrue="{!and(v.CheckoutItems.length > 0 , not(v.ShowEmailConfirmation))}">
+                                <lightning:layoutItem class="payment-cart" flexibility="grow">
+                                    <lightning:layoutItem flexibility="grow">
+                                        <lightning:datatable aura:id="CheckoutItemsTable" 
+                                                class="payment-summary-table" 
+                                                keyField="id" data="{!v.CheckoutItems}"
+                                                columns="{!v.CheckoutItemsColumns}" 
+                                                oncellchange="{!c.handleInlineEditOfCheckoutItems}" 
+                                                hideCheckboxColumn="true"
+                                                suppressBottomBar="true"
+                                                onrowaction="{!c.handlePaymentSummaryAction}" />
+                                    </lightning:layoutItem>
+                                </lightning:layoutItem>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!v.ShowPaymentOptions}">
+                                <!-- <lightning:layoutItem flexibility="grow" padding="around-small">
+                                    <lightning:buttonIcon iconName="utility:back" onclick="{!c.goToDefaultPage}" />
+                                </lightning:layoutItem> -->
+                                <lightning:card>
+                                    <!-- <aura:set attribute="title">
+                                        <lightning:icon iconName="custom:custom11" title="custom11" />
+                                        Total Amount
+                                        <lightning:formattedNumber value="{!v.selectedAmount}" style="currency" currencyCode="USD" />
+                                    </aura:set>
+                                    <div class="slds-p-around_medium">
+                                        3.99% credit card tax
+                                    </div> -->
+                                    <!-- <aura:if isTrue="{!(v.CheckoutItems.length > 0)}">
+                                        <lightning:layoutItem class="payment-cart" flexibility="grow">
+                                            <lightning:layoutItem flexibility="grow">
+                                                <lightning:datatable aura:id="CheckoutItemsTable" 
+                                                    class="payment-summary-table" 
+                                                    keyField="id" data="{!v.CheckoutItems}"
+                                                    columns="{!v.CheckoutItemsColumns}" 
+                                                    oncellchange="{!c.handleInlineEditOfCheckoutItems}" 
+                                                    hideCheckboxColumn="true"
+                                                    suppressBottomBar="true"
+                                                    onrowaction="{!c.handlePaymentSummaryAction}" />
+                                            </lightning:layoutItem>
+                                        </lightning:layoutItem>
+                                    </aura:if> -->
+                                </lightning:card>
+                                <lightning:layoutItem flexibility="grow" class="payment-options-pane">
+                                    <aura:if isTrue="{!v.paymentCompleted}">
+                                        <div>
+                                            <div class="slds-align_absolute-center slds-m-top_medium slds-m-bottom_x-large">
+                                                <p>
+                                                    <lightning:icon iconName="action:approval" size="large" />
+                                                </p>
+                                            </div><br /><br />
+                                            <div class="slds-align_absolute-center slds-m-top_medium slds-m-bottom_x-large">
+                                                <lightning:formattedUrl value="{!v.intentUrl}" tooltip="{!v.intentUrl}"
+                                                    label="Payment Completed!" target="_blank" />
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                    <aura:if isTrue="{!not(v.paymentCompleted)}">
+                                        <lightning:tabset selectedTabId="three" class="slds-p-around_medium">
+                                            <!-- <lightning:tab label="{!$Label.c.credit_card}" onactive="{!c.handleCardTab}" id="one">
+                                                <aura:if isTrue="{!v.CardUILoading}">
+                                                    <lightning:spinner alternativeText="Loading" size="small" />
+                                                </aura:if>
+                                                <iframe aura:id="card-ui" src="{!v.cardUrl}" onload="{!c.CardLoaded}" frameborder="0"
+                                                    width="100%" height="100%" />
+                        
+                                            </lightning:tab>
+                                            <lightning:tab label="{!$Label.c.bank}" onactive="{!c.handleBankTab}" id="two">
+                                                <aura:if isTrue="{!v.bankUILoading}">
+                                                    <lightning:spinner alternativeText="Loading" size="small" />
+                                                </aura:if>
+                                                <iframe aura:id="card-ui" src="{!v.bankUrl}" onload="{!c.BankLoaded}" frameborder="0"
+                                                    width="100%" height="100%" />
+                        
+                                            </lightning:tab> -->
+                                            <lightning:tab label="{!$Label.c.saved_cards}" onactive="{!c.handleSavedPaymentsActive}" id="three">
+                                                <aura:if isTrue="{!v.PaymentMethodsLoading}">
+                                                    <lightning:spinner alternativeText="Loading" size="small" />
+                                                </aura:if>
+                                                <!-- <aura:if isTrue="{!or(not(empty(v.UserCards)), not(empty(v.UserBankAccounts)))}"> -->
+                                                    <!-- <lightning:accordion allowMultipleSectionsOpen="true" onsectiontoggle="{! c.handleSectionToggle }"
+                                                        activeSectionName="{! v.activeSections }"></lightning:accordion> -->
+                                                        <!-- <lightning:accordionSection name="C" label="Credit Cards"></lightning:accordionSection> -->
+                                                            <!-- <lightning:buttonIcon iconName="utility:settings" variant="bare" onclick="{! c.handleClick }" alternativeText="Settings" title="Settings" /> -->
+                                                            
+                                                            <h2 class="slds-text-heading_small slds-m-bottom_medium slds-p-around_medium">
+                                                                {!$Label.c.Credit_Card}
+                                                                <span class="slds-p-around_medium"><lightning:buttonIcon variant="border-filled" iconName="{!((v.showCreditCardUI) ? 'utility:close' : 'utility:add')}" onclick="{!c.handleCreditCardUI}" /></span>
+                                                            </h2>
+                                                           
+                                                            <aura:if isTrue="{!v.showCreditCardUI}">
+                                                                <aura:if isTrue="{!v.CardUILoading}">
+                                                                    <lightning:spinner alternativeText="Loading" size="small" />
+                                                                </aura:if>
+                                                                <iframe aura:id="card-ui" src="{!v.cardUrl}" onload="{!c.CardLoaded}" frameborder="0"
+                                                                    width="100%" height="350px" />
+                                                            </aura:if>
+
+                                                            <aura:if isTrue="{!empty(v.UserCards)}">
+                                                                <label style="margin-left: 20px">{!$Label.c.no_saved_cards_available}</label>
+                                                            </aura:if>
+                                                                <aura:iteration items="{!v.UserCards}" var="card">
+                                                                    <div class="payment-option">
+                                                                        <div onclick="{!c.selectPaymentSource}" data-card="card" id="{!card.Id}" title="{!card.Name}"
+                                                                            class="payment-card-number slds-grow">
+                                                                            <span class="card-number payment-option-detail">{!'XXXX XXXX ' +
+                                                                                card.Card_Number__c}</span>
+                                                                            <span class="card-expiry payment-option-detail">{!card.Card_Type__c}</span>
+                                                
+                                                                        </div>
+                                                                        <aura:if isTrue="{!card.Id == v.SelectedPaymentSource}">
+                                                                            <div style="text-align: center;">
+                                                                                <lightning:button label="{!$Label.c.process_cart_items}"
+                                                                                    onclick="{!c.handlePaymentMethodCharge}" class="payment-card-button"
+                                                                                    variant="brand" />
+                                                                            </div>
+                                                                        </aura:if>
+                                                                    </div>
+                                                                </aura:iteration>
+                                                           
+                                                        
+                                                        <!-- <lightning:accordionSection name="B" label="Bank Payment"></lightning:accordionSection> -->
+                                                    <aura:if isTrue="{!v.showACH}">
+                                                        <h2 class="slds-text-heading_small slds-m-bottom_medium slds-p-around_medium">
+                                                            {!$Label.c.bank_payment}
+                                                            <span class="slds-p-around_medium"><lightning:buttonIcon variant="border-filled" iconName="{!((v.showBankUI) ? 'utility:close' : 'utility:add')}" onclick="{!c.handleBankUI}" /></span>
+                                                        </h2>   
+                                                        <aura:if isTrue="{!v.showBankUI}">
+                                                            <!-- <aura:if isTrue="{!v.bankUILoading}">
+                                                                <lightning:spinner alternativeText="Loading" size="small" />
+                                                            </aura:if> -->
+                                                            <!-- <iframe aura:id="card-ui" src="{!v.bankUrl}" onload="{!c.BankLoaded}" frameborder="0"
+                                                                width="100%" height="350px" /> -->
+                                                                <div class="slds-grid slds-grid_vertical">
+                                                                    <div class="slds-col">
+                                                                        <lightning:input value="{!v.nameOnAccount}" type="text" variant="label-hidden" class="styled-input slds-p-around_small" placeholder="Name on account" />
+                                                                    </div>
+                                                                    <div class="slds-col">
+                                                                        <lightning:input value="{!v.accountNumber}" aura:id="account-number" type="text" variant="label-hidden" class="styled-input slds-p-around_small" placeholder="Account number" />
+                                                                    </div>
+                                                                    <div class="slds-col">
+                                                                        <lightning:input value="{!v.accountNumberConfirm}" aura:id="account-number-confirm" type="text" variant="label-hidden" class="styled-input slds-p-around_small" placeholder="Confirm account number" />
+                                                                    </div>
+                                                                    <div class="slds-col">
+                                                                        <lightning:input value="{!v.accountRoutingNumber}" type="text" variant="label-hidden" class="styled-input slds-p-around_small" placeholder="Account routing number" />
+                                                                    </div>
+                                                                    <div class="slds-col">
+                                                                        <!-- <lightning:input value="{!v.accountType}" type="text" variant="label-hidden" class="styled-input slds-p-around_small" placeholder="Account type" /> -->
+                                                                        <lightning:select aura:id="select-acc-type" name="Account type" class="styled-input slds-p-around_small" label="Account type" onchange="{! c.onAccountTypeChange }">
+                                                                            <option value="checking">Checking</option>
+                                                                            <option value="savings">Savings</option>
+                                                                            <option value="businessChecking">Business Checking</option>
+                                                                        </lightning:select>
+                                                                    </div>
+                                                                    <div class="slds-col">
+                                                                        <lightning:input checked="{!v.saveAccount}" type="checkbox" label="{!$Label.c.Save_information_for_future_checkouts}" class="styled-input slds-p-around_small" 
+                                                                        onchange ="{!c.onChangeSaveAccount}" />
+                                                                    </div>
+                                                                    <div class="slds-col">
+                                                                        <lightning:input checked="{!v.saveAccountAsDefault}" type="checkbox" label="{!$Label.c.Save_as_default_for_future_checkouts}" class="styled-input slds-p-around_small"  
+                                                                        onchange ="{!c.onChangeSaveAsDefault}" />
+                                                                    </div>
+                                                                    <div class="slds-col pay-button-align slds-p-around_medium">
+                                                                        <lightning:button label="Pay" variant="brand" title="Pay" onclick="{! c.handleBankPay }"/>
+                                                                    </div>
+                                                                </div>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!empty(v.UserBankAccounts)}">
+                                                            <label style="margin-left: 20px">{!$Label.c.no_saved_cards_available}</label>
+                                                        </aura:if> 
+                                                        <aura:iteration items="{!v.UserBankAccounts}" var="bank">
+                                                            <div class="payment-option">
+                                                                <div onclick="{!c.selectPaymentSource}" id="{!bank.Id}" data-card="bank" title="{!bank.Name}"
+                                                                    class="payment-card-number slds-grow">
+                                                                    <span class="card-number payment-option-detail">{!'XXXX ' +
+                                                                        bank.Athrz_Bank_Account_Number__c}</span>
+                                                                    <span class="card-expiry payment-option-detail">{!bank.Athrz_Bank_Account_Type__c}</span>
+                                            
+                                                                </div>
+                                                                <aura:if isTrue="{!bank.Id == v.SelectedPaymentSource}">
+                                                                    <div style="text-align: center;">
+                                                                        <lightning:button label="{!$Label.c.process_cart_items}" 
+                                                                            onclick="{!c.handlePaymentMethodCharge}" class="payment-card-button" variant="brand" />
+                                                                    </div>
+                                                                </aura:if>
+                                                            </div>
+                                                        </aura:iteration>
+                                                    </aura:if>
+                                                <!-- </aura:if> -->
+                        
+                                            </lightning:tab>
+                        
+                                        </lightning:tabset>
+                                    </aura:if>
+                        
+                                </lightning:layoutItem>
+                            </aura:if>
+                        
+                        </div>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <aura:if isTrue="{!and(v.CheckoutItems.length > 0, not(v.paymentCompleted))}">
+                        <footer class="slds-modal__footer">
+                            <div class="slds-col modal-footer slds-modal__footer">
+                                <lightning:layoutItem flexibility="grow" padding="around-small">
+                    
+                                    <lightning:button class="long-button" variant="destructive"
+                                        label="{!$Label.c.email + ' (' + v.CheckoutItems.length + ')'}" iconName="utility:email"
+                                        onclick="{!c.onSendLinkForRecharge}" />
+                                    <aura:if isTrue="{!and(v.ShowDefaultPage)}">
+                                    <lightning:button class="long-button" iconName="utility:send"
+                                        label="{!$Label.c.checkout_cart_items + ' (' + v.CheckoutItems.length + ')'}" variant="brand"
+                                        onclick="{!c.checkoutPayments}" />
+                                    </aura:if>
+                                </lightning:layoutItem>
+                            </div>
+                        </footer>
+                    </aura:if>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
     </div>
-    <footer>
-        <div class="slds-col modal-footer slds-modal__footer">
-            <lightning:layoutItem flexibility="grow" padding="around-small">
-                <aura:if isTrue="{!and(v.CheckoutItems.length > 0, v.currentPage == 'sc1')}">
-                    <lightning:button class="long-button" variant="destructive"
-                                      label="{!$Label.c.email + ' (' + v.CheckoutItems.length + ')'}"
-                                      iconName="utility:email" onclick="{!c.onSendLinkForRecharge}"/>
-                    <lightning:button class="long-button"
-                                      iconName="utility:send"
-                                      label="{!$Label.c.checkout_cart_items + ' (' + v.CheckoutItems.length + ')'}"
-                                      variant="brand"
-                                      onclick="{!c.checkoutPayments}"/>
-                </aura:if>
-            </lightning:layoutItem>
-        </div>
-    </footer>
 	
 </aura:component>

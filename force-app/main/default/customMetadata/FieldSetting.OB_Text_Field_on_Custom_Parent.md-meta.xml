@@ -23,6 +23,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Get_value_from_Log__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>IsChild__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
@@ -31,8 +35,28 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
+        <field>Is_External_Field__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Lookup__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>Key__c</field>
         <value xsi:type="xsd:string">Text_Field__c</value>
+    </values>
+    <values>
+        <field>Log_API_for_field_mapping__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Lookup_External_Key__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Lookup_Object_API_Name__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>ObjectApiName__c</field>
@@ -41,10 +65,6 @@
     <values>
         <field>ObjectSetting__c</field>
         <value xsi:type="xsd:string">Custom_Parent_Object_Setting</value>
-    </values>
-    <values>
-        <field>Order__c</field>
-        <value xsi:nil="true"/>
     </values>
     <values>
         <field>ParentField__c</field>

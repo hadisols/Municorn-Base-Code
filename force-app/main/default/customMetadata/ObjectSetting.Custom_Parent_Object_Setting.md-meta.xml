@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>ApexHandler__c</field>
-        <value xsi:type="xsd:string">override_SYS_ApplicationService</value>
+        <value xsi:type="xsd:string">SYS_Override_ApplicationService</value>
     </values>
     <values>
         <field>BypassTrigger__c</field>
@@ -28,15 +28,15 @@
     </values>
     <values>
         <field>Object__c</field>
-        <value xsi:type="xsd:string">Custom_Parent__c</value>
+        <value xsi:type="xsd:string">Account</value>
     </values>
     <values>
         <field>QueryClause__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">FALSE</value>
     </values>
     <values>
         <field>ResourcePath__c</field>
-        <value xsi:type="xsd:string">Custom_Parent__c/</value>
+        <value xsi:type="xsd:string">Custom_Parent__c</value>
     </values>
     <values>
         <field>TriggerEvents__c</field>
@@ -49,5 +49,9 @@
     <values>
         <field>isInboundList__c</field>
         <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>url_params__c</field>
+        <value xsi:type="xsd:string">?testParam=testVal&amp;new=123</value>
     </values>
 </CustomMetadata>

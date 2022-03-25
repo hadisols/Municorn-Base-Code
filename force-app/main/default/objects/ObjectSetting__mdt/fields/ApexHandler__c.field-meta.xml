@@ -4,7 +4,7 @@
     <defaultValue>&quot;SYS_ApplicationService&quot;</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>ApexHandler</label>
+    <label>Apex Handler</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

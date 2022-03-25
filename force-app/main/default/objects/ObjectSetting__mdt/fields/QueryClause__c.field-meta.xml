@@ -3,7 +3,7 @@
     <fullName>QueryClause__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>QueryClause</label>
+    <label>Query Clause</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

@@ -1,0 +1,2 @@
+ApexHandler__c,AuthenticationType__c,BaseAPIEndPoint__c,DebugCheck__c,DeveloperName,EscapeCharacter__c,Hashing_Algo__c,Label,NamedCredential__c,OAuth_Config_Record_Id__c,UpdateMethod__c,webhookToken__c
+SYS_ApplicationService,NamedCredential,callout:Municorn_Destination_NC/services/data/v53.0/sobjects/,TRUE,SYS_Test_IntegrationSetting,#,SHA1,SYS Test Integration Setting,,,POST,9LR99107DF7343549

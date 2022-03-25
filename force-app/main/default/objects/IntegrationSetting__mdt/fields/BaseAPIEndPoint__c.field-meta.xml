@@ -3,7 +3,7 @@
     <fullName>BaseAPIEndPoint__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>BaseAPIEndPoint</label>
+    <label>Base API End Point</label>
     <required>true</required>
     <type>Url</type>
 </CustomField>

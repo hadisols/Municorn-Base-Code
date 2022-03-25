@@ -46,7 +46,7 @@ public class override_SYS_ApplicationService extends SYS_ApplicationService {
                 
             }
         } else if (fieldType == 'STRING') {
-            sObj.put(mapping.FieldApiName__c, String.valueof(value)+':This is from extended handler');
+            sObj.put(mapping.FieldApiName__c, String.valueof(value));
         }
         else{
             sObj.put(mapping.FieldApiName__c, value);

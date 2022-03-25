@@ -1,6 +1,12 @@
 public class SampleClass {
     //,'createTransactionRequest.transactionRequest.transactionType'
-    
+    public static void one() {
+        List<String> str = new List<String>{'name'};
+       
+    }
+    public static void two(List<String> str) {
+        str.add('er');
+    }
     public static void method1(){
         List<String> keys = new List<String>{'createTransactionRequest.merchantAuthentication.name',
                                             'createTransactionRequest.merchantAuthentication.transactionKey',
@@ -17,7 +23,7 @@ public class SampleClass {
             'createTransactionRequest.transactionRequest.shipTo.company',
             'createTransactionRequest.transactionRequest.shipTo.company1.company3',
             'tiny.puny.key','tiny.puny.key2',
-            'tiny.puny2.key3'
+            'tiny.puny2.key3','vbvb'
             };
             JSONGenerator gen = JSON.createGenerator(true);
             for(Integer i = 0; i < keys.size(); i++) {

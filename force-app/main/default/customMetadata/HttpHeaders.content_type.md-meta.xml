@@ -10,4 +10,8 @@
         <field>Value__c</field>
         <value xsi:type="xsd:string">application/json</value>
     </values>
+    <values>
+        <field>header_name__c</field>
+        <value xsi:type="xsd:string">content-type</value>
+    </values>
 </CustomMetadata>

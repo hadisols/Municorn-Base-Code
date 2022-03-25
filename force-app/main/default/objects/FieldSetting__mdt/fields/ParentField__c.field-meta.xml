@@ -4,7 +4,7 @@
     <description>When there is a child object. i.e Opportunity -&gt; OpportunityLineItem, this field has value OpportunityId (field on OpportunityLineItem) that connects it to Parent.</description>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>ParentField</label>
+    <label>Parent Field</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

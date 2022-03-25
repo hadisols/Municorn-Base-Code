@@ -9,7 +9,10 @@ public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.
         
         List<sObject> outboundResultLogs = new List<sObject>();
         List<SYS_IntegrationLog__c> sysLogs = 
-                                            [SELECT 
+        Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c WHERE Id in (' + '\'' + String.join(sysLogIds,'\',\'') + '\')');
+                                            
+        /*
+        [SELECT 
                                                 id,
                                                 data0__c,
                                                 data1__c,
@@ -21,15 +24,18 @@ public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.
                                                 data7__c,
                                                 data8__c,
                                                 data9__c,
+                                                Custom_Field_Value__c,
+                                                Requires_process_on_complete__c,
                                                 How_to_process__c,Custom_Apex_Handler__c,
                                                 Type__c,WhatId__c,Parent__c,Order__c,ObjectSettingId__c,SYS_IntegrationSettings__c
                                             FROM SYS_IntegrationLog__c WHERE Id in:sysLogIds];
+                                            */
         
         List<Id> pendingProcessLogs = new List<Id>();
         for(SYS_IntegrationLog__c log:sysLogs) {
             
             try{
-
+                SYS_DataCache.log = log;
                 if(Limits.getCallouts() < Limits.getLimitCallouts() - 1){
                     SYS_DataCache.INT_TYPE = log.SYS_IntegrationSettings__c;
                     SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
@@ -63,7 +69,7 @@ public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.
                 }
             }catch(Exception e){
 
-                SYS_ApplicationService.logException(log,e.getStackTraceString());
+                SYS_Helper.logException(log,e.getStackTraceString()+'\n'+e.getMessage());
     
             }
             

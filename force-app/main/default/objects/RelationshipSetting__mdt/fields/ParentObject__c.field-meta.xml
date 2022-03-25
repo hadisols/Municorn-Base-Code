@@ -3,7 +3,7 @@
     <fullName>ParentObject__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>ParentObject</label>
+    <label>Parent Object</label>
     <referenceTo>EntityDefinition</referenceTo>
     <relationshipLabel>RelationshipSettings1</relationshipLabel>
     <relationshipName>RelationshipSettings1</relationshipName>

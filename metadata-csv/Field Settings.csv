@@ -1,0 +1,8 @@
+ChildRootElement__c,Direction__c,FieldApiName__c,Field_Mapping_Handler__c,Get_value_from_Log__c,IsChild__c,Is_Active__c,Is_External_Field__c,Is_Lookup__c,Key__c,Label,Log_API_for_field_mapping__c,ObjectApiName__c,ObjectSetting__c,ParentField__c,RestResource__c,StaticValue__c
+,INBOUND,SYS_Child_Key__c,SYS_ApplicationService,false,true,true,true,false,key,SYS Test IB Contact SYS Key,,Contact,m045f000000mxx0AAA,,Contact,
+,INBOUND,AccountId,SYS_ApplicationService,true,true,true,false,true,NoKey2,SYS Test IB Contact Account Lookup,WhatId__c,Contact,m045f000000mxx0AAA,,Contact,
+,INBOUND,Trigger_Flow__c,SYS_ApplicationService,true,false,true,false,false,NoKey1,SYS Test IB Account Flow Check,Custom_Field_Value__c,Account,m045f000000mxx0AAA,,Account,
+,INBOUND,SYS_Key__c,SYS_ApplicationService,false,false,true,true,false,id,SYS Test IB Account SYS Key,,Account,m045f000000mxx0AAA,,Account,
+,INBOUND,Name,SYS_Override_ApplicationService,false,false,true,false,false,Name,SYS Test IB Account Name,,Account,m045f000000mxx0AAA,,Account,
+Contact,TWOWAY,LastName,SYS_ApplicationService,false,true,true,false,false,LastName,SYS Test TW Contact LastName,,Contact,m045f000000mxx0AAA,AccountId,Contact,
+,OUTBOUND,Name,SYS_ApplicationService,false,false,true,false,false,Name,SYS Test OB Account Name,,Account,m045f000000mxx0AAA,,Account,

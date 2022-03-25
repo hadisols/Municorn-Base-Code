@@ -1,4 +1,4 @@
-<apex:page >
+<apex:page showHeader="false" >
     <!-- Begin Default Content REMOVE THIS -->
 
     <!--
@@ -8,106 +8,192 @@
     For complete documentation for the Accept JavaScript library, see
     https://developer.authorize.net/api/reference/features/acceptjs.html
 -->
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <title>Jason Emer MD</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+        <!-- Import the Design System style sheet -->
+        <apex:slds />
+    </head>
     <body>
+        <input type="hidden" value="" id="api-login-id"/>
+        <input type="hidden" value="" id="api-public-key"/>
+        <input type="hidden" id="payment-type" />
+        <!-- <div class="slds-vertical-tabs">
+            <ul class="slds-vertical-tabs__nav" role="tablist" aria-orientation="vertical" >
+                <li class="slds-vertical-tabs__nav-item slds-is-active" title="{!$Label.credit_card}" role="presentation" id="credit-card-button">
+                    <a class="slds-vertical-tabs__link" href="#" role="tab" tabindex="0" aria-selected="true" aria-controls="slds-vertical-tabs-0"
+                        id="slds-vertical-tabs-0__nav">
+                        <span class="slds-vertical-tabs__left-icon"></span>
+                        <span class="slds-truncate" title="{!$Label.credit_card}">{!$Label.credit_card}</span>
+                        <span class="slds-vertical-tabs__right-icon"></span>
+                    </a>
+                </li>
+                <li class="slds-vertical-tabs__nav-item" title="{!$Label.bank}" role="presentation" id="bank-button">
+                    <a class="slds-vertical-tabs__link" href="#" role="tab" tabindex="-1" aria-selected="false" aria-controls="slds-vertical-tabs-1"
+                        id="slds-vertical-tabs-1__nav">
+                        <span class="slds-vertical-tabs__left-icon"></span>
+                        <span class="slds-truncate" title="{!$Label.bank}">{!$Label.bank}</span>
+                        <span class="slds-vertical-tabs__right-icon"></span>
+                    </a>
+                </li>
+            </ul>
+            <div class="slds-vertical-tabs__content slds-show" id="slds-vertical-tabs-0" role="tabpanel" aria-labelledby="slds-vertical-tabs-0__nav">
+                <div class="slds-text-longform">
+                    <div class="slds-scope slds-grow">
+                        <div class="credit-card-view">
+                            <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <input type="text" id="payment-credit-card-holder-name" placeholder="Name on Card" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <input type="text" id="payment-credit-card-number" placeholder="Card Number" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-form-element__control slds-col slds-grid slds-size_1-of-2 slds-p-around_x-small">
+                                        <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                            <input type="text" id="payment-credit-card-expiry-mm" placeholder="MM" required="" class="slds-input" />
+                                        </div>
+                                        <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                            <input type="text" id="payment-credit-card-expiry-yy" placeholder="YY" required="" class="slds-input" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                        <input type="text" id="payment-credit-card-cvv" placeholder="CVV" required="" class="slds-input" />
+                                    </div>
+                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                        <input type="text" id="payment-zip" placeholder="Zipcode" required="" class="slds-input" />
+                                    </div>
+                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                        <div class="slds-form-element">
+                                            <label class="slds-checkbox_toggle slds-grid">
+                                                <span class="slds-form-element__label slds-m-bottom_none">Authorize only</span>
+                                                <input type="checkbox" name="checkbox-toggle-15" value="checkbox-toggle-15" aria-describedby="checkbox-toggle-15" />
+                                                <span id="checkbox-toggle-15" class="slds-checkbox_faux_container" aria-live="assertive">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-checkbox_on">Active</span>
+                                                    <span class="slds-checkbox_off">Inactive</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                            </div>
+                        </div>
+                        <div class="bank-payment-view hide">
+                            <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <input type="text" id="payment-bank-holder-name" placeholder="Name on Account" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <input type="text" id="payment-bank-number" placeholder="Account Number" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                                    <input type="text" id="payment-bank-routing-number" placeholder="Routing Number" required="" class="slds-input" />
+                                </div>
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                        <input type="text" id="payment-bank-name" placeholder="Bank Name" required="" class="slds-input" />
+                                    </div>
+                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                        <input type="text" id="payment-bank-type" placeholder="Bank Type" required="" class="slds-input" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div id="spinner" class="slds-spinner_container" style="display:none">
+            <div role="status" class="slds-spinner slds-spinner--small slds-spinner--base">
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
 
-
-        <div class="container panel panel-default" style="margin-top:20px">
-            <div class="form-horizontal formDiv" role="form" style="padding-top: 0px;">
-                <div class="outer form-group" style="margin-right:0px;margin-left:0px;" onclick="setDefaultValue()">
-                </div>
-                <div class="form-group" style="margin-left: 0px; margin-right: 0px;">
-                    <label class="control-label hidden-xs col-sm-3 col-md-3 col-lg-3" for="cardNumber">Card Number:</label>
-                    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                        <input type="text" class="form-control" id="CARDNUMBER_ID" placeholder="Card Number" maxlength="20" value="378282246310005"></input>
+        <div class="slds-scope slds-grow">
+            <div class="credit-card-view">
+                <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                        <input type="text" id="payment-credit-card-holder-name" placeholder="Name on Card" required="" class="slds-input" />
+                    </div>
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                        <input type="text" id="payment-credit-card-number" placeholder="Card Number" required="" class="slds-input" />
+                    </div>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-form-element__control slds-col slds-grid slds-size_1-of-2 slds-p-around_x-small">
+                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                <input type="text" id="payment-credit-card-expiry-mm" placeholder="MM" required="" class="slds-input" />
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                                <input type="text" id="payment-credit-card-expiry-yy" placeholder="YY" required="" class="slds-input" />
+                            </div>
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                            <input type="text" id="payment-credit-card-cvv" placeholder="CVV" required="" class="slds-input" />
+                        </div>
+                    </div> 
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                        <div class="slds-form-element">
+                            <input type="checkbox" id="save-card" checked="checked" class="slds-p-horizontal_medium"/>Save information for future checkouts
+                        </div>
+                    </div>
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                        <div class="slds-form-element">
+                            <input type="checkbox" id="save-card-default" checked="checked" class="slds-p-horizontal_medium"/>Save as default for future checkouts
+                        </div>
                     </div>
                 </div>
-                <div class="form-group" style="margin-left: 0px; margin-right: 0px;">
-                    <label class="control-label hidden-xs col-sm-3 col-md-3 col-lg-3" for="cardNumber">Expiry (MM/YY):</label>
-                    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" class="form-control " maxlength="2" id="EXPIRY_MONTH_ID" placeholder="Month">
-                        </input>
+            </div>
+            <div class="bank-payment-view hide">
+                <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                        <input type="text" id="payment-bank-holder-name" placeholder="Name on Account" required="" class="slds-input" />
                     </div>
-                    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" maxlength="4" class="form-control" id="EXPIRY_YEAR_ID" placeholder="Year">
-                        </input>
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                        <input type="text" id="payment-bank-number" placeholder="Account Number" required="" class="slds-input" />
                     </div>
-                </div>
-                <div class="form-group" style="margin-left: 0px; margin-right: 0px;">
-                    <label class="control-label hidden-xs col-sm-3 col-md-3 col-lg-3" for="cardNumber">CVV/ZIP</label>
-                    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" class="form-control " maxlength="3" id="CARD_CODE" placeholder="CVV">
-                        </input>
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                        <input type="text" id="payment-bank-routing-number" placeholder="Routing Number" required="" class="slds-input" />
                     </div>
-                    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-                        <input type="text" maxlength="5" class="form-control" id="ZIP_CODE" placeholder="ZIP">
-                        </input>
-                    </div>
-                </div>
-                <div class="form-group" style="margin-left: 0px; margin-right: 0px;">
-                    <div class="col-md-offset-3 col-sm-offset-3 col-lg-offset-3 col-md-8 col-lg-8 col-sm-8">
-                        <button type="submit" id="pay" class="btn btn-primary btn-lg btn-block" onclick="getSecureData()">Get Payment Nonce</button>
-                    </div>
-                </div>
-                <div class="form-horizontal formDiv1" role="form">
-                    <div class="form-group">
-                        <label class="control-label col-sm-3" for="blob">Payment Nonce:</label>
-                        <div class="col-sm-8">
-                            <textarea class="form-control" id="blob" rows="6"></textarea>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                            <input type="text" id="payment-bank-name" placeholder="Bank Name" required="" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                            <input type="text" id="payment-bank-type" placeholder="Bank Type" required="" class="slds-input" />
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                            <div class="slds-form-element">
+                                <input type="checkbox" id="save-bank" checked="checked" class="slds-p-horizontal_medium"/>Save information for future checkouts
+                            </div>
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
+                            <div class="slds-form-element">
+                                <input type="checkbox" id="save-bank-default" checked="checked" class="slds-p-horizontal_medium"/>Save as default for future checkouts
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <script type="text/javascript">
-            var blob = "";
-            function getSecureData() {
-                var secureData = {},
-                    authData = {},
-                    cardData = {};
-                cardData.cardNumber = document.getElementById('CARDNUMBER_ID').value;
-                cardData.month = document.getElementById('EXPIRY_MONTH_ID').value;
-                cardData.year = document.getElementById('EXPIRY_YEAR_ID').value;
-                cardData.zip = document.getElementById('ZIP_CODE').value;
-                cardData.cardCode = document.getElementById('CARD_CODE').value;
-
-                secureData.cardData = cardData;
-                authData.clientKey = '87jxENy9M82YhvbhCWB7zR4z7nEzq6EEPCX6y95XnuNP65kwwt7FSgaK7xQ5z7Aj';
-                authData.apiLoginID = '84vMVmF6jP';
-                secureData.authData = authData;
-                Accept.dispatchData(secureData, 'responseHandler');
-            }
-            function responseHandler(response) {
-                if (response.messages.resultCode === 'Error') {
-                    for (var i = 0; i < response.messages.message.length; i++) {
-                        console.log(response.messages.message[i].code + ':' + response.messages.message[i].text);
-                        $("#blob").val(response.messages.message[i].code + ':' + response.messages.message[i].text);
-                    }
-                } else {
-                    useOpaqueData(response.opaqueData)
-                }
-            }
-
-            function useOpaqueData(responseData) {
-                console.log(responseData.dataDescriptor);
-                console.log(responseData.dataValue);
-                $("#blob").val(responseData.dataValue);
-            }
-
-        </script>
-
+        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-1">
+            <div class="slds-box slds-box_x-small slds-text-align_right slds-m-around--x-small">
+                <button class="slds-button slds-button_neutral selected-button" id="pay-button">Pay
+                </button>
+            </div>
+        </div>
     </body>
 
     <!-- End Default Content REMOVE THIS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"></link>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="https://jstest.authorize.net/v1/Accept.js" charset="utf-8"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"></link>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"></link>
 
-
+    <apex:stylesheet value="{!$Resource.transaction_css}"/>
+    <apex:includeScript value="{!$Resource.jquery}"/>
+    <apex:includeScript value="{!$Resource.payment_form_helper}"/>
+    
 </apex:page>

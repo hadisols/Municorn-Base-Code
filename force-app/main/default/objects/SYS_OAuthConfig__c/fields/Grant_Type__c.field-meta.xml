@@ -41,6 +41,11 @@
                 <default>false</default>
                 <label>PKCE</label>
             </value>
+            <value>
+                <fullName>jwt</fullName>
+                <default>false</default>
+                <label>JWT</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

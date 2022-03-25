@@ -20,6 +20,21 @@ public class SYS_DataCache {
         
     }
 
+    //NOT USED
+    /*
+    private static Map<String,ObjectSetting__mdt> objectSettingsMapVar;
+    public static Map<String,ObjectSetting__mdt> objectSettingsMap{
+        get{
+            if(objectSettingsMapVar == NULL){
+                objectSettingsMapVar = ObjectSetting__mdt.getAll();
+            }
+            return objectSettingsMapVar;
+        }
+ 
+    }
+    */
+
+
 
     //Extension for Webhook extension
     private static String extension;
@@ -46,20 +61,38 @@ public class SYS_DataCache {
     }
     
     //TODO - HB -  Fill the objectsettings 
-    private static ObjectSetting__mdt objectSetting; 
+    private static ObjectSetting__mdt objectSetting;
+
     
     //TODO - 'Account' is hardcoded
     private static String context;
     
+    //NOT USED
+    /*
     public static String ObjectContext{ 
         get{ return context;}
         //set{context = value;}
     }
+    */
 
     /******* NEW VARIABLES START*******/
 
     public static String INT_TYPE;
     public static String OBJ_TYPE;
+    
+    private static Map<String, String> external_key;
+    public static Map<String, String> externalKeyByResourceMap {
+        get {
+            if(external_key == null) {
+                external_key = new Map<String, String>();
+                for(FieldSetting__mdt fs : FieldMappingOutbound){
+                    if(fs.Is_External_Field__c)
+                        external_key.put(fs.RestResource__c.toLowerCase(),fs.FieldApiName__c);
+                }
+            }
+            return external_key;
+        }
+    }
 
     /******* NEW VARIABLES END*********/
 	
@@ -78,28 +111,41 @@ public class SYS_DataCache {
         }
     }
     
+    
+     /* NOT USED
     public static Map<Id, sObject> oldMap{
         get{ return oldObjMap;}
         set{
-            //TODO should mappings be reset?
             oldObjMap = value;
+            
             if(oldObjMap!=NULL && oldObjMap.size()>0){
                 SObjectType objectType = oldObjMap.values()[0].getSObjectType();
                 context = JSON.serialize(objectType.getDescribe().getName()).replace('\"','');
             }
+            
         }
     }
+    */
     
+    
+    
+    /* NOT USED
     public static Map<Id, sObject> newMap{
         get{ return newObjMap;}
         set{
             newObjMap = value;
+            
             if(newObjMap!=NULL && newObjMap.size()>0){
                 SObjectType objectType = newObjMap.values()[0].getSObjectType();
                 context = JSON.serialize(objectType.getDescribe().getName()).replace('\"','');
             }
+            
         }
     }
+    */
+    
+
+
     public static Map<String,IntegrationSetting__mdt> intMap;
     public static Map<String,IntegrationSetting__mdt> integrationSetting {
         get{
@@ -122,7 +168,7 @@ public class SYS_DataCache {
         get{
             if(headerMetadata == null){
                 headerMetadata = new List<HttpHeaders__mdt>();
-                headerMetadata = [SELECT Id, MasterLabel, Label, IntegrationType__c, Value__c 
+                headerMetadata = [SELECT Id, MasterLabel, Label, IntegrationType__c, Value__c,header_name__c 
                                     FROM HttpHeaders__mdt 
                                     WHERE IntegrationType__c =:(integrationSetting.get(INT_TYPE)).id];
             }
@@ -140,13 +186,14 @@ public class SYS_DataCache {
     //     }
     // }
 
+    //CONSIDERS OUTBOUND FIELDS ONLY
     public static List<FieldSetting__mdt> AllFieldSettingMappings{
         get{
             if(mappings == null){
                 mappings = new List<FieldSetting__mdt>();
                 System.debug('Field Settings #### 1:'+mappings);
-                mappings = [Select Id,Order_Number__c, ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
-                            ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c 
+                mappings = [Select Id,developername, Order_Number__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+                            ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c 
                             from FieldSetting__mdt /*where Is_Active__c=true where FieldApiName__c != null*/
                             WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'INBOUND'
                             ORDER BY Order_Number__c ASC];
@@ -170,11 +217,11 @@ public class SYS_DataCache {
                 mappingOut = new List<FieldSetting__mdt>();
                 String intType = SYS_DataCache.INT_TYPE;
                 // mappingOut = [SELECT Id, ChildFieldApiName__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,
-                //             ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c 
+                //             ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c 
                 //             from FieldSetting__mdt /*where Is_Active__c=true where FieldApiName__c != null*/
                 //             WHERE ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'OUTBOUND'];
-                String query = 'SELECT Id, Order_Number__c, ChildFieldApiName__c,Field_Mapping_Handler__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,' +                
-                ' ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c ' + 
+                String query = 'SELECT Id,developername,Order_Number__c,StaticValue__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c, ObjectSetting__r.DeveloperName,ChildFieldApiName__c,Field_Mapping_Handler__c, FieldApiName__c, ObjectApiName__c,Key__c, RestResource__c, Direction__c, ChildRootElement__c,' +                
+                ' ObjectSetting__r.Object__r.QualifiedApiName , ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c ' + 
                 ' from FieldSetting__mdt '+
                 ' WHERE ObjectSetting__r.IntegrationType__r.developername =\''+SYS_DataCache.INT_TYPE+'\' AND Direction__c != \'OUTBOUND\' '; 
                 
@@ -194,6 +241,8 @@ public class SYS_DataCache {
         }
     }
     
+    //NOT USED
+    /*
     public static Map<String, List<FieldSetting__mdt>> GetChildFieldSettingMap{
         get{
             if(childFieldSettingMap == null){
@@ -219,8 +268,10 @@ public class SYS_DataCache {
             return childFieldSettingMap.get(context);
         }
     }
+    */
     
-
+    //NOT USED
+    /*
     public static List<FieldSetting__mdt> FieldSettingMappings{
         get{
             if(objectFieldSettingMap == null){
@@ -242,7 +293,9 @@ public class SYS_DataCache {
             return objectFieldSettingMap.get(context);
         }
     }
+    */
 
+    //CONSIDERS OUTBOUND FIELDS ONLY
     public static List<FieldSetting__mdt> fieldSettingMappingUsingObjSetting {
         get {
             if(objectFieldSettingMap == null) {
@@ -262,15 +315,18 @@ public class SYS_DataCache {
         }
     }
     
+    //NOT USED
+    /*
     public static void load(String primaryObj,List<sObject> objsList) {
             //String primaryObj; //TODO-fix this
             if(objectFieldSettingMap == null || objectFieldSettingMap.keySet().size() == 0) {
-                List<FieldSetting__mdt> mappings = [Select Id,IsChild__c, Field_Mapping_Handler__c,ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, 
-                                           ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c , ObjectSetting__r.ApexHandler__c 
+                List<FieldSetting__mdt> mappings = [Select Id,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c, Get_value_from_Log__c,IsChild__c, Field_Mapping_Handler__c,ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, 
+                                           ObjectSetting__r.Direction__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c 
                                            from FieldSetting__mdt where ObjectSetting__r.ObjectApiName__c = :primaryObj and FieldApiName__c != null];
                 
             }
     }
+    */
 
     public static Map<String, String> escCharMap = new Map<String, String>(); 
     
@@ -290,6 +346,7 @@ public class SYS_DataCache {
             return escCharMap.get(SYS_DataCache.INT_TYPE);
         }
     }
+
     public static void load(){ 
         List<IntegrationSetting__mdt> listObjSetting = [SELECT EscapeCharacter__c, BaseAPIEndPoint__c, ApexHandler__c, NamedCredential__c, 
                                                    UpdateMethod__c, AuthenticationType__c,
@@ -348,7 +405,11 @@ public class SYS_DataCache {
 
     public static string sObjectApiName;
 
+    // ONLY USED IN INVOCABLE HANDLER THAT TOO ONLY ASSIGNMENT
     public static String objectApiName;  
+    
+    //NOT USED
+    /*
     public static List<ObjectSetting__mdt> objMap = new List<ObjectSetting__mdt>();
     public static List<ObjectSetting__mdt> objSettings {
         get{
@@ -356,17 +417,24 @@ public class SYS_DataCache {
                 // objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
                 //                     ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c FROM ObjectSetting__mdt LIMIT 10000];
                 objMap = ObjectSetting__mdt.getAll().values();
+                objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
+                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c,url_params__c FROM ObjectSetting__mdt LIMIT 10000];
             }
             return objMap;
         }
     }
+    */
 
+    //NOT USED
+    /*
     public static Map<String, Map<String, String>> externalIdmap = new Map<String, Map<String, String>>();
     public static Map<String, Map<String, String>> getExtId {
         get {
             if(externalIdmap.values().size() == 0) {
                 objMap = new List<ObjectSetting__mdt>();
                 objMap = ObjectSetting__mdt.getAll().values();
+                objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
+                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c,url_params__c FROM ObjectSetting__mdt LIMIT 10000];
                 for(IntegrationSetting__mdt intSetting : [SELECT developername FROM IntegrationSetting__mdt]) {
                     Map<String, String> objToKey = new Map<String, String>();
                     for(ObjectSetting__mdt obj : objMap) {
@@ -380,13 +448,18 @@ public class SYS_DataCache {
             return externalIdmap;
         }
     }
+    */
 
+    //NOT USED
+    /*
     public static Map<String, String> extFieldName = new Map<String, String>();
     public static Map<String, String> objExternalField {
         get{
             if(extFieldName.isEmpty()) {
                 objMap = new List<ObjectSetting__mdt>();
                 objMap = ObjectSetting__mdt.getAll().values();
+                objMap = [SELECT masterlabel, DeveloperName,ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
+                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c,url_params__c FROM ObjectSetting__mdt LIMIT 10000];
             }
             for(ObjectSetting__mdt obj : objMap) {
                 extFieldName.put(obj.DeveloperName, obj.ExternalFieldApi__c);
@@ -394,12 +467,14 @@ public class SYS_DataCache {
             return extFieldName;
         }
     }
+    */
 
     public static map<String, ObjectSetting__mdt> objectSettingInit = new Map<String, ObjectSetting__mdt>();
     public static map<String, ObjectSetting__mdt> objectSettingMap {
         get{
             if( objectSettingInit.isEmpty()) {
-                List<ObjectSetting__mdt> objMap = ObjectSetting__mdt.getAll().values();
+                List<ObjectSetting__mdt> objMap = [SELECT DeveloperName,BypassOrder__c, ApexHandler__c,BypassTrigger__c, ExternalFieldApi__c,Id,IntegrationType__r.developername , QueryClause__c,
+                                    ObjectApiName__c,Object__c,QualifiedApiName,ResourcePath__c,url_params__c FROM ObjectSetting__mdt LIMIT 10000];
                 
                 for(ObjectSetting__mdt obj : objMap) {
                     objectSettingInit.put(obj.DeveloperName, obj);
@@ -505,14 +580,18 @@ public class SYS_DataCache {
     } 
 
     public static List<IntegrationEnablement__mdt> enableIntList = new List<IntegrationEnablement__mdt>();
+
     public static Map<String, Boolean> checkMap = new Map<String, Boolean>();
     public static Map<String, Boolean> enableCheck {
         get{
             if(enableIntList.isEmpty()) {
-                enableIntList = [SELECT Id, DeveloperName, MasterLabel, Language, NamespacePrefix, Label, QualifiedApiName, Enable__c, ExpiryDate__c 
+                enableIntList = [SELECT Id,Integration_Setting__r.DeveloperName, MasterLabel, Language, NamespacePrefix, Label, QualifiedApiName, Enable__c, ExpiryDate__c 
                                     FROM IntegrationEnablement__mdt];
+                System.debug('\n\n MS enableIntList:'+enableIntList);
                 for(IntegrationEnablement__mdt iter : enableIntList) {
-                    checkMap.put(iter.DeveloperName.toUpperCase() , iter.Enable__c);
+                    System.debug('\n\n MS enableIntList in loop:'+iter.Integration_Setting__r.DeveloperName.toUpperCase()+'='+iter.Enable__c);
+
+                    checkMap.put(iter.Integration_Setting__r.DeveloperName.toUpperCase() , iter.Enable__c);
                 }
             }
             return checkMap;
@@ -530,6 +609,8 @@ public class SYS_DataCache {
         }
     }
 
+    //NOT USED - Need to update. Create map for each INT_TYPE. Same as Enable checkbox
+    /*
     public static Date expiry;
     public static Date expiryDate {
         get {
@@ -541,8 +622,11 @@ public class SYS_DataCache {
             return expiry;
         }
     }
+    */
 
 
+    // NOT USED/REQUIRED. 
+    /*
     public static String token = '';
     public static String webhookToken {
         get {
@@ -556,6 +640,6 @@ public class SYS_DataCache {
             return token;
         }
     }
-
+    */
     
 }

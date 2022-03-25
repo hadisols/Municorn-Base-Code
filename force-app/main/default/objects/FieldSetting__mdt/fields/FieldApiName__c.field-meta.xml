@@ -4,7 +4,7 @@
     <description>Same as one used in SOQL. Supports parent fields</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>FieldApiName</label>
+    <label>Field API Name</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

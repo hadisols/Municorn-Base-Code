@@ -4,6 +4,6 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>IsChild</label>
+    <label>Is Child</label>
     <type>Checkbox</type>
 </CustomField>

@@ -1,6 +1,6 @@
 @isTest
 public class SYS_DataCacheTest {
-    @IsTest static void ObjectContextTest(){
+    /* @IsTest static void ObjectContextTest(){
         string context = 'test';
         string st = SYS_DataCache.ObjectContext;
         system.debug('>>>>>>>>>>>!!'+st);
@@ -27,7 +27,7 @@ public class SYS_DataCacheTest {
         Map<Id, sObject> newmap1 = SYS_DataCache.newMap;
          Test.stopTest(); 
         System.assertEquals(null,null);
-    }
+    } */
     @IsTest static void checkcontextSet(){
         Test.startTest();
         Account acc = new Account( Name= 'abc');
@@ -43,7 +43,7 @@ public class SYS_DataCacheTest {
     //     Test.stopTest(); 
     //     System.assertEquals(null,null);
     // }
-    @IsTest static void checkLoadTest(){
+    /* @IsTest static void checkLoadTest(){
         Test.startTest();
         Account acc = new Account( Name= 'abc');
         List<sObject> testcon = new List<sObject>();
@@ -52,6 +52,6 @@ public class SYS_DataCacheTest {
         SYS_DataCache.load('Account',testcon);
         Test.stopTest(); 
         System.assertEquals(null,null);
-    }
+    } */
   
 }

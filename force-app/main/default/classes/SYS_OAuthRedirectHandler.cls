@@ -20,8 +20,10 @@ global class SYS_OAuthRedirectHandler {
                                                 Redirect_URL__c, 
                                                 Refresh_Token__c, 
                                                 Token_Endpoint__c, 
-                                                Client_Id__c, 
+                                                Client_Id__c,
+                                                Schedule_Refresh_Token__c,
                                                 Token_Expiry_Time__c,
+                                                Token_Expiry_Date__c,
                                                 Additional_URL_Parameters__c 
                                             FROM SYS_OAuthConfig__c 
                                            	WHERE Id =:state];
@@ -78,6 +80,22 @@ global class SYS_OAuthRedirectHandler {
             configs[0].Access_Token__c =access_token;
             configs[0].Refresh_Token__c = refresh_token;
             configs[0].Token_Expiry_Time__c = expiry;
+
+            Integer day = 86400;
+            Integer hour = 3600;
+            Integer minute = 60;
+            Integer totalSeconds = Integer.valueOf(expiry);
+            Integer daysout = Integer.valueOf(Math.floor(totalseconds / day));
+            Integer hoursout = Integer.valueOf(Math.floor((totalseconds - daysout * day)/hour));
+            Integer minutesout = Integer.valueOf(Math.floor((totalseconds - daysout * day - hoursout * hour)/minute));
+            Integer secondsout = Integer.valueOf(totalseconds - daysout * day - hoursout * hour - minutesout * minute);
+            String inpputString = System.now().yearGmt()+'-'+System.now().monthGmt()+'-'+(System.now().dayGmt()+daysout)+'T'+(System.now().hourGmt()+hoursout)+':'+(System.now().minuteGmt()+minutesout)+':'+(System.now().secondGmt()+secondsout)+'.'+'000Z';
+            System.debug('MS Date time:'+inpputString);
+            DateTime resultDateTime = DateTime.valueof(inpputString.replace('T', ' ')); 
+
+            configs[0].Token_Expiry_Date__c = resultDateTime;
+            configs[0].Schedule_Refresh_Token__c = true;
+
             update configs;
 
             RestContext.response.responseBody = Blob.valueOf('{"data":'+res.getBody()+'}');
