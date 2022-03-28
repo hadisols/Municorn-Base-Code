@@ -1,4 +1,7 @@
 global virtual class SYS_ApplicationService {
+
+    public class SYS_ApplicationServiceException extends Exception{}
+
     global SYS_ApplicationService() {
 
     }
@@ -248,6 +251,9 @@ global virtual class SYS_ApplicationService {
     global virtual Datetime getDatetimeValue(FieldSetting__mdt mapping, String dt){
 
         String format = mapping.Datetime_Conversion_Format__c;
+        if(format==null){
+            throw new SYS_ApplicationServiceException('\nInvalid conversion format defined in Field Setting for Datetime field');
+        }
         Datetime newDatetime;
 
         if(format == 'EPOCH'){
@@ -615,9 +621,9 @@ global virtual class SYS_ApplicationService {
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }
 
-        System.debug('-- MS Final identified resource in getResourceFromJSON:'+resource.toLowerCase());
+        System.debug('-- MS Final identified resource in getResourceFromJSON:'+resource?.toLowerCase());
 
-        return resource.toLowerCase();
+        return resource?.toLowerCase();
     }
 
     /* ------------------------------------------------------------------------ */

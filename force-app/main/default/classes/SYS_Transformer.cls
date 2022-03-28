@@ -1,4 +1,6 @@
 public virtual class SYS_Transformer {
+
+    public class SYS_TransformerException extends Exception{}
 	
     //NOT USED - It was when the child records were being processed in the same trx without additional logs
     //The flag was set in the Old Queueable class
@@ -323,6 +325,10 @@ public virtual class SYS_Transformer {
 
     public static List<sObject> getSObjectsToUpsert(List<String> jsonList, String resource, Boolean isNotification) {
 
+        if(resource == NULL){
+            throw new SYS_TransformerException('\nResource not identified. getSObjectsToUpsert() cannot be processed');
+        }
+
         List<sObject> objectsToUpsert = new List<sObject>();
        
         List<FieldSetting__mdt> mappings = new List<FieldSetting__mdt>();
@@ -393,8 +399,7 @@ public virtual class SYS_Transformer {
             sObj = Schema.getGlobalDescribe().get(sObjectApiName).newSObject();
         }
         catch(Exception e){
-            e.setMessage('\nSYS EXCEPTION: Could not identify the resource from JSON or there is no field setting for the given resource');
-            throw e;
+            throw new SYS_TransformerException('\nCould not identify the resource from JSON or there is no field setting for the given resource');
         }
         
         
@@ -467,7 +472,20 @@ public virtual class SYS_Transformer {
     
     private static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result) {
         System.debug('MS Double check. jsonObject:'+jsonObject);
+        
+        List<String> skipKeys;
+        if(SYS_DataCache.INT_TYPE != null){
+            String skipKeysString = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Skip_Keys__c?.toLowerCase();
+            skipKeys = skipKeysString?.split(',');
+        }
+
         for(String key : jsonObject.keySet()) {
+
+            System.debug('MS ****** key:'+key);
+            System.debug('MS ****** skipKeys:'+skipKeys);
+
+            if(skipKeys!=null && skipKeys.contains(key.toLowerCase())) continue;
+            
             Object currentObj = jsonObject.get(key);
             System.debug('##key='+key);
             if (currentObj instanceof Map<String, Object>) {

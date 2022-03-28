@@ -75,6 +75,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Skip_Keys__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>UpdateMethod__c</field>
         <value xsi:type="xsd:string">POST</value>
     </values>
