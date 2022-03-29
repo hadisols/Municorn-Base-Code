@@ -3,16 +3,16 @@
                 access="global">
 
     <aura:attribute name="recordId" type="String"/>
-    <aura:attribute name="message" type="String"/>
-    <aura:attribute name="messageType" type="string" default="slds-badge"/>
+    <aura:attribute name="message" type="String" default="Use these buttons to override the changes in Salesforce or External System"/>
+    <aura:attribute name="messageType" type="string" default="slds-text-body_small"/>
 
     <!--Design Attribute-->
-    <aura:attribute name="objectSetting" type="String"/>
-    <aura:attribute name="objectSettingOut" type="String"/>
-    <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller"/>
-    <aura:attribute name="syncIn" type="Boolean" default="true"/>
-    <aura:attribute name="apexHandlerOut" type="String" default="SYS_ApplicationService"/>
-    <aura:attribute name="syncOut" type="Boolean" default="true" />
+    <aura:attribute name="objectSetting" type="String" access="global"/>
+    <aura:attribute name="objectSettingOut" type="String" access="global"/>
+    <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller" access="global"/>
+    <aura:attribute name="syncIn" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="apexHandlerOut" type="String" default="SYS_ForceSync_Controller" access="global"/>
+    <aura:attribute name="syncOut" type="Boolean" default="true" access="global"/>
 
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
@@ -29,7 +29,10 @@
         </div>
         
         <footer class="slds-card__footer">
-            <span class="{!v.messageType}">{!v.message}</span>
+            <div class="{!v.messageType}">
+                {!v.message}
+            </div>
+            
         </footer>
     </article>
 

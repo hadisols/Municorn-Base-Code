@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Datetime_Conversion_Format__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>If this field setting is for a Datetime field, select the conversion format</inlineHelpText>
+    <label>Datetime Conversion Format</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>EPOCH</fullName>
+                <default>false</default>
+                <label>Epoch</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mm:ss_zh.zm</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mm:ss(+/-)zh.zm</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mm:ss_zh:zm</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mm:ss(+/-)zh:zm</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mm:ssZ</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mm:ssZ</label>
+            </value>
+            <value>
+                <fullName>YYYYMMDDThhmmssZ</fullName>
+                <default>false</default>
+                <label>YYYYMMDDThhmmssZ</label>
+            </value>
+            <value>
+                <fullName>YYYY-MM-DDThh:mmZ</fullName>
+                <default>false</default>
+                <label>YYYY-MM-DDThh:mmZ</label>
+            </value>
+            <value>
+                <fullName>YYYYMMDDThhmmZ</fullName>
+                <default>false</default>
+                <label>YYYYMMDDThhmmZ</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

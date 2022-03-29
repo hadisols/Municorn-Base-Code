@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Flat_Key_Pattern__c</fullName>
-    <defaultValue>&quot;A.B&quot;</defaultValue>
+    <defaultValue>&quot;A_B&quot;</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <label>Flat Key Pattern</label>
@@ -12,14 +12,20 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>A.B</fullName>
+                <fullName>A_B</fullName>
                 <default>true</default>
-                <label>A.B</label>
+                <label>A_B</label>
             </value>
             <value>
                 <fullName>A[B]</fullName>
                 <default>false</default>
                 <label>A[B]</label>
+            </value>
+            <value>
+                <fullName>A.B</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>A.B</label>
             </value>
         </valueSetDefinition>
     </valueSet>

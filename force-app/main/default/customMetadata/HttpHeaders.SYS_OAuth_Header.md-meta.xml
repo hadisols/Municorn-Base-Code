@@ -7,6 +7,10 @@
         <value xsi:type="xsd:string">SYS_OAuth_Integration_Setting</value>
     </values>
     <values>
+        <field>SYS_Key__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Value__c</field>
         <value xsi:type="xsd:string">application/x-www-form-urlencoded</value>
     </values>

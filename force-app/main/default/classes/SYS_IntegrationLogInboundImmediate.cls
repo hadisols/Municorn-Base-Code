@@ -42,7 +42,7 @@ public class SYS_IntegrationLogInboundImmediate{
                 SYS_DataCache.log = log;
                 
                 SYS_DataCache.INT_TYPE = log.Integration_Setting__c;
-                //SYS_debug.log('MS SYS_DataCache.log in Inbound queueable:'+SYS_DataCache.log);
+                SYS_debug.log('MS SYS_DataCache.log in Inbound queueable:'+SYS_DataCache.log);
                 SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                 SYS_ApplicationService appService;
 
@@ -89,31 +89,6 @@ public class SYS_IntegrationLogInboundImmediate{
             }
         }
 
-        /*
-        //TODO - upsert against external id - DONE
-        //TODO - Check DML Limits
-
-        if(inboundRecordsForUpsertMap.size()>0){
-            for(String compositeKey : inboundRecordsForUpsertMap.keySet()){
-
-                String objectApiName = compositeKey.substring(compositeKey.indexOf('.')+1,compositeKey.length());
-                String externalFieldApiName = compositeKey.substring(0,compositeKey.indexOf('.'));
-            
-                SYS_ApplicationService.doDML(inboundRecordsForUpsertMap.get(compositeKey),'UPSERT',Schema.getGlobalDescribe().get(objectApiName).getDescribe().fields.getMap().get(externalFieldApiName)); 
-            }
-             
-        }
-
-        if(inboundRecordsForUpdate.size()>0){
-            SYS_ApplicationService.doDML(inboundRecordsForUpdate,'UPDATE',NULL);  
-        }
-
-        if(inboundRecordsForDelete.size()>0){
-            SYS_ApplicationService.doDML(inboundRecordsForDelete,'DELETE',NULL);  
-        }
-        */
-        
-        
     
     }
 }

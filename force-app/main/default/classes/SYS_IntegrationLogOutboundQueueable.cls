@@ -25,7 +25,6 @@ public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.
                                                 data8__c,
                                                 data9__c,
                                                 Custom_Field_Value__c,
-                                                SYS_Operation_Type__c,
                                                 Requires_process_on_complete__c,
                                                 How_to_process__c,Custom_Apex_Handler__c,
                                                 Type__c,WhatId__c,Parent__c,Order__c,ObjectSettingId__c,Integration_Setting__c

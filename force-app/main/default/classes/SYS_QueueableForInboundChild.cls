@@ -27,7 +27,6 @@ public class SYS_QueueableForInboundChild implements Queueable {
         
         //TODO Make Dynamic - DONE
         totalChildRecords = childRecList.size();
-        system.debug('totalChildRecords====**'+totalChildRecords);
         SYS_DataCache.INT_TYPE = integrationSetting;
         
         System.debug('Inbound for Child:'+SYS_DataCache.INT_TYPE);

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Operation_Map__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Enter HTTP Verb to Method map separated by new line. E.g. POST:INSERT</inlineHelpText>
+    <label>Operation Map</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

@@ -35,7 +35,7 @@
                 <fullName>UsernamePassword</fullName>
                 <default>false</default>
                 <isActive>false</isActive>
-                <label>Username Password</label>
+                <label>UsernamePassword</label>
             </value>
         </valueSetDefinition>
     </valueSet>

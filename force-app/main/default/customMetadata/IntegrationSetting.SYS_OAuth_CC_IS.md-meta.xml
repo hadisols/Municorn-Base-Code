@@ -43,6 +43,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>GET_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Hashing_Algo__c</field>
         <value xsi:nil="true"/>
     </values>
@@ -51,7 +55,27 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Notification_Wrapper__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Notifications_are_partial__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>OAuth_Config_Record_Id__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Operation_Map__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Parent_Resource_Map__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Skip_Keys__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>

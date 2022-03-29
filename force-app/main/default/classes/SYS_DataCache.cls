@@ -79,8 +79,50 @@ public class SYS_DataCache {
     /******* NEW VARIABLES START*******/
 
     public static String INT_TYPE;
-
     public static String OBJ_TYPE;
+
+    public static Map<String,String> PARENT_RESOURCE_MAP{
+        get{
+            String resourceMapString = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Parent_Resource_Map__c;
+            if(resourceMapString != NULL){
+                List<String> kvPair = resourceMapString.split('\n');
+                Map<String,String> parentResourceMap = new Map<String,String>();
+                for(String kv:kvPair){
+                        parentResourceMap.put(kv.split(':')[0],kv.split(':')[1]);
+
+                }
+                return parentResourceMap;
+            }
+            else{
+                return null;
+            }
+        }
+    }
+
+    public static String FLAT_KEY_SEPERATOR{
+        get{
+            if(INT_TYPE != NULL){
+                return 
+                (integrationSetting.get(INT_TYPE).Flat_Key_Separator__c!=NULL)?integrationSetting.get(INT_TYPE).Flat_Key_Separator__c:'.';
+            }
+            else{
+                return '.';
+            }
+        }
+
+    }
+
+    public static String FLAT_KEY_PATTERN{
+        get{
+            if(INT_TYPE != NULL){
+                return 
+                (integrationSetting.get(INT_TYPE).Flat_Key_Pattern__c!=NULL)?integrationSetting.get(INT_TYPE).Flat_Key_Pattern__c:'A_B';
+            }
+            else{
+                return 'A_B';
+            }
+        }
+    }
     
     
     private static Map<String, String> external_key;
@@ -211,16 +253,14 @@ public class SYS_DataCache {
             if(AllFieldSettingsList == null){
                 AllFieldSettingsList = new List<FieldSetting__mdt>();
                 
-                AllFieldSettingsList = [Select Id,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+                AllFieldSettingsList = [Select Id,Datetime_Conversion_Format__c,Send_Blanks_as_Empty_String__c,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
                             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c 
                             from FieldSetting__mdt WHERE Is_Active__c=true  
                             AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE/* AND Direction__c != 'INBOUND'*/];
-                  system.debug('Allfieldmappings+++'+AllFieldSettingsList);
-                 
+                
                 for(FieldSetting__mdt item : AllFieldSettingsList) {
                     
-                    item.FieldApiName__c = item.FieldApiName__c != null ? item.FieldApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.FieldApiName__c ;
-                    item.ObjectApiName__c = item.ObjectApiName__c != null ? item.ObjectApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ObjectApiName__c ;
+                    SYS_Helper.setNamespacePrefix(item);
                 } 
                 
             }
@@ -249,22 +289,20 @@ public class SYS_DataCache {
             }
 
             if(SYS_DataCache.OBJ_TYPE!=NULL){
-                system.debug('objectsettingsapp@@@'+ObjectSettingToFieldSettingsMap_IB.get(SYS_DataCache.OBJ_TYPE));
                 return ObjectSettingToFieldSettingsMap_IB.get(SYS_DataCache.OBJ_TYPE);
             }
             else {
                 /**
-                 *  If Object Settings is still not set it means the Transformer isn't processing records in child context. So FS marked as child should be skipper
+                 *  If Object Settings is still not set it means the Transformer isn't processing records in child context. So FS marked as child should be skipped
                  *  This is to prevent conflict when a resource is confgiured as both individual object setting and child to another object setting
                  */
                 List<FieldSetting__mdt> allMappings = new List<FieldSetting__mdt>();
                 for(List<FieldSetting__mdt> fsList:ObjectSettingToFieldSettingsMap_IB.values()){
                     for(FieldSetting__mdt fs:fsList){
-                        if(!fs.isChild__c)
+                        if(fs.Level__c == '0')
                             allMappings.add(fs);
                     }
                 }
-                system.debug('allmappings@@@'+allMappings);
                 return allMappings;
             }
         }
@@ -622,8 +660,6 @@ public class SYS_DataCache {
                                      WHERE developername = :SYS_DataCache.INT_TYPE LIMIT 1][0].DebugCheck__c;
             }
             */
-            //system.debug('inte');
-            system.debug('SYS_DataCache.INT_TYPE'+SYS_DataCache.INT_TYPE);
             return integrationSetting.get(SYS_DataCache.INT_TYPE).DebugCheck__c;
             //return true;
         }

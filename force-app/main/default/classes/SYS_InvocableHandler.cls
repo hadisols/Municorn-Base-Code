@@ -28,6 +28,8 @@ global class SYS_InvocableHandler {
     global static void captureOutboundRequest(List<MyInvocableVariable> myInvocableVariableList) {
         
         List<sObject> newList = new List<sObject>();
+        Map<Id,sObject> newMap = new Map<Id,sObject>();
+
         List<sObject> oldList = new List<sObject>();
         
         List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
@@ -40,12 +42,13 @@ global class SYS_InvocableHandler {
         SYS_DataCache.OBJ_TYPE = myInvocableVariableList[0].objectSetting;
 
         for(MyInvocableVariable itr:myInvocableVariableList){
-            newList.add(itr.newVal);   
+            newList.add(itr.newVal);
+            newMap.put(itr.recId,itr.newVal);   
             oldList.add(itr.oldVal);   
-        } 
-        
+        }
+
         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
-         system.debug('appService'+appService);
+        
         Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(newList);
         
        
@@ -65,6 +68,10 @@ global class SYS_InvocableHandler {
                 System.debug('cleanJSON'+finalJsonForOutbound); 
 
                 SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
+
+                
+                newSysLog.Callout_URL__c = SYS_Helper.urlFromPattern(httpMethod,newMap.get(jsonRecordId));
+
                 newSysLog.Status__c = 'NEW';
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;

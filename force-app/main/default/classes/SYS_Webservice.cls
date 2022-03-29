@@ -4,26 +4,13 @@ global class SYS_Webservice{
     
     @HttpPost
     global static void postRequest(){
-        
-// OpportunityLineItem oli = new OpportunityLineItem();
-// oli.Product2Id = '01t5j0000049r8LAAQ';
-// oli.Quantity = 20;
-// oli.UnitPrice = 1000;
-// oli.OpportunityId ='0065j00000UTA48AAH';//0065j00000UTA48AAH
-// try{
-// insert oli;
-// } catch(DmlException e) {
-//     System.debug('The following exception has occurred: ' + e.getMessage());
-// }
-// system.debug('oli'+oli);
-// list<OpportunityLineItem> opp = [select UnitPrice,Quantity from OpportunityLineItem where OpportunityId ='0065j00000UTA48AAH'];
-// system.debug('++++++____**'+opp);
 
         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.getExtension).newInstance();
         if(appService.doWebhookSignatureCheck()){
             appService.doPost();
         }  
         else {
+            insert appService.generateLogForWebhookSigFail('POST','Signature Verification Failed in POST');
             appService.setErrorHttpResponse('Signature Verification Failed in POST');
         }
     }
@@ -36,6 +23,7 @@ global class SYS_Webservice{
             appService.doPut();
         }  
         else {
+            insert appService.generateLogForWebhookSigFail('PUT','Signature Verification Failed in PUT');
             appService.setErrorHttpResponse('Signature Verification Failed in PUT');
         }
         
@@ -51,6 +39,7 @@ global class SYS_Webservice{
             appService.doGet();
         }  
         else {
+            insert appService.generateLogForWebhookSigFail('GET','Signature Verification Failed in GET');
             appService.setErrorHttpResponse('Signature Verification Failed in GET');
         }
         
@@ -65,6 +54,7 @@ global class SYS_Webservice{
             appService.doDelete();
         }  
         else {
+            insert appService.generateLogForWebhookSigFail('DELETE','Signature Verification Failed in DELETE');
             appService.setErrorHttpResponse('Signature Verification Failed in DELETE');
         }
         
@@ -78,6 +68,7 @@ global class SYS_Webservice{
             appService.doPatch();
         }  
         else{
+            insert appService.generateLogForWebhookSigFail('PATCH','Signature Verification Failed in PATCH');
             appService.setErrorHttpResponse('Signature Verification Failed in PATCH');
         }
         

@@ -6,12 +6,10 @@ public class SYS_IntegrationLogTriggerHandler {
         for(SYS_IntegrationLog__c log : ((List<SYS_IntegrationLog__c>)Trigger.new)){
             if(log.Type__c == 'OUTBOUND' && log.Status__c == 'NEW'){
                 newOutboundLogIds.add(log.Id);
-                system.debug('newOutboundLogIds'+newOutboundLogIds);
             }
 
             if((log.Type__c == 'INBOUND' || log.Type__c == 'RESPONSE') && log.Status__c == 'NEW'){
                 newInboundLogIds.add(log.Id);
-                system.debug('newInboundLogIds'+newInboundLogIds);
             }
 
         }
@@ -30,12 +28,10 @@ public class SYS_IntegrationLogTriggerHandler {
         for(SYS_IntegrationLog__c log : ((List<SYS_IntegrationLog__c>)Trigger.new)){
             if(log.Type__c == 'OUTBOUND' && (log.Status__c == 'READY_FOR_PROCESSING')){
                 newOutboundLogIds.add(log.Id);
-                system.debug('newOutboundLogIds==++'+newOutboundLogIds);
             }
 
             if((log.Type__c == 'INBOUND' || log.Type__c == 'RESPONSE') && log.Status__c == 'READY_FOR_PROCESSING'){
                 newInboundLogIds.add(log.Id);
-                system.debug('newOutboundLogIds==++'+newOutboundLogIds);
             }
 
         }

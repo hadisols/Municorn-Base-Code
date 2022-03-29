@@ -7,12 +7,20 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Always_Ignore_Response__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>ApexHandler__c</field>
         <value xsi:type="xsd:string">SYS_ApplicationService</value>
     </values>
     <values>
         <field>BypassTrigger__c</field>
         <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>DELETE_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Direction__c</field>
@@ -23,6 +31,10 @@
         <value xsi:type="xsd:string">SYS_Key__c</value>
     </values>
     <values>
+        <field>GET_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>IntegrationType__c</field>
         <value xsi:type="xsd:string">SYS_Test_IntegrationSetting</value>
     </values>
@@ -31,8 +43,16 @@
         <value xsi:type="xsd:string">Account</value>
     </values>
     <values>
-        <field>Object__c</field>
-        <value xsi:type="xsd:string">Account</value>
+        <field>PATCH_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>POST_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PUT_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>QueryClause__c</field>
