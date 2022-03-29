@@ -11,7 +11,7 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <title>Jason Emer MD</title>
+        <title>{!$label.Jason_Emer_MD}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <!-- Import the Design System style sheet -->
@@ -195,5 +195,7 @@
     <apex:stylesheet value="{!$Resource.transaction_css}"/>
     <apex:includeScript value="{!$Resource.jquery}"/>
     <apex:includeScript value="{!$Resource.payment_form_helper}"/>
+
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></apex:includeScript>
     
 </apex:page>

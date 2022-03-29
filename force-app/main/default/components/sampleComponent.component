@@ -1,0 +1,11 @@
+<apex:component controller="StringEntryController">
+   <apex:attribute type="String" name="theString" description="The string to update" assignTo="{!stringVal}"/>
+   <apex:outputLabel value="Select the string components"/>
+   <apex:selectList value="{!chosenVals}" multiSelect="true" size="4">
+     <apex:selectOption itemValue="UK" itemLabel="UK"/>
+     <apex:selectOption itemValue="USA" itemLabel="USA"/>
+     <apex:selectOption itemValue="Canada" itemLabel="Canada"/>
+     <apex:selectOption itemValue="France" itemLabel="France"/>
+     <apex:selectOption itemValue="Japan" itemLabel="Japan"/>
+   </apex:selectList> 
+</apex:component>

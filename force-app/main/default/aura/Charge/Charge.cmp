@@ -302,7 +302,7 @@
                                                             <!-- <lightning:buttonIcon iconName="utility:settings" variant="bare" onclick="{! c.handleClick }" alternativeText="Settings" title="Settings" /> -->
                                                             
                                                             <h2 class="slds-text-heading_small slds-m-bottom_medium slds-p-around_medium">
-                                                                {!$Label.c.Credit_Card}
+                                                                {!$Label.c.credit_card}
                                                                 <span class="slds-p-around_medium"><lightning:buttonIcon variant="border-filled" iconName="{!((v.showCreditCardUI) ? 'utility:close' : 'utility:add')}" onclick="{!c.handleCreditCardUI}" /></span>
                                                             </h2>
                                                            

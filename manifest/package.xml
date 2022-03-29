@@ -69,5 +69,9 @@
         <members>SYS_Tracker__c.All</members>
         <name>ListView</name>
     </types>
+    <types>
+        <members>*</members>
+        <name>StaticResource</name>
+    </types>
     <version>52.0</version>
 </Package>

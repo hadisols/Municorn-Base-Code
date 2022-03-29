@@ -59,8 +59,12 @@ var addCommas = function(nStr) {
         return x1 + x2;
     };
 	window.addCommas=addCommas;
+
+
+
 $(document).ready(function(){
     console.log('ready-state');
+    
     registerPaymentPageTabs();
     handlePaymentSourceSelection('cc');
     load();

@@ -2,6 +2,7 @@
 
 $(document).ready(function(){
     console.log('ready-state');
+
     console.log('checkbox ', $('#save-card').prop('checked'))
     console.log(window.location);
     load();
@@ -14,6 +15,7 @@ $(document).ready(function(){
         console.log('pay source ',$('input[name=payment-source]:checked').val());
     });
 });
+
 
 function chargeComplete() {
     var error = $('#error-panel-input').val();
@@ -248,6 +250,21 @@ function handlePaymentSourceSelection() {
         $('.cctax').removeClass('text-decoration-line-through');
         $('.totalamount').html(addCommas(totalAmount.toFixed(2)));
     });
+    $('#payment-select').change(function(){
+        console.log('selected ', $('#payment-select option:selected').val())
+        if($('#payment-select option:selected').val() === 'payment-card') {
+            $('.credit-card-view').show();
+            $('.bank-payment-view').hide();
+            $('.cctax').removeClass('text-strike-through');
+            $('.totalamount').html(addCommas(totalAmount.toFixed(2)));
+            
+        } else if($('#payment-select option:selected').val() === 'payment-ach') {
+            $('.credit-card-view').hide();
+            $('.bank-payment-view').show();
+            $('.cctax').addClass('text-strike-through');
+            $('.totalamount').html(addCommas(amount));
+        }
+    });
     $('#credit-card-button').click(function(){
         $('#credit-card-button').addClass('slds-is-active');
         $('#bank-button').removeClass('slds-is-active');
@@ -292,6 +309,9 @@ function handlePaymentSourceSelection() {
 }
 
 function load() {
+
+    loadFields(get_basket());
+
     $('#payment-type').prop('checked', true);
     console.log('checkbox ',$('#payment-type').prop('checked'));
     var amount = $('#amount').val();
@@ -301,6 +321,58 @@ function load() {
     $('.payableamount').html(addCommas(amount));
     $('.ccamount').html(addCommas(creditfees.toFixed(2)));
     $('.totalamount').html(addCommas(totalAmount.toFixed(2)));
+
+    if(!getType())
+        $('[data-toggle="tooltip"]').tooltip();
+
+    var curr = new Date().getFullYear();
+    var year = $('#payment-credit-card-expiry-yy');
+    for(let i = curr; i <= curr + 50; i++) {
+        year.append(
+            '<option>'+i+'</option>'
+        );
+    }
+}
+
+function loadFields(payload) {
+    var template = $( '#template' ).html ();
+    if(!template) return;
+    
+    Mustache.parse ( template );
+    var rendered = Mustache.render ( template, payload );
+    $( '#template' ).html ( rendered );
+    
+}
+
+
+function get_basket () {
+    var amount = $('#amount').val();
+    var totalAmount = amount;
+    if($('#payment-select option:selected').val() === 'payment-card')
+        totalAmount = (amount * 1.0399).toFixed(2);
+    
+    var customer_name = $('#accountName').val();
+    var street = $('#street').val();
+    var city = $('#city').val();
+    var state = $('#state').val();
+    var zipcode = $('#zipcode').val();
+    var country = $('#country').val();
+    var email = $('#email').val();
+
+    return { 
+        "invoice_number": "", 
+        "subtotal": amount, 
+        "taxes": (totalAmount - amount).toFixed(2), 
+        "total": totalAmount, 
+        "currency": "&dollar;",
+        "customer_name": customer_name,
+        "billing_address": street,
+        "billing_city" : city,
+        "billing_zipcode" : zipcode,
+        "billing_country" : country,
+        "billing_phone" : "9034934094",
+        "email" : email
+     };
 }
 
 var addCommas = function(nStr) {

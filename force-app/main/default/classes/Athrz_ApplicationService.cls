@@ -182,6 +182,12 @@ public class Athrz_ApplicationService extends SYS_ApplicationService {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
         }else if (fieldType == 'BOOLEAN') {
             sObj.put(mapping.FieldApiName__c, Boolean.valueof(value));
+        }else if (mapping.FieldApiName__c == 'TransactionDate__c') {
+            try{
+                sObj.put(mapping.FieldApiName__c, Boolean.valueof(value));
+            } catch(Exception e) {
+                System.debug('Date error');
+            }
         }
         else{
             sObj.put(mapping.FieldApiName__c, value);

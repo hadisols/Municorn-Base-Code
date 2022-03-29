@@ -5,355 +5,314 @@
     <head>
       <meta charset="utf-8" />
       <meta http-equiv="x-ua-compatible" content="ie=edge" />
-      <title>Jason Emer MD</title>
+      <title>{!$label.Jason_Emer_MD}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
     </head>
     <body>
-        <!-- REQUIRED SLDS WRAPPER -->
-        <apex:slds />
-        <div class="slds-scope">
         <apex:outputPanel styleClass="charge-output-panel" id="error-panel">
             <!-- <apex:outputText value="{!error}" /> -->
             <input type="hidden" value="{!error}" id="error-panel-input" />
             <input type="hidden" value="{!paymentMessage}" id="message-panel" />
+            
         </apex:outputPanel>
+        <input type="hidden" value="{!apiLoginId}" id="api-login-id"/>
+        <input type="hidden" value="{!apiPublicKey}" id="api-public-key"/>
+        <input type="hidden" value="{!amount}" id="amount"/>
+        <input type="hidden" value="{!street}" id="street"/>
+        <input type="hidden" value="{!city}" id="city"/>
+        <input type="hidden" value="{!state}" id="state"/>
+        <input type="hidden" value="{!zipcode}" id="zipcode"/>
+        <input type="hidden" value="{!country}" id="country"/>
+        <input type="hidden" value="{!email}" id="email"/>
+        <input type="hidden" value="{!accountName}" id="accountName"/>
 
-        <div id="spinner" class="slds-spinner_container" style="display:none">
-            <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand">
-                <div class="slds-spinner__dot-a"></div>
-                <div class="slds-spinner__dot-b"></div>
-            </div>
-        </div>
-        
-        <apex:pageBlock rendered="{!isblank(error)}" id="form-display">
-      
-        <div id="PaymentRequest:header" class="slds-align_absolute-center">
-            <img src="https://media.glassdoor.com/sqll/1899831/jason-emer-md-squarelogo-1527081876809.png"/>
-        </div>
-        <div class="slds-grid slds-wrap">
-            <div class="slds-col slds-size--1-of-1 slds-small-size--2-of-2 slds-medium-size--4-of-4 slds-align_absolute-center">
-                <div class="slds-text-color_destructive" id="error-message-after-submission"></div>
-            </div>
-        </div>
-        <div class="slds-grid slds-wrap">
-            <div class="slds-col slds-size--1-of-1 slds-small-size--2-of-2 slds-medium-size--4-of-4 slds-align_absolute-center">
-                <div class="slds-text-heading_small" id="payment-message">{!paymentMessage}</div>
-            </div>
-        </div>
-        <apex:outputPanel rendered="{!isblank(paymentMessage)}" id="render-payment-form">
+        <input type="hidden" id="payment-type" />
+        <input type="hidden" id="payment-method" />
 
-        
-          <div class="myapp" id="payment-form-component">
-            <div class="slds-grid slds-wrap">
-              <div class="slds-col slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--2-of-4">
-                
-                <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around--x-small">
-                    <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">Invoice Number:</div>
-                        <br/>
-                    <div id='table-cc' class="invoice-table">
-                        <div class="container">
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                    <div class="col-md-12 col-md-offset-3 body-main">
-                                        <div class="col-md-12">
-                                            <div>
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>
-                                                                <h5>Description</h5>
-                                                            </th>
-                                                            <th>
-                                                                <h5>Amount</h5>
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="col-md-9">Payable Amount</td>
-                                                            <td class="col-md-3"><i class="fas fa-dollar-sign"></i> <span class='payableamount'></span> </td>
-                                                        </tr>
-                                                        <tr class="cctax">
-                                                            <td class="col-md-9">Credit Card Tax + 3.99%</td>
-                                                            <td class="col-md-3"><i class="fas fa-dollar-sign"></i> <span class='ccamount'></span> </td>
-                                                        </tr>
-                                                        <tr class="jm-color">
-                                                            <td class="text-right">
-                                                                <h4><strong>Total:</strong></h4>
-                                                            </td>
-                                                            <td class="text-left">
-                                                                <h4><strong><i class="fas fa-dollar-sign"></i> <span class='totalamount'></span> </strong></h4>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div>
-                                                <div class="col-md-12">
-                                                    <p><b>Date :</b> 6 June 2019</p> <br />
+        <apex:slds />
+        <div class="slds-scope">
+            <div id="spinner" class="slds-spinner_container" style="display:none">
+                <div role="status" class="slds-spinner slds-spinner--large slds-spinner--base">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW CODE -->
+        <img src="{!$Resource.background}" class="background-image"/>
+        <div class="container-fluid background">
+            <div class="row padding-top-20">
+                <div class="col-12 col-sm-12 col-md-10 col-lg-10 col-xl-8 offset-md-1 offset-lg-1 offset-xl-2 padding-horizontal-40">
+                    <div class="row">
+                        <div class="col-12 main-wrapper">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <div id="logo" class="row panel-wrapper">
+                                        <div class="col-12 panel-header-logo">
+                                            <div class="row">
+                                                <div class="col-12 emphasized align-center">
+                                                    <img src="{!$Resource.Logo}"  class="logo-image"/>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <div id="template" class="row panel-wrapper">
+                                        <div class="col-12 panel-header basket-header">
+                                            <div class="row">
+                                                <div class="col-6 basket-title">
+                                                    <span class="description">review your</span><br/><span class="emphasized">Invoice Summary</span>
+                                                </div>
+                                                <div class="col-6 order-number align-right">
+                                                    <span class="description">invoice #</span><br/><span class="emphasized">{{invoice_number}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 panel-body basket-body">
+
+                                            <div class="col-12 align-left description"><div class="emphasized">{{customer_name}}</div></div>
+                                            <div class="col-12 align-left"><span class="dive">{{billing_address}}</span></div>
+                                            <div class="col-12 align-left"><span class="dive">{{billing_city}}</span></div>
+                                            <div class="col-12 align-left"><span class="dive">{{billing_zipcode}}</span></div>
+                                            <div class="col-12 align-left"><span class="dive">{{billing_country}}</span></div><br/>
+                                            <div class="col-12 align-left"><span class="dive">{{billing_phone}}</span></div><br/>
+                                            <div class="col-12 align-left"><span class="dive">{{email}}</span></div>
+        
+                                        </div>
+                                        <div class="col-12 panel-footer basket-footer">
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-8 align-right description"><div class="dive">Subtotal</div></div>
+                                                <div class="col-4 align-right"><span class="emphasized">{{{currency}}}{{subtotal}}</span></div>
+                                                <div class="col-8 align-right description"><div class="dive">3.99% Credit card tax</div></div>
+                                                <div class="col-4 align-right"><span class="emphasized cctax ">{{{currency}}}{{taxes}}</span></div>
+                                                <!-- <div class="col-8 align-right description"><div class="dive">Shipping</div></div>
+                                                <div class="col-4 align-right"><span class="emphasized">{{{currency}}}{{shipping_cost}}</span></div> -->
+                                            </div>
+                                            <hr/>
+                                            <div class="row">
+                                                <div class="col-8 align-right description"><div class="dive">Total</div></div>
+                                                <div class="col-4 align-right"><span class="very emphasized totalamount">{{{currency}}}{{total}}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                    <div class="row panel-wrapper">
+                                        <div class="col-12 panel-header creditcard-header">
+                                            <div class="row">
+                                                <div class="col-7 creditcard-title">
+                                                    <span class="description">please enter your</span>
+                                                    <br/>
+                                                    <span class="emphasized">Credit Card Information</span>
+                                                    <span class="emphasized hide">Bank Information</span>
+                                                </div>
+                                                <div class="col-5 creditcard-title">
+                                                    <span class="description">Select payment method</span><br/><span class="emphasized ">
+                                                        <select name="payment-method" id="payment-select" class="dropdown">
+                                                            <option value="payment-card">Credit Card</option>
+                                                            <option value="payment-ach">ACH</option>
+                                                        </select>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12 panel-body creditcard-body credit-card-view">
+                                            <form action="#" method="post" target="_self">
+                                                <fieldset>
+                                                    <label for="card-name">Name on the Card</label><br/>
+                                                    <i class="fa fa-user-o" aria-hidden="true"></i><input type='text' id='payment-credit-card-holder-name' name='payment-credit-card-holder-name' placeholder='John Doe' title='Name on the Card' />
+                                                </fieldset>
+                                                <fieldset>
+                                                    <label for="card-number">Card Number</label><br/>
+                                                    <i class="fa fa-credit-card" aria-hidden="true"></i><input type='text' id='payment-credit-card-number' name='payment-credit-card-number' placeholder='1234 5678 9123 4567' title='Card Number' />
+                                                </fieldset>
+                                                <div class="padding-15">
+                                                    <label for="card-expiration">Expiration Date</label><br/>
+                                                    <div class="row ">
+                                                        <div class="col-4">
+                                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                            <select name="payment-credit-card-expiry-mm" id="payment-credit-card-expiry-mm" class="dropdown">
+                                                                <option value="01">01</option>
+                                                                <option value="02">02</option>
+                                                                <option value="03">03</option>
+                                                                <option value="03">04</option>
+                                                                <option value="03">05</option>
+                                                                <option value="03">06</option>
+                                                                <option value="03">07</option>
+                                                                <option value="03">08</option>
+                                                                <option value="03">09</option>
+                                                                <option value="03">10</option>
+                                                                <option value="03">11</option>
+                                                                <option value="03">12</option>
+                                                            </select>
+                                                        </div>
+                                                        
+                                                        <div class="col-8">
+                                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                            <select name="payment-credit-card-expiry-yy" id="payment-credit-card-expiry-yy" class="dropdown">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <fieldset>
+                                                            <label for="card-ccv">CVC/CCV</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="The CVV Number on your credit card or debit card is a 3 digit number on VISA, MasterCard and Discover branded credit and debit cards. On your American Express branded credit or debit card it is a 4 digit numeric code."></i><br/>
+                                                            <i class="fa fa-lock" aria-hidden="true"></i><input type='text' id='payment-credit-card-cvv' name='payment-credit-card-cvv' placeholder='123' title='CVC/CCV' />
+                                                        </fieldset>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <fieldset>
+                                                            <label for="card-ccv">Zipcode</label><br/>
+                                                            <div class="align-flex">
+                                                                <i class="fa fa-street-view" aria-hidden="true"></i>
+                                                                <input type='text' id='payment-zip' name='payment-zip' placeholder='12345' title='Zipcode' />
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                                    <div class="row">
+                                                        <div class="col-2">
+                                                            <input type="checkbox" class="" id="save-card" checked="true"/>
+                                                        </div>
+                                                        <div class="col-10">
+                                                            <label class="" for="save-card">Save information for future checkouts</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-2">
+                                                            <input type="checkbox" class="" id="save-card-default" checked="true"/>
+                                                        </div>
+                                                        <div class="col-10">
+                                                            <label class="" for="save-card-default">Save as default for future checkouts</label>
+                                                        </div>
+                                                    </div>
+                                            </form>
+                                        </div>
+                                        <div class="col-12 panel-body creditcard-body bank-payment-view hide">
+                                            <form action="#" method="post" target="_self">
+                                                <fieldset>
+                                                    <label for="card-name">Name on Bank</label><br/>
+                                                    <i class="fa fa-user-o" aria-hidden="true"></i><input type='text' id='payment-bank-holder-name' name='payment-bank-holder-name' placeholder='John Doe' title='Name on the Card' />
+                                                </fieldset>
+                                                <fieldset>
+                                                    <label for="card-number">Account Number</label><br/>
+                                                    <i class="fa fa-bank" aria-hidden="true"></i><input type='text' id='payment-bank-number' name='payment-bank-number' placeholder='1234 5678 9123 4567' title='Card Number' />
+                                                </fieldset>
+                                                <fieldset>
+                                                    <label for="card-expiration">Confirm Account Number</label><br/>
+                                                    <i class="fa fa-bank" aria-hidden="true"></i><input type='text' id='payment-bank-number-confirm' name='payment-bank-number-confirm' placeholder='1234 5678 9123 4567' title='Expiration' class="card-expiration" />
+                                                </fieldset>
+                                                <div class="row">
+                                                    <div class="col-6 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                                        <fieldset>
+                                                            <label for="card-ccv">Routing Number</label>&nbsp;<br/>
+                                                            <div class="align-flex">
+                                                                <i class="fa fa-bank" aria-hidden="true"></i>
+                                                                <input type='text' id='payment-bank-routing-number' name='payment-bank-routing-number' placeholder='1234 5678 9123 4567' title='Routing Number' />
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                    <div class="col-6 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                                        <div class="padding-15">
+                                                            <label for="card-number">Bank Type</label>
+                                                            <span>
+                                                                <select name="payment-bank-type" id="payment-bank-type" class="dropdown">
+                                                                    <option value="checking">Checking</option>
+                                                                    <option value="savings">Savings</option>
+                                                                    <option value="businessChecking">Business Checking</option>
+                                                                </select>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                    <div class="row">
+                                                        <div class="col-2">
+                                                            <input type="checkbox" class="" id="save-bank" checked="true" />
+                                                        </div>
+                                                        <div class="col-10">
+                                                            <label class="" for="save-bank">Save information for future checkouts</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-2">
+                                                            <input type="checkbox" class="" id="save-bank-default" checked="true" />
+                                                        </div>
+                                                        <div class="col-10">
+                                                            <label class="" for="save-bank-default">Save as default for future checkouts</label>
+                                                        </div>
+                                                    </div>
+
+                                            </form>
+                                        </div>
+                                        <div class="col-12 panel-footer creditcard-footer">
+                                            <div class="row">
+                                                <div class="col-12 align-right"><button class="cancel" id="cancel-button">Cancel</button>&nbsp;<button class="confirm" id="pay-button">Pay</button></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div> 
-                </div>
-              </div>
-              <div class="slds-col slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--2-of-4 ">
-                
-                <div class="slds-grid slds-wrap">
-                
-                <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-4 ">
-                
-                    <div class="slds-box slds-box_x-small slds-text-align_center slds-m-around--x-small">
-                        <div class="slds-button-group slds-text-align_center">
-                            <button class="slds-button slds-button_neutral selected-button" id="credit-card-button">Credit Card</button>
-                            <button class="slds-button slds-button_neutral" id="bank-button">Bank Payment</button>
-                            <button class="slds-button slds-button_neutral" id="saved-button">Saved Payment</button>
-                        </div>
                     </div>
-                </div>
-             
-                <input type="hidden" value="{!apiLoginId}" id="api-login-id"/>
-                <input type="hidden" value="{!apiPublicKey}" id="api-public-key"/>
-                <input type="hidden" value="{!amount}" id="amount"/>
-                    
-                <!-- <input type="text" value="{!error}" /> -->
-                <input type="hidden" id="payment-type" />
-                <input type="hidden" id="payment-method" />
-
-                <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 billing-information ">
-                    <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
-                        <!-- <apex:outputPanel id="thePanel" layout="block">{!info.Name}</apex:outputPanel> -->
-                        <div class="slds-text-heading_small slds-text-align_center">{!$Label.Billing_Information} </div>
-                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                            <input type="text" id="payment-street" placeholder="Address" required="" class="slds-input" value="{!street}"/>
-                        </div>
-                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                            <input type="text" id="payment-city" placeholder="City" required="" class="slds-input" value="{!city}"/>
-                        </div>
-                        <div class="slds-grid slds-wrap">
-                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                <input type="text" id="payment-state" placeholder="State" required="" class="slds-input" value="{!state}"/>
-                            </div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                <input type="text" id="payment-zip" placeholder="Zipcode" required="" class="slds-input" value="{!zipcode}"/>
-                            </div>
-                        </div>
-                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                            <input type="text" id="payment-country" placeholder="Country" required="" class="slds-input" value="{!country}"/>
-                        </div>
-                        <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                            <input type="text" id="payment-email" placeholder="Email" required="" class="slds-input" value="{!email}"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4">
-                    <div class="credit-card-view ">
-                        <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
-                            <div class="slds-text-heading_small slds-text-align_center">{!$Label.Payment_Information}</div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                <input type="text" id="payment-credit-card-holder-name" placeholder="Name on Card" required="" class="slds-input" />
-                            </div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                <input type="text" id="payment-credit-card-number" placeholder="Card Number" required="" class="slds-input" />
-                            </div>
-                            <div class="slds-grid slds-wrap">
-                                <div class="slds-form-element__control slds-col slds-grid slds-size_1-of-2 slds-p-around_x-small">
-                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                        <input type="text" id="payment-credit-card-expiry-mm" placeholder="MM" required="" class="slds-input" />
-                                    </div>
-                                    <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                        <input type="text" id="payment-credit-card-expiry-yy" placeholder="YY" required="" class="slds-input" />
-                                    </div>
-                                </div>
-                                <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                    <input type="text" id="payment-credit-card-cvv" placeholder="CVV" required="" class="slds-input" />
-                                </div>
-                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                    <div class="slds-form-element">
-                                        <input type="checkbox" id="save-card" checked="checked" class="slds-p-horizontal_medium"/>Save information for future checkouts
-                                    </div>
-                                </div>
-                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                    <div class="slds-form-element">
-                                        <input type="checkbox" id="save-card-default" checked="checked" class="slds-p-horizontal_medium"/>Save as default for future checkouts
-                                    </div>
-                                </div>
-                            </div> 
-                        </div>
-                    </div>
-                    <div class="bank-payment-view hide">
-                        <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
-                            <div class="slds-text-heading_small slds-text-align_center">{!$Label.Payment_Information}</div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                <input type="text" id="payment-bank-holder-name" placeholder="Name on Account" required="" class="slds-input" />
-                            </div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                <input type="text" id="payment-bank-number" placeholder="Account Number" required="" class="slds-input" />
-                            </div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                <input type="text" id="payment-bank-number-confirm" placeholder="Confirm account Number" required="" class="slds-input" />
-                            </div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                <input type="text" id="payment-bank-routing-number" placeholder="Routing Number" required="" class="slds-input" />
-                            </div>
-                            <div class="slds-grid slds-wrap">
-                                <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                    <input type="text" id="payment-bank-name" placeholder="Bank Name" required="" class="slds-input" />
-                                </div>
-                                <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                    <input type="text" id="payment-bank-type" placeholder="Bank Type" required="" class="slds-input" />
-                                </div>
-                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                    <div class="slds-form-element">
-                                        <input type="checkbox" id="save-bank" checked="checked" class="slds-p-horizontal_medium"/>Save information for future checkouts
-                                    </div>
-                                </div>
-                                <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                                    <div class="slds-form-element">
-                                        <input type="checkbox" id="save-bank-default" checked="checked" class="slds-p-horizontal_medium"/>Save as default for future checkouts
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="saved-payment-view hide">
-                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-1">
-                    <apex:form>
-                    <apex:pageBlockSection columns="1">
-                            <apex:pageBlockSectionItem rendered="{!(cards != null && NOT(cards.empty))}">
-                                <apex:outputPanel >
-                                    <div class="payment-group">
-                                        <apex:repeat value="{!cards}" var="card">
-                                            <div class="payment-option">
-                                                <div class="saved-payment-method cards">
-                                                    <apex:panelGrid columns="6">
-                                                        <apex:outputPanel >
-                                                            <input type="radio" name="payment-source" value="{!card.Id}"
-                                                                   class="default-source"/>
-                                                        </apex:outputPanel>
-                                                        <apex:outputPanel >
-                                                        <span class="card-brand-logo">
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Visa')}" value="{!$Resource.visa}"
-                                                    width="35" height="35" alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'MasterCard')}"
-                                                    value="{!$Resource.Mastercard}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Maestro')}"
-                                                    value="{!$Resource.Maestro}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Cirrus')}"
-                                                    value="{!$Resource.Cirrus}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'American')}"
-                                                    value="{!$Resource.AmericanExpress}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Discover')}"
-                                                    value="{!$Resource.Discover}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'Diners')}"
-                                                    value="{!$Resource.DinersClub}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'JCB')}" value="{!$Resource.JCB}"
-                                                    width="35" height="35" alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'UnionPay')}"
-                                                    value="{!$Resource.UnionPay}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/>
-                                        <apex:image rendered="{!contains(card.Card_Type__c, 'unknown') || isBlank(card.Card_Type__c)}"
-                                                    value="{!$Resource.UnknownCard}" width="35" height="35"
-                                                    alt="{!card.Card_Type__c}"/></span>
-                                                            <span>xxxx xxxx xxxx {!card.Card_Number__c}</span>
-                                                        </apex:outputPanel>
-                                                        <apex:outputPanel >
-                                                            <apex:outputText value="{!card.Card_Type__c}"/>
-                                                        </apex:outputPanel>
-                                                    </apex:panelGrid>
-                                                    <!-- <div class="button-container">
-                                                        <apex:commandbutton id="payment-button"
-                                                                            styleClass="payment-button pay"
-                                                                            value="{!$Label.process_cart_items}"
-                                                                            onclick="pay()"
-                                                                            reRender="none"/>
-                                                    </div> -->
-                                                </div>
-                                            </div>
-                                        </apex:repeat>
-                                    </div>
-                                </apex:outputPanel>
-                            </apex:pageBlockSectionItem>
-                            
-                        </apex:pageBlockSection>
-                    </apex:form>
                 </div>
             </div>
-                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-1">
-                    <div class="slds-box slds-box_x-small slds-text-align_right slds-m-around--x-small">
-                        <button class="slds-button slds-button_neutral jm-color" id="cancel-button">Cancel</button>
-                        <button class="slds-button slds-button_neutral selected-button" id="pay-button">Pay&nbsp;<i class="fas fa-dollar-sign"></i> <span class='totalamount'></span></button>
-                    </div>
-                </div>
-                
-                </div>
-              </div>
-            </div>
-          </div>
-        </apex:outputPanel>
-          <!-- / RESPONSIVE GRID EXAMPLE -->
-        </apex:pageBlock>
-    </div>
-        <apex:pageMessages />
+        </div>
     </body>
-  </html>
-    <apex:form >
-        <!-- Define the JavaScript function sayHello-->
-        <!-- <apex:actionFunction name="sayHello" action="{!sayHello}" rerender="out" status="myStatus"/> -->
-        <apex:actionFunction name="performCharge" action="{!charge}" oncomplete="chargeComplete()" reRender="error-panel, render-payment-form">
-            <apex:param name="token" assignTo="{!paymentToken}" value=""/>
-            <apex:param name="cardFlag" assignTo="{!isCreditcard}" value=""/>
-            <apex:param name="savePayment" assignTo="{!savePayment}" value=""/>
-            <apex:param name="saveAsDefault" assignTo="{!saveAsDefault}" value=""/>
-            <apex:param name="isPaymentMethod" assignTo="{!isPaymentMethod}" value=""/>
-        </apex:actionFunction>
+</html>
 
-        <apex:actionFunction name="updateBankDetails" action="{!updateIntentBankDetails}" oncomplete="bankCharge()" reRender="error-panel, render-payment-form">
-            <apex:param name="nameOnAccount" assignTo="{!nameOnAccount}" value=""/>
-            <apex:param name="accountNumber" assignTo="{!accountNumber}" value=""/>
-            <apex:param name="accountRoutingNumber" assignTo="{!accountRoutingNumber}" value=""/>
-            <apex:param name="accountType" assignTo="{!accountType}" value=""/>
+<apex:form >
+    <!-- Define the JavaScript function sayHello-->
+    <!-- <apex:actionFunction name="sayHello" action="{!sayHello}" rerender="out" status="myStatus"/> -->
+    <apex:actionFunction name="performCharge" action="{!charge}" oncomplete="chargeComplete()" reRender="error-panel, render-payment-form">
+        <apex:param name="token" assignTo="{!paymentToken}" value=""/>
+        <apex:param name="cardFlag" assignTo="{!isCreditcard}" value=""/>
+        <apex:param name="savePayment" assignTo="{!savePayment}" value=""/>
+        <apex:param name="saveAsDefault" assignTo="{!saveAsDefault}" value=""/>
+        <apex:param name="isPaymentMethod" assignTo="{!isPaymentMethod}" value=""/>
+    </apex:actionFunction>
 
-        </apex:actionFunction>
+    <apex:actionFunction name="updateBankDetails" action="{!updateIntentBankDetails}" oncomplete="bankCharge()" reRender="error-panel, render-payment-form">
+        <apex:param name="nameOnAccount" assignTo="{!nameOnAccount}" value=""/>
+        <apex:param name="accountNumber" assignTo="{!accountNumber}" value=""/>
+        <apex:param name="accountRoutingNumber" assignTo="{!accountRoutingNumber}" value=""/>
+        <apex:param name="accountType" assignTo="{!accountType}" value=""/>
 
-        <apex:actionFunction name="updatePaymentMethod" action="{!updatePaymentMethod}" oncomplete="paymentMethodCharge()" reRender="error-panel, render-payment-form">
-            <apex:param name="paymentMethodId" assignTo="{!paymentMethodId}" value=""/>
+    </apex:actionFunction>
 
-        </apex:actionFunction>
-    </apex:form>
+    <apex:actionFunction name="updatePaymentMethod" action="{!updatePaymentMethod}" oncomplete="paymentMethodCharge()" reRender="error-panel, render-payment-form">
+        <apex:param name="paymentMethodId" assignTo="{!paymentMethodId}" value=""/>
 
+    </apex:actionFunction>
+</apex:form>
 
     <script src="https://jstest.authorize.net/v1/Accept.js" charset="utf-8"></script>
 
-    <apex:stylesheet value="{!$Resource.transaction_css}"/>
+    <!-- <apex:stylesheet value="{!$Resource.transaction_css}"/> -->
+    <apex:stylesheet value="{!$Resource.payment_form}"/>
     <apex:includeScript value="{!$Resource.jquery}"/>
     <apex:includeScript value="{!$Resource.payment_form_helper}"/>
+
+    <apex:includeScript value="//code.jquery.com/jquery-3.2.1.slim.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></apex:includeScript>
+    <apex:includeScript value="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></apex:includeScript>
+    <!-- <script  src="./script.js"></script> -->
+
+    <apex:stylesheet value="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"/>
+    <apex:stylesheet value="//fonts.googleapis.com/css?family=Open+Sans:300,400,600|Raleway:300,400,600&amp;subset=latin-ext"/>
+    <apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css"/>
+
     
-
-    <apex:stylesheet value="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"/>
-     
-    <apex:includeScript value="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"/>
-    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"/>
-
-    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/fontawesome.min.css" />
-    <apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <apex:stylesheet value="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"/>
-    <apex:stylesheet value="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
-    <apex:includeScript value="https://code.jquery.com/ui/1.12.1/jquery-ui.js"/>
-        
-    <apex:includeScript value="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"/>
-    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"/>
        
 </apex:page>
