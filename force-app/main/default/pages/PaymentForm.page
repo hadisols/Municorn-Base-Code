@@ -7,6 +7,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge" />
       <title>{!$label.Jason_Emer_MD}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="shortcut icon" href="{!URLFOR($Resource.logo_fevicon)}" />
     </head>
     <body>
         <apex:outputPanel styleClass="charge-output-panel" id="error-panel">
@@ -63,10 +64,10 @@
                                         <div class="col-12 panel-header basket-header">
                                             <div class="row">
                                                 <div class="col-6 basket-title">
-                                                    <span class="description">review your</span><br/><span class="emphasized">Invoice Summary</span>
+                                                    <span class="description">Review Your</span><br/><span class="emphasized">Invoice Summary</span>
                                                 </div>
                                                 <div class="col-6 order-number align-right">
-                                                    <span class="description">invoice #</span><br/><span class="emphasized">{{invoice_number}}</span>
+                                                    <span class="description">Invoice #</span><br/><span class="emphasized">{{invoice_number}}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -101,16 +102,16 @@
                                 </div>
                                 <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                     <div class="row panel-wrapper">
-                                        <div class="col-12 panel-header creditcard-header">
+                                        <div class="col-12 panel-header creditcard-header payment-header-view">
                                             <div class="row">
                                                 <div class="col-7 creditcard-title">
-                                                    <span class="description">please enter your</span>
+                                                    <span class="description">Please Enter Your</span>
                                                     <br/>
                                                     <span class="emphasized">Credit Card Information</span>
                                                     <span class="emphasized hide">Bank Information</span>
                                                 </div>
                                                 <div class="col-5 creditcard-title">
-                                                    <span class="description">Select payment method</span><br/><span class="emphasized ">
+                                                    <span class="description">Select Payment Method</span><br/><span class="emphasized ">
                                                         <select name="payment-method" id="payment-select" class="dropdown">
                                                             <option value="payment-card">Credit Card</option>
                                                             <option value="payment-ach">ACH</option>
@@ -119,23 +120,32 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-12 panel-header creditcard-header payment-receipt-view hide">
+                                            <div class="row ">
+                                                <div class="col-12 creditcard-title">
+                                                    <span class="emphasized">Receipt Information</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
                                         <div class="col-12 panel-body creditcard-body credit-card-view">
-                                            <form action="#" method="post" target="_self">
-                                                <fieldset>
+                                            <form action="#" method="post" id="creditcardForm" target="_self">
+                                                <fieldset class="from-group">
                                                     <label for="card-name">Name on the Card</label><br/>
-                                                    <i class="fa fa-user-o" aria-hidden="true"></i><input type='text' id='payment-credit-card-holder-name' name='payment-credit-card-holder-name' placeholder='John Doe' title='Name on the Card' />
+                                                    <i class="fa fa-user-o" aria-hidden="true"></i><input type='text' id='payment-credit-card-holder-name' name='payment-credit-card-holder-name' placeholder='John Doe' title='Name on the Card' data-rule-required="true" data-msg-required="Enter Name on the Card"/>
+                                                	<div id="invalid-payment-credit-card-holder-name"></div>
                                                 </fieldset>
                                                 <fieldset>
                                                     <label for="card-number">Card Number</label><br/>
-                                                    <i class="fa fa-credit-card" aria-hidden="true"></i><input type='text' id='payment-credit-card-number' name='payment-credit-card-number' placeholder='1234 5678 9123 4567' title='Card Number' />
+                                                    <i class="fa fa-credit-card" aria-hidden="true"></i><input type='text' id='payment-credit-card-number' name='payment-credit-card-number' placeholder='1234 5678 9123 4567' title='Card Number' data-rule-required="true" data-rule-creditcard="true" data-msg-required="Enter Card Number" data-msg-creditcard="Enter Valid Card Number"/>
+                                                	<div id="invalid-payment-credit-card-number"></div>
                                                 </fieldset>
                                                 <div class="padding-15">
                                                     <label for="card-expiration">Expiration Date</label><br/>
                                                     <div class="row ">
                                                         <div class="col-4">
                                                             <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                            <select name="payment-credit-card-expiry-mm" id="payment-credit-card-expiry-mm" class="dropdown">
+                                                            <select name="payment-credit-card-expiry-mm" id="payment-credit-card-expiry-mm" class="dropdown" data-rule-required="true" data-msg-required="Select Expiration Date">
                                                                 <option value="01">01</option>
                                                                 <option value="02">02</option>
                                                                 <option value="03">03</option>
@@ -149,12 +159,14 @@
                                                                 <option value="03">11</option>
                                                                 <option value="03">12</option>
                                                             </select>
+                                                            <div id="invalid-payment-credit-card-expiry-mm"></div>
                                                         </div>
                                                         
                                                         <div class="col-8">
                                                             <i class="fa fa-calendar" aria-hidden="true"></i>
-                                                            <select name="payment-credit-card-expiry-yy" id="payment-credit-card-expiry-yy" class="dropdown">
+                                                            <select name="payment-credit-card-expiry-yy" id="payment-credit-card-expiry-yy" class="dropdown" data-rule-required="true" data-msg-required="Select Expiration Year">
                                                             </select>
+                                                            <div id="invalid-payment-credit-card-expiry-yy"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -162,7 +174,8 @@
                                                     <div class="col-6">
                                                         <fieldset>
                                                             <label for="card-ccv">CVC/CCV</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="The CVV Number on your credit card or debit card is a 3 digit number on VISA, MasterCard and Discover branded credit and debit cards. On your American Express branded credit or debit card it is a 4 digit numeric code."></i><br/>
-                                                            <i class="fa fa-lock" aria-hidden="true"></i><input type='text' id='payment-credit-card-cvv' name='payment-credit-card-cvv' placeholder='123' title='CVC/CCV' />
+                                                            <i class="fa fa-lock" aria-hidden="true"></i><input type='text' id='payment-credit-card-cvv' name='payment-credit-card-cvv' placeholder='123' title='CVC/CCV' data-rule-required="true" data-rule-digits="true" data-msg-required="Enter CVC/CCV" data-msg-digits="Enter Valid CVC/CCV"/>
+                                                        	<div id="invalid-payment-credit-card-cvv"></div>
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-6">
@@ -170,8 +183,9 @@
                                                             <label for="card-ccv">Zipcode</label><br/>
                                                             <div class="align-flex">
                                                                 <i class="fa fa-street-view" aria-hidden="true"></i>
-                                                                <input type='text' id='payment-zip' name='payment-zip' placeholder='12345' title='Zipcode' />
+                                                                <input type='text' id='payment-zip' name='payment-zip' placeholder='12345' title='Zipcode' data-rule-required="true" data-rule-zipcodeUS="true" data-msg-required="Enter Zipcode" data-msg-zipcodeUS="Enter Valid USA Zipcode"/>
                                                             </div>
+                                                            <div id="invalid-payment-zip"></div>
                                                         </fieldset>
                                                     </div>
                                                 </div>
@@ -194,38 +208,43 @@
                                             </form>
                                         </div>
                                         <div class="col-12 panel-body creditcard-body bank-payment-view hide">
-                                            <form action="#" method="post" target="_self">
+                                            <form action="#" method="post" id="achForm" target="_self">
                                                 <fieldset>
                                                     <label for="card-name">Name on Bank</label><br/>
-                                                    <i class="fa fa-user-o" aria-hidden="true"></i><input type='text' id='payment-bank-holder-name' name='payment-bank-holder-name' placeholder='John Doe' title='Name on the Card' />
+                                                    <i class="fa fa-user-o" aria-hidden="true"></i><input type='text' id='payment-bank-holder-name' name='payment-bank-holder-name' placeholder='John Doe' title='Name on Bank' data-rule-required="true" data-msg-required="Enter Name on Bank" />
+                                                	<div id="invalid-payment-bank-holder-name"></div>
                                                 </fieldset>
                                                 <fieldset>
                                                     <label for="card-number">Account Number</label><br/>
-                                                    <i class="fa fa-bank" aria-hidden="true"></i><input type='text' id='payment-bank-number' name='payment-bank-number' placeholder='1234 5678 9123 4567' title='Card Number' />
+                                                    <i class="fa fa-bank" aria-hidden="true"></i><input type='text' id='payment-bank-number' name='payment-bank-number' placeholder='1234 5678 9123 4567' title='Account Number' data-rule-required="true" data-rule-digits="true" data-msg-required="Enter Account Number" data-msg-digits="Enter Valid Account Number" />
+                                                	<div id="invalid-payment-bank-number"></div>
                                                 </fieldset>
                                                 <fieldset>
                                                     <label for="card-expiration">Confirm Account Number</label><br/>
-                                                    <i class="fa fa-bank" aria-hidden="true"></i><input type='text' id='payment-bank-number-confirm' name='payment-bank-number-confirm' placeholder='1234 5678 9123 4567' title='Expiration' class="card-expiration" />
+                                                    <i class="fa fa-bank" aria-hidden="true"></i><input type='text' id='payment-bank-number-confirm' name='payment-bank-number-confirm' placeholder='1234 5678 9123 4567' title='Confirm Account Number' class="card-expiration" data-rule-required="true" data-rule-digits="true" data-rule-equalto="#payment-bank-number" data-msg-required="Confirm Account Number" data-msg-digits="Enter Valid Account Number" data-msg-equalto="Account Numbers Not Matched"/>
+                                                	<div id="invalid-payment-bank-number-confirm"></div>
                                                 </fieldset>
                                                 <div class="row">
                                                     <div class="col-6 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                                         <fieldset>
-                                                            <label for="card-ccv">Routing Number</label>&nbsp;<br/>
+                                                            <label for="payment-bank-routing-number">Routing Number</label>&nbsp;<br/>
                                                             <div class="align-flex">
                                                                 <i class="fa fa-bank" aria-hidden="true"></i>
-                                                                <input type='text' id='payment-bank-routing-number' name='payment-bank-routing-number' placeholder='1234 5678 9123 4567' title='Routing Number' />
+                                                                <input type='text' id='payment-bank-routing-number' name='payment-bank-routing-number' placeholder='1234 5678 9123 4567' title='Routing Number' data-rule-required="true" data-rule-digits="true" data-msg-required="Enter Routing Number" data-msg-digits="Enter Valid Routing Number" />
                                                             </div>
+                                                            <div id="invalid-payment-bank-routing-number"></div>
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-6 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                                         <div class="padding-15">
-                                                            <label for="card-number">Bank Type</label>
+                                                            <label for="payment-bank-type">Bank Type</label>
                                                             <span>
-                                                                <select name="payment-bank-type" id="payment-bank-type" class="dropdown">
+                                                                <select name="payment-bank-type" id="payment-bank-type" class="dropdown" data-rule-required="true" data-msg-required="Select Bank Type">
                                                                     <option value="checking">Checking</option>
                                                                     <option value="savings">Savings</option>
                                                                     <option value="businessChecking">Business Checking</option>
                                                                 </select>
+                                                                <div id="invalid-payment-bank-type"></div>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -250,6 +269,21 @@
                                                     </div>
 
                                             </form>
+                                        </div>
+                                        <div class="col-12 panel-body creditcard-body receipt-body-view hide">
+                                            <div class="receipt-view">
+                                                <div class="row">
+                                                    <div class="col-4 align-right description"><div class="dive-inv">Amount</div></div>
+                                                    <div class="col-8 align-right"><span class="emphasized-inv">{{{currency}}}{{payment_amount}}</span></div>
+                                                    <div class="col-4 align-right description"><div class="dive-inv">Date</div></div>
+                                                    <div class="col-8 align-right"><span class="emphasized-inv">{{payment_date}}</span></div>
+                                                    <div class="col-4 align-right description"><div class="dive-inv">Transaction Id</div></div>
+                                                    <div class="col-8 align-right"><span class="emphasized-inv">{{transaction_id}}</span></div>
+                                                    <div class="col-4 align-right description"><div class="dive-inv"><i class="fa fa-thumbs-up" aria-hidden="true"></i></div></div>
+                                                    <div class="col-8 align-right"><span class="emphasized-inv">{{message_status}}</span></div>
+                                                    
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-12 panel-footer creditcard-footer">
                                             <div class="row">
@@ -300,6 +334,8 @@
     <apex:includeScript value="{!$Resource.payment_form_helper}"/>
 
     <apex:includeScript value="//code.jquery.com/jquery-3.2.1.slim.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.js"></apex:includeScript>
     <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></apex:includeScript>
     <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></apex:includeScript>
     <apex:includeScript value="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></apex:includeScript>

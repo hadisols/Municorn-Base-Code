@@ -4,28 +4,17 @@ global class Athrz_SendEmailInvocableHandler {
     }
 
     @InvocableMethod(label='Send email to customer')
-    global static void sendEmailToCustomer(List<Payment_Intent__c> newList) {
-        List<String> intentIds = new List<String>();
-        for(Payment_Intent__c intent : newList) {
-            intent.athrz_uuid__c = UUIDGenerator.createId();
-            intentIds.add(intent.Id);
-        }
+    global static void sendEmailToCustomer(List<Activity__c> newList) {
+        Set<String> intentList = new List<String>();
+        
         try {
-            update newList;
-            List<Messaging.SingleEmailMessage> emails = Athrz_utility.getEmails(intentIds);
-            Messaging.SendEmailResult[] results = Messaging.sendEmail(emails);
-            for(Messaging.SendEmailResult res : results ){
-                if(res.isSuccess()) 
-                    System.debug('email sent');
-                else {
-                    for(Messaging.SendEmailError err: res.getErrors()) {
-                        System.debug(err.getFields());
-                        System.debug(err.getMessage());
-                        System.debug('Object Id## '+err.getTargetObjectId());
+            for(Activity__c activity : newList) {
+                System.debug('uuid '+activity.UUID__c);
+                activity.Message__c	= Athrz_utility.sendEmail(activity.UUID__c).success ? 
+                                    'Email successfully sent' : 'Failed to send email';
 
-                    }
-                }
             }
+            update newList;
 
         } catch(Exception e) {
             System.debug(e.getStackTraceString());

@@ -537,7 +537,10 @@
         var requests = component.get('v.CheckoutItems');
 		component.set('v.Loading', true);
 		console.log('send-email');
-		component.apiCall('sendCheckoutEmail', {chargeRequests: requests},
+		component.apiCall('sendCheckoutEmail', 
+        {
+            chargeRequests: requests
+        },
 		function(returnVal) {
 			component.set('v.ShowDefaultPage', false);
 			component.set('v.Loading', false);

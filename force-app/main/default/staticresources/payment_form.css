@@ -186,6 +186,13 @@ body
     color: white;
 }
 
+.emphasized-inv {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.2em;
+    color: #2e2e2e !important;
+}
+
 .description
 {
     /* font-family: 'Anton', sans-serif; */
@@ -283,6 +290,12 @@ button.confirm:hover
     margin-top: 5px;
     font-size: .9rem;
 }
+.dive-inv {
+    margin-top: 5px;
+    font-size: .9rem;
+    color: #2e2e2e !important;
+}
+
 
 .sub
 {
@@ -418,4 +431,7 @@ span.month.focused.active
 
 .text-strike-through {
     text-decoration: line-through;
-  }
+}
+.payment-header-view {
+
+}

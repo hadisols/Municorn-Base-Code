@@ -189,6 +189,8 @@ public with sharing class ChargeController {
         System.debug('email checkout');
         Date today = Date.today();
         Payment_Intent__c intent = new Payment_Intent__c();
+        Activity__c activity = new Activity__c();
+
         String uuid;
 
         Decimal total = 0.00;
@@ -201,11 +203,16 @@ public with sharing class ChargeController {
             total += chg.amount;
         }
         intent.Athrz_Amount__c = total.setScale(2);
+
         try {
             insert intent;
-            result = Athrz_utility.sendEmail(uuid).success ?
-                    ('Successfully sent payment request email to ' + intent.Athrz_Email__c ) :
-                    ('Sending email failed to ' + intent.Athrz_Email__c + ', please try again!');
+            activity = Athrz_utility.getActivityRecord(chargeRequests[0], intent.Id);
+            activity.UUID__c = uuid;
+            insert activity;
+            result = 'Successfully sent payment request email to' + intent.Athrz_Email__c;
+            // Athrz_utility.sendEmail(uuid).success ?
+            //         ('Successfully sent payment request email to ' + intent.Athrz_Email__c ) :
+            //         ('Sending email failed to ' + intent.Athrz_Email__c + ', please try again!');
             
         } catch (Exception e) {
             System.debug('exception '+e.getStackTraceString());

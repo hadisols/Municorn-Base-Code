@@ -162,6 +162,18 @@ public class Athrz_utility {
         return intent;
     }
 
+    public static Activity__c getActivityRecord(ChargeRequest chargeReq, String intentId) {
+        Activity__c activity = new Activity__c();
+        activity.Account__c = chargeReq.accountId;
+        activity.Payment_Intent__c = intentId;
+        activity.Type__c = 'email';
+        activity.Status__c = 'New';
+        activity.When__c = Datetime.now();
+        activity.Email__c = chargeReq.emailId;
+        
+        return activity;
+    }
+
     public static Subscription__c getSubscription(ChargeRequest chargeReq) {
         Subscription__c sub = new Subscription__c();
         sub.Account__c = chargeReq.accountId;
@@ -333,6 +345,20 @@ public class Athrz_utility {
             );
             update paymentReq;
         }
+    }
+
+    public static string getReceipt(String recordId) {
+        Transaction__c transact = [select id, Transaction_Id__c, createddate, Amount__c from Transaction__c where Payment_Intent__c = :recordId order by createddate desc LIMIT 1];
+
+        JSONGenerator gen = JSON.createGenerator(true);
+
+        gen.writeStartObject();
+        gen.writeStringField('message', 'Payment done successfully!!');
+        gen.writeStringField('amount', transact.Amount__c + '');
+        gen.writeStringField('date', transact.createddate.format('MM/dd/yyyy HH:mm', 'Africa/Abidjan') + ' GMT');
+        gen.writeStringField('transactionId', transact != null ? transact.Transaction_Id__c + '' : '');
+
+        return gen.getAsString();
     }
 
     public static String processPaymentMethod(String transactionId, String accountId) {

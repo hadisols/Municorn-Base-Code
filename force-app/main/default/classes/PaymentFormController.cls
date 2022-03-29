@@ -47,7 +47,8 @@ public class PaymentFormController {
         if(intents.size() > 0) {
             paymentIntent = intents[0];
             if(paymentIntent.Status__c == 'payment_done') {
-                paymentMessage = 'Payment done sucessfully!!';
+                this.paymentMessage = Athrz_utility.getReceipt(paymentIntent.Id);
+                // paymentMessage = 'Payment done sucessfully!!';
             }
             System.debug('message '+paymentMessage);
             apiLoginId = paymentIntent.Payment_Gateway__r.Athrz_Api_Login_Id__c;
@@ -65,6 +66,8 @@ public class PaymentFormController {
 
             cards = Athrz_utility.getCardPaymentMethods(accountId);
             banks = Athrz_utility.getBankPaymentMethods(accountId);
+
+
         } else {
             paymentMessage = 'Payment url is invalid!!';
         }
@@ -118,11 +121,9 @@ public class PaymentFormController {
             Athrz_utility.chargePayment(recordId, gatewayId, resource, accountId);
             if(Athrz_utility.error != null) 
                 this.error = Athrz_utility.error;
-            else {
-                this.paymentMessage = 'Payment done successfully!!';
-                update paymentIntent;
-                
-            }
+
+            this.paymentMessage = Athrz_utility.getReceipt(recordId);
+            update paymentIntent;
             
         } catch(Exception e) {
             System.debug(e.getStackTraceString());

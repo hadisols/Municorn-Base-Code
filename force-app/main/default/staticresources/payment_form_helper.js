@@ -25,12 +25,36 @@ function chargeComplete() {
         console.log('error');
         $('#error-message-after-submission').text(error);
     } if (paymentMessage) {
-        console.log('error paymentMessage ', paymentMessage);
-        $('#payment-message').text(paymentMessage);
        
-        $('#payment-form-component').hide();
+        getReceipt(paymentMessage);
+        // $('#payment-message').text(paymentMessage);
+       
+        // $('#payment-form-component').hide();
     }
     hideLoading();
+}
+
+function getReceipt(paymentMessage) {
+    console.log('error paymentMessage ', paymentMessage);
+    var receipt = JSON.parse(paymentMessage);
+    console.log('receipt ',receipt);
+    if(receipt.transactionId != '') {
+        $('.panel-footer').hide();
+        $('.credit-card-view').hide();
+        $('.bank-payment-view').hide();
+        
+        $('.payment-header-view').hide();
+        $('.payment-receipt-view').show();
+        $('.receipt-body-view').show();
+
+        var payload = {};
+        payload.payment_amount = receipt.amount;
+        payload.payment_date = receipt.date ;
+        payload.transaction_id = receipt.transactionId;
+        payload.message_status = receipt.message;
+        payload.currency = "&dollar;";
+        loadFields(payload, '.receipt-view');
+    }
 }
 
 function hideLoading() {
@@ -154,14 +178,17 @@ function responseHandler(response) {
 function useOpaqueData(responseData) {
     console.log(responseData.dataDescriptor);
     console.log(responseData.dataValue);
-    sendToLC(responseData.dataValue);
     $("#blob").val(responseData.dataValue);
-    performCharge(responseData.dataValue, 
-        $('#payment-type').prop('checked'), 
-        getSavePaymentInformation() ? getSavePaymentInformation() : false, 
-        getDefaultSavePaymentInformation() ? getDefaultSavePaymentInformation() : false,
-        false
-    );
+    if(getType())
+        sendToLC(responseData.dataValue);
+    else {
+        performCharge(responseData.dataValue, 
+            $('#payment-type').prop('checked'), 
+            getSavePaymentInformation() ? getSavePaymentInformation() : false, 
+            getDefaultSavePaymentInformation() ? getDefaultSavePaymentInformation() : false,
+            false
+        );
+    }
     
 }
 
@@ -257,12 +284,17 @@ function handlePaymentSourceSelection() {
             $('.bank-payment-view').hide();
             $('.cctax').removeClass('text-strike-through');
             $('.totalamount').html(addCommas(totalAmount.toFixed(2)));
+            $('#payment-type').prop('checked', true);
+            $('#payment-method').prop('checked', false);
             
         } else if($('#payment-select option:selected').val() === 'payment-ach') {
             $('.credit-card-view').hide();
             $('.bank-payment-view').show();
             $('.cctax').addClass('text-strike-through');
             $('.totalamount').html(addCommas(amount));
+
+            $('#payment-type').prop('checked', false);
+            $('#payment-method').prop('checked', false);
         }
     });
     $('#credit-card-button').click(function(){
@@ -310,7 +342,7 @@ function handlePaymentSourceSelection() {
 
 function load() {
 
-    loadFields(get_basket());
+    loadFields(get_basket(), '#template');
 
     $('#payment-type').prop('checked', true);
     console.log('checkbox ',$('#payment-type').prop('checked'));
@@ -324,6 +356,9 @@ function load() {
 
     if(!getType())
         $('[data-toggle="tooltip"]').tooltip();
+    var paymentMessage = $('#message-panel').val();
+    if(paymentMessage)
+        getReceipt(paymentMessage);
 
     var curr = new Date().getFullYear();
     var year = $('#payment-credit-card-expiry-yy');
@@ -334,13 +369,14 @@ function load() {
     }
 }
 
-function loadFields(payload) {
-    var template = $( '#template' ).html ();
+function loadFields(payload, tag) {
+    var template = $( tag ).html ();
+    // console.log('template ', template);
     if(!template) return;
     
     Mustache.parse ( template );
     var rendered = Mustache.render ( template, payload );
-    $( '#template' ).html ( rendered );
+    $( tag ).html ( rendered );
     
 }
 
