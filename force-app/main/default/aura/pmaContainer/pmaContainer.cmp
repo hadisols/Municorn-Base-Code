@@ -6,11 +6,11 @@
     $Resource.FontAwesome + '/FontAwesome/css/all.css')}" afterScriptsLoaded="{!c.setup}" />
     
     <div>
-        <lightning:layout>
-            <lightning:layoutItem size="8">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12" largeDeviceSize="8" mediumDeviceSize="8" smallDeviceSize="12">
                 <c:PmaProducts />
             </lightning:layoutItem>
-            <lightning:layoutItem size="4">
+            <lightning:layoutItem size="12" largeDeviceSize="4" mediumDeviceSize="4" smallDeviceSize="12">
                 <c:pmaCart />
             </lightning:layoutItem>
         </lightning:layout>

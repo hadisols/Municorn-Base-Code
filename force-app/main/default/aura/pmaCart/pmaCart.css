@@ -1,6 +1,9 @@
 .THIS .sm-text-highlight{
     font-weight: bolder;
-    font-size: 18px;
+    font-size: 13px;
+}
+.THIS .pl-5px{
+    padding-left: 5px;
 }
 .THIS .skyblue-text{
     color: #007fec;
@@ -10,4 +13,25 @@
 }
 .THIS .height72{
     min-height: 72vh;
+}
+.THIS .cartcontainer{
+    padding-bottom: 100%;
+    margin-bottom: -100%;
+}
+.THIS .cartitemname{
+    width:180px;
+}
+@media only screen and (max-width: 768px){
+    .THIS .cartitemname{
+        width:100px;
+    }
+    .THIS .cartitemsList{
+        height: 400px;
+        overflow:hidden scroll;
+    }
+}
+@media only screen and (max-width: 480px){
+    .THIS .cartitemname{
+        width:100px;
+    }
 }

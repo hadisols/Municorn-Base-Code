@@ -1,0 +1,46 @@
+<aura:component implements="force:appHostable,forceCommunity:availableForAllPageTypes"
+                access="global" >
+    <div class="slds-grid slds-grid–vertical slds-navigation-list–vertical">
+        <div class="nav">
+            <div class="nav-header">
+
+                    <div class="nav-title">
+                        <a href="/">
+                        <img src="/sfc/servlet.shepherd/version/download/0695j000008cucfAAA" alt="Adisols"/>
+                             </a>
+                    </div>
+               
+            </div>
+            <!--
+            <div class="nav-btn">
+                <label for="nav-check">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+            </div>
+			-->
+            
+                <ul class="nav-links">
+                    <li><a href="/s/vendors">Vendors</a></li>
+                    <li><a href="/s/members">Members</a></li>
+                    <li><a href="/s/products">Products</a></li>
+                    <li><a href="/s/orders">Orders</a></li>
+                    <li><a href="/s/transactions">Transactions</a></li>
+                    <li><a href="javascript:void(0)">Settings</a>
+                        <ul class="dropdown">
+                            <li><a href="javascript:void(0);" onclick="{!c.handleLogout}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            <!--
+                <a href="vendors">Vendors</a>
+                <a href="members">Members</a>
+                <a href="products">Products</a>
+                <a href="orders">Orders</a>
+                <a href="transactions">Transactions</a>
+            -->
+                
+        </div>
+    </div>	
+</aura:component>

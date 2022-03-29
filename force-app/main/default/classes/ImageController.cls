@@ -67,7 +67,8 @@ public with sharing class ImageController {
                 cvRecord =new ContentVersion();
             }
             if(cvRecord.Id !=NULL){
-                pictureURL='/sfc/servlet.shepherd/version/download/' + cvRecord.Id;
+                pictureURL = PageReference.forResource('nopicture').getUrl();
+                //pictureURL='/sfc/servlet.shepherd/version/download/' + cvRecord.Id;
             } else{
                 pictureURL = PageReference.forResource('nopicture').getUrl();
             }

@@ -9,7 +9,6 @@
     <columns>ExternalFieldApi__c</columns>
     <columns>IntegrationType__c</columns>
     <columns>isInboundList__c</columns>
-    <columns>Object__c</columns>
     <columns>ObjectApiName__c</columns>
     <columns>QueryClause__c</columns>
     <columns>ResourcePath__c</columns>

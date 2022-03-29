@@ -2,8 +2,8 @@
     padding: 0;
     border-radius: 5px 5px 0 0;
 	/* max-height: 165px;*/
-    max-width: 150px;
-    height: max-content;
+/*     max-width: 150px;
+ */    height: max-content;
     box-shadow: 0 0 5px rgb(0 0 0 / 30%);
     transition: all 200ms ease-in-out;
 }
@@ -18,31 +18,39 @@
     width: 100%;
 }
 .THIS .prodctimage:hover{
-    transform: scale(1.2);
+    transform: scale(0.8);
 }
 .THIS .product-title{
     font-weight: 700;
-    padding: 0.2em 0.2rem 0;
 }
 @media only screen and (max-width: 768px){
     .THIS .product-wrapper {
-        max-width: 75px;
         height: max-content;
         text-align: center;
     }
-    .THIS .image-wrapper, .THIS .image-wrapper img{
-        width: 75px;
-        height: 75px;
-    }
+    
 }
 @media only screen and (max-width: 480px){
     .THIS .product-wrapper {
-        max-width: 110px;
         height: max-content;
         text-align: center;
     }
-    .THIS .image-wrapper, .THIS .image-wrapper img{
-        width: 75px;
-        height: 75px;
-    }
+   
+}
+/**/
+.THIS .slds-dropdown {
+	max-width: 100% !important;
+}
+
+.THIS .slds-input-has-icon .slds-input__icon {
+    pointer-events: none;
+}
+
+.THIS .selected {
+    cursor: pointer !important;
+    background: #ecebea;
+}
+.THIS .slds-section__title-action {
+    background: var(--lwc-colorBackgroundButtonDefaultActive,rgb(243, 243, 243));
+    color: inherit;
 }

@@ -1,0 +1,126 @@
+<aura:component
+    implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,forceCommunity:searchInterface,force:lightningQuickActionWithoutHeader"
+    controller="SearchController" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:attribute name="searchText" type="String" default="" />
+    <aura:attribute name="searchResult" type="List" />
+    <aura:attribute name="selected" type="boolean" default="false" />
+    <lightning:navigation aura:id="navigate" />
+
+    <aura:attribute name="openTabMembers" type="List" />
+
+    <section class="slds-grid slds-wrap slds-grid_align-center">
+            <div class="slds-card slds-col slds-size_1-of-1 slds-medium-size_10-of-12 slds-large-size_10-of-12 slds-grid_pull-padded slds-var-p-bottom_medium">
+                <div class="slds-var-p-around_small">
+                    <h1 class="slds-text-heading_medium slds-text-align_center">Search Members</h1>
+                </div>
+                <div class="slds-grid slds-nowrap slds-grid_align-center slds-var-p-bottom_medium">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_10-of-12 slds-large-size_10-of-12 slds-grid slds-grid_vertical slds-nowrap">
+                        <div class="slds-var-p-vertical_x-small slds-var-p-around_xx-small slds-shrink-none slds-theme_shade">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label slds-assistive-text">Search</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-combobox_container">
+                                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                                            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                                                role="none">
+                                                <input type="text" aura:id="search-box"
+                                                    class="slds-input slds-combobox__input" onkeyup="{!c.onEnterText}"
+                                                    value="{!v.searchText}" autoComplete="off"
+                                                    placeholder="Search Members" />
+                                                <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                                                    <lightning:buttonIcon iconName="utility:search" variant="bare" alternativeText="Search" class="slds-input__icon" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-text-title slds-var-m-top_x-small slds-var-p-horizontal_large" aria-live="polite"> {!v.searchResult.length} Member(s) Found</div>
+                        </div>
+                        <div class="slds-scrollable slds-grow">
+                            <div class="slds-scrollable_none">
+                                <div class="slds-grid slds-wrap slds-var-p-around_xx-small">
+                                    <div class="slds-section slds-col slds-size_1-of-1 slds-is-open" aura:id="opentabMemberSection">
+                                        <h3 class="slds-section__title slds-col slds-size_1-of-1 slds-nowrap">
+                                          <button aria-controls="opentabMemberSectioncont" aria-expanded="true" class="slds-button slds-section__title-action" onclick="{!c.toggleSection}" data-auraId="opentabMemberSection">
+                                            <lightning:icon iconName="utility:switch" size="x-small" title="switch" class="slds-section__title-action-icon slds-button__icon_left" />
+                                            <span class="slds-truncate" title="Open Tabs">Open Tabs</span>
+                                          </button>
+                                        </h3>
+                                        <div aria-hidden="false" class="slds-section__content slds-grid slds-wrap slds-var-p-around_xx-small" id="opentabMemberSectioncont">
+                                             <!-- Start Contacts Results -->
+                                            <aura:if isTrue="{! !empty(v.openTabMembers)}">
+                                                <aura:iteration items="{!v.openTabMembers}" var="member" indexVar="key">
+                                                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-memberId="{!member.Id}" onclick="{!c.navigate}">
+                                                        <div class="product-wrapper">
+                                                            <div class="overflow-hidden mx-auto image-wrapper max-height">
+                                                                <img src="/sfsites/c/resource/1645719333000/nopicture?aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22nj61v-uP3bGswhb-VTdr6Q%22%2C%22app%22%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%22KbCmDBVbE10iCy1inwbbzA%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation%3Ao11yCoreCollector%22%3A%22kA6gW5EadEh9qZBKZj4IqQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D&amp;aura.pageURI=%2FPMAPOS%2Fs%2F%3Fapp%3Dcommeditor%26view%3Deditor%26viewid%3D517d790b-276c-44d4-b354-870a1c9cb302%26formFactor%3DLARGE%26livePreviewBrandingSetID%3D919ccc2e-4a7b-4754-9bdc-59f6a324c028&amp;aura.token=eyJub25jZSI6InRYUEphU3NvNDVtamlUVVhfbXhLbGJnbVo5bFdkN2YycGF1SnVzRGxGbFFcdTAwM2QiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IntcInRcIjpcIjAwRDVqMDAwMDAwR3lYWVwiLFwidlwiOlwiMDJHNWowMDAwMDAwWXFYXCIsXCJhXCI6XCJjYWltYW5zaWduZXJcIn0iLCJjcml0IjpbImlhdCJdLCJpYXQiOjE2NDgyMjAyNjY1MzAsImV4cCI6MH0%3D..KRiTfdHD3hSCVAlk_DaJLD_cDDK5blhLDdf29-EZunk%3D&amp;message=%7B%22actions%22%3A%5B%7B%22id%22%3A%22137%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F%2FProductsController%2FACTION%24getAllProductRecords%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2Fc%3APmaProducts%22%2C%22params%22%3A%7B%7D%7D%5D%7D&amp;other.Products.getAllProductRecords=1&amp;r=6"
+                                                                    alt="" class="prodctimage"/>
+                                                            </div>
+                                                            <div title="" class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">{!member.Name}</div>
+                                                        </div>
+                                                    </div>
+                                                </aura:iteration>
+                                            </aura:if>
+                                            <aura:if isTrue="{! empty(v.openTabMembers)}"> 
+                                                <div class="slds-col slds-size_1-of-1 slds-grid slds-var-p-around_xx-small slds-grid_align-center">
+                                                    <div class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">
+                                                        No Open Tab Members Are there Search to Start Adding
+                                                    </div>
+                                                </div>
+                                            </aura:if>  
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="slds-section slds-col slds-size_1-of-1 slds-is-open" aura:id="searchResultSection">
+                                        <h3 class="slds-section__title slds-col slds-size_1-of-1 slds-nowrap">
+                                          <button aria-controls="searchResultSectioncontrol" aria-expanded="false" class="slds-button slds-section__title-action"  onclick="{!c.toggleSection}" data-auraId="searchResultSection">
+                                            <lightning:icon iconName="utility:switch" size="x-small" title="switch" class="slds-section__title-action-icon slds-button__icon_left" />
+                                            <span class="slds-truncate" title="Search Members">Search Members</span>
+                                          </button>
+                                        </h3>
+                                        <div aria-hidden="true" class="slds-section__content slds-grid slds-wrap slds-var-p-around_xx-small" id="searchResultSectioncontrol">
+                                            <aura:if isTrue="{! !empty(v.searchResult)}">
+                                                <aura:iteration items="{!v.searchResult}" var="member" indexVar="key">
+                                                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-memberId="{!member.Id}" onclick="{!c.navigate}">
+                                                        <div class="product-wrapper">
+                                                            <div class="overflow-hidden mx-auto image-wrapper max-height">
+                                                                <img src="/sfsites/c/resource/1645719333000/nopicture?aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22nj61v-uP3bGswhb-VTdr6Q%22%2C%22app%22%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%22KbCmDBVbE10iCy1inwbbzA%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation%3Ao11yCoreCollector%22%3A%22kA6gW5EadEh9qZBKZj4IqQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D&amp;aura.pageURI=%2FPMAPOS%2Fs%2F%3Fapp%3Dcommeditor%26view%3Deditor%26viewid%3D517d790b-276c-44d4-b354-870a1c9cb302%26formFactor%3DLARGE%26livePreviewBrandingSetID%3D919ccc2e-4a7b-4754-9bdc-59f6a324c028&amp;aura.token=eyJub25jZSI6InRYUEphU3NvNDVtamlUVVhfbXhLbGJnbVo5bFdkN2YycGF1SnVzRGxGbFFcdTAwM2QiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IntcInRcIjpcIjAwRDVqMDAwMDAwR3lYWVwiLFwidlwiOlwiMDJHNWowMDAwMDAwWXFYXCIsXCJhXCI6XCJjYWltYW5zaWduZXJcIn0iLCJjcml0IjpbImlhdCJdLCJpYXQiOjE2NDgyMjAyNjY1MzAsImV4cCI6MH0%3D..KRiTfdHD3hSCVAlk_DaJLD_cDDK5blhLDdf29-EZunk%3D&amp;message=%7B%22actions%22%3A%5B%7B%22id%22%3A%22137%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F%2FProductsController%2FACTION%24getAllProductRecords%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2Fc%3APmaProducts%22%2C%22params%22%3A%7B%7D%7D%5D%7D&amp;other.Products.getAllProductRecords=1&amp;r=6"
+                                                                    alt="" class="prodctimage"/>
+                                                            </div>
+                                                            <div title="" class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">{!member.Name}</div>
+                                                        </div>
+                                                    </div>
+                                                </aura:iteration>
+                                            </aura:if>
+                                            <aura:if isTrue="{! empty(v.searchResult)}"> 
+                                                <div class="slds-col slds-size_1-of-1 slds-grid slds-var-p-around_xx-small slds-grid_align-center">
+                                                    <div class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">
+                                                        No Members Are there Search to Start Adding
+                                                    </div>
+                                                </div>
+                                            </aura:if>  
+                                            
+                                        </div>
+                                      </div>
+
+                                   
+                                   
+
+
+                                    <!-- End Contacts Results -->    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" aria-label="Cancel and close">Cancel</button>
+                    <button class="slds-button slds-button_brand">Select</button>
+                </div> -->
+            </div>
+        </section>
+
+</aura:component>
