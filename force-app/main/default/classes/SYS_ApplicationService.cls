@@ -804,14 +804,22 @@ global virtual class SYS_ApplicationService {
         HttpRequest req = new HttpRequest();
 
         if(SYS_DataCache.OBJ_TYPE!=NULL){
+
+            String objApiName = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c;
+            objApiName = objApiName != null ? objApiName.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : objApiName;
+
+            String externalIdField = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c;
+            externalIdField = externalIdField != null ? externalIdField.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : externalIdField;
+
+
             List<sObject> recList = 
-                Database.query( 'SELECT '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c+
-                                ' FROM '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c+
+                Database.query( 'SELECT ' + externalIdField +
+                                ' FROM ' +  objApiName +
                                 ' WHERE Id = \'' + log.WhatId__c + '\' ALL ROWS');
     
             if(!recList.isEmpty()){
     
-                String externalId = String.valueOf(recList[0].get(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c));
+                String externalId = String.valueOf(recList[0].get(externalIdField));
                 
                 req.setMethod(getHttpRequestMethod(log,externalId));
                 req.setEndpoint(getHttpRequestEndpoint(req,log,externalId));
@@ -940,17 +948,29 @@ global virtual class SYS_ApplicationService {
         return logResp;
     }
 
-    global virtual void fixParent(String parentLogId,SYS_IntegrationLog__c childLog){
-
-        //SYS_DataCache.log = childLog;
+    public List<FieldSetting__mdt> getPrimaryLookupFieldSetting(String resource){
         List<FieldSetting__mdt> fsm = new List<FieldSetting__mdt>();
         fsm = [SELECT FieldApiName__c,
                         ObjectApiName__c 
                         FROM FieldSetting__mdt 
-                        WHERE RestResource__c = :childLog.Resource__c 
+                        WHERE RestResource__c = :resource 
                         AND Is_Lookup__c=true 
                         AND Lookup_External_Key__c=NULL 
                         AND Lookup_Object_API_Name__c=NULL];
+
+        for(FieldSetting__mdt item : fsm) {
+                    
+            item.FieldApiName__c = item.FieldApiName__c != null ? item.FieldApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.FieldApiName__c ;
+            item.ObjectApiName__c = item.ObjectApiName__c != null ? item.ObjectApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ObjectApiName__c ;
+        
+        }
+        return fsm;
+    }
+
+    global virtual void fixParent(String parentLogId,SYS_IntegrationLog__c childLog){
+
+        //SYS_DataCache.log = childLog;
+        List<FieldSetting__mdt> fsm = getPrimaryLookupFieldSetting(childLog.Resource__c);
 
         System.debug('MS Fixing Relationship:'+fsm);
 

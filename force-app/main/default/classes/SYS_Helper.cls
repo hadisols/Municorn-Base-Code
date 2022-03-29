@@ -88,9 +88,23 @@ global class SYS_Helper {
         String guid = h.SubString(0,8)+ '-' + h.SubString(8,12) + '-' + h.SubString(12,16) + '-' + h.SubString(16,20) + '-' + h.substring(20);
         return guid;
     }
+    /* ------------------------------------------------------------------------ */
+
+    global static void setNamespacePrefix(FieldSetting__mdt item)
+    {
+        item.FieldApiName__c = item.FieldApiName__c != null ? item.FieldApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.FieldApiName__c ;
+        item.ObjectApiName__c = item.ObjectApiName__c != null ? item.ObjectApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ObjectApiName__c ;
+        
+        item.Lookup_Object_API_Name__c = item.Lookup_Object_API_Name__c != null ? item.Lookup_Object_API_Name__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.Lookup_Object_API_Name__c;
+        item.Lookup_External_Key__c = item.Lookup_External_Key__c != null ? item.Lookup_External_Key__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.Lookup_External_Key__c;
+        item.ParentField__c = item.ParentField__c != null ? item.ParentField__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ParentField__c;
+        item.Log_API_for_field_mapping__c = item.Log_API_for_field_mapping__c != null ? item.Log_API_for_field_mapping__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.Log_API_for_field_mapping__c;
+    }
 
     /* ------------------------------------------------------------------------ */
     global static String getAllFieldsFor(String objName){
+
+        objName = SYS_DataCache.namespacePrefix + objName;
 
         List<String> fields = new List<String>();
         Map <String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();
