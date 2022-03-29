@@ -11,6 +11,7 @@
     <columns>WhatId__c</columns>
     <columns>Retry_Count__c</columns>
     <columns>retry__c</columns>
+    <columns>HTTP_Method__c</columns>
     <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>

@@ -7,12 +7,12 @@
     <aura:attribute name="messageType" type="string" default="slds-text-body_small"/>
 
     <!--Design Attribute-->
-    <aura:attribute name="objectSetting" type="String"/>
-    <aura:attribute name="objectSettingOut" type="String"/>
-    <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller"/>
-    <aura:attribute name="syncIn" type="Boolean" default="true"/>
-    <aura:attribute name="apexHandlerOut" type="String" default="SYS_ForceSync_Controller"/>
-    <aura:attribute name="syncOut" type="Boolean" default="true" />
+    <aura:attribute name="objectSetting" type="String" access="global"/>
+    <aura:attribute name="objectSettingOut" type="String" access="global"/>
+    <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller" access="global"/>
+    <aura:attribute name="syncIn" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="apexHandlerOut" type="String" default="SYS_ForceSync_Controller" access="global"/>
+    <aura:attribute name="syncOut" type="Boolean" default="true" access="global"/>
 
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>

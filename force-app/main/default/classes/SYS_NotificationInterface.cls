@@ -1,4 +1,4 @@
 global interface SYS_NotificationInterface{
 
-    List<Map<string,String>> getIterator(String json);
+    List<Map<String,String>> getIterator(String json);
 }

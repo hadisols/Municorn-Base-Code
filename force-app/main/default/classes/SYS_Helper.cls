@@ -1,12 +1,71 @@
-public class SYS_Helper {
+global class SYS_Helper {
 
+    public class SYS_HelperException extends Exception{}
     /* ------------------------------------------------------------------------ */
 
-    public static Datetime secondsToDatetime(String expiry){
+    global static Datetime secondsToDatetime(String expiry){
         return secondsToDatetime(Integer.valueOf(expiry));
     }
 
-    public static Datetime secondsToDatetime(Integer expiry){
+    global static String urlFromPattern(String httpMethod, Id recId){
+
+        String finalurl;
+        if(SYS_DataCache.OBJ_TYPE != null && httpMethod!=''){
+
+            Set<String> fieldApis = new Set<String>();
+            String url = (String)SYS_DataCache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE)?.get(httpMethod.toUpperCase()+'_URL_Pattern__c');
+            if(url == null) return null;
+            else finalurl = url;
+
+            Pattern p = Pattern.compile('\\{(.*?)\\}');
+            Matcher m = p.matcher(url);
+
+            while (m.find() == true){
+                fieldApis.add(m.group(1));
+            }
+            
+            String qry;
+            if(fieldApis.size()>0){
+                try{
+                    qry = 'SELECT ' + String.join(new List<String>(fieldApis),',') + ' FROM ' + String.valueOf(recId.getsobjecttype()) + ' WHERE Id = \'' + recId+'\'';
+                    System.debug('=========== ::'+qry);
+                    sObject sobj = Database.query(qry);
+                    finalurl = urlFromPattern(httpMethod, sobj);
+                }catch(QueryException e){
+                    throw new SYS_HelperException('\nInvalid field api names provided for URL Pattern. Query execution failed.');
+                }
+            }
+
+        }
+        
+        return finalurl;
+    }
+
+    global static String urlFromPattern(String httpMethod,sObject sobj){
+
+        if(SYS_DataCache.OBJ_TYPE != null && httpMethod!=null && httpMethod!='' && sobj!=null){
+            String url = (String)SYS_DataCache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE)?.get(httpMethod.toUpperCase()+'_URL_Pattern__c');
+            if(url == null) return null;
+
+            Pattern p = Pattern.compile('\\{(.*?)\\}');      
+            Matcher m = p.matcher(url);
+
+            while (m.find() == true){
+                if(sobj.get(m.group(1)) == null) {
+                    throw new SYS_HelperException('\nInvaid field api name provided for URL Pattern');
+                }
+                else{
+                    url = m.replacefirst((String)sobj.get(m.group(1)));
+                    m = p.matcher(url);
+                }
+            }
+            return url;
+        }else{
+            return null;
+        }       
+    }
+
+    global static Datetime secondsToDatetime(Integer expiry){
         Integer day = 86400;
         Integer hour = 3600;
         Integer minute = 60;
@@ -22,16 +81,30 @@ public class SYS_Helper {
     }
     /* ------------------------------------------------------------------------ */
 
-    public static String getUUID()
+    global static String getUUID()
     {
         Blob b = Crypto.GenerateAESKey(128);
         String h = EncodingUtil.ConvertTohex(b);
         String guid = h.SubString(0,8)+ '-' + h.SubString(8,12) + '-' + h.SubString(12,16) + '-' + h.SubString(16,20) + '-' + h.substring(20);
         return guid;
     }
+    /* ------------------------------------------------------------------------ */
+
+    global static void setNamespacePrefix(FieldSetting__mdt item)
+    {
+        item.FieldApiName__c = item.FieldApiName__c != null ? item.FieldApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.FieldApiName__c ;
+        item.ObjectApiName__c = item.ObjectApiName__c != null ? item.ObjectApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ObjectApiName__c ;
+        
+        item.Lookup_Object_API_Name__c = item.Lookup_Object_API_Name__c != null ? item.Lookup_Object_API_Name__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.Lookup_Object_API_Name__c;
+        item.Lookup_External_Key__c = item.Lookup_External_Key__c != null ? item.Lookup_External_Key__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.Lookup_External_Key__c;
+        item.ParentField__c = item.ParentField__c != null ? item.ParentField__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ParentField__c;
+        item.Log_API_for_field_mapping__c = item.Log_API_for_field_mapping__c != null ? item.Log_API_for_field_mapping__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.Log_API_for_field_mapping__c;
+    }
 
     /* ------------------------------------------------------------------------ */
-    public static String getAllFieldsFor(String objName){
+    global static String getAllFieldsFor(String objName){
+
+        objName = SYS_DataCache.namespacePrefix + objName;
 
         List<String> fields = new List<String>();
         Map <String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();
@@ -45,7 +118,7 @@ public class SYS_Helper {
         return (String.join(fields,', '));
     }
 
-    public static String getDataFrom(SYS_IntegrationLog__c log){
+    global static String getDataFrom(SYS_IntegrationLog__c log){
         String data='';
         for(Integer i=0;i<10;i++){
             if(log.get('data'+i+'__c')!=NULL){
@@ -63,7 +136,7 @@ public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
-    public static SYS_IntegrationLog__c getLogsToInsert(String requestBody) {
+    global static SYS_IntegrationLog__c getLogsToInsert(String requestBody) {
         SYS_IntegrationLog__c integrationLog = new SYS_IntegrationLog__c();
         List<String> data = getJSONChunckedValues(requestBody);
         integer i = 0;
@@ -77,7 +150,7 @@ public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
-    public static List<String> getJSONChunckedValues(String body){
+    global static List<String> getJSONChunckedValues(String body){
         List<String> data = new List<String>{'','','','','','','','','',''};
         
         if (body.length() <= SYS_Constants.TEXT_AREA_MAX_SIZE){
@@ -107,7 +180,7 @@ public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
-    public static void logException(SYS_IntegrationLog__c log,String stackTrace){
+    global static void logException(SYS_IntegrationLog__c log,String stackTrace){
         //log.Type__c = 'EXCEPTION';
 
         flagLogForRetry(log.Id);
@@ -119,7 +192,7 @@ public class SYS_Helper {
     }
 
     @future
-    public static void flagLogForRetry(Id logId){
+    global static void flagLogForRetry(Id logId){
         if(logId!=NULL){
             SYS_IntegrationLog__c log = new SYS_IntegrationLog__c(Id=logId);
             log.retry__c = true;
@@ -131,7 +204,7 @@ public class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
-    public static Map<String, Object> getFlatKeys(String jsonObj,String pattern) {
+    global static Map<String, Object> getFlatKeys(String jsonObj,String pattern) {
         Object result = JSON.deserializeUntyped(jsonObj);
         Map<String, Object> flatKeyMap = new Map<String, Object>();
         if (result instanceof Map<String, Object>) {
@@ -140,7 +213,7 @@ public class SYS_Helper {
         return flatKeyMap;
     }
     
-    public static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result,String pattern) {
+    global static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result,String pattern) {
         
         //String pattern = 'A.B';
         
@@ -205,10 +278,20 @@ public class SYS_Helper {
 
                     Integer arrLen = childArray.size();
                     for (Integer i = 0; i < arrLen; i++){
-                        Map<String, Object> child = (Map<String, Object>)childArray[i];
-                        parents.add(key+'[' + i + ']');
-                        recursiveJsonParser(child, parents, result,pattern);
-                        parents.remove(parents.size() - 1);
+                        if(childArray[i] instanceof Map<String, Object>){
+                            Map<String, Object> child = (Map<String, Object>)childArray[i];
+                            parents.add(key+'[' + i + ']');
+                            recursiveJsonParser(child, parents, result,pattern);
+                            parents.remove(parents.size() - 1);
+                        }
+                        else{
+                            /*
+                            parents.add(key+'[]');
+                            recursiveJsonParser(new Map<String, Object>{key+'[]'=>childArray[i]}, parents, result,pattern);
+                            parents.remove(parents.size() - 1);
+                            */
+                            //TODO Handle keys of type "key": ["value1", "value2"];
+                        }
                     }
                 }
                 else{

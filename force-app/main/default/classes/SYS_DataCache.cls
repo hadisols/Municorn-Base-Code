@@ -260,8 +260,7 @@ public class SYS_DataCache {
                 
                 for(FieldSetting__mdt item : AllFieldSettingsList) {
                     
-                    item.FieldApiName__c = item.FieldApiName__c != null ? item.FieldApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.FieldApiName__c ;
-                    item.ObjectApiName__c = item.ObjectApiName__c != null ? item.ObjectApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ObjectApiName__c ;
+                    SYS_Helper.setNamespacePrefix(item);
                 } 
                 
             }

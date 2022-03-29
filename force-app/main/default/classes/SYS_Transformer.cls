@@ -1,4 +1,6 @@
 public virtual class SYS_Transformer {
+
+    public class SYS_TransformerException extends Exception{}
 	
     //NOT USED - It was when the child records were being processed in the same trx without additional logs
     //The flag was set in the Old Queueable class
@@ -226,14 +228,15 @@ public virtual class SYS_Transformer {
                         jsonMapObject.put(nodeList[0], mapping.StaticValue__c);
 
                     }
-                    else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.Level__c =='0' /*&& mapping.IsChild__c == false*/) {
+                    /*
+                    else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.Level__c =='0' ) {
                         
                         System.debug('MS PBE If 2');
                         System.debug('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)+'obj api anme=='+mapping.ObjectApiName__c );
                         System.debug('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
 
                         jsonMapObject.put(nodeList[0], mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
-                    }
+                    }*/
                     else{
                         System.debug('MS PBE If 3');
                         //-- SP jsonMapObject.put(nodeList[0], obj.get(mapping.FieldApiName__c));
@@ -323,6 +326,10 @@ public virtual class SYS_Transformer {
 
     public static List<sObject> getSObjectsToUpsert(List<String> jsonList, String resource, Boolean isNotification) {
 
+        if(resource == NULL){
+            throw new SYS_TransformerException('\nResource not identified. getSObjectsToUpsert() cannot be processed');
+        }
+
         List<sObject> objectsToUpsert = new List<sObject>();
        
         List<FieldSetting__mdt> mappings = new List<FieldSetting__mdt>();
@@ -393,8 +400,7 @@ public virtual class SYS_Transformer {
             sObj = Schema.getGlobalDescribe().get(sObjectApiName).newSObject();
         }
         catch(Exception e){
-            e.setMessage('\nSYS EXCEPTION: Could not identify the resource from JSON or there is no field setting for the given resource');
-            throw e;
+            throw new SYS_TransformerException('\nCould not identify the resource from JSON or there is no field setting for the given resource');
         }
         
         
@@ -467,7 +473,20 @@ public virtual class SYS_Transformer {
     
     private static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result) {
         System.debug('MS Double check. jsonObject:'+jsonObject);
+        
+        List<String> skipKeys;
+        if(SYS_DataCache.INT_TYPE != null){
+            String skipKeysString = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Skip_Keys__c?.toLowerCase();
+            skipKeys = skipKeysString?.split(',');
+        }
+
         for(String key : jsonObject.keySet()) {
+
+            System.debug('MS ****** key:'+key);
+            System.debug('MS ****** skipKeys:'+skipKeys);
+
+            if(skipKeys!=null && skipKeys.contains(key.toLowerCase())) continue;
+            
             Object currentObj = jsonObject.get(key);
             System.debug('##key='+key);
             if (currentObj instanceof Map<String, Object>) {
@@ -589,17 +608,24 @@ public virtual class SYS_Transformer {
         System.debug('MS fieldSettingIsToBeSkipped Mapping: '+mapping+', sobj:'+sobj);
         Boolean skip = false;
 
+        String objApiName = mapping.ObjectApiName__c;
+        objApiName = objApiName != null ? objApiName.replace(SYS_DataCache.namespacePrefix,SYS_DataCache.ESCAPE_CHAR) : objApiName;
+
+
         List<FieldSetting__mdt> extIdMapping = [SELECT FieldApiName__c 
                                                     FROM FieldSetting__mdt 
                                                     WHERE ObjectSetting__c=:mapping.ObjectSetting__c 
                                                     AND Is_Active__c = true 
                                                     AND Is_External_Field__c = true
-                                                    AND ObjectApiName__c =:mapping.ObjectApiName__c
+                                                    AND ObjectApiName__c =:objApiName
                                                     ];
-
+        System.debug('MS fieldSettingIsToBeSkipped Mapping========: '+extIdMapping+' '+mapping.ObjectSetting__c );
         if(extIdMapping.size()>0){
             String externalIdField = extIdMapping[0].FieldApiName__c;
             String mappingIsAllowedFor = mapping.Mapping_is_for__c;
+
+            externalIdField = externalIdField != null ? externalIdField.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : externalIdField;
+
             
             if(mappingIsAllowedFor == NULL || mappingIsAllowedFor == 'All Records'){
                 return skip;

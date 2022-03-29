@@ -18,7 +18,7 @@
         action.setCallback(this,function(response){
             let state = response.getState();
             if(state === 'SUCCESS'){    
-                var sysLogStatus = response.getReturnValue().Status__c;
+                var sysLogStatus = response.getReturnValue();
                 console.log('Apex response:',sysLogStatus);
 
                 var toastEvent = $A.get("e.force:showToast");

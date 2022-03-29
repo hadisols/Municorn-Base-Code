@@ -19,6 +19,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>DELETE_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">OUTBOUND</value>
     </values>
@@ -27,12 +31,28 @@
         <value xsi:type="xsd:string">Config_ID__c</value>
     </values>
     <values>
+        <field>GET_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>IntegrationType__c</field>
         <value xsi:type="xsd:string">SYS_OAuth_Pwd_IS</value>
     </values>
     <values>
         <field>ObjectApiName__c</field>
         <value xsi:type="xsd:string">SYS_OAuthConfig__c</value>
+    </values>
+    <values>
+        <field>PATCH_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>POST_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PUT_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>QueryClause__c</field>
