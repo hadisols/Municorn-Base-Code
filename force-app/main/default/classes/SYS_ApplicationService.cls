@@ -734,7 +734,15 @@ global virtual class SYS_ApplicationService {
 
     global virtual String getHttpRequestEndpoint(HttpRequest req,SYS_IntegrationLog__c log, String externalId){
         
+
         if(log.Callout_URL__c!=NULL){
+            return log.Callout_URL__c;
+        }
+        
+        String urlFromPattern = SYS_Helper.urlFromPattern(log.HTTP_Method__c, log.WhatId__c);
+        
+        if(urlFromPattern != null){
+            log.Callout_URL__c = urlFromPattern;
             return log.Callout_URL__c;
         }
         else{

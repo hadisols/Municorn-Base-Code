@@ -65,6 +65,7 @@ global class SYS_ForceSync_Controller extends SYS_ApplicationService {
 
             }else if(direction == 'IN'){
                 
+                newSysLog.Callout_URL__c = SYS_Helper.urlFromPattern('GET',recList[0]);
                 newSysLog.Status__c = 'NEW';
                 newSysLog.HTTP_Method__c = 'GET';
                 newSysLog.Type__c = 'OUTBOUND';

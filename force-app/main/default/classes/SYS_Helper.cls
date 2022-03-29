@@ -1,9 +1,68 @@
 global class SYS_Helper {
 
+    public class SYS_HelperException extends Exception{}
     /* ------------------------------------------------------------------------ */
 
     global static Datetime secondsToDatetime(String expiry){
         return secondsToDatetime(Integer.valueOf(expiry));
+    }
+
+    global static String urlFromPattern(String httpMethod, Id recId){
+
+        String finalurl;
+        if(SYS_DataCache.OBJ_TYPE != null && httpMethod!=''){
+
+            Set<String> fieldApis = new Set<String>();
+            String url = (String)SYS_DataCache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE)?.get(httpMethod.toUpperCase()+'_URL_Pattern__c');
+            if(url == null) return null;
+            else finalurl = url;
+
+            Pattern p = Pattern.compile('\\{(.*?)\\}');
+            Matcher m = p.matcher(url);
+
+            while (m.find() == true){
+                fieldApis.add(m.group(1));
+            }
+            
+            String qry;
+            if(fieldApis.size()>0){
+                try{
+                    qry = 'SELECT ' + String.join(new List<String>(fieldApis),',') + ' FROM ' + String.valueOf(recId.getsobjecttype()) + ' WHERE Id = \'' + recId+'\'';
+                    System.debug('=========== ::'+qry);
+                    sObject sobj = Database.query(qry);
+                    finalurl = urlFromPattern(httpMethod, sobj);
+                }catch(QueryException e){
+                    throw new SYS_HelperException('\nInvalid field api names provided for URL Pattern. Query execution failed.');
+                }
+            }
+
+        }
+        
+        return finalurl;
+    }
+
+    global static String urlFromPattern(String httpMethod,sObject sobj){
+
+        if(SYS_DataCache.OBJ_TYPE != null && httpMethod!='' && sobj!=null){
+            String url = (String)SYS_DataCache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE)?.get(httpMethod.toUpperCase()+'_URL_Pattern__c');
+            if(url == null) return null;
+
+            Pattern p = Pattern.compile('\\{(.*?)\\}');      
+            Matcher m = p.matcher(url);
+
+            while (m.find() == true){
+                if(sobj.get(m.group(1)) == null) {
+                    throw new SYS_HelperException('\nInvaid field api name provided for URL Pattern');
+                }
+                else{
+                    url = m.replacefirst((String)sobj.get(m.group(1)));
+                    m = p.matcher(url);
+                }
+            }
+            return url;
+        }else{
+            return null;
+        }       
     }
 
     global static Datetime secondsToDatetime(Integer expiry){
