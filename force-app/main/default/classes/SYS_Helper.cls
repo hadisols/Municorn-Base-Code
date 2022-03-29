@@ -43,7 +43,7 @@ global class SYS_Helper {
 
     global static String urlFromPattern(String httpMethod,sObject sobj){
 
-        if(SYS_DataCache.OBJ_TYPE != null && httpMethod!='' && sobj!=null){
+        if(SYS_DataCache.OBJ_TYPE != null && httpMethod!=null && httpMethod!='' && sobj!=null){
             String url = (String)SYS_DataCache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE)?.get(httpMethod.toUpperCase()+'_URL_Pattern__c');
             if(url == null) return null;
 

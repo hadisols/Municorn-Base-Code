@@ -626,8 +626,6 @@ public virtual class SYS_Transformer {
 
             externalIdField = externalIdField != null ? externalIdField.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : externalIdField;
 
-            System.debug('MS fieldSettingIsToBeSkipped Check ------- : '+mapping.Mapping_is_for__c+', sobj.get:'+sobj.get(externalIdField));
-
             
             if(mappingIsAllowedFor == NULL || mappingIsAllowedFor == 'All Records'){
                 return skip;
