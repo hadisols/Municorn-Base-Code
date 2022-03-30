@@ -184,9 +184,9 @@
 		<members>SYS_Test_Inbound_Body</members>
 		<members>SYS_Test_Inbound_Body_Large</members>
 		<members>SYS_Test_Outbound_Response_Body</members>
-		<!--
+		
 		<members>OAuth_Test_Records</members>
-		-->
+		
 		<members>OAuth_Test_Token_Body</members>
 		<name>StaticResource</name>
 	</types>

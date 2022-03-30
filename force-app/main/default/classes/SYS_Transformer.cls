@@ -4,18 +4,22 @@ public virtual class SYS_Transformer {
 	
     //NOT USED - It was when the child records were being processed in the same trx without additional logs
     //The flag was set in the Old Queueable class
+    /*
     private static Boolean childRecordsProcess = false;
     public static Boolean isChild{ 
         get{return childRecordsProcess;}
         set{childRecordsProcess = value;}
     }
+    */
     
     //NOT USED
+    /*
     public static String childRoot = '';
     public static String childRootElement {
         get{return childRoot;}
         set{childRoot = value;}
     }
+    */
 
     //NOT USED - Being populated and used for Debug only
     public static List<Map<String, Object>> childFlatKeyList = new List<Map<String, Object>>();
