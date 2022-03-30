@@ -24,6 +24,9 @@
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
+		<members>QB_Wrapper</members>
+		 <members>SYS_QB_ApplicationServiceOutboundTest</members>
+		 <members>SYS_QB_ApplicationServiceinboundTest</members>        
 		<name>ApexClass</name>
 	</types>
 	<types>

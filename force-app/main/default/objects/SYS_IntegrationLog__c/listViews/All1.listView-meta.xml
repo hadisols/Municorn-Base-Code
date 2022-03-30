@@ -3,6 +3,7 @@
     <fullName>All1</fullName>
     <columns>NAME</columns>
     <columns>CREATED_DATE</columns>
+    <columns>HTTP_Method__c</columns>
     <columns>SYS_Http_Status__c</columns>
     <columns>Parent__c</columns>
     <columns>Type__c</columns>
