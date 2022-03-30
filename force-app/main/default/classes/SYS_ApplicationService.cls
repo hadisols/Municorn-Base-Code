@@ -1,4 +1,7 @@
 global virtual class SYS_ApplicationService {
+
+    public class SYS_ApplicationServiceException extends Exception{}
+
     global SYS_ApplicationService() {
 
     }
@@ -84,6 +87,18 @@ global virtual class SYS_ApplicationService {
         SYS_IntegrationLog__c log = generateLogForWebhookReq('DELETE');
         insertWebhookLog(log);
         
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+    //TODO Test coverage
+    global virtual String getIdFromExternalKey(String objectApiName, String externalKey, String externalId){
+        List<sObject> parentRecord = new List<sObject>();
+        parentRecord = Database.query('SELECT Id FROM '+objectApiName+' WHERE '+externalKey+'= \''+externalId+'\'');
+        if(parentRecord!=NULL && parentRecord.size()>0)
+            return String.valueOf(parentRecord[0].get('Id'));
+        else
+            return null;
     }
 
 
@@ -199,19 +214,20 @@ global virtual class SYS_ApplicationService {
         //TODO - handle case - Account."CreatedBy".Name, where CreatedBy is not an sobject - This can be handled by overriding the current method and add the handler
         // on field setting
 
-        String fvalue='';
+        String fvalue= (mapping.Send_Blanks_as_Empty_String__c)?'':null;
+        
         if(fieldAPIName == null){
             fvalue = mapping.StaticValue__c;
         }
-        else if(fieldAPIName.contains('.')){
-            List<String> splitedFields = fieldAPIName.split('\\.');
+        else if(fieldAPIName.contains(SYS_DataCache.FLAT_KEY_SEPERATOR)){
+            List<String> splitedFields = fieldAPIName.split('\\'+SYS_DataCache.FLAT_KEY_SEPERATOR);
             try{
                 for(Integer i = 0; i < splitedFields.size() - 1; i++){
                     obj = obj.getSobject(splitedFields[i]);   
                 } 
                 return obj.get(splitedFields[splitedFields.size()-1]);
             }catch(exception ex){
-               System.debug('******exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
+               System.debug('****** Exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
                return null;
             }
             
@@ -230,14 +246,90 @@ global virtual class SYS_ApplicationService {
         return fvalue;
     }
 
-    //TODO Test coverage
-    global virtual String getIdFromExternalKey(String objectApiName, String externalKey, String externalId){
-        sObject parentRecord = Database.query('SELECT Id FROM '+objectApiName+' WHERE '+externalKey+'= \''+externalId+'\'');
-        if(parentRecord!=NULL)
-            return String.valueOf(parentRecord.get('Id'));
-        else
-            return '';
+    /* ---------------------------------------------------------------------------------------------------*/
+
+    global virtual Datetime getDatetimeValue(FieldSetting__mdt mapping, String dt){
+
+        String format = mapping.Datetime_Conversion_Format__c;
+        if(format==null){
+            throw new SYS_ApplicationServiceException('\nInvalid conversion format defined in Field Setting for Datetime field');
+        }
+        Datetime newDatetime;
+
+        if(format == 'EPOCH'){
+            Long epoch =  Long.valueOf(dt);
+            return DateTime.newInstance(epoch*1000);
+                
+        }
+        else{
+            
+            
+            Integer yearIndex = format.indexOf('YYYY');
+            Integer monthIndex = format.indexOf('MM');
+            Integer dateIndex = format.indexOf('DD');
+            Integer hoursIndex = format.indexOf('hh');
+            Integer minutesIndex = format.indexOf('mm');
+            Integer secondsIndex = format.indexOf('ss');
+            Integer millisecondsIndex = format.indexOf('sss');
+
+            Integer tzHours = format.indexOf('zh');
+            Integer tzMins = format.indexOf('zm');
+
+            String value =  dt.substring(yearIndex, yearIndex + 4) + '-' +
+                            dt.substring(monthIndex, monthIndex + 2) + '-' +
+                            dt.substring(dateIndex, dateIndex + 2) +
+                            ' ' +
+                            dt.substring(hoursIndex, hoursIndex + 2) + ':' +
+                            dt.substring(minutesIndex, minutesIndex + 2) + ':' +
+                            (secondsIndex > 0?dt.substring(secondsIndex, secondsIndex + 2):'00');
+
+            Integer tzHoursOffset = 0;
+            Integer tzMinsOffset = 0;
+            if(tzHours > 0 && tzMins > 0){
+                Integer tzSymbol = format.indexOf('_');
+
+                tzHoursOffset = Integer.valueOf((dt.substring(tzSymbol,tzSymbol+1) + dt.substring(tzHours,tzHours + 2)));
+                tzMinsOffset = Integer.valueOf((dt.substring(tzSymbol,tzSymbol+1) + dt.substring(tzMins)));
+            }
+
+            newDatetime = DateTime.valueOfGmt(value).addHours(tzHoursOffset).addMinutes(tzMinsOffset);
+
+
+            return newDatetime;
+                
+        }
+
     }
+
+    global virtual Date getDateValue(FieldSetting__mdt mapping, String value){
+       return Date.valueOf(value);
+    }
+
+    global virtual Time getTimeValue(FieldSetting__mdt mapping, String ts){
+        
+        String format = 'hh:mm:ss.sssZ';
+        
+        Integer hoursIndex = format.indexOf('hh');
+        Integer minutesIndex = format.indexOf('mm');
+        Integer secondsIndex = format.indexOf('ss');
+        Integer millisecondsIndex = format.indexOf('sss');
+
+        Integer hours = Integer.valueOf(ts.substring(hoursIndex, hoursIndex + 2));
+        Integer minutes = Integer.valueOf(ts.substring(minutesIndex, minutesIndex + 2));
+        Integer seconds = (secondsIndex > 0)?Integer.valueOf(ts.substring(secondsIndex, secondsIndex + 2)):0;
+        Integer ms = (millisecondsIndex > 0)?Integer.valueOf(ts.substring(millisecondsIndex, millisecondsIndex + 3)):0;
+
+        Time timeValue = 
+        Time.newInstance(   hours, 
+                            minutes, 
+                            seconds, 
+                            ms );
+        System.debug('=============== '+timeValue);
+
+        return timeValue;
+     }
+
+    /* ------------------------------------------------------------------------ */
     
     /**
      * INBOUND
@@ -274,10 +366,14 @@ global virtual class SYS_ApplicationService {
         
         //TODO add other field types
         if(fieldType=='DATE'){
-            sObj.put(mapping.FieldApiName__c, Date.valueOf((String)value));
+            sObj.put(mapping.FieldApiName__c, getDateValue(mapping,String.valueOf(value)) /*Date.valueOf((String)value)*/);
         }
         else if(fieldType=='DATETIME'){
-            sObj.put(mapping.FieldApiName__c,Datetime.valueOfGmt((String)value));
+            
+            sObj.put(mapping.FieldApiName__c, getDatetimeValue(mapping, String.valueOf(value)));
+        }
+        else if(fieldType=='TIME'){
+            sObj.put(mapping.FieldApiName__c, getTimeValue(mapping, String.valueOf(value)));
         }
         else if (fieldType == 'STRING') {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
@@ -301,7 +397,19 @@ global virtual class SYS_ApplicationService {
     global virtual String getOperationTypeFor(String method) {
 
         Map<String,String> methodToOperationMap = new Map<String,String>{'POST'=>'UPSERT','PUT'=>'UPSERT','DELETE'=>'DELETE','PATCH'=>'UPDATE'};
+
+        String operationMapString = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Operation_Map__c;
+        if(operationMapString!=NULL){
+            List<String> kvPair = operationMapString.split('\n');
+            for(String kv:kvPair){
+                methodToOperationMap.put(kv.split(':')[0],kv.split(':')[1]);
+
+            }
+        }
+        
         return methodToOperationMap.get(method);
+        
+        
     }
 
     /**
@@ -403,11 +511,16 @@ global virtual class SYS_ApplicationService {
         log.Type__c = 'INBOUND';
  
         /**
+         * If there the Parent Resource Map is defined on IS the use it to derive the resource for child records else
          * If Flat key to identify resource for child records is defined on Integration Setting, consider that
          * Else take the root key as Resource that is passed on while processing parent record
          */
         String flat_key_for_child = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Child__c;
-        if(flat_key_for_child != NULL && flat_key_for_child!='')
+
+        if(SYS_DataCache.PARENT_RESOURCE_MAP != NULL){
+            log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(parentLog[0].Resource__c);
+        }
+        else if(flat_key_for_child != NULL && flat_key_for_child!='')
             log.Flat_Key_for_Resource__c = flat_key_for_child;
         else{
             log.Resource__c = resource;
@@ -453,8 +566,7 @@ global virtual class SYS_ApplicationService {
         
         if(req.getHeader('content-type') == 'application/x-www-form-urlencoded'){
             String formUrlEncodedBody='';
-            //String flatJSON = SYS_Helper.getFlatKeys(jsonBody, 'A[B]');
-            Map<String,Object> jsonobj = SYS_Helper.getFlatKeys(jsonBody, 'A[B]');//(Map<String,Object>)JSON.deserializeUntyped(flatJSON);
+            Map<String,Object> jsonobj = SYS_Helper.getFlatKeys(jsonBody,SYS_DataCache.FLAT_KEY_PATTERN);//(Map<String,Object>)JSON.deserializeUntyped(flatJSON);
             List<String> reqkeymap = new List<String>(jsonobj.keySet());
             List<String> keyValueList = new List<String>();
             reqkeymap.sort();
@@ -504,14 +616,14 @@ global virtual class SYS_ApplicationService {
         }
         else{
             //Key mentioned in Flat_Key_for_Resource__c identifies Resource
-            Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody,'A.B');
+            Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody,'A_B');
             System.debug('-- MS flatKeyMap in getResourceFromJSON:'+flatKeyMap);
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }
 
-        System.debug('-- MS Final identified resource in getResourceFromJSON:'+resource.toLowerCase());
+        System.debug('-- MS Final identified resource in getResourceFromJSON:'+resource?.toLowerCase());
 
-        return resource.toLowerCase();
+        return resource?.toLowerCase();
     }
 
     /* ------------------------------------------------------------------------ */
@@ -537,22 +649,65 @@ global virtual class SYS_ApplicationService {
     global virtual Boolean doInbound(SYS_IntegrationLog__c log) {
         
         String jsonBody = '';
-        
         jsonBody =  SYS_Helper.getDataFrom(log); 
-        
         jsonBody = preprocessJSONForInbound(log,jsonBody);
-        String resource = getResourceFromJSON(log,jsonBody);
-        SYS_debug.log('\n\n ------------------------------- \n\n Application Service resource:'+resource);
 
-        List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, resource, log);
+        if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c && 
+            log.Type__c == 'INBOUND'
+            ){
+            String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+            String getURLPattern = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).GET_URL_Pattern__c;
+            
+            SYS_NotificationInterface it = 
+            (SYS_NotificationInterface)Type.forName(SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).Notification_Wrapper__c).newInstance();
+            
+            List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
 
-        SYS_debug.log('\n\n ------------------------------- \n\n Application Service sObjects to DML:'+sObjectsToDML);
-        SYS_debug.log('\n\n ------------------------------- \n\n Application Service externalKeyByResourceMap:'+SYS_DataCache.externalKeyByResourceMap);
+            for(Map<String,String> rMap:it.getIterator(jsonBody)){
+                String getURL = getURLPattern;
+                SYS_IntegrationLog__c  newSysLog = new SYS_IntegrationLog__c();
+                for(String key:rMap.keySet()){
+                    getURL = getURL.replaceAll('\\{'+key+'\\}',rMap.get(key));
+  
+                }
+                System.debug('=============== '+ getURL);
 
-        String externalIdFieldAPIName = SYS_DataCache.externalKeyByResourceMap.get(resource);
-        //String externalIdFieldAPIName = log.External_Id_Field_API_Name__c!=NULL?log.External_Id_Field_API_Name__c:'';
-               
-        return doDML(sObjectsToDML,log.SYS_Operation_Type__c,externalIdFieldAPIName,log);
+                newSysLog.Status__c = 'NEW';
+                newSysLog.HTTP_Method__c = 'GET';
+                newSysLog.Callout_URL__c = baseEndpoint + getURL;
+                newSysLog.Type__c = 'OUTBOUND';
+                newSysLog.WhatId__c = log.Id;
+                newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+                newSysLog.SYS_Operation_Type__c = 'UPSERT';
+                newSysLog.How_to_process__c = 'use_custom_apex_handler';
+                newSysLog.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+                insertSysLog.add(newSysLog);
+            }
+
+            
+            if(insertSysLog.size()>0 && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){
+                insert insertSysLog;
+            }
+
+            return true;
+
+        }
+        else{
+            String resource = getResourceFromJSON(log,jsonBody);
+            log.Resource__c = resource;
+            SYS_debug.log('\n\n ------------------------------- \n\n Application Service resource:'+resource);
+
+            List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, resource, log);
+
+            SYS_debug.log('\n\n ------------------------------- \n\n Application Service sObjects to DML:'+sObjectsToDML);
+            SYS_debug.log('\n\n ------------------------------- \n\n Application Service externalKeyByResourceMap:'+SYS_DataCache.externalKeyByResourceMap);
+
+            String externalIdFieldAPIName = SYS_DataCache.externalKeyByResourceMap.get(resource);
+            //String externalIdFieldAPIName = log.External_Id_Field_API_Name__c!=NULL?log.External_Id_Field_API_Name__c:'';
+                
+            return doDML(sObjectsToDML,log.SYS_Operation_Type__c,externalIdFieldAPIName,log);
+        }
+        
     }
 
     /* ------------------------------------------------------------------------ */
@@ -579,7 +734,15 @@ global virtual class SYS_ApplicationService {
 
     global virtual String getHttpRequestEndpoint(HttpRequest req,SYS_IntegrationLog__c log, String externalId){
         
+
         if(log.Callout_URL__c!=NULL){
+            return log.Callout_URL__c;
+        }
+        
+        String urlFromPattern = SYS_Helper.urlFromPattern(log.HTTP_Method__c, log.WhatId__c);
+        
+        if(urlFromPattern != null){
+            log.Callout_URL__c = urlFromPattern;
             return log.Callout_URL__c;
         }
         else{
@@ -640,19 +803,38 @@ global virtual class SYS_ApplicationService {
     global virtual HttpRequest buildOutboundHttpRequest(SYS_IntegrationLog__c log){
         HttpRequest req = new HttpRequest();
 
-        List<sObject> recList = 
-            Database.query( 'SELECT '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c+
-                            ' FROM '+SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c+
-                            ' WHERE Id = \'' + log.WhatId__c + '\' ALL ROWS');
- 
-        if(!recList.isEmpty()){
- 
-            String externalId = String.valueOf(recList[0].get(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c));
-            
-            req.setMethod(getHttpRequestMethod(log,externalId));
-            req.setEndpoint(getHttpRequestEndpoint(req,log,externalId));
-            setHttpRequestHeaders(req,log);
+        if(SYS_DataCache.OBJ_TYPE!=NULL){
+
+            String objApiName = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ObjectApiName__c;
+            objApiName = objApiName != null ? objApiName.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : objApiName;
+
+            String externalIdField = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ExternalFieldApi__c;
+            externalIdField = externalIdField != null ? externalIdField.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : externalIdField;
+
+
+            List<sObject> recList = 
+                Database.query( 'SELECT ' + externalIdField +
+                                ' FROM ' +  objApiName +
+                                ' WHERE Id = \'' + log.WhatId__c + '\' ALL ROWS');
+    
+            if(!recList.isEmpty()){
+    
+                String externalId = String.valueOf(recList[0].get(externalIdField));
+                
+                req.setMethod(getHttpRequestMethod(log,externalId));
+                req.setEndpoint(getHttpRequestEndpoint(req,log,externalId));
+            }
         }
+        else{
+
+            req.setMethod(getHttpRequestMethod(log,null));
+            req.setEndpoint(getHttpRequestEndpoint(req,log,null));
+            
+        }
+
+
+        setHttpRequestHeaders(req,log);
+
  
         return req;
     }
@@ -766,17 +948,29 @@ global virtual class SYS_ApplicationService {
         return logResp;
     }
 
-    global virtual void fixParent(String parentLogId,SYS_IntegrationLog__c childLog){
-
-        //SYS_DataCache.log = childLog;
+    public List<FieldSetting__mdt> getPrimaryLookupFieldSetting(String resource){
         List<FieldSetting__mdt> fsm = new List<FieldSetting__mdt>();
         fsm = [SELECT FieldApiName__c,
                         ObjectApiName__c 
                         FROM FieldSetting__mdt 
-                        WHERE RestResource__c = :childLog.Resource__c 
+                        WHERE RestResource__c = :resource 
                         AND Is_Lookup__c=true 
                         AND Lookup_External_Key__c=NULL 
                         AND Lookup_Object_API_Name__c=NULL];
+
+        for(FieldSetting__mdt item : fsm) {
+                    
+            item.FieldApiName__c = item.FieldApiName__c != null ? item.FieldApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.FieldApiName__c ;
+            item.ObjectApiName__c = item.ObjectApiName__c != null ? item.ObjectApiName__c.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) :item.ObjectApiName__c ;
+        
+        }
+        return fsm;
+    }
+
+    global virtual void fixParent(String parentLogId,SYS_IntegrationLog__c childLog){
+
+        //SYS_DataCache.log = childLog;
+        List<FieldSetting__mdt> fsm = getPrimaryLookupFieldSetting(childLog.Resource__c);
 
         System.debug('MS Fixing Relationship:'+fsm);
 
@@ -879,13 +1073,27 @@ global virtual class SYS_ApplicationService {
                 logResp.SYS_Operation_Type__c = 'UPDATE';
                 logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Response__c;
 
-                //logResp.Resource__c = SYS_DataCache.FieldMappingOutbound[0].RestResource__c;
+                if(SYS_DataCache.OBJ_TYPE!=NULL)
+                    logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
+                
                 logResp.How_To_Process__c = 'use_custom_apex_handler';
                 logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+            
             }
             else{
-                logResp.Status__c = 'DONE';
-                logResp.How_To_Process__c = 'ignore_log';
+
+                
+                if(SYS_DataCache.OBJ_TYPE != NULL && SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Always_Ignore_Response__c){
+                        logResp.How_To_Process__c = 'ignore_log';
+                        logResp.Status__c = 'DONE';
+                }
+                else{
+                    logResp.SYS_Operation_Type__c = 'UPSERT';
+                    logResp.How_To_Process__c = 'use_custom_apex_handler';
+                    logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+                }
+                //logResp.Status__c = 'DONE';
+                //logResp.How_To_Process__c = 'ignore_log';
 
             }
         

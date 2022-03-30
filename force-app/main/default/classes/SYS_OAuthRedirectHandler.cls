@@ -8,7 +8,18 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
         if(SYS_DataCache.INT_TYPE !=NULL && SYS_DataCache.OBJ_TYPE !=NULL){
             String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String resourceUrl = baseEndpoint + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
+            
+            String urlParams='';
+            if(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c != NULL)
+                        urlParams = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).url_params__c;
+                
+            if(urlParams!=''){
+                resourceUrl+='/'+urlParams;
+            }
+            
+
             log.Callout_URL__c = resourceUrl;
+            
             return resourceUrl;
         }else{
             return super.getHttpRequestEndpoint(req, log, externalId);
@@ -17,7 +28,7 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
 
 
     global override sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
-        sObj.put(mapping.FieldApiName__c,SYS_Helper.epochToDatetime(String.valueOf(value)));
+        sObj.put(mapping.FieldApiName__c,SYS_Helper.secondsToDatetime(String.valueOf(value)));
         return sObj;
     }
 
@@ -94,9 +105,11 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
 
 	@HttpGet
     global static void doGet(){
-        
-        RestContext.response.addHeader('Content-Type', 'application/json');
-        RestContext.response.addHeader('Access-Control-Allow-Origin', '*');
+        System.debug('RestContext:'+RestContext.response);
+        if(RestContext.response!=NULL){
+            RestContext.response.addHeader('Content-Type', 'application/json');
+            RestContext.response.addHeader('Access-Control-Allow-Origin', '*');
+        }
         String code= RestContext.request.params.get('code');
         String state = RestContext.request.params.get('state');
         
@@ -144,11 +157,13 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
                     if(insertSysLog.size()>0 && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){
                         new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
                     }
+                    if(RestContext.response!=null)
                     RestContext.response.responseBody = 
                     Blob.valueOf('Token Generated succesfully.');
                     
                 }
             }catch(Exception e){
+                if(RestContext.response!=null)
                 RestContext.response.responseBody = 
                     Blob.valueOf('Something went wrong while trying to call token url \n'+e.getMessage() + '\n' +e.getStackTraceString());
             }

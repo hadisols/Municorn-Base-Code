@@ -23,7 +23,7 @@ global class SYS_Webservice{
             appService.doPut();
         }  
         else {
-            insert appService.generateLogForWebhookSigFail('PUT','Signature Verification Failed in POST');
+            insert appService.generateLogForWebhookSigFail('PUT','Signature Verification Failed in PUT');
             appService.setErrorHttpResponse('Signature Verification Failed in PUT');
         }
         
@@ -39,7 +39,7 @@ global class SYS_Webservice{
             appService.doGet();
         }  
         else {
-            insert appService.generateLogForWebhookSigFail('GET','Signature Verification Failed in POST');
+            insert appService.generateLogForWebhookSigFail('GET','Signature Verification Failed in GET');
             appService.setErrorHttpResponse('Signature Verification Failed in GET');
         }
         
@@ -54,7 +54,7 @@ global class SYS_Webservice{
             appService.doDelete();
         }  
         else {
-            insert appService.generateLogForWebhookSigFail('DELETE','Signature Verification Failed in POST');
+            insert appService.generateLogForWebhookSigFail('DELETE','Signature Verification Failed in DELETE');
             appService.setErrorHttpResponse('Signature Verification Failed in DELETE');
         }
         
@@ -68,7 +68,7 @@ global class SYS_Webservice{
             appService.doPatch();
         }  
         else{
-            insert appService.generateLogForWebhookSigFail('PATCH','Signature Verification Failed in POST');
+            insert appService.generateLogForWebhookSigFail('PATCH','Signature Verification Failed in PATCH');
             appService.setErrorHttpResponse('Signature Verification Failed in PATCH');
         }
         

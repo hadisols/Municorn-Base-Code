@@ -6,7 +6,6 @@
 		<members>SYS_DataCache</members>
 		<members>SYS_ForceSync_Controller</members>
 		<members>SYS_Helper</members>
-		<members>SYS_InboundTest</members>
 		<members>SYS_IntegrationLogInboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundQueueable</members>
@@ -15,7 +14,6 @@
 		<members>SYS_JWTAuth_ApplicationService</members>
 		<members>SYS_MockServer</members>
 		<members>SYS_OAuthRedirectHandler</members>
-		<members>SYS_OutboundTest</members>
 		<members>SYS_Override_ApplicationService</members>
 		<members>SYS_ParentingQueueable</members>
 		<members>SYS_QueueableForInboundChild</members>
@@ -24,8 +22,16 @@
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
+		<members>SYS_NotificationInterface</members>
+		<members>SampleWrapper</members>
 
-		<members>SYS_Stripe_ApplicationService</members>
+		<members>SYS_ForceSync_ControllerTest</members>
+		<members>SYS_InboundTest</members>
+		<members>SYS_OutboundTest</members>
+		<members>SYS_JWTAuth_ApplicationServiceTest</members>
+		<members>SYS_HelperTest</members>
+		<members>SYS_OAuthRedirectHandlerTest</members>
+
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -35,7 +41,6 @@
 	<types>
 		<members>SYS_Aura_ForceSync</members>
 		<members>SYS_Aura_JWTAuthFlow</members>
-		<members>SYS_PYMT_Aura_ChargeButton</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
@@ -52,6 +57,34 @@
 		<members>FieldSetting.SYS_Auth_OB_Issuer</members>
 		<members>FieldSetting.SYS_Auth_OB_Subject</members>
 		<members>FieldSetting.SYS_Auth_OB_Target_Audience</members>
+		<members>FieldSetting.SYS_CC_IB_Access_Token</members>
+		<members>FieldSetting.SYS_CC_OB_Client_Id</members>
+		<members>FieldSetting.SYS_CC_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_CC_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_OAuth_IB_Access_Token</members>
+		<members>FieldSetting.SYS_OAuth_IB_Expiry</members>
+		<members>FieldSetting.SYS_OAuth_IB_Expiry_Datetime</members>
+		<members>FieldSetting.SYS_OAuth_IB_RefreshToken</members>
+		<members>FieldSetting.SYS_OAuth_IB_Schedule_refresh</members>
+		<members>FieldSetting.SYS_OAuth_OB_Client_Id</members>
+		<members>FieldSetting.SYS_OAuth_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_OAuth_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_OAuth_OB_Redirect_URI</members>
+		<members>FieldSetting.SYS_OAuth_OB_State</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Access_Token</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Expiry</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Expiry_Datetime</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_IB_Schedule_refresh</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Client_Id</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_OAuth_Refresh_OB_Refresh_Token</members>
+		<members>FieldSetting.SYS_PWD_IB_Access_Token</members>
+		<members>FieldSetting.SYS_PWD_OB_Client_Id</members>
+		<members>FieldSetting.SYS_PWD_OB_Client_Secret</members>
+		<members>FieldSetting.SYS_PWD_OB_Grant_Type</members>
+		<members>FieldSetting.SYS_PWD_OB_Pwd</members>
+		<members>FieldSetting.SYS_PWD_OB_Username</members>
 		<members>FieldSetting.SYS_Test_IB_Account_Flow_Check</members>
 		<members>FieldSetting.SYS_Test_IB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_IB_Account_SYS_Key</members>
@@ -61,12 +94,25 @@
 		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
 		<members>HttpHeaders.SYS_Auth_Header</members>
+		<members>HttpHeaders.SYS_OAuth_CC_Header</members>
+		<members>HttpHeaders.SYS_OAuth_Header</members>
+		<members>HttpHeaders.SYS_OAuth_PWD_Header</members>
 		<members>HttpHeaders.SYS_Test_Header</members>
 		<members>IntegrationEnablement.SYS_Auth_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_CC_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_OAuth_Integration_Enablement</members>
+		<members>IntegrationEnablement.SYS_Pwd_Integration_Enablement</members>
 		<members>IntegrationEnablement.SYS_Test_Integration_Enablement</members>
 		<members>IntegrationSetting.SYS_Auth_Integration_Setting</members>
+		<members>IntegrationSetting.SYS_OAuth_CC_IS</members>
+		<members>IntegrationSetting.SYS_OAuth_Integration_Setting</members>
+		<members>IntegrationSetting.SYS_OAuth_Pwd_IS</members>
 		<members>IntegrationSetting.SYS_Test_IntegrationSetting</members>
 		<members>ObjectSetting.SYS_Auth_JWT_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_CC_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_Pwd_Object_Setting</members>
+		<members>ObjectSetting.SYS_OAuth_Refresh_Object_Setting</members>
 		<members>ObjectSetting.SYS_Test_Account_Object_Setting</members>
 		<name>CustomMetadata</name>
 	</types>
@@ -83,11 +129,17 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>SYS_IntegrationLog__c</members>
+		<members>SYS_OAuthConfig__c</members>
+		<name>CustomTab</name>
+	</types>
+	<types>
 		<members>SYS_IntegrationLog_Record_Page</members>
 		<members>SYS_OAuth_Configs</members>
 		<name>FlexiPage</name>
 	</types>
 	<types>
+		<members>Invoke_refresh_token_flow</members>
 		<members>SYS_Flow_for_log_retry</members>
 		<name>Flow</name>
 	</types>
@@ -103,8 +155,22 @@
 		<name>Layout</name>
 	</types>
 	<types>
+		<members>SYS_IntegrationLog__c.All</members>
+		<members>SYS_OAuthConfig__c.All</members>
+		<members>SYS_Tracker__c.All</members>
+		<name>ListView</name>
+	</types>
+	<types>
 		<members>GCPJWT</members>
+		<members>OAUTH_CLIENT_CREDS_NC</members>
+		<members>OAUTH_NC</members>
+		<members>OAUTH_PWD_NC</members>
 		<name>NamedCredential</name>
+	</types>
+	<types>
+		<members>SYS_Municorn_Guest_User_Permission_Set</members>
+		<members>SYS_Municorn_Permission_Set</members>
+		<name>PermissionSet</name>
 	</types>
 	<types>
 		<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
@@ -119,9 +185,15 @@
 		<members>SYS_Test_Inbound_Body</members>
 		<members>SYS_Test_Inbound_Body_Large</members>
 		<members>SYS_Test_Outbound_Response_Body</members>
+		
+		<members>OAuth_Test_Records</members>
+	
+		<members>OAuth_Auth_Code_Test_Token_Body</members>
+		<members>OAuth_Test_Token_Body</members>
 		<name>StaticResource</name>
 	</types>
 	<types>
+		<members>SYS_OAuthConfig__c.Get_Token</members>
 		<members>SYS_OAuthConfig__c.Start_Authentication_Flow</members>
 		<name>WebLink</name>
 	</types>

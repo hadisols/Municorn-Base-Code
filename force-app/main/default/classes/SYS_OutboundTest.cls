@@ -4,7 +4,6 @@ public class SYS_OutboundTest {
     @TestSetup
     static void makeData(){
         SYS_TestDataFactory.createTestRecords(1, 1);
-
     }
 
     @IsTest
