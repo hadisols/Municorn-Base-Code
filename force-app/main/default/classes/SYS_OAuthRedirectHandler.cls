@@ -105,9 +105,11 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
 
 	@HttpGet
     global static void doGet(){
-        
-        RestContext.response.addHeader('Content-Type', 'application/json');
-        RestContext.response.addHeader('Access-Control-Allow-Origin', '*');
+        System.debug('RestContext:'+RestContext.response);
+        if(RestContext.response!=NULL){
+            RestContext.response.addHeader('Content-Type', 'application/json');
+            RestContext.response.addHeader('Access-Control-Allow-Origin', '*');
+        }
         String code= RestContext.request.params.get('code');
         String state = RestContext.request.params.get('state');
         
@@ -155,11 +157,13 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
                     if(insertSysLog.size()>0 && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){
                         new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
                     }
+                    if(RestContext.response!=null)
                     RestContext.response.responseBody = 
                     Blob.valueOf('Token Generated succesfully.');
                     
                 }
             }catch(Exception e){
+                if(RestContext.response!=null)
                 RestContext.response.responseBody = 
                     Blob.valueOf('Something went wrong while trying to call token url \n'+e.getMessage() + '\n' +e.getStackTraceString());
             }

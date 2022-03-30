@@ -11,6 +11,7 @@ public class SYS_MockServer{
         multimockServer.setStaticResource('callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account/0015f00000IayMkAAJ', 'SYS_Test_Outbound_Response_Body');
         
         multimockServer.setStaticResource('callout:GCPJWT/token', 'OAuth_Test_Token_Body');
+        multimockServer.setStaticResource('callout:OAUTH_NC/token', 'OAuth_Auth_Code_Test_Token_Body');
         multimockServer.setStatusCode(200);
         multimockServer.setHeader('Content-Type', 'application/json');
         return multimockServer;
@@ -20,6 +21,8 @@ public class SYS_MockServer{
         MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
         multimockServer.setStaticResource('callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account', 'SYS_Test_Outbound_Response_Body');
         multimockServer.setStaticResource('callout:GCPJWT/token', 'OAuth_Test_Token_Body');
+        multimockServer.setStaticResource('callout:OAUTH_NC/token', 'OAuth_Auth_Code_Test_Token_Body');
+
         multimockServer.setStatusCode(500);
         multimockServer.setHeader('Content-Type', 'application/json');
         return multimockServer;

@@ -44,7 +44,7 @@
     </values>
     <values>
         <field>GET_URL_Pattern__c</field>
-        <value xsi:type="xsd:string">callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Hashing_Algo__c</field>
@@ -56,11 +56,11 @@
     </values>
     <values>
         <field>Notification_Wrapper__c</field>
-        <value xsi:type="xsd:string">SampleWrapper</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Notifications_are_partial__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>OAuth_Config_Record_Id__c</field>
