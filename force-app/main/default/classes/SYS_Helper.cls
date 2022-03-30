@@ -169,7 +169,7 @@ global class SYS_Helper {
                 data[di] = jsonSubStrng;
                 di++;
                 if(di == SYS_Constants.MAX_DATA_FIELDS - 1 && body.length() > SYS_Constants.TEXT_AREA_MAX_SIZE){
-                    SYS_debug.log('JSON too large. Truncated');
+                    //SYS_debug.log('JSON too large. Truncated');
                     break;
                 }
             } while (outboundJSON.length() > 0);

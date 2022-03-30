@@ -109,12 +109,13 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
     @AuraEnabled
     public static void invokeTokenFlow(Id oauthConfigId){
         try {
-            List<SYS_OAuthConfig__c> authConfigList = 
-            Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c') +' FROM SYS_OAuthConfig__c WHERE Id = \'' + oauthConfigId + '\'');
-
 
             SYS_DataCache.INT_TYPE = 'SYS_Auth_Integration_Setting';
             SYS_DataCache.OBJ_TYPE = 'SYS_Auth_JWT_Object_Setting';
+
+            List<SYS_OAuthConfig__c> authConfigList = 
+            Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c') +' FROM '+ SYS_DataCache.namespacePrefix +'SYS_OAuthConfig__c WHERE Id = \'' + oauthConfigId + '\'');
+
             SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
             Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(authConfigList);
             
