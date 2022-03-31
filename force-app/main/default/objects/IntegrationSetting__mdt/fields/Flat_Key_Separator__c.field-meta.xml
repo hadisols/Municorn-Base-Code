@@ -3,7 +3,7 @@
     <fullName>Flat_Key_Separator__c</fullName>
     <defaultValue>&quot;.&quot;</defaultValue>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Flat Key Separator</label>
     <length>3</length>
     <required>false</required>

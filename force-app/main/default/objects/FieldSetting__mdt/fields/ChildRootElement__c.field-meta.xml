@@ -4,7 +4,7 @@
     <description>This field is used to identify the root of child element while converting sObject to JSON
 { &quot;root&quot; : [ {obj1} , {obj2} ] }</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Child Root Element</label>
     <length>255</length>
     <required>false</required>

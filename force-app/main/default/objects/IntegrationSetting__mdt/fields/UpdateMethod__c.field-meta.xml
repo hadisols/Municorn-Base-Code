@@ -3,7 +3,7 @@
     <fullName>UpdateMethod__c</fullName>
     <defaultValue>&apos;POST&apos;</defaultValue>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Update Method</label>
     <required>true</required>
     <type>Picklist</type>
