@@ -439,3 +439,9 @@ input[type=text]::placeholder {
 .slds-button_neutral {
     color:  rgb(31, 31, 31) ;
 }
+
+.expiry-date-flex {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}

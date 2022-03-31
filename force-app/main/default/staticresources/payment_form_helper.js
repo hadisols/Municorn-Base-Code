@@ -14,6 +14,20 @@ $(document).ready(function(){
     $('input[name=payment-source]').on('change', function() {
         console.log('pay source ',$('input[name=payment-source]:checked').val());
     });
+    
+    //Initialize the validation object which will be called on form submit.
+    var contactform = $("#creditcardForm").validate({
+        errorClass: "text-danger",
+        errorPlacement: function(error, e) {
+            error.insertAfter('#invalid-' + e.attr('id'));
+        }
+    });
+    var contactform = $("#achForm").validate({
+        errorClass: "text-danger",
+        errorPlacement: function(error, e) {
+            error.insertAfter('#invalid-' + e.attr('id'));
+        }
+    });
 });
 
 
@@ -90,25 +104,42 @@ function getPublicKey() {
 
 function handlePay() {
     $('#pay-button').click( function(){
-        console.log('pay clicked');
-        var data = getSecureDate();
-        showLoading();
-        if($('#payment-method').prop('checked')) {
-            console.log('method **', $('input[name=payment-source]:checked').val())
-            updatePaymentMethod(
-                $('input[name=payment-source]:checked').val()
-            );
+        var formIsValid = false ;
+        if($('#payment-select option:selected').val() === 'payment-card') {
+            formIsValid = $("#creditcardForm").valid();
         }
-        else if($('#payment-type').prop('checked')) {
-            Accept.dispatchData(data, 'responseHandler');
+        if($('#payment-select option:selected').val() === 'payment-ach') {
+            formIsValid = $("#achForm").valid();
         }
-        else {
-            updateBankDetails(
-                $('#payment-bank-holder-name').val(),
-                $('#payment-bank-number').val(),
-                $('#payment-bank-routing-number').val(),
-                $('#payment-bank-type').val()
-            );
+        if(getType() === 'card') {
+            console.log('inside form');
+            formIsValid = true; //$("#creditcardForm").valid();
+            console.log('inside form', formIsValid);
+        }
+
+
+
+        if(formIsValid){
+            console.log('pay clicked');
+            var data = getSecureDate();
+            showLoading();
+            if($('#payment-method').prop('checked')) {
+                console.log('method **', $('input[name=payment-source]:checked').val())
+                updatePaymentMethod(
+                    $('input[name=payment-source]:checked').val()
+                );
+            }
+            else if($('#payment-type').prop('checked')) {
+                Accept.dispatchData(data, 'responseHandler');
+            }
+            else {
+                updateBankDetails(
+                    $('#payment-bank-holder-name').val(),
+                    $('#payment-bank-number').val(),
+                    $('#payment-bank-routing-number').val(),
+                    $('#payment-bank-type').val()
+                );
+            }
         }
     });
 }
@@ -138,7 +169,7 @@ function getSecureDate() {
     cardData.cardNumber = $('#payment-credit-card-number').val();
     cardData.month = $('#payment-credit-card-expiry-mm').val();
     cardData.year = $('#payment-credit-card-expiry-yy').val();
-    cardData.zip = ''; //$('#payment-zip').val();
+    cardData.zip = $('#payment-zip').val();
     cardData.cardCode = $('#payment-credit-card-cvv').val();
     
     bankData.nameOnAccount = $('#payment-bank-holder-name').val();
@@ -397,9 +428,9 @@ function get_basket () {
 
     return { 
         "invoice_number": "", 
-        "subtotal": amount, 
-        "taxes": (totalAmount - amount).toFixed(2), 
-        "total": totalAmount, 
+        "subtotal": addCommas(amount), 
+        "taxes": addCommas((totalAmount - amount).toFixed(2)), 
+        "total": addCommas(totalAmount), 
         "currency": "&dollar;",
         "customer_name": customer_name,
         "billing_address": street,

@@ -67,17 +67,48 @@
                     total : component.get('v.totalPaymentAmount')
                 }, function(returnVal) {
                     console.log('Declined error '+ returnVal);
-                    if(!returnVal) {
-                        console.log('transaction success');
-                        component.set('v.paymentCompleted', true);
-                        component.displayMessage('Success', 'Payment is successful!' , 'success');
-                        component.set('v.CardUILoading', false);
-                        component.set('v.Loading', false);
-                    } else {
-                        component.set('v.CardUILoading', false);
-                        component.set('v.Loading', false);
-                        component.displayMessage('Error', returnVal, 'Error');
+                    if(returnVal) {
+                        var payload = JSON.parse(returnVal);
+                        if(payload.data != '') {
+                            console.log('transaction success');
+                            component.set('v.paymentCompleted', true);
+                            component.displayMessage('Success', 'Payment is successful!' , 'success');
+                            if(message.savePayment || message.saveAsDefault) {
+                                component.apiCall('createPaymentMethod',
+                                {
+                                    transactionId : payload.data,
+                                    accountId : accountId,
+                                    gatewayId : component.get('v.selectedGateway'),
+                                    payload : message
+                                }, function(returnVal) {
+                                        console.log('Declined error '+ returnVal);
+                                        if(!returnVal) {
+                                            console.log('**payment method success');
+                                            component.displayMessage('Success', 'Payment Method successfully created!' , 'success');
+                                            component.set('v.CardUILoading', false);
+                                            component.set('v.Loading', false);
+                                        } else {
+                                            component.set('v.CardUILoading', false);
+                                            component.set('v.Loading', false);
+                                            component.displayMessage('Error', returnVal, 'Error');
+                                        }
+                                }, function(error) {
+                                    component.set('v.CardUILoading', false);
+                                    component.displayMessage('Error', error, 'Error');
+                                    component.set('v.Loading', false);
+                                }
+                                );
+                            } else {
+                                component.set('v.CardUILoading', false);
+                                component.set('v.Loading', false);
+                            }
+                        } else {
+                            component.set('v.CardUILoading', false);
+                            component.set('v.Loading', false);
+                            component.displayMessage('Error', payload.error, 'Error');
+                        }
                     }
+                    
                 }, function(error) {
                     console.log('transaction failed');
                     component.set('v.CardUILoading', false);
@@ -101,16 +132,44 @@
                         total : component.get('v.totalPaymentAmount')
                     }, function(returnVal) {
                         console.log('Declined error '+ returnVal);
-                        if(!returnVal) {
+                        var payload = JSON.parse(returnVal);
+                        if(payload.data != '') {
                             console.log('transaction success');
                             component.set('v.paymentCompleted', true);
                             component.displayMessage('Success', 'Payment is successful!' , 'success');
-                            component.set('v.CardUILoading', false);
-                            component.set('v.Loading', false);
+                            if(message.savePayment || message.saveAsDefault) {
+                                component.apiCall('createPaymentMethod',
+                                {
+                                    transactionId : payload.data,
+                                    accountId : accountId,
+                                    gatewayId : component.get('v.selectedGateway'),
+                                    payload : message
+                                }, function(returnVal) {
+                                        console.log('Declined error '+ returnVal);
+                                        if(!returnVal) {
+                                            console.log('**payment method success');
+                                            component.displayMessage('Success', 'Payment Method successfully created!' , 'success');
+                                            component.set('v.CardUILoading', false);
+                                            component.set('v.Loading', false);
+                                        } else {
+                                            component.set('v.CardUILoading', false);
+                                            component.set('v.Loading', false);
+                                            component.displayMessage('Error', returnVal, 'Error');
+                                        }
+                                }, function(error) {
+                                    component.set('v.CardUILoading', false);
+                                    component.displayMessage('Error', error, 'Error');
+                                    component.set('v.Loading', false);
+                                }
+                                );
+                            } else {
+                                component.set('v.CardUILoading', false);
+                                component.set('v.Loading', false);
+                            }
                         } else {
                             component.set('v.CardUILoading', false);
                             component.set('v.Loading', false);
-                            component.displayMessage('Error', returnVal, 'Error');
+                            component.displayMessage('Error', payload.error, 'Error');
                         }
                     }, function(error) {
                         console.log('transaction failed');
@@ -661,8 +720,8 @@
 		 //we have payment method id and request
 		 var lines = component.get('v.selectedRow');
 		 lines.map(function(x){
-			 let sdsd = {'paymentMethod' : component.get('v.SelectedPaymentSource')};
-			 console.log('sd ',sdsd);
+			//  let sdsd = {'paymentMethod' : component.get('v.SelectedPaymentSource')};
+			//  console.log('sd ',sdsd);
 			 Object.assign(x, {'paymentMethod' : component.get('v.SelectedPaymentSource')});
 		 });
 		 console.log('lines modified', JSON.stringify(lines));

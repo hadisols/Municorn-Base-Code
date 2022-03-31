@@ -22,4 +22,45 @@ public class SYS_MockServer{
         multimockServer.setHeader('Content-Type', 'application/json');
         return multimockServer;
     }
+
+    
+    public static MultiStaticResourceCalloutMock paymentMethod(){
+        MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
+        
+        multimockServer.setStaticResource('https://apitest.authorize.net/xml/v1/request.api', 'Athrz_payment_method');
+        
+        multimockServer.setStatusCode(200);
+        multimockServer.setHeader('Content-Type', 'application/json');
+        return multimockServer;
+    }
+
+    public static MultiStaticResourceCalloutMock transaction(){
+        MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
+        
+        multimockServer.setStaticResource('https://apitest.authorize.net/xml/v1/request.api', 'Athrz_transaction');
+        
+        multimockServer.setStatusCode(200);
+        multimockServer.setHeader('Content-Type', 'application/json');
+        return multimockServer;
+    }
+
+    public static MultiStaticResourceCalloutMock paymentMethodCreate(){
+        MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
+        
+        multimockServer.setStaticResource('https://apitest.authorize.net/xml/v1/request.api', 'Athrz_payment_method_create');
+        
+        multimockServer.setStatusCode(200);
+        multimockServer.setHeader('Content-Type', 'application/json');
+        return multimockServer;
+    } 
+
+    public static MultiStaticResourceCalloutMock paymentSubscription(){
+        MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
+        
+        multimockServer.setStaticResource('https://apitest.authorize.net/xml/v1/request.api', 'Athrz_subscription');
+        
+        multimockServer.setStatusCode(200);
+        multimockServer.setHeader('Content-Type', 'application/json');
+        return multimockServer;
+    }
 }

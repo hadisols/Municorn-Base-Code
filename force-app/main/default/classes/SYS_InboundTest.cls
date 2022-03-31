@@ -29,6 +29,29 @@ public class SYS_InboundTest {
     }
 
     @IsTest
+    static void testPost_AuthorizeDotNet(){
+        
+        String body = SYS_TestUtil.getMockBody();
+
+        RestRequest request = new RestRequest();
+        RestResponse actualres = new RestResponse();
+        request.requestURI = '/municorn/v1/Authorize';
+        request.addParameter('token', '9LR99107DF7343549');
+        request.requestBody = Blob.valueOf(body);
+        RestContext.request = request;
+
+        Test.startTest();
+        SYS_Webservice.postRequest();
+        request.addParameter('token', 'incorrect_token');
+        SYS_Webservice.postRequest();
+        Test.stopTest();
+
+        List<SYS_IntegrationLog__c> log = [SELECT Id FROM SYS_IntegrationLog__c];
+        System.assert(log.size()>0);
+        
+    }
+
+    @IsTest
     static void testGet(){
         
         String body = SYS_TestUtil.getMockBody();

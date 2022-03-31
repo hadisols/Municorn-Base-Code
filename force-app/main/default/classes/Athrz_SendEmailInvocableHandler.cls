@@ -1,8 +1,5 @@
 global class Athrz_SendEmailInvocableHandler {
-    public Athrz_SendEmailInvocableHandler() {
-
-    }
-
+    
     @InvocableMethod(label='Send email to customer')
     global static void sendEmailToCustomer(List<Activity__c> newList) {
         Set<String> intentList = new Set<String>();

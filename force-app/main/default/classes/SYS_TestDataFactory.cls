@@ -61,5 +61,55 @@ public class SYS_TestDataFactory {
 
     }
 
+    public static void createAccount(Integer count) {
+
+    }
+
+    public static String createPaymentIntent(Integer count) {
+        Account acc = new Account(
+            Name = 'test name',
+            Profile_Id__c = '504389592'
+        );
+        insert acc;
+        Payment_Gateway__c gateway = new Payment_Gateway__c(
+            Athrz_Api_Login_Id__c = 'sample',
+            Athrz_Base_Endpoint__c = 'https://apitest.authorize.net/xml/v1/request.api',
+            Name = 'Athrz',
+            Athrz_Public_Client_Key__c = 'sample',
+            Athrz_Transaction_Key__c = 'sample'
+        );
+        insert gateway;
+
+        Payment_Intent__c intent = new Payment_Intent__c(
+            Name = 'Payment for XYZ',
+            Athrz_Frequency__c = 'single',
+            Athrz_Email__c = 'abc@xyz.com',
+            Status__c = 'payment_new',
+            Athrz_First_Charge_Date__c = Datetime.now(),
+            Payment_Gateway__c = gateway.Id,
+            Athrz_Account__c = acc.Id,
+            Athrz_Scheduled_Payment__c = Datetime.now(),
+            athrz_uuid__c = UUIDGenerator.createId(),
+            Athrz_Amount__c = 100
+        );
+
+        insert intent;
+        return intent.id;
+    }
+
+    public static void createActivity(Integer count) {
+        String intentId = createPaymentIntent(1);
+        Activity__c activity = new Activity__c(
+            Payment_Intent__c = intentId,
+            Type__c = 'email',
+            Status__c = 'New',
+            When__c = Datetime.now(),
+            Email__c = 'abc@xyz.com',
+            UUID__c = UUIDGenerator.createId()
+        );
+
+        insert activity;
+    }
+
 
 }

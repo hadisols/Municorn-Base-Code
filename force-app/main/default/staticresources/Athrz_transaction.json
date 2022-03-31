@@ -1,0 +1,61 @@
+{
+    "transaction": {
+      "transId": "40086335219",
+      "submitTimeUTC": "2022-03-30T14:31:36.007Z",
+      "submitTimeLocal": "2022-03-30T07:31:36.007",
+      "transactionType": "authCaptureTransaction",
+      "transactionStatus": "capturedPendingSettlement",
+      "responseCode": 1,
+      "responseReasonCode": 1,
+      "responseReasonDescription": "Approval",
+      "authCode": "BK1N8M",
+      "AVSResponse": "Y",
+      "cardCodeResponse": "P",
+      "authAmount": 103.99,
+      "settleAmount": 103.99,
+      "taxExempt": false,
+      "payment": {
+        "creditCard": {
+          "cardNumber": "XXXX8210",
+          "expirationDate": "XXXX",
+          "cardType": "MasterCard"
+        }
+      },
+      "customer": {
+        "id": "0015j00000ZFB6lAAH"
+      },
+      "billTo": {
+        "firstName": "Adisols",
+        "lastName": "NA",
+        "address": "Street 123",
+        "city": "California",
+        "state": "CA",
+        "zip": "100101",
+        "country": "USA"
+      },
+      "shipTo": {
+        "firstName": "NA",
+        "lastName": "NA",
+        "company": "NA"
+      },
+      "recurringBilling": false,
+      "customerIP": "101.53.164.8",
+      "product": "Card Not Present",
+      "marketType": "eCommerce",
+      "networkTransId": "Z80G9PX9OUWECF6P3WIVTJZ",
+      "authorizationIndicator": "final"
+    },
+    "transrefId": "a0C5j0000001Rcj",
+    "messages": {
+      "resultCode": "Ok",
+      "message": [
+        {
+          "code": "I00001",
+          "text": "Successful."
+        }
+      ]
+    },
+    "transactionResponse": {
+      "transId": "60006537898"
+    }
+  }

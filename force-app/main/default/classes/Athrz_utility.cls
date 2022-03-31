@@ -170,7 +170,7 @@ public class Athrz_utility {
         activity.Status__c = 'New';
         activity.When__c = Datetime.now();
         activity.Email__c = chargeReq.emailId;
-        
+
         return activity;
     }
 
@@ -245,7 +245,7 @@ public class Athrz_utility {
     }
 
 
-    public static void chargePayment(String intentId, String gatewayId, String obj_type, String accountId) {
+    public static String chargePayment(String intentId, String gatewayId, String obj_type, String accountId) {
         Http http = new Http();
         HttpRequest req = new HttpRequest();
         String reqbody, responseCode;
@@ -253,6 +253,8 @@ public class Athrz_utility {
         SYS_IntegrationLog__c transactionLog = new SYS_IntegrationLog__c();
         Athrz_utility.gatewayId = gatewayId;
         Payment_Gateway__c gateway = getPaymentGateway(gatewayId);
+        Payment_Intent__c paymentReq = new Payment_Intent__c(Id = intentId);
+        String transactionId = '';
         
         SYS_DataCache.INT_TYPE = 'Authorize';
         // SYS_DataCache.OBJ_TYPE = 'Payment_Intent';
@@ -283,7 +285,7 @@ public class Athrz_utility {
 
             
             List<sObject> sObjectsToDML = appService.transformJsonToSObject(resp.getBody().replace('\uFEFF', ''),'transaction-resp');
-            String transactionId = (String)sObjectsToDML[0].get('Transaction_Id__c');
+            transactionId = (String)sObjectsToDML[0].get('Transaction_Id__c');
             responseCode = (String)sObjectsToDML[0].get('Athrz_Response_Code__c');
             System.debug('transaction '+transactionId);
 
@@ -314,9 +316,24 @@ public class Athrz_utility {
                     transactionLog.Resource__c = 'transaction';
 
                     System.debug('boolean '+savePayment+' '+saveAsDefault);
-                    if((savePayment || saveAsDefault) && responseCode == '1') {
-                        String paymentMethodId = processPaymentMethod(transactionId, accountId);
+                    if(responseCode != '1' && Athrz_utility.error != null) {
+
+                        paymentReq = new Payment_Intent__c(
+                            Id = intentId,
+                            Status__c = 'payment_failed'
+                        );
+                        
+                    } else {
+                        paymentReq = new Payment_Intent__c(
+                            Id = intentId,
+                            Status__c = 'payment_done'
+                        );
                     }
+
+                    /* if((savePayment || saveAsDefault) && responseCode == '1') {
+                        String paymentMethodId = processPaymentMethod(transactionId, accountId, gatewayId);
+                    } */
+
                     // if(token == null && amount == null)  //WHY??
                     System.debug('responseCode =='+responseCode+' error =='+error);
                     
@@ -327,11 +344,13 @@ public class Athrz_utility {
                 }
             }
             insert integrationLog;
-            
+            update paymentReq;
             
         } else {
             System.debug('transaction failed'+ error);
-        } if(responseCode != '1' && Athrz_utility.error != null) {
+        } 
+        return transactionId;
+        /* if(responseCode != '1' && Athrz_utility.error != null) {
 
             Payment_Intent__c paymentReq = new Payment_Intent__c(
                 Id = intentId,
@@ -344,7 +363,7 @@ public class Athrz_utility {
                 Status__c = 'payment_done'
             );
             update paymentReq;
-        }
+        } */
     }
 
     public static string getReceipt(String recordId) {
@@ -361,12 +380,16 @@ public class Athrz_utility {
         return gen.getAsString();
     }
 
-    public static String processPaymentMethod(String transactionId, String accountId) {
+    public static String processPaymentMethod(String transactionId, String accountId, String gatewayId) {
         String paymentMethodId, customerProfile, paymentProfile;
         Http http = new Http();
         HttpRequest req = new HttpRequest();
         SYS_IntegrationLog__c paymentMethodLog = new SYS_IntegrationLog__c();
 
+        SYS_DataCache.OBJ_TYPE = 'Payment_Method';
+        SYS_DataCache.INT_TYPE = 'Authorize';
+
+        getPaymentGateway(gatewayId);
         String reqbody = getProfileFromTransaction(transactionId, loginKey, transactionKey);
         req.setEndpoint(endPoint);
         req.setMethod('POST');
@@ -641,14 +664,16 @@ public class Athrz_utility {
     }
 
     public static Payment_Gateway__c getPaymentGateway(String gatewayId) {
-        Payment_Gateway__c gateway = [SELECT Id, Athrz_Active__c, Athrz_Api_Login_Id__c, Athrz_Base_Endpoint__c, Athrz_Public_Client_Key__c, Athrz_Transaction_Key__c
+        List<Payment_Gateway__c> gateway = [SELECT Id, Athrz_Active__c, Athrz_Api_Login_Id__c, Athrz_Base_Endpoint__c, Athrz_Public_Client_Key__c, Athrz_Transaction_Key__c
             FROM Payment_Gateway__c WHERE Id = :gatewayId LIMIT 1];
-        if(gateway != null) {
-            endpoint = gateway.Athrz_Base_Endpoint__c;
-            transactionKey = gateway.Athrz_Transaction_Key__c;
-            loginKey = gateway.Athrz_Api_Login_Id__c;
+        if(gateway.size() > 0 ) {
+            endpoint = gateway[0].Athrz_Base_Endpoint__c;
+            transactionKey = gateway[0].Athrz_Transaction_Key__c;
+            loginKey = gateway[0].Athrz_Api_Login_Id__c;
+            return gateway[0];
+
         }
-        return gateway;
+        return null;
     }
 
     public static String getProfileId(String accountId) {

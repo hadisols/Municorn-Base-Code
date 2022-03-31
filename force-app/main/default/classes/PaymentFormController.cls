@@ -27,7 +27,6 @@ public class PaymentFormController {
     public String pageUrl {get; set;}
     public Boolean isCreditcard {get; set;}
     public String pageToken {get; set;}
-    public Authorize.cls_hostedPage paymentPagerequest = new Authorize.cls_hostedPage();
     public String selectedMethod {get; set;}
     public Decimal amount {get; set;}
     public String response {get; set;}
@@ -136,6 +135,37 @@ public class PaymentFormController {
         // System.debug('toekn '+token);
     }
 
+    public List<Payment_Intent__c> getPaymentRequestByGroupId(String uuid) {
+        return [SELECT Id,
+                    Athrz_Email__c,
+                    Athrz_Account__c,
+                    Athrz_Account__r.Id,
+                    Athrz_Account__r.Name,
+                    Athrz_Account__r.AccountNumber,
+                    Athrz_Account__r.email__c,
+                    Athrz_Account__r.Profile_Id__c,
+                    Athrz_Account__r.BillingStreet,
+                    Athrz_Account__r.BillingCity,
+                    Athrz_Account__r.BillingPostalCode,
+                    Athrz_Account__r.BillingCountry,
+                    Athrz_Account__r.BillingState,
+                    Status__c,
+                    Athrz_Currency_Code__c,
+                    Athrz_PaymentType__c,
+                    Athrz_Amount__c,
+                    Athrz_Reference_Id__c,
+                    Athrz_First_Charge_Date__c,
+                    Payment_Gateway__r.Athrz_Api_Login_Id__c,
+                    Payment_Gateway__r.Athrz_Base_Endpoint__c,
+                    Payment_Gateway__r.Athrz_Public_Client_Key__c
+                FROM Payment_Intent__c WHERE athrz_uuid__c = :uuid LIMIT 1];
+    }
+
+
+    /** 
+     * GARBAGE CODE --used for hosted payment page */
+    
+    /* 
     public void chargePayment(String requestBody) {
         Http http = new Http();
         HttpRequest req = new HttpRequest();
@@ -280,9 +310,9 @@ public class PaymentFormController {
             insert paymentMethodsLog;
 
         }
-    }
+    } */
 
-    public static String getTransactionRequest(String transId) {
+    /* public static String getTransactionRequest(String transId) {
 
         JSONGenerator gen = JSON.createGenerator(true);
         gen.writeStartObject();
@@ -297,33 +327,9 @@ public class PaymentFormController {
         gen.writeEndObject();
 
         return gen.getAsString();
-    }
+    } */
 
-    public List<Payment_Intent__c> getPaymentRequestByGroupId(String uuid) {
-        return [SELECT Id,
-                    Athrz_Email__c,
-                    Athrz_Account__c,
-                    Athrz_Account__r.Id,
-                    Athrz_Account__r.Name,
-                    Athrz_Account__r.AccountNumber,
-                    Athrz_Account__r.email__c,
-                    Athrz_Account__r.Profile_Id__c,
-                    Athrz_Account__r.BillingStreet,
-                    Athrz_Account__r.BillingCity,
-                    Athrz_Account__r.BillingPostalCode,
-                    Athrz_Account__r.BillingCountry,
-                    Athrz_Account__r.BillingState,
-                    Status__c,
-                    Athrz_Currency_Code__c,
-                    Athrz_PaymentType__c,
-                    Athrz_Amount__c,
-                    Athrz_Reference_Id__c,
-                    Athrz_First_Charge_Date__c,
-                    Payment_Gateway__r.Athrz_Api_Login_Id__c,
-                    Payment_Gateway__r.Athrz_Base_Endpoint__c,
-                    Payment_Gateway__r.Athrz_Public_Client_Key__c
-                FROM Payment_Intent__c WHERE athrz_uuid__c = :uuid LIMIT 1];
-    }
+    
     
     /*************** TRASH CODE ****************/
 
@@ -350,7 +356,7 @@ public class PaymentFormController {
     //     }
     // }
 
-    public void updateTransaction() {
+    /* public void updateTransaction() {
         System.debug(response);
         String transactionId;
         String profileId;
@@ -424,7 +430,7 @@ public class PaymentFormController {
         insert logTrans;
         insert integrationLog;
         insert logAccount;
-    }
+    } */
 
     /**
      * All utility classes
@@ -521,7 +527,7 @@ public class PaymentFormController {
         return result;
     } */
 
-    public String submitFormRequest(String body) {
+    /* public String submitFormRequest(String body) {
         String tokenKey;
         SYS_IntegrationLog__c integrationLog = new SYS_IntegrationLog__c();
         IntegrationSetting__mdt integrationSetting = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE);
@@ -571,11 +577,11 @@ public class PaymentFormController {
 
         }
         return tokenKey;
-    }
+    } */
 
     
 
-    public Authorize.cls_hostedPaymentSettings getSetting(Boolean creditCard) {
+    /* public Authorize.cls_hostedPaymentSettings getSetting(Boolean creditCard) {
         Authorize.cls_hostedPaymentSettings result = new Authorize.cls_hostedPaymentSettings();
 
         String creditcardJson = '{"setting":[{"settingName":"hostedPaymentReturnOptions","settingValue":"{\\"showReceipt\\": true, \\"url\\": \\"https://mysite.com/receipt\\", \\"urlText\\": \\"Continue\\", \\"cancelUrl\\": \\"https://mysite.com/cancel\\", \\"cancelUrlText\\": \\"Cancel\\"}"},{"settingName":"hostedPaymentButtonOptions","settingValue":"{\\"text\\": \\"Pay\\"}"},{"settingName":"hostedPaymentStyleOptions","settingValue":"{\\"bgColor\\": \\"blue\\"}"},{"settingName":"hostedPaymentPaymentOptions","settingValue":"{\\"cardCodeRequired\\": false, \\"showCreditCard\\": true, \\"showBankAccount\\": false}"},{"settingName":"hostedPaymentSecurityOptions","settingValue":"{\\"captcha\\": false}"},{"settingName":"hostedPaymentShippingAddressOptions","settingValue":"{\\"show\\": false, \\"required\\": false}"},{"settingName":"hostedPaymentBillingAddressOptions","settingValue":"{\\"show\\": true, \\"required\\": false}"},{"settingName":"hostedPaymentCustomerOptions","settingValue":"{\\"showEmail\\": false, \\"requiredEmail\\": false, \\"addPaymentProfile\\": true}"},{"settingName":"hostedPaymentOrderOptions","settingValue":"{\\"show\\": true, \\"merchantName\\": \\"G and S Questions Inc.\\"}"},{"settingName":"hostedPaymentIFrameCommunicatorUrl","settingValue":"{\\"url\\": \\"https://mysite.com/special\\"}"}]}';
@@ -586,11 +592,11 @@ public class PaymentFormController {
                     (Authorize.cls_hostedPaymentSettings)JSON.deserialize(achJson, Authorize.cls_hostedPaymentSettings.class);
 
         return result;
-    }
+    } */
 
     
 
-    public String getHostedPageRequest(PaymentRequest__c paymentReq) {
+    /* public String getHostedPageRequest(PaymentRequest__c paymentReq) {
 
         String requestBody;
         
@@ -623,5 +629,5 @@ public class PaymentFormController {
         requestBody = JSON.serialize(form);
         System.debug('request ='+requestBody);
         return requestBody;
-    }
+    } */
 }

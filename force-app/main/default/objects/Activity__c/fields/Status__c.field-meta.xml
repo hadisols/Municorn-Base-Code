@@ -51,6 +51,11 @@
                 <default>false</default>
                 <label>Replied</label>
             </value>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

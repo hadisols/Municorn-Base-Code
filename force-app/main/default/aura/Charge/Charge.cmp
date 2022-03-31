@@ -421,10 +421,12 @@
                         <footer class="slds-modal__footer">
                             <div class="slds-col modal-footer slds-modal__footer">
                                 <lightning:layoutItem flexibility="grow" padding="around-small">
-                    
-                                    <lightning:button class="long-button" variant="destructive"
-                                        label="{!$Label.c.email + ' (' + v.CheckoutItems.length + ')'}" iconName="utility:email"
-                                        onclick="{!c.onSendLinkForRecharge}" />
+                                    
+                                    <aura:if isTrue="{!not(v.ShowEmailConfirmation)}">
+                                        <lightning:button class="long-button" variant="destructive"
+                                            label="{!$Label.c.email + ' (' + v.CheckoutItems.length + ')'}" iconName="utility:email"
+                                            onclick="{!c.onSendLinkForRecharge}" />
+                                    </aura:if>
                                     <aura:if isTrue="{!and(v.ShowDefaultPage)}">
                                     <lightning:button class="long-button" iconName="utility:send"
                                         label="{!$Label.c.checkout_cart_items + ' (' + v.CheckoutItems.length + ')'}" variant="brand"

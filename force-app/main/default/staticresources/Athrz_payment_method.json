@@ -1,0 +1,216 @@
+
+{
+    "profile": {
+        "paymentProfiles": [
+            {
+                "customerPaymentProfileId": "904251300",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX8210",
+                        "expirationDate": "XXXX",
+                        "cardType": "MasterCard",
+                        "issuerNumber": "520082"
+                    }
+                },
+                "customerType": "individual",
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA"
+                }
+            },
+            {
+                "customerPaymentProfileId": "904250543",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX8431",
+                        "expirationDate": "XXXX",
+                        "cardType": "AmericanExpress",
+                        "issuerNumber": "371449"
+                    }
+                },
+                "customerType": "individual",
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA"
+                }
+            },
+            {
+                "customerPaymentProfileId": "904250384",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX8210",
+                        "expirationDate": "XXXX",
+                        "cardType": "MasterCard",
+                        "issuerNumber": "520082"
+                    }
+                },
+                "customerType": "individual",
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA"
+                }
+            },
+            {
+                "customerPaymentProfileId": "904248624",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX8431",
+                        "expirationDate": "XXXX",
+                        "cardType": "AmericanExpress",
+                        "issuerNumber": "371449"
+                    }
+                },
+                "customerType": "individual",
+                "billTo": {
+                    "firstName": "Test",
+                    "lastName": "Name",
+                    "company": "Dr Emer",
+                    "address": "10000 West O'Hare Avenue",
+                    "city": "Chicago",
+                    "state": "IL",
+                    "zip": "60666",
+                    "country": "United States"
+                }
+            },
+            {
+                "customerPaymentProfileId": "507331981",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX8210",
+                        "expirationDate": "XXXX",
+                        "cardType": "MasterCard",
+                        "issuerNumber": "520082"
+                    }
+                },
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA",
+                    "address": "9 Tagore Lane Singapore, Singapore 787472 Singapore",
+                    "city": "Singapore",
+                    "state": "Singapore"
+                }
+            },
+            {
+                "customerPaymentProfileId": "507120770",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX4242",
+                        "expirationDate": "XXXX",
+                        "cardType": "Visa",
+                        "issuerNumber": "424242"
+                    }
+                },
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA",
+                    "address": "9 Tagore Lane Singapore, Singapore 787472 Singapore",
+                    "city": "Singapore",
+                    "state": "Singapore"
+                }
+            },
+            {
+                "customerPaymentProfileId": "507067629",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX8431",
+                        "expirationDate": "XXXX",
+                        "cardType": "AmericanExpress",
+                        "issuerNumber": "371449"
+                    }
+                },
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA",
+                    "address": "9 Tagore Lane Singapore, Singapore 787472 Singapore",
+                    "city": "Singapore",
+                    "state": "Singapore"
+                }
+            },
+            {
+                "customerPaymentProfileId": "507065326",
+                "payment": {
+                    "bankAccount": {
+                        "accountType": "checking",
+                        "routingNumber": "XXXX0921",
+                        "accountNumber": "XXXX3323",
+                        "nameOnAccount": "United Oil & Gas, Sing",
+                        "echeckType": "WEB"
+                    }
+                },
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA",
+                    "address": "9 Tagore Lane Singapore, Singapore 787472 Singapore",
+                    "city": "Singapore",
+                    "state": "Singapore"
+                }
+            },
+            {
+                "customerPaymentProfileId": "507065320",
+                "payment": {
+                    "bankAccount": {
+                        "accountType": "checking",
+                        "routingNumber": "XXXX0921",
+                        "accountNumber": "XXXX1533",
+                        "nameOnAccount": "United Oil & Gas, Sing",
+                        "echeckType": "WEB"
+                    }
+                },
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA",
+                    "address": "9 Tagore Lane Singapore, Singapore 787472 Singapore",
+                    "city": "Singapore",
+                    "state": "Singapore"
+                }
+            },
+            {
+                "customerPaymentProfileId": "507065185",
+                "payment": {
+                    "creditCard": {
+                        "cardNumber": "XXXX8210",
+                        "expirationDate": "XXXX",
+                        "cardType": "MasterCard",
+                        "issuerNumber": "520082"
+                    }
+                },
+                "billTo": {
+                    "firstName": "United Oil & Gas, Singapore",
+                    "lastName": "NA",
+                    "address": "9 Tagore Lane Singapore, Singapore 787472 Singapore",
+                    "city": "Singapore",
+                    "state": "Singapore"
+                }
+            }
+        ],
+        "shipToList": [
+            {
+                "customerAddressId": "506375398",
+                "firstName": "NA",
+                "lastName": "NA",
+                "company": "NA",
+                "address": "9 Tagore Lane Singapore, Singapore 787472 Singapore"
+            }
+        ],
+        "profileType": "regular",
+        "customerProfileId": "504389592",
+        "merchantCustomerId": "0015j00000DxvPXAAZ"
+    },
+    "subscriptionIds": [
+        "8027204",
+        "8027492",
+        "8027564",
+        "8027743",
+        "8027847"
+    ],
+    "refId": "0015j00000DxvPXAAZ",
+    "messages": {
+        "resultCode": "Ok",
+        "message": [
+            {
+                "code": "I00001",
+                "text": "Successful."
+            }
+        ]
+    }
+}

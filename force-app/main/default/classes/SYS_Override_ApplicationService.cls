@@ -2,7 +2,7 @@ public class SYS_Override_ApplicationService extends SYS_ApplicationService{
     public SYS_Override_ApplicationService() {
 
     }
-
+/* 
     public override HttpResponse doOutbound(SYS_IntegrationLog__c log){
         System.debug('\n In SYS_Override_ApplicationService');
         return super.doOutbound(log);
@@ -129,5 +129,5 @@ public class SYS_Override_ApplicationService extends SYS_ApplicationService{
             return req;
         }
         
-    }
+    } */
 }

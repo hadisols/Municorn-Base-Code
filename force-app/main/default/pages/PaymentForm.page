@@ -16,20 +16,21 @@
             <input type="hidden" value="{!paymentMessage}" id="message-panel" />
             
         </apex:outputPanel>
-        <input type="hidden" value="{!apiLoginId}" id="api-login-id"/>
-        <input type="hidden" value="{!apiPublicKey}" id="api-public-key"/>
-        <input type="hidden" value="{!amount}" id="amount"/>
-        <input type="hidden" value="{!street}" id="street"/>
-        <input type="hidden" value="{!city}" id="city"/>
-        <input type="hidden" value="{!state}" id="state"/>
-        <input type="hidden" value="{!zipcode}" id="zipcode"/>
-        <input type="hidden" value="{!country}" id="country"/>
-        <input type="hidden" value="{!email}" id="email"/>
-        <input type="hidden" value="{!accountName}" id="accountName"/>
+        <div>
+            <input type="hidden" value="{!apiLoginId}" id="api-login-id"/>
+            <input type="hidden" value="{!apiPublicKey}" id="api-public-key"/>
+            <input type="hidden" value="{!amount}" id="amount"/>
+            <input type="hidden" value="{!street}" id="street"/>
+            <input type="hidden" value="{!city}" id="city"/>
+            <input type="hidden" value="{!state}" id="state"/>
+            <input type="hidden" value="{!zipcode}" id="zipcode"/>
+            <input type="hidden" value="{!country}" id="country"/>
+            <input type="hidden" value="{!email}" id="email"/>
+            <input type="hidden" value="{!accountName}" id="accountName"/>
 
-        <input type="hidden" id="payment-type" />
-        <input type="hidden" id="payment-method" />
-
+            <input type="hidden" id="payment-type" />
+            <input type="hidden" id="payment-method" />
+        </div>
         <apex:slds />
         <div class="slds-scope">
             <div id="spinner" class="slds-spinner_container" style="display:none">

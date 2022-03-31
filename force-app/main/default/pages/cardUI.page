@@ -116,39 +116,79 @@
         </div>
 
         <div class="slds-scope slds-grow">
+            <!-- <form action="#" method="post" id="creditcardForm" target="_self"> -->
             <div class="credit-card-view">
                 <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
                     <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
                         <input type="text" id="payment-credit-card-holder-name" placeholder="Name on Card" required="" class="slds-input" />
                     </div>
-                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                        <input type="text" id="payment-credit-card-number" placeholder="Card Number" required="" class="slds-input" />
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                            <input type="text" id="payment-credit-card-number" placeholder="Card Number" required="" class="slds-input" data-rule-required="true" data-rule-creditcard="true" data-msg-required="Enter Card Number" data-msg-creditcard="Enter Valid Card Number" />
+                            <div class="invalid-payment-credit-card-number"></div>
+                        </div>
+                        <div class="slds-form-element__control slds-col slds-grid slds-size_1-of-2 slds-p-around_x-small">
+                            <div class="slds-form-element__control slds-col slds-size_1-of-2">
+                                <!-- <input type="text" id="payment-credit-card-expiry-mm" placeholder="MM" required="" class="slds-input" /> -->
+                                <div class="expiry-date-flex">
+                                    <label>Month</label> <select name="payment-credit-card-expiry-mm" id="payment-credit-card-expiry-mm" class="dropdown" data-rule-required="true" data-msg-required="Select Expiration Date">
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="03">04</option>
+                                        <option value="03">05</option>
+                                        <option value="03">06</option>
+                                        <option value="03">07</option>
+                                        <option value="03">08</option>
+                                        <option value="03">09</option>
+                                        <option value="03">10</option>
+                                        <option value="03">11</option>
+                                        <option value="03">12</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_1-of-2 ">
+                                <!-- <input type="text" id="payment-credit-card-expiry-yy" placeholder="YY" required="" class="slds-input" /> -->
+                                <div class="expiry-date-flex">
+                                    <label>Year</label>
+                                    <select name="payment-credit-card-expiry-yy" id="payment-credit-card-expiry-yy" class="dropdown" data-rule-required="true" data-msg-required="Select Expiration Year">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="slds-grid slds-wrap">
-                        <div class="slds-form-element__control slds-col slds-grid slds-size_1-of-2 slds-p-around_x-small">
-                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                <input type="text" id="payment-credit-card-expiry-mm" placeholder="MM" required="" class="slds-input" />
-                            </div>
-                            <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
-                                <input type="text" id="payment-credit-card-expiry-yy" placeholder="YY" required="" class="slds-input" />
-                            </div>
+                        <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
+                            <input type="text" id="payment-zip" placeholder="Zipcode" required="" class="slds-input" />
                         </div>
                         <div class="slds-form-element__control slds-col slds-size_1-of-2 slds-p-around_x-small">
                             <input type="text" id="payment-credit-card-cvv" placeholder="CVV" required="" class="slds-input" />
                         </div>
                     </div> 
-                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                        <div class="slds-form-element">
-                            <input type="checkbox" id="save-card" checked="checked" class="slds-p-horizontal_medium"/>Save information for future checkouts
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 ">
+                        <div class="slds-form-element expiry-date-flex">
+                            <div class="slds-form-element__control slds-col slds-size_1-of-12 ">
+                                <input type="checkbox" id="save-card" checked="checked" class="slds-p-horizontal_medium"/>
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_11-of-12 ">
+                                <label class="" for="save-card">Save information for future checkouts</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
-                        <div class="slds-form-element">
-                            <input type="checkbox" id="save-card-default" checked="checked" class="slds-p-horizontal_medium"/>Save as default for future checkouts
+                    <div class="slds-form-element__control slds-col slds-size_1-of-1 ">
+                        <div class="slds-form-element expiry-date-flex">
+                            <div class="slds-form-element__control slds-col slds-size_1-of-12 ">
+                                <input type="checkbox" id="save-card-default" checked="checked" class="slds-p-horizontal_medium"/>
+                            </div>
+                            <div class="slds-form-element__control slds-col slds-size_11-of-12 ">
+                                <label class="" for="save-card-default">Save as default for future checkouts</label>
+                            </div>
                         </div>
                     </div>
                 </div>
+            
             </div>
+        <!-- </form> -->
             <div class="bank-payment-view hide">
                 <div class="slds-box slds-box_x-small slds-text-align_left slds-m-around--x-small">
                     <div class="slds-form-element__control slds-col slds-size_1-of-1 slds-p-around_x-small">
@@ -197,5 +237,24 @@
     <apex:includeScript value="{!$Resource.payment_form_helper}"/>
 
     <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.js"></apex:includeScript>
+
+    <!-- <apex:includeScript value="//code.jquery.com/jquery-3.2.1.slim.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></apex:includeScript>
+    <apex:includeScript value="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></apex:includeScript>
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></apex:includeScript> -->
+    <!-- <script  src="./script.js"></script> -->
+
+    <!-- <apex:stylesheet value="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"/>
+    <apex:stylesheet value="//fonts.googleapis.com/css?family=Open+Sans:300,400,600|Raleway:300,400,600&amp;subset=latin-ext"/>
+    <apex:stylesheet value="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <apex:stylesheet value="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css"/>  -->
+    
     
 </apex:page>

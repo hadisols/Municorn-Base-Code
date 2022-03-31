@@ -61,12 +61,12 @@ body
 
 .panel-header
 {
-    background: #2e2e2e;
+    background: #000000;
     height: 80px;
     padding: 15px 20px 0 20px;
 }
 .panel-header-logo {
-    background: #2e2e2e;
+    background: #000000;
     height: 80px;
     padding: 15px 20px 0 20px;
     border-radius: 10px 10px 0 0;
@@ -109,7 +109,7 @@ body
 
 .basket-body
 {
-    background: #2e2e2e;
+    background: #000000;
     color: white;
 }
 
@@ -212,7 +212,7 @@ body
 
 .basket-footer
 {
-    background: #2e2e2e;
+    background: #000000;
     border-radius: 0 0 0 15px;
     -moz-border-radius: 0 0 0 15px;
     -webkit-border-radius: 0 0 0 15px;
@@ -321,13 +321,17 @@ button.confirm:hover
 
 .creditcard-body form fieldset
 {
-    border-bottom: dotted 2px #D0D0D0;
+    /*border-bottom: dotted 2px #D0D0D0;*/
     margin-bottom: 25px;
 }
 
 .creditcard-body form input
 {
-    border: none;
+    /*border: none;*/
+    border-left: 0px dotted #D0D0D0;
+    border-right: 0px dotted #D0D0D0;
+    border-bottom: 2px dotted #D0D0D0;
+    border-top: 0px dotted #D0D0D0;
     font-weight: 600;
     color: #555555;
     width: 85%;
@@ -378,7 +382,7 @@ span.month.focused.active
     
     .basket-footer
     {
-        background: #2e2e2e;
+        background: black;
         border-radius: 0;
         -moz-border-radius: 0;
         -webkit-border-radius: 0;
@@ -434,4 +438,7 @@ span.month.focused.active
 }
 .payment-header-view {
 
+}
+.slds-scope .slds-spinner_container{
+    position:fixed!important;
 }

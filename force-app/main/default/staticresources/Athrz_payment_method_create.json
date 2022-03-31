@@ -1,0 +1,53 @@
+{   
+    "paymentProfile": {
+      "customerProfileId": "190179",
+      "customerPaymentProfileId": "157500",
+      "payment": {
+        "creditCard": {
+          "cardNumber": "XXXX1111",
+          "expirationDate": "XXXX",
+          "cardType": "Visa",
+          "issuerNumber": "411111"
+        }
+      },
+      "originalNetworkTransId": "0TN1VE648DFCJSHQ81GZH9F",
+      "originalAuthAmount": 0,
+      "billTo": {
+        "phoneNumber": "000-000-0000",
+        "firstName": "John",
+        "lastName": "Doe",
+        "address": "123 Main St.",
+        "city": "Bellevue",
+        "state": "WA",
+        "zip": "98004",
+        "country": "US"
+      }
+    },
+    "messages": {
+      "resultCode": "Ok",
+      "message": [
+        {
+          "code": "I00001",
+          "text": "Successful."
+        }
+      ]
+    },
+
+    "customerProfileId": "190179",
+    "customerPaymentProfileIdList": [
+        "157500"
+    ],
+    "customerShippingAddressIdList": [
+        "126407"
+    ],
+    "validationDirectResponseList": [],
+    "messages": {
+        "resultCode": "Ok",
+        "message": [
+            {
+                "code": "I00001",
+                "text": "Successful."
+            }
+        ]
+    }
+  }

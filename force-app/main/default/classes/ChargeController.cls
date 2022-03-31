@@ -55,13 +55,14 @@ public with sharing class ChargeController {
 
     @AuraEnabled
     public static String createTransaction(String intentId, String gatewayId, String obj_type, Athrz_utility.Payload payload, String accountId, Decimal total) {
+        String transactionId = '';
         try{
             System.debug(intentId+ ' '+gatewayId+' '+obj_type+' '+payload);
             Athrz_utility.savePayment = payload.savePayment != null ?payload.savePayment : false;
             Athrz_utility.saveAsDefault = payload.saveAsDefault != null ?payload.saveAsDefault : false;
             Athrz_utility.token = payload.token;
             Athrz_utility.amount = total;
-            Athrz_utility.chargePayment(intentId, gatewayId, obj_type, accountId);
+            transactionId = Athrz_utility.chargePayment(intentId, gatewayId, obj_type, accountId);
             Payment_Intent__c intent = new Payment_Intent__c(
                 Id = intentId,
                 Athrz_Amount__c = total
@@ -69,11 +70,33 @@ public with sharing class ChargeController {
             update intent;
         } catch(Exception e) {
             System.debug(e.getStackTraceString());
+            System.debug('error#'+e.getMessage());
             throw new AuraHandledException(e.getMessage());
         }
-        
-        return Athrz_utility.error;
+
+        JSONGenerator gen = JSON.createGenerator(true);
+        gen.writeStartObject();
+        gen.writeStringField('error', Athrz_utility.error != null ? Athrz_utility.error : '');
+        gen.writeStringField('data', transactionId != null ? transactionId : '');
+
+        return gen.getAsString();
     } 
+
+    @AuraEnabled
+    public static string createPaymentMethod(String transactionId, String accountId, String gatewayId, Athrz_utility.Payload payload){
+        try {
+            System.debug(transactionId+ ' '+gatewayId+' '+payload);
+            Athrz_utility.savePayment = payload.savePayment != null ?payload.savePayment : false;
+            Athrz_utility.saveAsDefault = payload.saveAsDefault != null ?payload.saveAsDefault : false;
+            
+            Athrz_utility.processPaymentMethod(transactionId, accountId, gatewayId);
+        } catch (Exception e) {
+            System.debug(e.getStackTraceString());
+            System.debug('error##'+ e.getMessage());
+            throw new AuraHandledException(e.getMessage());
+        }
+        return Athrz_utility.error;
+    }
 
     @AuraEnabled
     public static String requestSubscription(String subscriptionId, String gatewayId, String obj_type, Athrz_utility.Payload payload, String accountId, Decimal total) {
