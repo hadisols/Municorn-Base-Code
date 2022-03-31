@@ -13,7 +13,7 @@
     <filters>
         <field>ObjectSetting__c</field>
         <operation>equals</operation>
-        <value>Custom_Parent_Object_Setting</value>
+        <value>SYS_Test_Account_Object_Setting</value>
     </filters>
-    <label>Base</label>
+    <label>Test Records</label>
 </ListView>

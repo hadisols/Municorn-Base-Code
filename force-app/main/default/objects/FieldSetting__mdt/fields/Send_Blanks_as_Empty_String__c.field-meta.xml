@@ -3,7 +3,7 @@
     <fullName>Send_Blanks_as_Empty_String__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Check this option if blank values in this field should be send as empty quotes in the JSON</inlineHelpText>
     <label>Send Blanks as Empty String</label>
     <type>Checkbox</type>

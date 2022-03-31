@@ -28,7 +28,7 @@
     </values>
     <values>
         <field>ExternalFieldApi__c</field>
-        <value xsi:type="xsd:string">SYS_Key__c</value>
+        <value xsi:type="xsd:string">#SYS_Key__c</value>
     </values>
     <values>
         <field>GET_URL_Pattern__c</field>
@@ -48,7 +48,7 @@
     </values>
     <values>
         <field>POST_URL_Pattern__c</field>
-        <value xsi:type="xsd:string">callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>PUT_URL_Pattern__c</field>
