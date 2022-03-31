@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>FieldApiName__c</field>
-        <value xsi:type="xsd:string">Trigger_Flow__c</value>
+        <value xsi:type="xsd:string">#Trigger_Flow__c</value>
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>

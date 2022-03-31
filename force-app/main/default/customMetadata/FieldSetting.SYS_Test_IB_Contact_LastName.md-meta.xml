@@ -51,10 +51,6 @@
         <value xsi:nil="true"/>
     </values>
     <values>
-        <field>Key_For_Response__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
         <field>Key__c</field>
         <value xsi:type="xsd:string">LastName</value>
     </values>
