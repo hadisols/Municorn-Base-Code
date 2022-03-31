@@ -1,0 +1,17 @@
+{
+  "subscriptionId": "8027847",
+  "profile": {
+    "customerProfileId": "504389592",
+    "customerPaymentProfileId": "904251300"
+  },
+  "refId": "a0K5j000000IiLh",
+  "messages": {
+    "resultCode": "Ok",
+    "message": [
+      {
+        "code": "I00001",
+        "text": "Successful."
+      }
+    ]
+  }
+}
