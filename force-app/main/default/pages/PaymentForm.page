@@ -55,9 +55,11 @@
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <div id="template-error" class="row panel-wrapper">
                                         <div class="col-12 panel-body basket-body align-center error-message">
-                                            <div class="edgtf-404-text">404<span class="edgtf-underscore"></span></div>
+                                            <!-- <div class="edgtf-404-text">404<span class="edgtf-underscore"></span>
+                                                
+                                            </div> -->
                                             <div class="edgtf-page-not-found">
-                                                <h2>PAYMENT LINK IS EXPIRED.</h2>
+                                                <h2>OOPS THIS LINK IS EXPIRED.</h2>
                                                 <div class="">
                                                     <a href="https://www.jasonemermd.com/contact-cosmetic-dermatology-office-beverly-hills/" target="_self" 
                                                     style="color: #fff" class="edgtf-btn edgtf-btn-medium edgtf-btn-outline button-new">

@@ -666,6 +666,7 @@ public class Athrz_utility {
     public static Payment_Gateway__c getPaymentGateway(String gatewayId) {
         List<Payment_Gateway__c> gateway = [SELECT Id, Athrz_Active__c, Athrz_Api_Login_Id__c, Athrz_Base_Endpoint__c, Athrz_Public_Client_Key__c, Athrz_Transaction_Key__c
             FROM Payment_Gateway__c WHERE Id = :gatewayId LIMIT 1];
+        System.debug('gateway rec '+gateway);
         if(gateway.size() > 0 ) {
             endpoint = gateway[0].Athrz_Base_Endpoint__c;
             transactionKey = gateway[0].Athrz_Transaction_Key__c;

@@ -100,7 +100,8 @@ public class ChargeControllerTest {
     static void createPaymentMethod_positive() {
         String intentId = SYS_TestDataFactory.createPaymentIntent(1);
         Test.setMock(HttpCalloutMock.class, SYS_MockServer.paymentMethodCreate());
-        Payment_Gateway__c gateway = [select id, Athrz_Transaction_Key__c,Athrz_Api_Login_Id__c from Payment_Gateway__c limit 1];
+        Payment_Gateway__c gateway = [select id, Athrz_Base_Endpoint__c, Athrz_Transaction_Key__c,Athrz_Api_Login_Id__c from Payment_Gateway__c limit 1];
+        System.debug('gateway '+ gateway);
         Account acc = [select id from Account limit 1];
         Athrz_utility.Payload payload= new Athrz_utility.Payload();
         payload.savePayment = true;

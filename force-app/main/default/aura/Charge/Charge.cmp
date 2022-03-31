@@ -49,7 +49,7 @@
     <aura:attribute name="selectedObject" type="Object" />
     <aura:attribute name="gateways" type="List" access="PRIVATE"/>
     <aura:attribute name="selectedGateway" type="String" access="PRIVATE" />
-    <aura:attribute name="isAdhoc" type="Boolean" default="false" />
+    
     
     
     <aura:attribute name="selectedRow" type="List" default="[]" />
@@ -77,18 +77,18 @@
     <aura:attribute name="saveAccountAsDefault" type="Boolean" default="true"/>
     <aura:attribute name="subscriptionId" type="String" />
 
-
-    <aura:attribute name="amountFieldApiName" type="String" />
-    <aura:attribute name="emailFieldApiName" type="String" />
-    <aura:attribute name="accountFieldApiName" type="String" default=""/>
-    <aura:attribute name="chargeDateFieldApiName" type="String" />
-    <aura:attribute name="paymentIntentParentFieldApiName" type="String" />
-    <aura:attribute name="chargeButtonName" type="String" />
-    <aura:attribute name="gatewayId" type="String" />
-    <aura:attribute name="frequency" type="String" />
-    <aura:attribute name="recurringAmountApiName" type="String" />
-    <aura:attribute name="subscriptionParentFieldApiName" type="String" />
-    <aura:attribute name="showACH" type="Boolean" />
+    <aura:attribute name="isAdhoc" type="Boolean" default="false" access="global" />
+    <aura:attribute name="amountFieldApiName" type="String" access="global"/>
+    <aura:attribute name="emailFieldApiName" type="String" access="global"/>
+    <aura:attribute name="accountFieldApiName" type="String" default="" access="global"/>
+    <aura:attribute name="chargeDateFieldApiName" type="String" access="global"/>
+    <aura:attribute name="paymentIntentParentFieldApiName" type="String" access="global"/>
+    <aura:attribute name="chargeButtonName" type="String" access="global"/>
+    <aura:attribute name="gatewayId" type="String" access="global"/>
+    <aura:attribute name="frequency" type="String" access="global"/>
+    <aura:attribute name="recurringAmountApiName" type="String" access="global"/>
+    <aura:attribute name="subscriptionParentFieldApiName" type="String" access="global"/>
+    <aura:attribute name="showACH" type="Boolean" access="global"/>
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
     <!-- <aura:handler event="force:refreshView" action="{!c.isRefreshed}"/> -->
