@@ -52,7 +52,13 @@ function getReceipt(paymentMessage) {
     console.log('error paymentMessage ', paymentMessage);
     var receipt = JSON.parse(paymentMessage);
     console.log('receipt ',receipt);
-    if(receipt.transactionId != '') {
+    if(receipt.expired) {
+        $('.error-message-view').show();
+        $('.payment-form-view').hide();
+        $('.background-image').hide();
+        console.log('error **')
+    }
+    else if(receipt.transactionId != '') {
         $('.panel-footer').hide();
         $('.credit-card-view').hide();
         $('.bank-payment-view').hide();
@@ -68,6 +74,8 @@ function getReceipt(paymentMessage) {
         payload.message_status = receipt.message;
         payload.currency = "&dollar;";
         loadFields(payload, '.receipt-view');
+    } else {
+        
     }
 }
 
@@ -390,6 +398,7 @@ function load() {
     var paymentMessage = $('#message-panel').val();
     if(paymentMessage)
         getReceipt(paymentMessage);
+    console.log('message ',paymentMessage);
 
     var curr = new Date().getFullYear();
     var year = $('#payment-credit-card-expiry-yy');
@@ -437,7 +446,7 @@ function get_basket () {
         "billing_city" : city,
         "billing_zipcode" : zipcode,
         "billing_country" : country,
-        "billing_phone" : "9034934094",
+        "billing_phone" : $('#accountPhone').val(),
         "email" : email
      };
 }

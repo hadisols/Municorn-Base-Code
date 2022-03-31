@@ -6,6 +6,7 @@ html, body
     /* font-family: 'Roboto Condensed', sans-serif; */
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
+    background-color: #000000 !important;
 }
 
 body
@@ -406,6 +407,25 @@ span.month.focused.active
         min-height: max-content!important;
         padding-bottom: 2rem!important;
     }
+
+    .edgtf-404-text {
+        font-size: 100px !important;
+        line-height: 120px !important;
+        font-weight: 700;
+        letter-spacing: .06em;
+        color: rgb(252, 252, 252) !important;
+        position: relative;
+    }
+    .edgtf-underscore .edgtf-404-text {
+        font-size: inherit;
+        bottom: 0em !important;
+    }
+    .edgtf-page-not-found h2 {
+        color: #fff;
+        margin-bottom: 12px !important;
+        font-size: 1.5rem !important;
+        padding: 20px !important;
+    }
     
 }
 
@@ -442,3 +462,68 @@ span.month.focused.active
 .slds-scope .slds-spinner_container{
     position:fixed!important;
 }
+
+
+.error-message{
+    border-radius: 10px;
+}
+
+.edgtf-404-text {
+    font-size: 180px;
+    line-height: 150px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: #fff;
+    position: relative;
+}
+.edgtf-underscore .edgtf-404-text {
+    font-size: inherit;
+    bottom: 0em;
+}
+
+.edgtf-underscore {
+    position: absolute;
+    width: 0.4em;
+    height: 0.05em;
+    background-color: currentColor;
+    bottom: 0.03em;
+}
+.edgtf-page-not-found h2 {
+    color: #fff;
+    margin-bottom: 28px;
+    padding: 30px;
+}
+h2 .edgtf-btn-text{
+    font-family: "Lato",Helvetica,Arial,Lucida,sans-serif;
+}
+
+.edgtf-btn.edgtf-btn-medium {
+    padding: 15px 42px;
+}
+
+.edgtf-btn .edgtf-btn-outline {
+    color: #b6a7a7;
+    background-color: transparent;
+}
+
+
+.button-new {
+    background: transparent;
+    box-sizing: border-box;
+    border: 1px solid #b7b7b7 !important;
+    align-self: center;
+    font-size: 17px;
+    font-weight: 400;
+    margin: 20px;
+    padding: 20px 40px;
+    text-align: center;
+    color: aliceblue;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .button-new:hover {
+    transition: 0.4s ease-in-out;
+    background: rgb(255, 255, 255);
+    color: rgb(14, 14, 17) !important;
+  }

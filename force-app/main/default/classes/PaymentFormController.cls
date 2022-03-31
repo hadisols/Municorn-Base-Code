@@ -23,6 +23,7 @@ public class PaymentFormController {
     public String accountType {get; set;}
     public String paymentMethodId {get; set;}
     public Boolean isPaymentMethod {get; set;}
+    public String accountPhone {get; set;}
 
     public String pageUrl {get; set;}
     public Boolean isCreditcard {get; set;}
@@ -45,7 +46,11 @@ public class PaymentFormController {
         
         if(intents.size() > 0) {
             paymentIntent = intents[0];
-            if(paymentIntent.Status__c == 'payment_done') {
+            if(paymentIntent.Status__c == 'payment_expired') {
+                paymentMessage = '{"expired":true}';
+                return ;
+            }
+            else if(paymentIntent.Status__c == 'payment_done') {
                 this.paymentMessage = Athrz_utility.getReceipt(paymentIntent.Id);
                 // paymentMessage = 'Payment done sucessfully!!';
             }
@@ -62,13 +67,14 @@ public class PaymentFormController {
             country = paymentIntent.Athrz_Account__r.BillingCountry;
             email = paymentIntent.Athrz_Email__c;
             accountName = paymentIntent.Athrz_Account__r.Name;
+            accountPhone = paymentIntent.Athrz_Account__r.Phone;
 
             cards = Athrz_utility.getCardPaymentMethods(accountId);
             banks = Athrz_utility.getBankPaymentMethods(accountId);
 
 
         } else {
-            paymentMessage = 'Payment url is invalid!!';
+            paymentMessage = '{"expired":true}';
         }
     }
 
@@ -149,6 +155,7 @@ public class PaymentFormController {
                     Athrz_Account__r.BillingPostalCode,
                     Athrz_Account__r.BillingCountry,
                     Athrz_Account__r.BillingState,
+                    Athrz_Account__r.Phone,
                     Status__c,
                     Athrz_Currency_Code__c,
                     Athrz_PaymentType__c,

@@ -27,6 +27,8 @@
             <input type="hidden" value="{!country}" id="country"/>
             <input type="hidden" value="{!email}" id="email"/>
             <input type="hidden" value="{!accountName}" id="accountName"/>
+            <input type="hidden" value="{!accountPhone}" id="accountPhone"/>
+
 
             <input type="hidden" id="payment-type" />
             <input type="hidden" id="payment-method" />
@@ -48,7 +50,27 @@
                 <div class="col-12 col-sm-12 col-md-10 col-lg-10 col-xl-8 offset-md-1 offset-lg-1 offset-xl-2 padding-horizontal-40">
                     <div class="row">
                         <div class="col-12 main-wrapper">
+                            <div class="hide error-message-view">
                             <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                    <div id="template-error" class="row panel-wrapper">
+                                        <div class="col-12 panel-body basket-body align-center error-message">
+                                            <div class="edgtf-404-text">404<span class="edgtf-underscore"></span></div>
+                                            <div class="edgtf-page-not-found">
+                                                <h2>PAYMENT LINK IS EXPIRED.</h2>
+                                                <div class="">
+                                                    <a href="https://www.jasonemermd.com/contact-cosmetic-dermatology-office-beverly-hills/" target="_self" 
+                                                    style="color: #fff" class="edgtf-btn edgtf-btn-medium edgtf-btn-outline button-new">
+                                                        <span class="edgtf-btn-text">CONTACT US</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="row payment-form-view">
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                     <div id="logo" class="row panel-wrapper">
                                         <div class="col-12 panel-header-logo">

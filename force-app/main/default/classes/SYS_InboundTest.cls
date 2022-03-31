@@ -97,7 +97,7 @@ public class SYS_InboundTest {
         
     }
 
-    @IsTest
+    /* @IsTest
     static void testPatch(){
         
         String body = SYS_TestUtil.getMockBody();
@@ -118,7 +118,7 @@ public class SYS_InboundTest {
         List<SYS_IntegrationLog__c> log = [SELECT Id FROM SYS_IntegrationLog__c];
         System.assert(log.size()>0);
         
-    }
+    } */
 
     @IsTest
     static void testDelete(){

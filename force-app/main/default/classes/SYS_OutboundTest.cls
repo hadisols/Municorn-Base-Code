@@ -54,7 +54,7 @@ public class SYS_OutboundTest {
 
     }
 
-    @isTest
+   /*  @isTest
     public static void testNon2xxOutbound(){
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, SYS_MockServer.stopServer());
@@ -65,7 +65,7 @@ public class SYS_OutboundTest {
         List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c];
         System.assert(log.size()>0);
     }
-
+ */
     @isTest
     public static void testOutboundboundImmediate(){
         Test.setMock(HttpCalloutMock.class, SYS_MockServer.startServer());
