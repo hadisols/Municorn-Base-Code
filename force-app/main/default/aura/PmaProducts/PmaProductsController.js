@@ -161,28 +161,4 @@
         cmp.set("v.numEvents", numEventsHandled);
         //cmp.displayMessage('Success!', message, 'success');
     },
-   /*  handleLtngSendMessageEvent : function (cmp, event) {
-        var message = event.getParam("message");
-        if (logApiResponses) { console.log('Received Message from Cart: '); }
-        if (logApiResponses) { console.log(message); }
-        // set the handler attributes based on event data
-        cmp.set("v.messageFromEvent", message);
-        var numEventsHandled = parseInt(cmp.get("v.numEvents")) + 1;
-        cmp.set("v.numEvents", numEventsHandled);
-    }, */
-/* 
-    fireApplicationEventUsingLtngSendMessage : function(cmp, event) {
-        var logApiResponses = true;
-        var selectedItem = event.currentTarget;
-        var selectedProdId = selectedItem.dataset.id;
-       if (logApiResponses) { console.log('selectedProdId fireApplicationEvent ' + selectedProdId); }
-       // var sendMsgEvent = window.$A.get("e.ltng:sendMessage");
-        var sendMsgEvent = $A.get("e.ltng:sendMessage");
-        sendMsgEvent.setParams({
-            "message": selectedProdId,
-            "channel": "ProductsChannel"
-        });
-        console.log('*** ' + 'sending ltng:sendMsg event' + ' ***');
-        sendMsgEvent.fire();
-    } */
 })

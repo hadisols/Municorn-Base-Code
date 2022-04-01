@@ -38,10 +38,10 @@ global class PMA_ContactInvocableHandler {
         List < Activity__c > activityList = new List < Activity__c > ();
         SYS_IntegrationLog__c errorLog = new SYS_IntegrationLog__c();
         Order__c order = new Order__c();
-        order = [SELECT Id,Name,Account__c,Order_Type__c,Total_Price__c,CreatedDate,LastModifiedDate,OwnerId,
+        order = [SELECT Id,Name,Account__c,Order_Type__c,Status__c,Vendor__c,Total_Price__c,UUID__c,CreatedDate,LastModifiedDate,OwnerId,
                 (SELECT Id,Name,Line_Total_Price__c,List_Price__c,Order__c,Product__c,Quantity__c,Total_Price__c,CreatedDate,LastModifiedDate FROM Order_Items__r)
                 FROM Order__c
-                WHERE Id = :orderId];
+                WHERE Id = :orderId AND (Order_Type__c = 'Registration') AND (Status__c = 'Active' )];
         pmasandBox = [SELECT Access_Token__c,CreatedDate,Gateway_Public_Key__c,Id,LastModifiedDate,Name,OwnerId,Test_Mode__c FROM Payment_Gateway__c LIMIT 1];
         //Payment Intent Init
         Date firstChargeDate = System.TODAY();

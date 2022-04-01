@@ -1,10 +1,15 @@
 <aura:component
     implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
-    access="global" controller="ProductsController">
+    access="global" controller="PMA_ProductsController">
 
     <!--Aura Attributes START-->
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
-    
+    <!--Init Parent Component Values-->
+    <aura:attribute name="memberId" type="String" />
+    <aura:attribute name="orderUUID" type="String" />
+    <aura:attribute name="memberName" type="String" />
+<!--     <aura:attribute name="memberRecord" type="Object" />
+ -->    
     <!-- Store Incoming Message of Map<Id,Wrapper> -->
     <aura:attribute name="selectedproductsString" type="String" />
     <!-- **EventVariable** Store Selected Products Values to Itereate over Products and Set This for inbound-->
@@ -46,7 +51,7 @@
                                     <div class="row">
 
                                         <div class="col-lg-12 p-0">
-                                            <h5 class="mb-3 text-body text-center">Select Customer</h5>
+                                            <h5 class="mb-3 text-body text-center">{!v.memberName}</h5>
                                             <h5 class="mb-3 text-body text-center">Cart Items</h5>
                                             <hr/>
                                             <div class="cartitemsList listscroll-y">
@@ -96,9 +101,12 @@
                                 <aura:if isTrue="{! !empty(v.selectedProductsValues)}">
                                     <div class="d-flex justify-content-center py-3 py-3">
                                         <div class="d-flex flex-row align-items-center flex-shrink-1">
-                                            <button class="btn btn-primary btn-md" onclick="{! c.handleCharge }">
-                                            Charge &nbsp;<lightning:formattedNumber value="{! v.totalChargeAmount}" style="currency" currencyCode="USD"/>    
+                                            <button class="btn btn-primary btn-md mx-2" onclick="{! c.handleFinialize }">
+                                                Add to Cart    
                                             </button>
+                                            <!-- <button class="btn btn-primary btn-md" onclick="{! c.handleCharge }">
+                                            Charge &nbsp;<lightning:formattedNumber value="{! v.totalChargeAmount}" style="currency" currencyCode="USD"/>    
+                                            </button> -->
                                         </div>
                                     </div>
                                 </aura:if>
@@ -110,5 +118,4 @@
         </div>
     </div>
     <!-- End Bootstrap Cart markup -->
-
 </aura:component>

@@ -1,17 +1,21 @@
 <aura:component
     implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
-    access="global">
+    access="global" controller="PMA_SearchController">
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
     <ltng:require styles="{!join(',', 
     $Resource.Bootstrap, 
     $Resource.FontAwesome + '/FontAwesome/css/all.css')}" afterScriptsLoaded="{!c.setup}" />
-    
+    <aura:attribute name="orderUUID" type="String" default=""/>
+    <aura:attribute name="currentMember" type="String" default=""/>
+    <aura:attribute name="memberName" type="String" default=""/>
+
     <div>
         <lightning:layout multipleRows="true">
             <lightning:layoutItem size="12" largeDeviceSize="8" mediumDeviceSize="8" smallDeviceSize="12">
-                <c:PmaProducts />
+                <c:PmaProducts orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />
             </lightning:layoutItem>
             <lightning:layoutItem size="12" largeDeviceSize="4" mediumDeviceSize="4" smallDeviceSize="12">
-                <c:pmaCart />
+                <c:pmaCart orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />
             </lightning:layoutItem>
         </lightning:layout>
     </div>

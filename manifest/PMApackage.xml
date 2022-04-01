@@ -16,12 +16,11 @@
 		<members>PMA_ContactTriggerHandler</members>
 		-->
 		<members>PMA_ExternalSiteFormsUtility</members>
-		<members>ProductsController</members>
+		<members>PMA_ProductsController</members>
 		<!-- End PMA Classes -->
 		<!-- Start Municorn Override Classes -->
 		<members>Plivo_Inbound_SYS_ApplicationService</members>
 		<members>Plivo_Outbound_SYS_ApplicationService</members>
-		<members>St_Customer_Out_SYS_ApplicationService</members>
 		<members>Stripe_Inbound_SYS_ApplicationService</members>
 		<!-- End Municorn Override Classes -->
 		<name>ApexClass</name>

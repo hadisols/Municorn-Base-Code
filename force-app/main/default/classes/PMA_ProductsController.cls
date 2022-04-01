@@ -1,4 +1,4 @@
-public with sharing class ProductsController {
+public with sharing class PMA_ProductsController {
     //To return initial records
     @AuraEnabled
     public static Map <Id, SelectedProductWrapper > getAllProductRecords() {

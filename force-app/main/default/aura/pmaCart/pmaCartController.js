@@ -57,6 +57,16 @@
             });
             toastEvent.fire();
         };
+        var orderRecord = component.get("v.orderRecord");
+        console.log('orderRecord '+orderRecord);
+        console.table(orderRecord);
+        /* var currentMember = component.get("v.currentMember");
+        console.log('currentMember'+currentMember);
+        component.apiCall('getMemberDetails', {memberId: currentMember}, function (response) {
+            component.set('v.memberRecord',response);
+        }, function (error) {
+            //component.displayMessage('Failure!', 'Failed to Fetch Member Details, Please try again!!!', 'error');
+        }); */
     },
 
     handleProductSelectionEvent : function (cmp, event) {
@@ -162,26 +172,4 @@
     handleCharge : function(cmp, event) {
         console.log('*** ' + 'handleCharge' + ' ***');
     },
-   /*  fireApplicationEventUsingLtngSendMessage : function(cmp, event) {
-        var logApiResponses = true;
-        var selectedItem = event.currentTarget;
-        var selectedProdId = selectedItem.dataset.id;
-       if (logApiResponses) { console.log('selectedProdId fireApplicationEvent ' + selectedProdId); }
-       // var sendMsgEvent = window.$A.get("e.ltng:sendMessage");
-        var sendMsgEvent = $A.get("e.ltng:sendMessage");
-        sendMsgEvent.setParams({
-            "message": deletedString,
-            "channel": "ProductsChannel"
-        });
-        console.log('*** ' + 'sending ltng:sendMsg event' + ' ***');
-        sendMsgEvent.fire();
-    }, */
-   /*  handleLtngSendMessageEvent : function (cmp, event) {
-        var message = event.getParam("message");
-
-        // set the handler attributes based on event data
-        cmp.set("v.messageFromEvent", message);
-        var numEventsHandled = parseInt(cmp.get("v.numEvents")) + 1;
-        cmp.set("v.numEvents", numEventsHandled);
-    }, */
 })

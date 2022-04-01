@@ -1,22 +1,34 @@
 ({
     doInit: function (component, event, helper) {
         var logApiResponses = true;
-        component.displayMessage = function (title, message, type) {
+        component.displayMessage = function (title, message, type , mode ) {
             var toastEvent = $A.get("e.force:showToast");
             toastEvent.setParams({
-                "mode": 'sticky',
+                "mode": mode,
                 "title": title,
                 "type": type,
                 "message": message
             });
             toastEvent.fire();
         };
+        component.navigateToPOSOrderSelection = function ( orderUUID ) {
+            var nagigateLightning = component.find('navigate');
+            var pageReference = {
+                type: 'standard__namedPage',
+                attributes: {
+                    pageName: 'pos-selection'
+                },
+                state: {
+                    order: orderUUID
+                } 
+            };
+                nagigateLightning.navigate(pageReference);
+        };
         var action = component.get('c.getOpenTabMembers');
         action.setCallback(this, function (response) {
             var state = response.getState();
            if (state == "SUCCESS") {
                var allopenTabs = response.getReturnValue();
-                //component.set('v.searchResult',allopenTabs);
                 //For Aura attribute Iterate for UI
                 component.set('v.openTabMembers',allopenTabs);
 
@@ -24,7 +36,7 @@
                 if (logApiResponses) { console.table(allopenTabs); }
               
            } else { // if any callback error, display error msg
-            component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error');
+            component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error','dismissible');
            }
             
         });
@@ -43,16 +55,15 @@
             if (state == "SUCCESS") {
                 var searchResults = response.getReturnValue();
                  component.set('v.searchResult',searchResults);
-                 var sectionDiv = component.find(sectionAuraId).getElement();
-
-                //  $A.enqueueAction(component.get('c.controllerMethod'));
-                //  var resultssection = cmp.find("searchResultSection");
-                sectionDiv.click();
+                // get section Div element using aura:id
+                var sectionDiv = component.find("searchResultSection").getElement();
+                $A.util.addClass(sectionDiv, 'slds-is-open'); 
+                
                  if (logApiResponses) { console.log('Keyword searchResults'); }
                  if (logApiResponses) { console.table(searchResults); }
                
             } else { // if any callback error, display error msg
-             component.displayMessage('Error', 'An error occurred during Searching ' + state, 'Error');
+             component.displayMessage('Error', 'An error occurred during Searching ' + state, 'Error','dismissible');
             }
         });
         $A.enqueueAction(action);
@@ -67,28 +78,34 @@
          * This method returns -1 if no match is found.
         */
         var sectionState = sectionDiv.getAttribute('class').search('slds-is-open'); 
-        
-        // -1 if 'slds-is-open' class is missing...then set 'slds-is-open' class else set slds-is-close class to element
-        if(sectionState == -1){
-            sectionDiv.setAttribute('class' , 'slds-section slds-is-open');
-        }else{
-            sectionDiv.setAttribute('class' , 'slds-section slds-is-close');
-        }
+        $A.util.toggleClass(sectionDiv, 'slds-is-open');
     },
-    navigate : function(component, event, helper) {
+    openPOSOrderScreen : function(component, event, helper) {
+        var selectedItem = event.currentTarget;
+        var selectedOrderUUID = selectedItem.dataset.orderuuid;
+        component.navigateToPOSOrderSelection(selectedOrderUUID);
+    },
+    CreateOrder : function(component, event, helper) {
         var selectedItem = event.currentTarget;
         var selectedMemberId = selectedItem.dataset.memberid;
-
-        var nagigateLightning = component.find('navigate');
-        var pageReference = {
-            type: 'standard__namedPage',
-            attributes: {
-                pageName: 'pos-selection'
-            },
-            state: {
-                recordd: selectedMemberId
-            } 
-        };
-        nagigateLightning.navigate(pageReference);
+        var action = component.get('c.createDraftOrderRecord');
+        action.setParams({
+            "memberId" : selectedMemberId,
+        });
+        action.setCallback(this, function (response) {
+            var state = response.getState();
+            console.log(' response.getReturnValue()');
+               console.log(response.getReturnValue());
+           if (state == "SUCCESS") {
+               var orderUUID = response.getReturnValue();
+               console.log('Init orderUUID');
+               console.log(orderUUID);
+               component.navigateToPOSOrderSelection(orderUUID.UUID__c);              
+           } else { // if any callback error, display error msg
+            component.displayMessage('Error', 'An error occurred during order Creation ' + state, 'Error','dismissible');
+           }
+            
+        });
+        $A.enqueueAction(action);
     }
 });

@@ -37,12 +37,7 @@
     }
    
 }
-/**/
-.THIS .slds-dropdown {
-	max-width: 100% !important;
-}
-
-.THIS .slds-input-has-icon .slds-input__icon {
+.THIS .pointer-none{
     pointer-events: none;
 }
 
@@ -50,7 +45,7 @@
     cursor: pointer !important;
     background: #ecebea;
 }
-.THIS .slds-section__title-action {
+.THIS .section-title-tab{
     background: var(--lwc-colorBackgroundButtonDefaultActive,rgb(243, 243, 243));
     color: inherit;
 }

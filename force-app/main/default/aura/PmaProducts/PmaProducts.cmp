@@ -1,10 +1,15 @@
 <aura:component
     implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
-    access="global" controller="ProductsController">
+    access="global" controller="PMA_ProductsController">
 
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
 
     <!--Aura Attributes START-->
+    <!--Init Parent Component Values-->
+    <aura:attribute name="memberId" type="String" />
+    <aura:attribute name="orderUUID" type="String" />
+    <aura:attribute name="memberName" type="String" />
+
     <!-- Init() Products Map<Id, Wrapper> from Apex Controller -->
     <aura:attribute name="allProductsMap" type="Map" />
     <!-- Init() Extract Values form allProductsMap to Itereate over Products -->
