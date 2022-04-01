@@ -162,6 +162,9 @@ public class SYS_DataCache {
     //grand-parents, parents and do the maps.
     
     public static List<sObject> sObjList = new List<sObject>();
+
+    //NOT USED
+    /*
     public static List<sObject> contextSet{
         set{
             sObjList = value;
@@ -171,6 +174,7 @@ public class SYS_DataCache {
             }
         }
     }
+    */
     
     
      /* NOT USED

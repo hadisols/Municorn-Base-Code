@@ -1,0 +1,6 @@
+{
+    "access_token": "ya29.A0ARrdaM89l07KenKRAKxKYoh2lnWXVY1jD6Vwt7Db1x-XzQfSFaK2DWFsYVj03MDQNP7b-L5yUKv9FeRHdHj9qhNKijESzXRsb5aDRNFYfydzjrcviDwSPXvYQlfbGGfDUwcz530OodTAh84sKotZPnrgFe7u",
+    "expires_in": 3599,
+    "scope": "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.compose",
+    "token_type": "Bearer"
+}

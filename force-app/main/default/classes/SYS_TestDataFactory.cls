@@ -21,6 +21,12 @@ public class SYS_TestDataFactory {
         }
         // Insert all contacts for all accounts
         insert cons;
+
+    }
+
+    public static void createTestRecordsFromStaticResource(){
+        Test.loadData(SYS_OAuthConfig__c.sObjectType, 'OAuth_Test_Records');
+        
     }
 
     public static void createIgnoreLog(){

@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>All_OR_None__c</field>
-        <value xsi:type="xsd:boolean">false</value>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>Always_Ignore_Response__c</field>
@@ -28,11 +28,11 @@
     </values>
     <values>
         <field>ExternalFieldApi__c</field>
-        <value xsi:type="xsd:string">SYS_Key__c</value>
+        <value xsi:type="xsd:string">#SYS_Key__c</value>
     </values>
     <values>
         <field>GET_URL_Pattern__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account</value>
     </values>
     <values>
         <field>IntegrationType__c</field>
@@ -44,7 +44,7 @@
     </values>
     <values>
         <field>PATCH_URL_Pattern__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account/{Id}</value>
     </values>
     <values>
         <field>POST_URL_Pattern__c</field>

@@ -3,7 +3,7 @@
     <fullName>Is_Lookup__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Is Lookup?</label>
     <type>Checkbox</type>
 </CustomField>
