@@ -93,6 +93,8 @@
 		<members>FieldSetting.SYS_Test_IB_Contact_SYS_Key</members>
 		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Datetime_Error</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Datetime_2_Error</members>
 		<members>HttpHeaders.SYS_Auth_Header</members>
 		<members>HttpHeaders.SYS_OAuth_CC_Header</members>
 		<members>HttpHeaders.SYS_OAuth_Header</members>
