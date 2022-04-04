@@ -1,3 +1,27 @@
-SELECT Key__c, ObjectSetting__c, Direction__c, Label, FieldApiName__c, ObjectApiName__c, Level__c, ParentField__c, ChildRootElement__c, Mapping_is_for__c, Send_Blanks_as_Empty_String__c, Key_For_Events__c, RestResource__c, Is_External_Field__c, Get_value_from_Log__c, Log_API_for_field_mapping__c, Is_Lookup__c, Lookup_Object_API_Name__c, Lookup_External_Key__c, Datetime_Conversion_Format__c, IsChild__c, StaticValue__c, Field_Mapping_Handler__c, Is_Active__c
+SELECT Label,
+Key__c,
+ObjectSetting__c,
+Direction__c,
+FieldApiName__c,
+ObjectApiName__c,
+Level__c,
+ParentField__c,
+ChildRootElement__c,
+Mapping_is_for__c,
+Send_Blanks_as_Empty_String__c,
+Key_For_Events__c,
+RestResource__c,
+Is_External_Field__c,
+Get_value_from_Log__c,
+Log_API_for_field_mapping__c,
+Is_Lookup__c,
+Lookup_Object_API_Name__c,
+Lookup_External_Key__c,
+Datetime_Conversion_Format__c,
+IsChild__c,
+StaticValue__c,
+Field_Mapping_Handler__c,
+Is_Active__c
+  
   FROM FieldSetting__mdt
-  WHERE ObjectSetting__r.DeveloperName = 'SYS_Stripe_Subscription_Object_Setting'
+  WHERE ObjectSetting__r.developerName ='AccountQB';

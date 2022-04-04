@@ -22,9 +22,6 @@
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
-		<members>QB_Wrapper</members>
-		 <members>SYS_QB_ApplicationServiceOutboundTest</members>
-		 <members>SYS_QB_ApplicationServiceinboundTest</members>        
 		<members>SYS_NotificationInterface</members>
 		<members>SampleWrapper</members>
 
@@ -168,14 +165,8 @@
 		<members>OAUTH_CLIENT_CREDS_NC</members>
 		<members>OAUTH_NC</members>
 		<members>OAUTH_PWD_NC</members>
-		<members>QuickBooks</members>
-		       
 		<name>NamedCredential</name>
 	</types>
-	<types>
-        <members>QuickBooksAuth</members>
-        <name>AuthProvider</name>
-    </types>
 	<types>
 		<members>SYS_Municorn_Guest_User_Permission_Set</members>
 		<members>SYS_Municorn_Permission_Set</members>
@@ -194,11 +185,10 @@
 		<members>SYS_Test_Inbound_Body</members>
 		<members>SYS_Test_Inbound_Body_Large</members>
 		<members>SYS_Test_Outbound_Response_Body</members>
-		<!--
-		UNCOMMENT ONCE to get the static resource in the org. 
-		Update the headers in the CSV if the org has namespace enabled. Comment in again to avoid override
+		
+		
 		<members>OAuth_Test_Records</members>
-		-->
+	
 		<members>OAuth_Auth_Code_Test_Token_Body</members>
 		<members>OAuth_Test_Token_Body</members>
 		<name>StaticResource</name>

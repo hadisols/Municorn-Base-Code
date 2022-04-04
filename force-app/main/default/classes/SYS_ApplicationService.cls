@@ -763,7 +763,7 @@ global virtual class SYS_ApplicationService {
             }
             else{
                 //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
-                resourceUrl+= '/'+ externalId;
+              //  resourceUrl+= '/'+ externalId;
             }
             System.debug('====== MS Endpoint check:'+resourceUrl);
             log.Callout_URL__c = resourceUrl;
