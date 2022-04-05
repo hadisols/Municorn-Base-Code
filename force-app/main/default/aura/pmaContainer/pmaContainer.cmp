@@ -1,6 +1,7 @@
 <aura:component
     implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
     access="global" controller="PMA_SearchController">
+    <aura:attribute name = "showChild" type = "Boolean" default = "false"/>
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
     <ltng:require styles="{!join(',', 
     $Resource.Bootstrap, 
@@ -12,10 +13,14 @@
     <div>
         <lightning:layout multipleRows="true">
             <lightning:layoutItem size="12" largeDeviceSize="8" mediumDeviceSize="8" smallDeviceSize="12">
-                <c:PmaProducts orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />
+                <aura:if isTrue = "{!v.showChild}">
+                    <c:PmaProducts orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />
+                </aura:if>
             </lightning:layoutItem>
             <lightning:layoutItem size="12" largeDeviceSize="4" mediumDeviceSize="4" smallDeviceSize="12">
-                <c:pmaCart orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />
+                <aura:if isTrue = "{!v.showChild}">
+                    <c:pmaCart orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />
+                </aura:if>
             </lightning:layoutItem>
         </lightning:layout>
     </div>

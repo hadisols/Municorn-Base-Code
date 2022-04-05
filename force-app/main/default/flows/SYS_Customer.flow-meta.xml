@@ -1,10 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
+        <name>Create_Stripe_Customer_Outbound_Log</name>
+        <label>Create Stripe Customer Outbound Log</label>
+        <locationX>1046</locationX>
+        <locationY>623</locationY>
+        <actionName>SYS_InvocableHandler</actionName>
+        <actionType>apex</actionType>
+        <dataTypeMappings>
+            <typeName>T__newVal</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <dataTypeMappings>
+            <typeName>T__oldVal</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>httpMethod</name>
+            <value>
+                <stringValue>POST</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>newVal</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>integrationSetting</name>
+            <value>
+                <stringValue>Stripe</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>objectSetting</name>
+            <value>
+                <stringValue>StripeCustomer</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>oldVal</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>operationType</name>
+            <value>
+                <stringValue>INSERT</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Generate_UUID_for_Registration_Order</name>
+        <label>Generate UUID for Registration Order</label>
+        <locationX>163</locationX>
+        <locationY>788</locationY>
+        <actionName>PMA_InvocableUUIDGenerator</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Update_Order_UUIDs</targetReference>
+        </connector>
+        <dataTypeMappings>
+            <typeName>T__newVal</typeName>
+            <typeValue>Order__c</typeValue>
+        </dataTypeMappings>
+        <dataTypeMappings>
+            <typeName>U__recordsUpdatable</typeName>
+            <typeValue>Order__c</typeValue>
+        </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>newVal</name>
+            <value>
+                <elementReference>Get_New_Registration_Order_Details</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>uuidFieldApiName</name>
+            <value>
+                <stringValue>UUID__c</stringValue>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
+        <name>Generate_UUIDs</name>
+        <label>Generate UUIDs</label>
+        <locationX>176</locationX>
+        <locationY>435</locationY>
+        <actionName>PMA_InvocableUUIDGenerator</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Update_Member_UUID</targetReference>
+        </connector>
+        <dataTypeMappings>
+            <typeName>T__newVal</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <dataTypeMappings>
+            <typeName>U__recordsUpdatable</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>newVal</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
         <name>PMA_Contact_Trigger</name>
         <label>PMA Contact Trigger</label>
-        <locationX>632</locationX>
-        <locationY>450</locationY>
+        <locationX>419</locationX>
+        <locationY>955</locationY>
         <actionName>PMA_ContactInvocableHandler</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -41,10 +160,35 @@
     </actionCalls>
     <apiVersion>53.0</apiVersion>
     <decisions>
+        <name>Check_for_UUID_Field</name>
+        <label>Check for UUID Field</label>
+        <locationX>584</locationX>
+        <locationY>383</locationY>
+        <defaultConnector>
+            <targetReference>Limit_Flow_start</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>UUID_is_not_Generated</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.UUID__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Generate_UUIDs</targetReference>
+            </connector>
+            <label>UUID is not Generated</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Limit_Flow_start</name>
         <label>Limit Flow start</label>
-        <locationX>590</locationX>
-        <locationY>232</locationY>
+        <locationX>914</locationX>
+        <locationY>503</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>New_Contact_Created</name>
@@ -89,6 +233,64 @@
             </connector>
             <label>New Contact Created</label>
         </rules>
+        <rules>
+            <name>Non_Member_Record_Type</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Member</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Active__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mark_Contact_Status_to_Active</targetReference>
+            </connector>
+            <label>Non Member Record Type</label>
+        </rules>
+        <rules>
+            <name>Create_Stripe_Customer</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Payment_SMS_Sent__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Member</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.StripeCustomerId__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Payment_SMS_Sent__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Stripe_Customer_Outbound_Log</targetReference>
+            </connector>
+            <label>Create Stripe Customer</label>
+        </rules>
     </decisions>
     <formulas>
         <description>Check IsNew()</description>
@@ -126,10 +328,10 @@
     <recordCreates>
         <name>Add_Membership_Fee_Product_to_Member_Registration_Order</name>
         <label>Add Membership Fee Product to Member Registration Order</label>
-        <locationX>463</locationX>
-        <locationY>449</locationY>
+        <locationX>464</locationX>
+        <locationY>788</locationY>
         <connector>
-            <targetReference>PMA_Contact_Trigger</targetReference>
+            <targetReference>Get_New_Registration_Order_Details</targetReference>
         </connector>
         <inputAssignments>
             <field>Order__c</field>
@@ -161,8 +363,8 @@
     <recordCreates>
         <name>Create_Member_Register_Order</name>
         <label>Create Member Register Order</label>
-        <locationX>139</locationX>
-        <locationY>422</locationY>
+        <locationX>806</locationX>
+        <locationY>662</locationY>
         <connector>
             <targetReference>Get_Membership_Fee_Product_Based_on_Account</targetReference>
         </connector>
@@ -173,9 +375,27 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Member__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Order_Type__c</field>
             <value>
                 <stringValue>Registration</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Active</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Vendor__c</field>
+            <value>
+                <elementReference>$Record.Sponsor__c</elementReference>
             </value>
         </inputAssignments>
         <object>Order__c</object>
@@ -184,8 +404,8 @@
     <recordLookups>
         <name>Get_Membership_Fee_Product_Based_on_Account</name>
         <label>Get Membership Fee Product Based on Account</label>
-        <locationX>303</locationX>
-        <locationY>449</locationY>
+        <locationX>644</locationX>
+        <locationY>695</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Add_Membership_Fee_Product_to_Member_Registration_Order</targetReference>
@@ -211,11 +431,75 @@
         <sortOrder>Asc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <start>
-        <locationX>50</locationX>
-        <locationY>50</locationY>
+    <recordLookups>
+        <name>Get_New_Registration_Order_Details</name>
+        <label>Get New Registration Order Details</label>
+        <locationX>314</locationX>
+        <locationY>788</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Generate_UUID_for_Registration_Order</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Create_Member_Register_Order</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Order__c</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Mark_Contact_Status_to_Active</name>
+        <label>Mark Contact Status to Active</label>
+        <locationX>918</locationX>
+        <locationY>823</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Active__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <object>Contact</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Member_UUID</name>
+        <label>Update Member UUID</label>
+        <locationX>237</locationX>
+        <locationY>655</locationY>
         <connector>
             <targetReference>Limit_Flow_start</targetReference>
+        </connector>
+        <inputReference>Generate_UUIDs.recordsUpdatable</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Order_UUIDs</name>
+        <label>Update Order UUIDs</label>
+        <locationX>241</locationX>
+        <locationY>954</locationY>
+        <connector>
+            <targetReference>PMA_Contact_Trigger</targetReference>
+        </connector>
+        <inputReference>Generate_UUID_for_Registration_Order.recordsUpdatable</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>506</locationX>
+        <locationY>70</locationY>
+        <connector>
+            <targetReference>Check_for_UUID_Field</targetReference>
         </connector>
         <object>Contact</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>

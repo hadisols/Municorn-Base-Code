@@ -33,7 +33,7 @@
             <name>Payment_Request_is_not_Null</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.PaymentRequestId__c</leftValueReference>
+                <leftValueReference>$Record.Payment_Intent__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -55,7 +55,7 @@
             <name>Payment_Request_is_not_Null_0</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.PaymentRequestId__c</leftValueReference>
+                <leftValueReference>$Record.Payment_Intent__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -70,7 +70,7 @@
     <decisions>
         <name>Check_Transaction_Status</name>
         <label>Check Transaction Status</label>
-        <locationX>831</locationX>
+        <locationX>875</locationX>
         <locationY>335</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -131,6 +131,9 @@
         <label>Update Customer Status to Active</label>
         <locationX>50</locationX>
         <locationY>815</locationY>
+        <connector>
+            <targetReference>Update_Order_Status_Completed</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -161,6 +164,27 @@
         <object>Contact</object>
     </recordUpdates>
     <recordUpdates>
+        <name>Update_Order_Status_Completed</name>
+        <label>Update Order Status Completed</label>
+        <locationX>50</locationX>
+        <locationY>935</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Payment_Intent__r.Order__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Completed</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Order__c</object>
+    </recordUpdates>
+    <recordUpdates>
         <name>Update_Payment_Request_Status</name>
         <label>Update Payment Request Status</label>
         <locationX>182</locationX>
@@ -168,19 +192,12 @@
         <connector>
             <targetReference>Check_if_Contact_is_Selected</targetReference>
         </connector>
-        <filterLogic>1 AND ( 2 OR 3 )</filterLogic>
+        <filterLogic>1 AND (2 OR 3)</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Record.PaymentRequestId__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Status__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>payment_failed</stringValue>
+                <elementReference>$Record.Payment_Intent__c</elementReference>
             </value>
         </filters>
         <filters>
@@ -190,13 +207,20 @@
                 <stringValue>payment_new</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>payment_failed</stringValue>
+            </value>
+        </filters>
         <inputAssignments>
             <field>Status__c</field>
             <value>
                 <stringValue>payment_done</stringValue>
             </value>
         </inputAssignments>
-        <object>PaymentRequest__c</object>
+        <object>Payment_Intent__c</object>
     </recordUpdates>
     <recordUpdates>
         <name>Update_Payment_Request_Status_0</name>
@@ -208,7 +232,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>$Record.PaymentRequestId__c</elementReference>
+                <elementReference>$Record.Payment_Intent__c</elementReference>
             </value>
         </filters>
         <filters>
@@ -224,10 +248,10 @@
                 <stringValue>payment_failed</stringValue>
             </value>
         </inputAssignments>
-        <object>PaymentRequest__c</object>
+        <object>Payment_Intent__c</object>
     </recordUpdates>
     <start>
-        <locationX>705</locationX>
+        <locationX>749</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Check_Transaction_Status</targetReference>
@@ -238,13 +262,6 @@
             <operator>IsNull</operator>
             <value>
                 <booleanValue>false</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>Status__c</field>
-            <operator>IsChanged</operator>
-            <value>
-                <booleanValue>true</booleanValue>
             </value>
         </filters>
         <object>Transaction__c</object>

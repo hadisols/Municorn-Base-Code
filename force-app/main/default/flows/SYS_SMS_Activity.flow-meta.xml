@@ -18,6 +18,12 @@
         </dataTypeMappings>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
+            <name>httpMethod</name>
+            <value>
+                <stringValue>POST</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>newVal</name>
             <value>
                 <elementReference>$Record</elementReference>

@@ -8,8 +8,11 @@
     <aura:attribute name="memberId" type="String" />
     <aura:attribute name="orderUUID" type="String" />
     <aura:attribute name="memberName" type="String" />
-<!--     <aura:attribute name="memberRecord" type="Object" />
- -->    
+    <aura:attribute name="pmaContainer" type="Aura.Component"/>
+
+    <aura:attribute name="orderRecord" type="Order__C" />
+    <aura:attribute name="orderItemRecord" type="List" />
+    
     <!-- Store Incoming Message of Map<Id,Wrapper> -->
     <aura:attribute name="selectedproductsString" type="String" />
     <!-- **EventVariable** Store Selected Products Values to Itereate over Products and Set This for inbound-->
@@ -55,7 +58,31 @@
                                             <h5 class="mb-3 text-body text-center">Cart Items</h5>
                                             <hr/>
                                             <div class="cartitemsList listscroll-y">
-                                                <aura:if isTrue="{! !empty(v.selectedProductsValues)}">
+                                                <aura:if isTrue="{! (v.orderItemRecord.length > 0 ) }">
+                                                    <aura:iteration items="{!v.orderItemRecord}" var="orderLineItem" indexVar="key">
+                                                        <div class="card mb-3 border-0 orderlineitem-container" data-id="{!orderLineItem.Product__c}">
+                                                            <div class="card-body p-0">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <div class="d-flex flex-row align-items-center flex-shrink-1">
+                                                                        <div class="cartitemname">
+                                                                            <h5 class="slds-truncate mb-0 sm-text-highlight skyblue-text pl-5px">{!orderLineItem.Product_Name__c}<span> x </span>{!orderLineItem.Quantity__c}</h5>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="d-flex justify-content-end flex-row align-items-center w-100 px-1">
+                                                                        <!-- <div style="width: 50px;">
+                                                                            <h5 class="fw-normal mb-0">2</h5>
+                                                                        </div> -->
+                                                                        <h5 class="mb-0 px-2 sm-text-highlight grey-text">$ <lightning:formattedNumber value="{!orderLineItem.Total_Price__c}" minimumFractionDigits="2" maximumFractionDigits="2" currencyCode="USD"/></h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr/>
+                                                    </aura:iteration>  
+                                                </aura:if>
+                                                <hr/>
+                                                <hr/>
+                                                <aura:if isTrue="{! and(!empty(v.selectedProductsValues),(v.selectedProductsValues.length > 0 ) )}">
                                                     <aura:iteration items="{!v.selectedProductsValues}" var="selectedproduct" indexVar="key">
                                                         <div class="card mb-3 border-0" data-id="{!selectedproduct.product.Id}" onclick="{!c.productDeleteHandler}">
                                                             <div class="card-body p-0">
@@ -81,7 +108,7 @@
                                                     </aura:iteration>  
                                                 </aura:if>
                                             </div>
-                                            <aura:if isTrue="{! empty(v.selectedProductsValues)}">
+                                            <aura:if isTrue="{! and( empty(v.selectedProductsValues) , ( (v.orderItemRecord.length == 0)||(v.orderItemRecord==undefined) ) ) }">
                                                 <div class="card mb-3 border-0">
                                                     <div class="card-body px-1 py-1">
                                                         <div class="d-flex justify-content-center">

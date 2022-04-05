@@ -80,7 +80,7 @@ public class PaymentIntentService {
                 Opportunity__c = opportunityId,
                 Order__c = orderId,
                 Email__c = email,
-                Status__c = 'payment_new',
+                // Status__c = 'payment_new',
                 Payment_Type__c = paymentType,
                 Frequency__c = frequency,
                 First_Charge_Date__c = firstChargeDate,

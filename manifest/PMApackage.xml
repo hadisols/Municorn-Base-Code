@@ -328,8 +328,12 @@
 		<name>FlexiPage</name>
 	</types>
 	<types>
+		<members>PMA_Order_Line_Total_Price_Update</members>
+		<members>PMA_Orders_Processor_Batch</members>
 		<members>SYS_Customer</members>
+		<members>SYS_Payment_Method</members>
 		<members>SYS_SMS_Activity</members>
+		<members>SYS_Transaction</members>
 		<name>Flow</name>
 	</types>
 	<types>

@@ -4,37 +4,6 @@
     },
     onInit: function (component, event, helper) {
         var logApiResponses = true;
-
-        component.apiCall = function (controllerMethodName, params, success, failure) {
-            var action = component.get('c.' + controllerMethodName);
-            action.setParams(params);
-            action.setCallback(this, function (data) {
-                if (logApiResponses){
-                    console.log( controllerMethodName +' Callback Response ErrorsList: ');
-                    console.table(data.getError());
-                } 
-                var errors = data.getError();
-                if (errors && Array.isArray(errors) && errors.length > 0) {
-                    if (failure) {
-                        failure(errors[0].message);
-                    } else {
-                        if (logApiResponses) {
-                            console.log( controllerMethodName +' Callback Response Error: ' );
-                            console.table( errors);
-                        }
-                        component.set('v.Loading', false);
-                    }
-                } else {
-                    if (logApiResponses){
-                        console.log( controllerMethodName +' Callback Response Success: ');
-                        console.table(data.getReturnValue());
-                    } 
-                    if (success) success(data.getReturnValue());
-                }
-            });
-            $A.enqueueAction(action);
-        };
-        
         component.fireApplicationEventCall = function (eventControllerName, message, processedObjectToString) {
             var appEvent = $A.get('e.c:' + eventControllerName);
             appEvent.setParams({
@@ -47,26 +16,47 @@
             if (logApiResponses) { console.log('*** ' + 'Sent application event successfully' + ' *** ' + eventControllerName); }   
         };
 
-        component.displayMessage = function (title, message, type) {
+        component.displayMessage = function (title, message, type, mode) {
             var toastEvent = $A.get("e.force:showToast");
             toastEvent.setParams({
-                "mode": 'sticky',
+                "mode": mode,
                 "title": title,
                 "type": type,
                 "message": message
             });
             toastEvent.fire();
         };
+        var orderUUID = component.get("v.orderUUID");
+        var action = component.get('c.getOrderDetails');
+        action.setParams({
+            "orderIdOrUUID" : orderUUID,
+        });
+        action.setCallback(this,function(response){
+            var state = response.getState();
+            if(state== 'SUCCESS'){
+                var orderRecordData = response.getReturnValue();
+                component.set('v.orderRecord',orderRecordData);
+                console.log('orderRecord '+orderRecordData);
+
+                component.set('v.orderItemRecord',orderRecordData.Order_Items__r);
+                console.log('Order_Items__r '+orderRecordData.Order_Items__r);
+                console.table(orderRecordData);
+            }else{
+                console.log('Failed  getOrderDetails action ');
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        component.displayMessage('Failure!', 'Failed to Fetch Order Details: '+errors[0].message, 'error','dismissible');
+                    }
+                }
+                else{
+                    component.displayMessage('Failure!', 'Failed to Fetch Order Details: Unknown error', 'error','dismissible');
+                }
+            }
+        });
+        $A.enqueueAction(action);
         var orderRecord = component.get("v.orderRecord");
-        console.log('orderRecord '+orderRecord);
-        console.table(orderRecord);
-        /* var currentMember = component.get("v.currentMember");
-        console.log('currentMember'+currentMember);
-        component.apiCall('getMemberDetails', {memberId: currentMember}, function (response) {
-            component.set('v.memberRecord',response);
-        }, function (error) {
-            //component.displayMessage('Failure!', 'Failed to Fetch Member Details, Please try again!!!', 'error');
-        }); */
+       
     },
 
     handleProductSelectionEvent : function (cmp, event) {
@@ -153,6 +143,8 @@
         }
         var selectedProductsValues = [...allSelectedProductsMap.values()];
         if (logApiResponses) { console.table(selectedProductsValues); }
+        console.log('selectedProductsValues ');
+        console.log(selectedProductsValues );
         var preprocessMapToObject = Object.fromEntries(allSelectedProductsMap);
         var processedObjectToString = JSON.stringify(preprocessMapToObject);
         cmp.set('v.selectedproductsString',processedObjectToString);
@@ -169,7 +161,46 @@
         if (logApiResponses) { console.log('Called Cart Event Call: '); }
 
     },
-    handleCharge : function(cmp, event) {
-        console.log('*** ' + 'handleCharge' + ' ***');
+    handleFinialize : function(cmp, event) {
+        console.log('*** ' + 'handleFinialize' + ' ***');
+        var currentOrderRecord = cmp.get('v.orderRecord');
+        var selectedProductsValues  = JSON.stringify(cmp.get("v.selectedProductsValues"));
+        
+        console.log('selectedProductsValues ObjType:: ' + typeof selectedProductsValues);
+
+        var action = cmp.get('c.createOrderItems');
+        action.setParams({
+            "orderId" : currentOrderRecord.Id,
+            "selectedProductsValues" : selectedProductsValues,
+        });
+        action.setCallback(this,function(response){
+            var state = response.getState();
+            if(state== 'SUCCESS'){
+                cmp.set("v.selectedProductsValues", [] );
+                var orderRecordData = response.getReturnValue();
+                cmp.set('v.orderRecord',orderRecordData);
+                console.log('orderRecord '+orderRecordData);
+                cmp.set('v.orderItemRecord',orderRecordData.Order_Items__r);
+                cmp.set('v.selectedproductsString','');
+                console.log('Order_Items__r '+orderRecordData.Order_Items__r);
+                console.table( cmp.get('v.orderItemRecord') );
+                var message = 'Product Deleted Successfully';
+                cmp.fireApplicationEventCall('cartCommunicationEvent' , message, '' );
+                console.log('Called Products component and Cleared Selected Products Event Call: ');
+            }else{
+                console.log('Failed to Add Order Item action ');
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        cmp.displayMessage('Failure!', 'Failed to Add Order Item: '+errors[0].message, 'error','dismissible');
+                    }
+                }
+                else{
+                    cmp.displayMessage('Failure!', 'Failed to Add Order Item: Unknown error', 'error','dismissible');
+                }
+            }
+        });
+        $A.enqueueAction(action);
+
     },
 })

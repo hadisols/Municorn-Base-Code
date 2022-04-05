@@ -1,4 +1,30 @@
 public with sharing class PMA_ProductsController {
+    //To create Order Item records
+    @AuraEnabled
+    public static Order__c createOrderItems(Id orderId, String selectedProductsValues) {
+        Order__c checkOrderStatus = PMA_SearchController.getOrderDetailsByIdOrUUID( orderId );
+       System.debug('checkOrderStatus  ' + checkOrderStatus);
+       if(checkOrderStatus.Status__c == 'Draft'){
+           checkOrderStatus.Status__c = 'Active';
+           update checkOrderStatus;
+       }
+        List<Order_Item__c> orderItemList = new List<Order_Item__c>();
+        System.debug('selectedProductsValues ' + selectedProductsValues);
+        List< SelectedProductWrapper> prodWrapperList = (List< SelectedProductWrapper>)JSON.deserialize(selectedProductsValues,List<SelectedProductWrapper>.class); //re is response body string
+        for(SelectedProductWrapper selectedProduct : prodWrapperList){
+            Order_Item__c orderItemNew = new Order_Item__c();
+            orderItemNew.Order__c = orderId;
+            orderItemNew.Product__c = selectedProduct.product.Id;
+            orderItemNew.Quantity__c = selectedProduct.quantity;
+            orderItemList.add(orderItemNew);
+        }
+       System.debug('orderItemList  ' + orderItemList);
+       insert orderItemList;
+
+       Order__c currentOrder = PMA_SearchController.getOrderDetailsByIdOrUUID( orderId );
+       System.debug('currentOrder  ' + currentOrder);
+       return currentOrder;
+    }
     //To return initial records
     @AuraEnabled
     public static Map <Id, SelectedProductWrapper > getAllProductRecords() {
@@ -26,10 +52,15 @@ public with sharing class PMA_ProductsController {
         }
         return mapProductsList;
     }
+    @AuraEnabled
+    public static Order__c getOrderDetails( String orderIdOrUUID ){
+        Order__c currentOrder = PMA_SearchController.getOrderDetailsByIdOrUUID( orderIdOrUUID );
+        return currentOrder;
+    }
     // wrapper class selectedProduct.PricebookEntries[0].UnitPrice
     public class SelectedProductWrapper {
         @AuraEnabled
-        public Integer quantity;
+        public Integer quantity = 0;
         @AuraEnabled
         public Product__c product = new Product__c ();
         @AuraEnabled

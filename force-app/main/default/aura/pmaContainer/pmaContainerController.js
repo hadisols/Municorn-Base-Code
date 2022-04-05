@@ -74,13 +74,15 @@
                console.log('orderRecord '  + orderRecord);
                console.log('Member__c '  + orderRecord.Member__c);
                component.set('v.memberName' , orderRecord.Member__r.Name);            
-               component.set('v.currentMember',orderRecord.Member__c);            
+               component.set('v.currentMember',orderRecord.Member__c); 
+               component.set("v.showChild",true);           
            } else { // if any callback error, display error msg
             component.redirectToHome();
            }
             
         });
         $A.enqueueAction(action);
+
         
     },
 })
