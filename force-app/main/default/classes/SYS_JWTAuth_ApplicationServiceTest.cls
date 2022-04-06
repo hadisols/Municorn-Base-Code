@@ -14,7 +14,10 @@ public class SYS_JWTAuth_ApplicationServiceTest {
         for(sObject auth:oauthConfigs){
             SYS_JWTAuth_ApplicationService.invokeTokenFlow(auth.Id);
         }
-        Test.stopTest(); 
+        Test.stopTest();
+
+        List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c];
+        System.assert(log.size()>0);
         
     }
 
@@ -28,6 +31,9 @@ public class SYS_JWTAuth_ApplicationServiceTest {
             SYS_JWTAuth_ApplicationService.invokeTokenFlow(auth.Id);
         }
         Test.stopTest(); 
+
+        List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c];
+        System.assert(log.size()>0);
         
     }
 }
