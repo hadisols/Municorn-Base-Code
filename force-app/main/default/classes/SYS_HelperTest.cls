@@ -15,6 +15,10 @@ public class SYS_HelperTest {
 
         SYS_Datacache.OBJ_TYPE = 'SYS_Test_Account_Object_Setting';
         List<account> accounts = [SELECT Id FROM Account LIMIT 1];
+
+        String pattern = SYS_Datacache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE).PATCH_URL_Pattern__c;
         SYS_Helper.urlFromPattern('PATCH', accounts[0].Id);
+
+        System.assert(SYS_Datacache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE).PATCH_URL_Pattern__c == pattern);
     }
 }
