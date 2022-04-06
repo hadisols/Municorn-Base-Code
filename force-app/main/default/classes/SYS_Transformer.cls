@@ -568,10 +568,15 @@ public without sharing virtual class SYS_Transformer {
                             for(String singleChildJSON : childRecList){
                                 if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
                                     SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log.Id,key,singleChildJSON,SYS_DataCache.INT_TYPE);
+                                    if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
                                     newLog.Status__c = 'ENQUEUED_FOR_RETRY';
+                                    }
+                                     if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
                                     newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
+                                     }
+                                     if (Schema.sObjectType.SYS_IntegrationLog__c.fields.retry__c.isCreateable()) {
                                     newlog.retry__c = true;
-                                    
+                                     }
                                     if(newlog!=NULL){
                                         childRecordsToInsert.add(newlog);
                                     }
