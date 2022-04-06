@@ -49,7 +49,7 @@ public class StripeService {
                     metadata.put('opportunityId', paymentRequest.Opportunity__c);
                     metadata.put('contactId', paymentRequest.Contact__c);
                     metadata.put('accountId', paymentRequest.Account__c);
-                    metadata.put('transactionId', paymentRequest.Id);
+                    metadata.put('paymentintentId', paymentRequest.Id);
                     //metadata.put('uuid', paymentRequest.PaymentRequests__r.uuid__c);
 
                     charge = stripeRest.charge(amount, currencyType, description, source, metadata);
@@ -154,7 +154,7 @@ public class StripeService {
             metadata.put('opportunityId', txn.Payment_Intent__r.Opportunity__r.Id);
             metadata.put('contactId', txn.Payment_Intent__r.Contact__r.Id);
             metadata.put('accountId', txn.Payment_Intent__r.Account__r.Id);
-            metadata.put('transactionId', txn.Id);
+            metadata.put('paymentintentId', txn.Id);
 
             charge = stripeRest.charge(amount, currencyType, description, source, metadata);
         } catch (Stripe.RestException ex) {

@@ -150,7 +150,93 @@
                 <apex:outputText value="Sample message!"/>
             </apex:outputPanel> 
             -->
-            
+            <apex:outputPanel styleClass="charge-output">
+<!--                 <apex:outputText value="{!error}"/> -->
+<!--                 <apex:outputText value="{!paymentReceipt}"/> -->                
+                <apex:repeat value="{!paymentReceipt.payments}" var="paymentrecp">
+                   <!--  <apex:outputText value="{!paymentrecp}"/> -->
+                    <!-- <apex:variable var="req" value="{!paymentrecp.paymentRequest}"/>
+                    <apex:variable var="rcptTxn" value="{!paymentrecp.txn}"/> -->
+                    <apex:outputPanel styleClass="charge-output-panel">
+                        <apex:outputPanel styleClass="charge-output-header">
+                            <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label}"
+                                             styleClass="payment-label"/>
+                            <apex:image url="{!$Resource.success_icon}" width="25" height="25"
+                                        styleClass="status-icon success-icon"/>
+                            <!-- <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label}"
+                                             styleClass="payment-label"/>
+                            <apex:image url="{!$Resource.success_icon}" width="25" height="25"
+                                        styleClass="status-icon success-icon"
+                                        rendered="{!payments.Status__c != 'failed'}"/>
+                            <apex:image url="{!$Resource.failure_icon}" width="25" height="25"
+                                        styleClass="status-icon failure-icon"
+                                        rendered="{!payments.Status__c == 'failed'}"/> -->
+                        </apex:outputPanel>
+                        <!-- <apex:outputPanel styleClass="payment-details-panel">
+                            <apex:panelGrid columns="2" id="success-grid" styleClass="transaction-details"
+                                            rendered="{!rcptTxn.Status__c != 'failed'}">
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionReference__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.TransactionReference__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Amount__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Amount__c} {!rcptTxn.CurrencyCode__c}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Payment_Type__c.Label}"/>
+                                <apex:outputText value="{!IF(rcptTxn.Payment_Intent__r.Payment_Type__c == 'immediate', 'One time payment', 'Recurring')}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Status__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Status__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionDate__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.TransactionDate__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentMethodType__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.PaymentMethodType__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentCardLast4Digits__c.Label}"
+                                                 rendered="{!rcptTxn.PaymentCardLast4Digits__c != null}"/>
+                                <apex:outputText value="xxxx xxxx xxxx {!rcptTxn.PaymentCardLast4Digits__c}"
+                                                 rendered="{!rcptTxn.PaymentCardLast4Digits__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentBankLast4Digits__c.Label}"
+                                                 rendered="{!rcptTxn.PaymentBankLast4Digits__c != null}"/>
+                                <apex:outputText value="{!rcptTxn.PaymentBankLast4Digits__c}"
+                                                 rendered="{!rcptTxn.PaymentBankLast4Digits__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentBankName__c.Label}"
+                                                 rendered="{!rcptTxn.PaymentBankName__c != null}"/>
+                                <apex:outputText value="{!rcptTxn.PaymentBankName__c}"
+                                                 rendered="{!rcptTxn.PaymentBankName__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Contact.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Payment_Intent__r.Contact__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Email__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Payment_Intent__r.Email__c}"/>
+                                <apex:outputText value="{!$ObjectType.Opportunity.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Payment_Intent__r.Opportunity__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.Account.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Payment_Intent__r.Account__r.Name}"/>
+                            </apex:panelGrid>
+                            <apex:panelGrid columns="2" id="failure-grid" styleClass="transaction-details"
+                                            rendered="{!rcptTxn.Status__c == 'failed'}">
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionReference__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.TransactionReference__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Amount__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Amount__c} {!rcptTxn.CurrencyCode__c}"/>
+                                <apex:outputText value="{!$ObjectType.Payment_Intent__c.fields.Payment_Type__c.Label}"/>
+                                <apex:outputText value="{!IF(rcptTxn.Payment_Intent__r.Payment_Type__c == 'immediate', 'One time payment', 'Recurring')}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.PaymentMethodType__c.Label}"
+                                                 rendered="{!rcptTxn.PaymentMethodType__c != null}"/>
+                                <apex:outputText value="{!rcptTxn.PaymentMethodType__c}"
+                                                 rendered="{!rcptTxn.PaymentMethodType__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Contact.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Payment_Intent__r.Contact__r.Name}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.Status__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.Status__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.TransactionDate__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.TransactionDate__c}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.FailureCode__c.Label}"
+                                                 rendered="{!rcptTxn.FailureCode__c != null}"/>
+                                <apex:outputText value="{!rcptTxn.FailureCode__c}" rendered="{!rcptTxn.FailureCode__c != null}"/>
+                                <apex:outputText value="{!$ObjectType.Transaction__c.fields.FailureMessage__c.Label}"/>
+                                <apex:outputText value="{!rcptTxn.FailureMessage__c}"/>
+                            </apex:panelGrid>
+                        </apex:outputPanel> -->
+                    </apex:outputPanel>
+                </apex:repeat>
+            </apex:outputPanel>
+
             <apex:outputPanel id="charge-output" styleClass="charge-output" rendered="{!isblank(error)}">
                 <apex:outputText value="{!error}"/>
                 <apex:repeat value="{!payments.payments}" var="payment">
@@ -159,7 +245,7 @@
                     <apex:outputPanel styleClass="charge-output-panel" rendered="{!payment.type == 'OTHER'}">
                         <!-- <apex:outputPanel styleClass="charge-output-panel" > -->
                         <apex:outputPanel styleClass="charge-output-header">
-                            <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label} {!payment.itemNumber}"
+                            <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label} "
                                              styleClass="payment-label"/>
                             <apex:image url="{!$Resource.success_icon}" width="25" height="25"
                                         styleClass="status-icon success-icon"
@@ -203,7 +289,7 @@
                     </apex:outputPanel>
                     <apex:outputPanel styleClass="charge-output-panel" rendered="{!payment.type == 'TXN'}">
                         <apex:outputPanel styleClass="charge-output-header">
-                            <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label} {!payment.itemNumber}"
+                            <apex:outputText value="{!$ObjectType.Payment_Intent__c.Label}"
                                              styleClass="payment-label"/>
                             <apex:image url="{!$Resource.success_icon}" width="25" height="25"
                                         styleClass="status-icon success-icon"

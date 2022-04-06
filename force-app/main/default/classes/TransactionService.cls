@@ -39,6 +39,38 @@ public class TransactionService {
                 FROM Transaction__c WHERE Id = :id];
     }
 
+    public Transaction__c getTransactionPaymentIntentId(String paymentIntentId) {
+        return [SELECT Id,
+                uuid__c,
+                TransactionReference__c,
+                Amount__c,
+                Payment_Intent__r.Contact__r.Id,
+                Payment_Intent__r.Email__c,
+                Payment_Intent__r.Contact__r.Name,
+                Payment_Intent__r.Contact__r.StripeCustomerId__c,
+                Payment_Intent__r.Opportunity__r.Id,
+                Payment_Intent__r.Opportunity__r.Name,
+                Payment_Intent__r.Account__r.Name,
+                Payment_Intent__r.Payment_Type__c,
+                Payment_Intent__r.Amount__c,
+                Payment_Intent__r.Status__c,
+                Payment_Intent__r.Payment_Reference_Id__c,
+                TransactionDate__c,
+                CurrencyCode__c,
+                AmountRefunded__c,
+                FailureCode__c,
+                FailureMessage__c,
+                PaymentMethodType__c,
+                PaymentMethod__c,
+                PaymentCardLast4Digits__c,
+                PaymentBankLast4Digits__c,
+                PaymentBankName__c,
+                Status__c,
+                StripeChargeId__c,
+                StatusMessage__c
+                FROM Transaction__c WHERE Payment_Intent__c = :paymentIntentId ORDER BY createddate desc LIMIT 1];
+    }
+
     public Transaction__c getTransactionExtId(String txid) {
         return [SELECT Id,
                 uuid__c,

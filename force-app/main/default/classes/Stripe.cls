@@ -385,11 +385,11 @@ public class Stripe {
         }
     }
 
-    public class Payment implements Comparable {
+    public class Payment {
         @AuraEnabled public String type { get; set; }
         @AuraEnabled public Transaction__c txn { get; set; }
         @AuraEnabled public Payment_Intent__c paymentRequest { get; set; }
-        @AuraEnabled public Integer itemNumber { get; set; }
+        // @AuraEnabled public Integer itemNumber { get; set; }
 
         public Payment(Transaction__c txn) {
             this.type = 'TXN';
@@ -403,9 +403,9 @@ public class Stripe {
             //this.itemNumber = paymentRequest.ItemNumber__c.intValue();
         }
 
-        public Integer compareTo(Object param1) {
+        /* public Integer compareTo(Object param1) {
             return itemNumber - ((Payment) param1).itemNumber;
-        }
+        } */
     }
 
     public class EventException extends Exception {

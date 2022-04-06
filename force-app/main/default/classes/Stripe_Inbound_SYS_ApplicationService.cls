@@ -36,12 +36,6 @@ public with sharing class Stripe_Inbound_SYS_ApplicationService extends SYS_Appl
             for (sObject currentObj: sObjectsToDML) {
                 if (currentObj instanceOf Transaction__c) {
                     String contactId = (String) currentObj.get('Contact__c');
-                    Double amount = (Double) currentObj.get('Amount__c');
-                    Double amountCaptured = (Double) currentObj.get('Amount_Captured__c');
-                    Double amountRefunded = (Double) currentObj.get('AmountRefunded__c');
-                    currentObj.put('Amount__c', amount / 100);
-                    currentObj.put('Amount_Captured__c', amountCaptured / 100);
-                    currentObj.put('AmountRefunded__c', amountRefunded / 100);
                     if (contactId != '') {
                         List < Sobject > contactRecords = PMA_ExternalSiteFormsUtility.getRecord(contactId);
                         Contact contactRecord = (contactRecords.size() > 0) ? (Contact)contactRecords[0] : new Contact();
@@ -51,11 +45,120 @@ public with sharing class Stripe_Inbound_SYS_ApplicationService extends SYS_Appl
                 }
                 if (currentObj instanceOf Payment_Method__c) {
                     String cardToken = (String) currentObj.get('Payment_Method_Id__c');
+                    String cardBrand = (String) currentObj.get('Brand__c');
+                    String cardLast4Digits = (String) currentObj.get('Card_Last_4_Digit__c');
                     currentObj.put('Card_Id__c', cardToken);
+                    currentObj.put('Name', cardBrand +' ('+cardLast4Digits +')' );
                 }
             }
         }
         return sObjectsToDML;
+    }
+
+    /**
+     * INBOUND
+     * This hook is called from SYS_Transformer to set values for sObject record
+     * Default is mapping based on field type
+     * Relies on Integration Setting in DataCache
+     * Override if custom field mapping is required
+     */
+    public override sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
+
+        System.debug(mapping.FieldApiName__c+' +MS+ '+value);
+        if(mapping.Get_value_from_Log__c)
+            value = SYS_DataCache.log.get(mapping.Log_API_for_field_mapping__c);
+
+        if(mapping.Is_Lookup__c && mapping.Lookup_External_Key__c!=NULL && mapping.Lookup_Object_API_Name__c!=NULL){
+            value = getIdFromExternalKey(mapping.Lookup_Object_API_Name__c,mapping.Lookup_External_Key__c,String.valueOf(value));
+        }
+
+        if(mapping.StaticValue__c != NULL)
+            value = mapping.StaticValue__c;
+            
+
+        if(value==NULL) return sObj;
+
+        SObjectType r = ((SObject)(Type.forName('Schema.'+sObjectApiName).newInstance())).getSObjectType();
+        DescribeSObjectResult d = r.getDescribe();
+                
+        String fieldType = d.fields
+                            .getMap()
+                            .get(mapping.FieldApiName__c)
+                            .getDescribe()
+                            .getType()+'';
+
+        
+        //TODO add other field types
+        if(fieldType=='DATE'){
+            sObj.put(mapping.FieldApiName__c, getDateValue(mapping,String.valueOf(value)) /*Date.valueOf((String)value)*/);
+        }
+        else if(fieldType=='DATETIME'){
+            
+            sObj.put(mapping.FieldApiName__c, getDatetimeValue(mapping, String.valueOf(value)));
+        }
+        else if(fieldType=='TIME'){
+            sObj.put(mapping.FieldApiName__c, getTimeValue(mapping, String.valueOf(value)));
+        }
+        else if (fieldType == 'STRING') {
+            sObj.put(mapping.FieldApiName__c, String.valueof(value));
+        }else if (fieldType == 'BOOLEAN') {
+            sObj.put(mapping.FieldApiName__c, Boolean.valueof(value));
+        }
+        else if ( (mapping.FieldApiName__c == 'Amount__c') || (mapping.FieldApiName__c == 'Amount_Captured__c') || (mapping.FieldApiName__c == 'AmountRefunded__c') ) {
+            sObj.put(mapping.FieldApiName__c, Double.valueof(value)/100);
+        }
+        else{
+            sObj.put(mapping.FieldApiName__c, value);
+        }
+
+        SYS_debug.log('MS FINAL SOBJ:'+sObj);
+        return sObj;
+    }
+    /* ------------------------------------------------------------------------ */
+    /**
+     * OUTBOUND
+     * This hook is called from SYS_Transformer to set values for JSON record
+     * Relies on Integration Setting in DataCache
+     * Override if custom field mapping is required
+     */
+    public override Object getFieldValues(sObject obj, FieldSetting__mdt mapping, String fieldAPIName){
+        //TODO - handle case - Account."CreatedBy".Name, where CreatedBy is not an sobject - This can be handled by overriding the current method and add the handler
+        // on field setting
+
+        String fvalue= (mapping.Send_Blanks_as_Empty_String__c)?'':null;
+        
+        if(fieldAPIName == null){
+            fvalue = mapping.StaticValue__c;
+        }
+        else if(fieldAPIName.contains(SYS_DataCache.FLAT_KEY_SEPERATOR)){
+            List<String> splitedFields = fieldAPIName.split('\\'+SYS_DataCache.FLAT_KEY_SEPERATOR);
+            try{
+                for(Integer i = 0; i < splitedFields.size() - 1; i++){
+                    obj = obj.getSobject(splitedFields[i]);   
+                } 
+                return obj.get(splitedFields[splitedFields.size()-1]);
+            }catch(exception ex){
+               System.debug('****** Exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
+               return null;
+            }
+            
+        } 
+        else if(obj.get(fieldAPIName)!=null && ( (fieldAPIName == SYS_DataCache.namespacePrefix + 'Amount__c') || (fieldAPIName == SYS_DataCache.namespacePrefix + 'Amount_Captured__c') || (fieldAPIName == SYS_DataCache.namespacePrefix + 'AmountRefunded__c') ) ){
+            Decimal amount = (Decimal)obj.get(fieldAPIName);
+            return (amount > 0) ? ( (amount.intValue()) * 100 ) : 0;
+        }
+        /*
+        else if(obj.get(fieldAPIName)!=null && fieldAPIName == SYS_DataCache.namespacePrefix + 'Is_Taxable__c') { //TODO - specific to quickbooks
+            return ((Boolean)obj.get(fieldAPIName)) ? 'TAX' : 'NON';
+        } 
+        else if(obj.get(fieldAPIName) != null && fieldAPIName == SYS_DataCache.namespacePrefix + 'Total_Tax__c') {
+            return ((Decimal)obj.get(fieldAPIName)) == 0.00 ? 'null' : obj.get(fieldAPIName);  
+        }
+        */
+        else if(obj.get(fieldAPIName)!=null){
+            return obj.get(fieldAPIName);
+        }
+        return fvalue;
     }
 
 }

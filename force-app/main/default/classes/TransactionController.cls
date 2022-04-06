@@ -16,7 +16,9 @@ public with sharing class TransactionController {
     public Map<String, Object> labels { get; set; }
     public Payment_Gateway__c stripePaymentGateway { get; set; }
     public List<Payment_Intent__c> paymentRequests { get; set; }
+    public Payment_Intent__c paymentIntent { get; set; }
     public Stripe.Payments payments { get; set; }
+    public Stripe.Payments paymentReceipt { get; set; }
     public Contact contact { get; set; }
 
     public TransactionController() {
@@ -25,8 +27,22 @@ public with sharing class TransactionController {
         System.debug('test paymentRequests '+paymentRequests);
         assert(!paymentRequests.isEmpty(), 'No payment requests found');
         if(!paymentRequests.isEmpty()){
-        contact = [SELECT Id, Name, StripeCustomerId__c FROM Contact WHERE Id = :paymentRequests[0].Contact__r.Id];
+            paymentIntent = paymentRequests[0];
+            contact = [SELECT Id, Name, StripeCustomerId__c FROM Contact WHERE Id = :paymentIntent.Contact__r.Id];
             System.debug('test contact '+contact);
+            if(paymentIntent.Status__c == 'payment_expired') {
+                assert(false, 'Payment Request is Expired');
+            }
+            else if(paymentIntent.Status__c == 'payment_done') {
+                assert(false, 'Payment is Completed');
+                paymentReceipt = new Stripe.Payments();
+                // List<Payment> payment = new List<Payment>();
+                // paymentReceipt.registerPayment(paymentIntent);
+                Transaction__c completedTxn = txnService.getTransactionPaymentIntentId(paymentIntent.Id);
+                paymentReceipt.registerPayment(completedTxn);
+                system.debug('payments ' + paymentReceipt);
+
+            }
         }
         // TO DO Make it Dynamic
         // Integration Config
