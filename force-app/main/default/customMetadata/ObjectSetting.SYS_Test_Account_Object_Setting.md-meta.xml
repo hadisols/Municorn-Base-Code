@@ -35,10 +35,6 @@
         <value xsi:type="xsd:string">callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account</value>
     </values>
     <values>
-        <field>GET_URL_Pattern__c</field>
-        <value xsi:type="xsd:string">callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account</value>
-    </values>
-    <values>
         <field>IntegrationType__c</field>
         <value xsi:type="xsd:string">SYS_Test_IntegrationSetting</value>
     </values>

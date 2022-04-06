@@ -25,6 +25,18 @@
                 <default>false</default>
                 <label>Public</label>
             </value>
+            <value>
+                <fullName>AccessToken</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>AccessToken</label>
+            </value>
+            <value>
+                <fullName>UsernamePassword</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>UsernamePassword</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

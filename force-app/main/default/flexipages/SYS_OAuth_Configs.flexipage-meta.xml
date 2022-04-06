@@ -33,7 +33,7 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
-                            <value>SYS_OAuthConfig__c.Start_JWT_Flow</value>
+                            <value>municonqb__SYS_OAuthConfig__c.Start_JWT_Flow</value>
                             <visibilityRule>
                                 <criteria>
                                     <leftValue>{!Record.Grant_Type__c}</leftValue>

@@ -12,9 +12,9 @@
     <columns>Is_External_Field__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>ObjectApiName__c</field>
+        <field>ObjectSetting__c</field>
         <operation>equals</operation>
-        <value>SYS_Account__c</value>
+        <value>SYS_QB_Accounting</value>
     </filters>
     <label>SYS_QB_Accounting</label>
 </ListView>
