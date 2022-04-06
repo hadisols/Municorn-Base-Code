@@ -1,4 +1,4 @@
-public class SYS_DataCache {
+public  without sharing class SYS_DataCache {
 	private static Map<Id, sObject> oldObjMap = new Map<Id, sObject>();
     private static Map<Id, sObject> newObjMap = new Map<Id, sObject>();
     private static Map<String, List<FieldSetting__mdt>> ObjectSettingToFieldSettingsMap_OB;

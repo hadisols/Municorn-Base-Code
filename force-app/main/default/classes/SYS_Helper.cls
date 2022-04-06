@@ -1,4 +1,4 @@
-global class SYS_Helper {
+global without sharing class SYS_Helper {
 
     public class SYS_HelperException extends Exception{}
     /* ------------------------------------------------------------------------ */
@@ -184,10 +184,12 @@ global class SYS_Helper {
         //log.Type__c = 'EXCEPTION';
 
         flagLogForRetry(log.Id);
-        
+        if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isUpdateable()) {
         log.Status__c = 'FAIL';
+        }
+        if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isUpdateable()) {
         log.Message__c = stackTrace;
-        
+        }
         upsert log;
     }
 
@@ -195,7 +197,9 @@ global class SYS_Helper {
     global static void flagLogForRetry(Id logId){
         if(logId!=NULL){
             SYS_IntegrationLog__c log = new SYS_IntegrationLog__c(Id=logId);
+            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.retry__c.isUpdateable()) {
             log.retry__c = true;
+            }
             update log;
         }else{
             //TODO - How to update the log record?

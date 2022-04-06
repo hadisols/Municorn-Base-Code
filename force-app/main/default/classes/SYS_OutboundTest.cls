@@ -1,5 +1,5 @@
 @isTest
-public class SYS_OutboundTest {
+public without sharing class SYS_OutboundTest {
     
     @TestSetup
     static void makeData(){

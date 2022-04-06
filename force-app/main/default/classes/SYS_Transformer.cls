@@ -1,4 +1,4 @@
-public virtual class SYS_Transformer {
+public without sharing virtual class SYS_Transformer {
 
     public class SYS_TransformerException extends Exception{}
 	

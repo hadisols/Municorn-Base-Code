@@ -1,4 +1,4 @@
-public class SYS_IntegrationLogInboundImmediate{ 
+public without sharing  class SYS_IntegrationLogInboundImmediate{ 
     
     private List<Id> sysLogIds = new List<Id>();
     

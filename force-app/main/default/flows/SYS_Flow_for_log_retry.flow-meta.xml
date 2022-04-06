@@ -21,7 +21,7 @@
         <name>Increment_retry_count</name>
         <label>Increment retry count</label>
         <locationX>677</locationX>
-        <locationY>321</locationY>
+        <locationY>322</locationY>
         <assignmentItems>
             <assignToReference>FlowRetryCount</assignToReference>
             <operator>Add</operator>
@@ -62,7 +62,7 @@
             <name>Set_retry_count</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.municonqb__Retry_Count__c</leftValueReference>
+                <leftValueReference>$Record.Retry_Count__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -87,7 +87,7 @@
             <name>Retry_Count_Max_Retry_Allowed</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.municonqb__Retry_Count__c</leftValueReference>
+                <leftValueReference>$Record.Retry_Count__c</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
                     <elementReference>MAX_RETRIES_ALLOWED</elementReference>

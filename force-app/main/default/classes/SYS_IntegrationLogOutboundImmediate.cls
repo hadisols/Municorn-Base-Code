@@ -1,7 +1,7 @@
 // Use this class when you want a SYS Log to be processed immediately
 // Instantiate a log record and call the execute method. Do not call this from a trigger context since outbound will have
 // callouts
-public class SYS_IntegrationLogOutboundImmediate{ 
+public without sharing class SYS_IntegrationLogOutboundImmediate{ 
     
     //private List<Id> sysLogIds = new List<Id>();
     List<SYS_IntegrationLog__c> sysLogs;

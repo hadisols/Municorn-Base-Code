@@ -1,4 +1,4 @@
-public class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.AllowsCallouts{ 
+public  without sharing class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.AllowsCallouts{ 
     
     private List<Id> sysLogIds = new List<Id>();
     

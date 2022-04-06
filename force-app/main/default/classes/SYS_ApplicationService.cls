@@ -1,4 +1,4 @@
-global virtual class SYS_ApplicationService {
+global  without sharing virtual class SYS_ApplicationService {
 
     public class SYS_ApplicationServiceException extends Exception{}
 
@@ -161,7 +161,9 @@ global virtual class SYS_ApplicationService {
     global virtual Boolean doDelete(List<sObject> records,SYS_IntegrationLog__c log){
         Database.DeleteResult[] results;
         Boolean success = true;
+        if (Schema.sObjectType.SYS_IntegrationLog__c.isDeletable()) {
         results = Database.delete(records, false);
+        }
         if(!results[0].isSuccess()){
             success = false;
             handleDMLErrors(results[0].getErrors(),log);
@@ -694,7 +696,9 @@ global virtual class SYS_ApplicationService {
         }
         else{
             String resource = getResourceFromJSON(log,jsonBody);
+            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Resource__c.isUpdateable()) {
             log.Resource__c = resource;
+            }
             SYS_debug.log('\n\n ------------------------------- \n\n Application Service resource:'+resource);
 
             List<sObject> sObjectsToDML = transformJsonToSObject(jsonBody, resource, log);
@@ -763,7 +767,7 @@ global virtual class SYS_ApplicationService {
             }
             else{
                 //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
-              //  resourceUrl+= '/'+ externalId;
+                resourceUrl+= '/'+ externalId;
             }
             System.debug('====== MS Endpoint check:'+resourceUrl);
             log.Callout_URL__c = resourceUrl;
@@ -994,8 +998,12 @@ global virtual class SYS_ApplicationService {
 
                 //TODO Add Limit check. This is to make sure each log is processed separately and thereby avoid overriding of log properties
                 if(doDML(childRecords, 'UPDATE', '',cLog)){
+                    if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isUpdateable()) {
                     cLog.Status__c ='DONE';
+                    }
+                    if (Schema.sObjectType.SYS_IntegrationLog__c.fields.retry__c.isUpdateable()) {
                     cLog.retry__c =false;
+                    }
                     update cLog;
                 }
             }
@@ -1025,7 +1033,9 @@ global virtual class SYS_ApplicationService {
 
             System.debug('MS All or none delete records:'+childRecordsToDelete);
             if(childRecordsToDelete.size() > 0)
+                if (Schema.sObjectType.SYS_IntegrationLog__c.isDeletable()) {
                 delete childRecordsToDelete;
+                }
         }
 
         /* ------------------------------------ ALL OR NONE HANDLING ENDS ---------------------------------------- */
@@ -1053,8 +1063,9 @@ global virtual class SYS_ApplicationService {
 
             log.Status__c = 'FAIL';
             if(!log.Force_Sync__c)
+                if (Schema.sObjectType.SYS_IntegrationLog__c.fields.retry__c.isUpdateable()) {
                 log.retry__c = true;
-
+                }
             logResp.Status__c = 'ERROR';
             //SYS_Helper.flagLogForRetry(log.Id);
             
@@ -1066,8 +1077,9 @@ global virtual class SYS_ApplicationService {
             
         }
         else{
+            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isUpdateable()) {
             log.Status__c = 'DONE';
-
+            }
             if(log.SYS_Operation_Type__c == 'INSERT' || log.Force_Sync__c){
                 logResp.Status__c = 'NEW';
                 logResp.SYS_Operation_Type__c = 'UPDATE';

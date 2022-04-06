@@ -1,4 +1,4 @@
-global class SYS_InvocableHandler {
+global without sharing  class SYS_InvocableHandler {
 	
     global class MyInvocableVariable {
         @InvocableVariable(label='Id' required=true)  

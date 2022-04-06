@@ -1,5 +1,5 @@
 @RestResource(urlMapping = '/municorn/v1/*')
-global class SYS_Webservice{
+global  without sharing class SYS_Webservice{
 
     
     @HttpPost

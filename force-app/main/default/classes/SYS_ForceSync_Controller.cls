@@ -1,4 +1,4 @@
-global class SYS_ForceSync_Controller extends SYS_ApplicationService {
+global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationService {
 
     private static SYS_IntegrationLog__c log;
     private static String syncDirection;

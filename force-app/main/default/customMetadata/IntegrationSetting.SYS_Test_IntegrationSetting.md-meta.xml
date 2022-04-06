@@ -60,7 +60,7 @@
     </values>
     <values>
         <field>Notifications_are_partial__c</field>
-        <value xsi:type="xsd:boolean">false</value>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>OAuth_Config_Record_Id__c</field>

@@ -1,5 +1,5 @@
 @RestResource(urlMapping='/v1/callback/*')
-global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
+global without sharing class  SYS_OAuthRedirectHandler extends SYS_ApplicationService{
 
     private static String authCode;
     private static String calloutUrl;
@@ -65,9 +65,9 @@ global class SYS_OAuthRedirectHandler extends SYS_ApplicationService{
             logResp.Request_Digest__c = generateHash(resp.getBody(),algo);
 
         if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
-
+            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isUpdateable()) {
             log.Status__c = 'FAIL';
-
+            }
             logResp.Status__c = 'ERROR';
             
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());

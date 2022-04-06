@@ -1,5 +1,5 @@
 @isTest
-public class SYS_OAuthRedirectHandlerTest {
+public without sharing class SYS_OAuthRedirectHandlerTest {
     @TestSetup
     static void makeData(){
         SYS_TestDataFactory.createTestRecordsFromStaticResource();

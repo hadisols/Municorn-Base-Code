@@ -1,4 +1,4 @@
-public class SYS_Override_ApplicationService extends SYS_ApplicationService{
+public  without sharing class SYS_Override_ApplicationService extends SYS_ApplicationService{
     public SYS_Override_ApplicationService() {
 
     }

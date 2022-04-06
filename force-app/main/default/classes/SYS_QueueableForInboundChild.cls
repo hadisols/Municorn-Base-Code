@@ -1,4 +1,4 @@
-public class SYS_QueueableForInboundChild implements Queueable {
+public without sharing class SYS_QueueableForInboundChild implements Queueable {
     private List<String> childRecList;
     private String key;
     private String integrationSetting;

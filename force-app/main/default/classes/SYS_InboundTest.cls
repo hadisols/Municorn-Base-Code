@@ -1,5 +1,5 @@
 @isTest
-public class SYS_InboundTest {
+public  without sharing class SYS_InboundTest {
     @TestSetup
     static void makeData(){
         
@@ -149,6 +149,7 @@ public class SYS_InboundTest {
         log[0].Type__c = 'INBOUND';
         log[0].Status__c = 'READY_FOR_PROCESSING';
         update log;
+        System.assertEquals('READY_FOR_PROCESSING',log[0].Status__c);
     }
 
 }
