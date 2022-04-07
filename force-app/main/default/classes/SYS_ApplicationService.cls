@@ -1,4 +1,4 @@
-global  without sharing virtual class SYS_ApplicationService {
+global  inherited sharing virtual class SYS_ApplicationService {
     
     public class SYS_ApplicationServiceException extends Exception{}
     

@@ -24,7 +24,8 @@
 		<members>SYS_debug</members>
 		<members>SYS_NotificationInterface</members>
 		<members>SampleWrapper</members>
-
+		
+        <members>municonhealthcheckcontroller</members>
 		<members>SYS_ForceSync_ControllerTest</members>
 		<members>SYS_InboundTest</members>
 		<members>SYS_OutboundTest</members>

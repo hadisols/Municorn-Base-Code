@@ -1,4 +1,4 @@
-global without sharing class SYS_Helper {
+global inherited sharing class SYS_Helper {
 
     public class SYS_HelperException extends Exception{}
     /* ------------------------------------------------------------------------ */
