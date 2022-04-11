@@ -1,4 +1,4 @@
-public class SYS_QueueableForInboundChild implements Queueable {
+public without sharing class SYS_QueueableForInboundChild implements Queueable {
     private List<String> childRecList;
     private String key;
     private String integrationSetting;
@@ -29,8 +29,8 @@ public class SYS_QueueableForInboundChild implements Queueable {
         totalChildRecords = childRecList.size();
         SYS_DataCache.INT_TYPE = integrationSetting;
         
-        System.debug('Inbound for Child:'+SYS_DataCache.INT_TYPE);
-        System.debug('Apex Handler:'+SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c);
+        /*--*/SYS_debug.log('Inbound for Child:'+SYS_DataCache.INT_TYPE);
+        /*--*/SYS_debug.log('Apex Handler:'+SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c);
         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
 
         List<String> pendingChildRecords = new List<String>();
@@ -47,8 +47,8 @@ public class SYS_QueueableForInboundChild implements Queueable {
             }
         }
 
-        System.debug('MS pendingChildRecords:'+pendingChildRecords);
-        System.debug('MS childRecordsToInsert:'+childRecordsToInsert);
+        /*--*/SYS_debug.log('MS pendingChildRecords:'+pendingChildRecords);
+        /*--*/SYS_debug.log('MS childRecordsToInsert:'+childRecordsToInsert);
         if(!childRecordsToInsert.isEmpty()){
             //appService.doDML(childRecordsToInsert, 'INSERT', '');
             insert childRecordsToInsert;

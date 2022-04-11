@@ -69,8 +69,8 @@ public class SYS_InboundTest {
         SYS_Webservice.putRequest();
         Test.stopTest();
 
-        //List<SYS_IntegrationLog__c> log = [SELECT Id FROM SYS_IntegrationLog__c];
-        //System.assert(log.size()>0);
+        List<SYS_IntegrationLog__c> log = [SELECT Id FROM SYS_IntegrationLog__c];
+        System.assert(log.size()>0);
         
     }
 
@@ -149,6 +149,8 @@ public class SYS_InboundTest {
         log[0].Type__c = 'INBOUND';
         log[0].Status__c = 'READY_FOR_PROCESSING';
         update log;
+
+        System.assertEquals('READY_FOR_PROCESSING',log[0].Status__c);
     }
 
 }

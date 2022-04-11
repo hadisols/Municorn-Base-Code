@@ -1,7 +1,7 @@
 // Use this class when you want a SYS Log to be processed immediately
 // Instantiate a log record and call the execute method. Do not call this from a trigger context since outbound will have
 // callouts
-public class SYS_IntegrationLogOutboundImmediate{ 
+public without sharing class SYS_IntegrationLogOutboundImmediate{ 
     
     //private List<Id> sysLogIds = new List<Id>();
     List<SYS_IntegrationLog__c> sysLogs;
@@ -43,7 +43,7 @@ public class SYS_IntegrationLogOutboundImmediate{
                     SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                     SYS_ApplicationService appService;
                     
-                    System.debug('appService Handler:'+log.How_to_process__c+'::'+log.Custom_Apex_Handler__c);
+                    /*--*/SYS_debug.log('appService Handler:'+log.How_to_process__c+'::'+log.Custom_Apex_Handler__c);
 
                     if(log.How_to_process__c == 'use_object_setting')
                         appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();

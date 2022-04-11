@@ -5,15 +5,23 @@
 		<members>SYS_Constants</members>
 		<members>SYS_DataCache</members>
 		<members>SYS_ForceSync_Controller</members>
+		<members>SYS_ForceSync_ControllerTest</members>
 		<members>SYS_Helper</members>
+		<members>SYS_HelperTest</members>
+		<members>SYS_InboundTest</members>
 		<members>SYS_IntegrationLogInboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundImmediate</members>
 		<members>SYS_IntegrationLogOutboundQueueable</members>
 		<members>SYS_IntegrationLogTriggerHandler</members>
 		<members>SYS_InvocableHandler</members>
 		<members>SYS_JWTAuth_ApplicationService</members>
+		<members>SYS_JWTAuth_ApplicationServiceTest</members>
+
 		<members>SYS_MockServer</members>
+		<members>SYS_NotificationInterface</members>
 		<members>SYS_OAuthRedirectHandler</members>
+		<members>SYS_OAuthRedirectHandlerTest</members>
+		<members>SYS_OutboundTest</members>
 		<members>SYS_Override_ApplicationService</members>
 		<members>SYS_ParentingQueueable</members>
 		<members>SYS_QueueableForInboundChild</members>
@@ -22,16 +30,7 @@
 		<members>SYS_Transformer</members>
 		<members>SYS_Webservice</members>
 		<members>SYS_debug</members>
-		<members>SYS_NotificationInterface</members>
 		<members>SampleWrapper</members>
-
-		<members>SYS_ForceSync_ControllerTest</members>
-		<members>SYS_InboundTest</members>
-		<members>SYS_OutboundTest</members>
-		<members>SYS_JWTAuth_ApplicationServiceTest</members>
-		<members>SYS_HelperTest</members>
-		<members>SYS_OAuthRedirectHandlerTest</members>
-
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -85,6 +84,8 @@
 		<members>FieldSetting.SYS_PWD_OB_Grant_Type</members>
 		<members>FieldSetting.SYS_PWD_OB_Pwd</members>
 		<members>FieldSetting.SYS_PWD_OB_Username</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Datetime_2_Error</members>
+		<members>FieldSetting.SYS_Test_IB_Account_Datetime_Error</members>
 		<members>FieldSetting.SYS_Test_IB_Account_Flow_Check</members>
 		<members>FieldSetting.SYS_Test_IB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_IB_Account_SYS_Key</members>
@@ -93,8 +94,6 @@
 		<members>FieldSetting.SYS_Test_IB_Contact_SYS_Key</members>
 		<members>FieldSetting.SYS_Test_OB_Account_Name</members>
 		<members>FieldSetting.SYS_Test_TW_Contact_LastName</members>
-		<members>FieldSetting.SYS_Test_IB_Account_Datetime_Error</members>
-		<members>FieldSetting.SYS_Test_IB_Account_Datetime_2_Error</members>
 		<members>HttpHeaders.SYS_Auth_Header</members>
 		<members>HttpHeaders.SYS_OAuth_CC_Header</members>
 		<members>HttpHeaders.SYS_OAuth_Header</members>
@@ -184,16 +183,11 @@
 		<name>RemoteSiteSetting</name>
 	</types>
 	<types>
+		<members>OAuth_Auth_Code_Test_Token_Body</members>
+		<members>OAuth_Test_Token_Body</members>
 		<members>SYS_Test_Inbound_Body</members>
 		<members>SYS_Test_Inbound_Body_Large</members>
 		<members>SYS_Test_Outbound_Response_Body</members>
-		<!--
-		UNCOMMENT ONCE to get the static resource in the org. 
-		Update the headers in the CSV if the org has namespace enabled. Comment in again to avoid override
-		<members>OAuth_Test_Records</members>
-		-->
-		<members>OAuth_Auth_Code_Test_Token_Body</members>
-		<members>OAuth_Test_Token_Body</members>
 		<name>StaticResource</name>
 	</types>
 	<types>

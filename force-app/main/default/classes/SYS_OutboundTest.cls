@@ -40,17 +40,22 @@ public class SYS_OutboundTest {
 
     @isTest
     public static void testIgnoreLogOutbound(){
+        Test.startTest();
         SYS_TestDataFactory.createIgnoreLog();
+        Test.stopTest();
+        
+        List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c WHERE How_to_process__c = 'ignore_log'];
+        System.assert(log.size()>0);
     }
 
     @isTest
     public static void testCustomApexLogOutbound(){
+        Test.startTest();
         SYS_TestDataFactory.createCustomApexHandlerLog();
-    }
+        Test.stopTest();
 
-    @isTest
-    public static void testMultipleRecordsOutbound(){
-
+        List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c WHERE How_to_process__c ='use_custom_apex_handler'];
+        System.assert(log.size()>0);
     }
 
     @isTest
@@ -107,6 +112,9 @@ public class SYS_OutboundTest {
         Test.startTest();
         new SYS_IntegrationLogOutboundImmediate(sysLogs).execute();
         Test.stopTest();
+
+        List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c];
+        System.assert(log.size()>0);
     }
 
     @IsTest
@@ -117,6 +125,8 @@ public class SYS_OutboundTest {
         log[0].Type__c = 'OUTBOUND';
         log[0].Status__c = 'READY_FOR_PROCESSING';
         update log;
+
+        System.assertEquals('READY_FOR_PROCESSING',log[0].Status__c);
     }
 
 
