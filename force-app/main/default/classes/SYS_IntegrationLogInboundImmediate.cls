@@ -1,4 +1,4 @@
-public class SYS_IntegrationLogInboundImmediate{ 
+public without sharing class SYS_IntegrationLogInboundImmediate{ 
     
     private List<Id> sysLogIds = new List<Id>();
     
@@ -10,8 +10,9 @@ public class SYS_IntegrationLogInboundImmediate{
         
         List<sObject> inboundResultLogs = new List<sObject>();
     
-        List<SYS_IntegrationLog__c> sysLogs = 
-        Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c WHERE Id in (' + '\'' + String.join(sysLogIds,'\',\'') + '\')');
+        String query = 'SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c';
+        String whereClause = ' WHERE Id in (' + '\'' + String.join(sysLogIds,'\',\'') + '\')';
+        List<SYS_IntegrationLog__c> sysLogs = Database.query(String.escapeSingleQuotes(query)+whereClause);
 /*
                                             [SELECT 
                                                 id,
@@ -46,8 +47,8 @@ public class SYS_IntegrationLogInboundImmediate{
                 SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                 SYS_ApplicationService appService;
 
-                System.debug('How to process:'+log.How_to_process__c);
-                System.debug('SYS_DataCache.OBJ_TYPE:'+SYS_DataCache.OBJ_TYPE);
+                /*--*/SYS_debug.log('How to process:'+log.How_to_process__c);
+                /*--*/SYS_debug.log('SYS_DataCache.OBJ_TYPE:'+SYS_DataCache.OBJ_TYPE);
                 
                 if(log.How_to_process__c == 'use_object_setting')
                     appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
@@ -64,28 +65,28 @@ public class SYS_IntegrationLogInboundImmediate{
                 Boolean dmlResult = appService.doInbound(log);
                 
                 inboundResultLogs.add(appService.generatelogForInboundResult(dmlResult,log));
-                System.debug('--MS Log final check #'+log.Id+' has WhatId: '+log.WhatId__c);
+                /*--*/SYS_debug.log('--MS Log final check #'+log.Id+' has WhatId: '+log.WhatId__c);
 
             }catch(Exception e){
-                System.debug('MS Exception Digest check:'+SYS_DataCache.log.Request_Digest__c+':'+e.getMessage());
+                /*--*/SYS_debug.log('MS Exception Digest check:'+SYS_DataCache.log.Request_Digest__c+':'+e.getMessage());
                 SYS_Helper.logException(log, e.getStackTraceString()+'\n'+e.getMessage());
             }
 
         }// For loop ends
 
-        System.debug('MS log result size for Log:'+SYS_DataCache.log.Request_Digest__c+':'+inboundResultLogs.size());
+        /*--*/SYS_debug.log('MS log result size for Log:'+SYS_DataCache.log.Request_Digest__c+':'+inboundResultLogs.size());
         if(inboundResultLogs.size()>0){
             for(sObject log2:inboundResultLogs){
                 SYS_IntegrationLog__c l = (SYS_IntegrationLog__c)log2;
                 //l.WhatId__c = 'a025f000006QN4FAAW';
-                System.debug('--MS Log final compilation ###'+l.Id+' has WhatId: '+l.WhatId__c);
+                /*--*/SYS_debug.log('--MS Log final compilation ###'+l.Id+' has WhatId: '+l.WhatId__c);
             }
             //new SYS_ApplicationService().doDML(inboundResultLogs,'UPSERT','');  
             upsert inboundResultLogs;
 
             for(sObject log2:inboundResultLogs){
                 SYS_IntegrationLog__c l = (SYS_IntegrationLog__c)log2;
-                System.debug('--MS Log after upsert ==='+l.Id+' has WhatId: '+l.WhatId__c);
+                /*--*/SYS_debug.log('--MS Log after upsert ==='+l.Id+' has WhatId: '+l.WhatId__c);
             }
         }
 

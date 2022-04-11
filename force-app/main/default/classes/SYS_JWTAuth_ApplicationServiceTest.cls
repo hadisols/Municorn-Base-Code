@@ -1,5 +1,5 @@
 @isTest
-public class SYS_JWTAuth_ApplicationServiceTest {
+public without sharing class SYS_JWTAuth_ApplicationServiceTest {
     @TestSetup
     static void makeData(){
         SYS_TestDataFactory.createTestRecordsFromStaticResource();
