@@ -17,8 +17,6 @@
 		<members>SYS_JWTAuth_ApplicationService</members>
 		<members>SYS_JWTAuth_ApplicationServiceTest</members>
 
-		<members>SYS_Log</members>
-
 		<members>SYS_MockServer</members>
 		<members>SYS_NotificationInterface</members>
 		<members>SYS_OAuthRedirectHandler</members>
