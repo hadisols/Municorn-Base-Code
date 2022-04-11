@@ -57,25 +57,31 @@ public with sharing class ImageController {
         SYS_Tracker__c sysTracker = new SYS_Tracker__c();
         ContentVersion cvRecord = new ContentVersion();
         //sysTracker = Database.query('SELECT '+ SYS_Helper.getAllFieldsFor('SYS_Tracker__c') + '  WHERE WhatId__c =' + '\'' + recordId+'\'' + ' LIMIT 1 ' + '\')');
-        List<SYS_Tracker__c> sysTrackerList = [SELECT Id, Name, Type__c, WhatId__c, WhoId__c FROM SYS_Tracker__c WHERE WhatId__c =: recordId];
+        List<SYS_Tracker__c> sysTrackerList = [SELECT Id, Name, Type__c, WhatId__c, WhoId__c FROM SYS_Tracker__c WHERE WhatId__c =: recordId AND (Type__c = 'Display Pic') ];
         sysTracker = ( sysTrackerList.size()>0) ? sysTrackerList[0] : new SYS_Tracker__c() ;
         System.debug('( sysTracker!=NULL )' + ( sysTracker!=NULL ));
-        if( sysTracker.WhoId__c !=NULL ){
+        if( sysTracker !=NULL ){
             try{
                 cvRecord = [SELECT Id, ContentDocumentId from ContentVersion where ContentDocumentId =:sysTracker.WhoId__c LIMIT 1];
             } catch(Exception e){
                 cvRecord =new ContentVersion();
             }
+            System.debug('( sysTracker.WhoId__c !=NULL )' + ( sysTracker.WhoId__c !=NULL ));
+            System.debug('cvRecord ' + cvRecord);
             if(cvRecord.Id !=NULL){
-                pictureURL = PageReference.forResource('nopicture').getUrl();
-                //pictureURL='/sfc/servlet.shepherd/version/download/' + cvRecord.Id;
+                // pictureURL = PageReference.forResource('nopicture').getUrl();
+                pictureURL='/sfc/servlet.shepherd/version/download/' + cvRecord.Id;
             } else{
                 pictureURL = PageReference.forResource('nopicture').getUrl();
             }
+            System.debug('pictureURL ' + pictureURL);
             
         } else {
             pictureURL = PageReference.forResource('nopicture').getUrl();
-        }        
+        }    
+        // cvRecord = [SELECT Id, ContentDocumentId from ContentVersion where ContentDocumentId ='0695j000008d3lCAAQ' LIMIT 1]; 
+        // pictureURL='/sfc/servlet.shepherd/version/download/' + cvRecord.Id;
+
         return ( String.IsNotBlank(pictureURL) )? pictureURL : PageReference.forResource('nopicture').getUrl();
     }
 }

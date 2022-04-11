@@ -270,50 +270,6 @@ public class Stripe {
         @AuraEnabled public List<BankAccount> bankAccounts { get; set; }
     }
     
-    /*{
-      "id": "acct_1Fs1tIDRpVqpQtHH",
-      "object": "account",
-      "business_profile": {
-        "mcc": "5734",
-        "name": null,
-        "support_address": null,
-        "support_email": null,
-        "support_phone": "+918105918323",
-        "support_url": null,
-        "url": "https://www.google.com"
-      },
-      "capabilities": {
-        "card_payments": "active",
-        "transfers": "active"
-      },
-      "charges_enabled": true,
-      "country": "IN",
-      "default_currency": "inr",
-      "details_submitted": true,
-      "email": "sarath.pal4u@gmail.com",
-      "payouts_enabled": true,
-      "settings": {
-        "branding": {
-          "icon": null,
-          "logo": null,
-          "primary_color": null
-        },
-        "card_payments": {
-          "statement_descriptor_prefix": null
-        },
-        "dashboard": {
-          "display_name": "Google",
-          "timezone": "Asia/Calcutta"
-        },
-        "payments": {
-          "statement_descriptor": "YOLOIDIOT",
-          "statement_descriptor_kana": null,
-          "statement_descriptor_kanji": null
-        }
-      },
-      "type": "custom"
-    }*/
-    
     public class ClientAccount {
         public String id { get; set; }
         public String email { get; set; }

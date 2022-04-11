@@ -29,18 +29,9 @@
     <!-- Handler for Products Selection Application Event -->
     <aura:handler event="c:posCommunicationEvent" action="{!c.handleProductSelectionEvent}"/>
 
-    <!-- Register for Cart Product Deletion Ltng Sendmessage Event -->
-    <!-- <aura:registerEvent name="appEventLtngSendMessage" type="ltng:sendMessage"/> -->
-    <!-- Handler for Products Selection Ltng Sendmessage Event -->
-    <!-- <aura:handler event="ltng:sendMessage" action="{!c.handleLtngSendMessageEvent}"/> -->
-
+    <aura:attribute name="loaded" type="Boolean" default="false" />
     <!--Aura Attributes END-->
 
-  <!--   <div style="border: 1px black solid">
-        <p>cart component</p>
-        <p>{!v.messageFromEvent}</p>
-        <p>Number of events: {!v.numEvents}</p>
-    </div> -->
      <!--Start Bootstrap Cart markup-->
      <div class="sfappwrapper">
         <div class="slds-card cartcontainer">
@@ -125,18 +116,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <aura:if isTrue="{! !empty(v.selectedProductsValues)}">
+                                
                                     <div class="d-flex justify-content-center py-3 py-3">
                                         <div class="d-flex flex-row align-items-center flex-shrink-1">
-                                            <button class="btn btn-primary btn-md mx-2" onclick="{! c.handleFinialize }">
-                                                Add to Cart    
-                                            </button>
-                                            <!-- <button class="btn btn-primary btn-md" onclick="{! c.handleCharge }">
-                                            Charge &nbsp;<lightning:formattedNumber value="{! v.totalChargeAmount}" style="currency" currencyCode="USD"/>    
-                                            </button> -->
+                                            <aura:if isTrue="{! !empty(v.selectedProductsValues)}">
+                                                <button class="btn btn-primary btn-md mx-2" onclick="{! c.handleFinialize }">
+                                                    Add to Cart    
+                                                </button>
+                                            </aura:if>
+                                            <aura:if isTrue="{! (v.orderItemRecord.length > 0)}">
+                                                <button class="btn btn-primary btn-md" onclick="{! c.handleCharge }">
+                                                    Close Tab     
+                                                </button>
+                                            </aura:if>
                                         </div>
                                     </div>
-                                </aura:if>
                             </div>
                         </div>
                     </div>

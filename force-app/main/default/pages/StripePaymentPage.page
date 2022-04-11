@@ -24,16 +24,15 @@
                         <span>{!organization}</span></h3>
                     <apex:pageBlockTable value="{!paymentRequests}" var="req" id="theTable" styleClass="payment-summary">
                         <apex:column >
-                            <apex:facet name="header">{!$ObjectType.Payment_Intent__c.fields.Frequency__c.Label}</apex:facet>
-                            <apex:outputlabel rendered="{!req.Frequency__c == 'single'}"
-                                              value="{!$Label.frequency_single}"/>
-                            <apex:outputlabel rendered="{!req.Frequency__c == 'month'}" value="{!$Label.frequency_month}"/>
-                            <apex:outputlabel rendered="{!req.Frequency__c == 'quarter'}"
-                                              value="{!$Label.frequency_quarter}"/>
-                            <apex:outputlabel rendered="{!req.Frequency__c == 'year'}" value="{!$Label.frequency_year}"/>
+                            <apex:facet name="header">{!$ObjectType.Payment_Intent__c.fields.Payment_Type__c.Label}</apex:facet>
+                            <apex:outputlabel value="{!req.Order__r.Order_Type__c}"/>
                         </apex:column>
-                        
-                        <apex:column value="{!req.First_Charge_Date__c}"/>
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.Payment_Intent__c.fields.Amount__c.Label}</apex:facet>
+                            <apex:outputText value="{0, number, currency}">
+                                <apex:param value="{!req.Amount__c}" />
+                            </apex:outputText>
+                        </apex:column>
                     </apex:pageBlockTable>
                     <div id="tabs">
                         <ul>
@@ -120,7 +119,7 @@
                                                 <div class="button-container">
                                                     <div class="outcome">
                                                         <span class="save-card-cb-container"><input type="checkbox" id="save-card"
-                                                                                                    checked="checked"/>{!$Label.save_card_for_future_checkouts}</span>
+                                                                                                    checked="checked" disabled="disabled"/>{!$Label.save_card_for_future_checkouts}</span>
                                                     </div>
                                                     <div style="text-align: center">
                                                         <apex:commandbutton id="payment-button"
@@ -152,10 +151,10 @@
             -->
             <apex:outputPanel styleClass="charge-output">
 <!--                 <apex:outputText value="{!error}"/> -->
-<!--                 <apex:outputText value="{!paymentReceipt}"/> -->                
+                <!-- <apex:outputText value="{!paymentReceipt}"/>     -->            
                 <apex:repeat value="{!paymentReceipt.payments}" var="paymentrecp">
-                   <!--  <apex:outputText value="{!paymentrecp}"/> -->
-                    <!-- <apex:variable var="req" value="{!paymentrecp.paymentRequest}"/>
+                    <!-- <apex:outputText value="{!paymentrecp}"/>
+                    <apex:variable var="req" value="{!paymentrecp.paymentRequest}"/>
                     <apex:variable var="rcptTxn" value="{!paymentrecp.txn}"/> -->
                     <apex:outputPanel styleClass="charge-output-panel">
                         <apex:outputPanel styleClass="charge-output-header">

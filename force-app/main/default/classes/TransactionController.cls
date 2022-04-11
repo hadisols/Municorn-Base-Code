@@ -1,4 +1,4 @@
-public with sharing class TransactionController {
+public without sharing class TransactionController {
     private static StripeService stripeService = new StripeService();
     private static CustomLabelsService customLabelsService = new CustomLabelsService();
 	private static TransactionService txnService = new TransactionService();
@@ -37,10 +37,11 @@ public with sharing class TransactionController {
                 assert(false, 'Payment is Completed');
                 paymentReceipt = new Stripe.Payments();
                 // List<Payment> payment = new List<Payment>();
-                // paymentReceipt.registerPayment(paymentIntent);
+                paymentReceipt.registerPayment(paymentIntent);
                 Transaction__c completedTxn = txnService.getTransactionPaymentIntentId(paymentIntent.Id);
                 paymentReceipt.registerPayment(completedTxn);
-                system.debug('payments ' + paymentReceipt);
+                system.debug('paymentReceipt ' + paymentReceipt);
+                system.debug('payments ' + payments);
 
             }
         }

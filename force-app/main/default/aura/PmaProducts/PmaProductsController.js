@@ -2,36 +2,12 @@
     onInit: function (component, event, helper) {
         var logApiResponses = true;
 
-        component.apiCall = function (controllerMethodName, params, success, failure) {
-            var action = component.get('c.' + controllerMethodName);
-            action.setParams(params);
-            action.setCallback(this, function (data) {
-                if (logApiResponses){
-                    console.log( controllerMethodName +' Callback Response ErrorsList: ');
-                    console.table(data.getError());
-                } 
-                var errors = data.getError();
-                if (errors && Array.isArray(errors) && errors.length > 0) {
-                    if (failure) {
-                        component.displayMessage('Error',  errors[0].message, 'error');
-                        failure(errors[0].message);                        
-                    } else {
-                        if (logApiResponses) {
-                            console.log( controllerMethodName +' Callback Response Error: ' );
-                            console.table( errors);
-                        }
-                        component.displayMessage('Error',  controllerMethodName +' Callback Response Error: ', 'error');
-                        component.set('v.Loading', false);
-                    }
-                } else {
-                    if (logApiResponses){
-                        console.log( controllerMethodName +' Callback Response Success: ');
-                        console.table(data.getReturnValue());
-                    } 
-                    if (success) success(data.getReturnValue());
-                }
-            });
-            $A.enqueueAction(action);
+        component.redirectToHome = function () {
+            component.displayMessage('Failure', 'POS Invalid or Expired Order..', 'Error','dismissible');
+            var urlPath = '/'; //Invalid POS Member Open Tab
+            $A.get("e.force:navigateToURL").setParams({ 
+                "url": urlPath 
+             }).fire();   
         };
         
         component.fireApplicationEventCall = function (eventControllerName, message, processedObjectToString) {
@@ -46,10 +22,10 @@
             if (logApiResponses) { console.log('*** ' + 'Sent application event successfully' + ' *** ' + eventControllerName); } 
         };
 
-        component.displayMessage = function (title, message, type) {
+        component.displayMessage = function (title, message, type, mode) {
             var toastEvent = $A.get("e.force:showToast");
             toastEvent.setParams({
-                "mode": 'sticky',
+                "mode": mode,
                 "title": title,
                 "type": type,
                 "message": message
@@ -72,7 +48,7 @@
                 if (logApiResponses) { console.table(productObjectData); }
               
            } else { // if any callback error, display error msg
-            component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error');
+            component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error','dismissible');
            }
        });
        $A.enqueueAction(action);
@@ -82,6 +58,23 @@
     productClickHandler : function(component, event) {
         var logApiResponses = true;
         var message = 'Product Added Successfully';
+        
+        var orderUUID = component.get("v.orderUUID");
+        var action = component.get('c.getOrderDetails');
+        action.setParams({
+            "orderIdOrUUID" : orderUUID,
+        });
+        action.setCallback(this,function(response){
+            var state = response.getState();
+            if(state== 'SUCCESS'){
+                var orderRecordData = response.getReturnValue();
+            }else{
+                console.log('Failed  getOrderDetails action ');
+                component.redirectToHome();
+            }
+        });
+        $A.enqueueAction(action);
+
         var selectedproductsString= component.get("v.selectedproductsString");
         //Init Products newMap.get(selectedProdId)
         var allProductsMap = new Map( Object.entries( component.get('v.allProductsMap') ) );
@@ -93,25 +86,8 @@
         if (logApiResponses) { console.log('Onclick selectedproductsString' ); }
         if (logApiResponses) { console.log( component.get("v.selectedproductsString") ); }
         
-       /*  if( (selectedproductsString == '{}') || (selectedproductsString == null) || (selectedproductsString == undefined) ){
-            component.set('v.selectedProductsMap',new Map());
-        } */
         //Init Map
         var selectedProductsMap = new Map(component.get('v.selectedProductsMap'));
-        //Reset Selected Products quantity after Add to Cart
-        /* if( (selectedproductsString == '{}') || (selectedproductsString == null) || (selectedproductsString == undefined) ){
-               if(Object.keys(selectedProductsMap).length !== 0){
-                for (let [key, value] of  selectedProductsMap.entries()) {
-                    value.quantity = 1;
-                    console.log('Map Iterate '+ key + " = " + value.quantity);
-                    //console.table(value);
-                    selectedProductsMap.set(key, value);
-                    console.table(selectedProductsMap.get(key));
-                }
-            }
-                
-        } */
-
         var selectedItem = event.currentTarget;
         var selectedProdId = selectedItem.dataset.id; // Selected Product Id
         var currentSelectedProductFromDataMap = allProductsMap.get(selectedProdId);

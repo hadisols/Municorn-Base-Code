@@ -11,11 +11,27 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
     }
     //Add Immediate Outbound Response Syslog to Upsert Using Custom Apex Handler
     public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
-        SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
+        String jsonBody = resp.getBody();
+
+        PlivoMessage plivoRespObj = (PlivoMessage)System.JSON.deserialize(jsonBody,PlivoMessage.class);
+        String messageUUID = String.valueof(plivoRespObj.message_uuid[0]);
+
+        Object convert  = System.JSON.deserializeUntyped(jsonBody);
+        if(convert instanceof Map<String, Object> && ( ((Map<String, Object>)convert).get('api_id') != null) 
+                        && ( ((Map<String, Object>)convert).get('message_uuid') != null)
+                        && ( ((Map<String, Object>)convert).get('message') != null) ) {
+            ((Map<String, Object>)convert).put('messageuuid', messageUUID); 
+            ((Map<String, Object>)convert).put('type', 'sms');
+            ((Map<String, Object>)convert).remove('message_uuid'); 
+            jsonBody = JSON.serialize(convert);
+        }
+
+
+        SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(jsonBody);
 
         String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
         if(algo!=NULL && algo!='')
-            logResp.Request_Digest__c = generateHash(resp.getBody(),algo);
+            logResp.Request_Digest__c = generateHash(jsonBody,algo);
         //Added Status 202 - Accepted in Creteria
         if(resp.getStatusCode() != 202 && resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
             SYS_debug.log('#### resp status: '+resp.getStatus());
@@ -41,7 +57,8 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
             if(log.SYS_Operation_Type__c == 'INSERT' || log.Force_Sync__c){
                 logResp.Status__c = 'NEW';
                 logResp.SYS_Operation_Type__c = 'UPDATE';
-                logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
+                logResp.Resource__c = 'sms';
+                // logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
 
                 logResp.How_To_Process__c = 'use_custom_apex_handler';
                 logResp.Custom_Apex_Handler__c = 'Plivo_Outbound_SYS_ApplicationService';
@@ -72,7 +89,7 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
      * the WhatId on the log record.
      */
 
-    public override List<sObject> getMissingIdForUpdate(List<sObject> sObjectsToDML,SYS_IntegrationLog__c logResp) {
+    /* public override List<sObject> getMissingIdForUpdate(List<sObject> sObjectsToDML,SYS_IntegrationLog__c logResp) {
         String jsonBody = '';
         jsonBody =  logResp.data0__c != null ? logResp.data0__c : '' +
                     logResp.data1__c != null ? logResp.data1__c : '' +
@@ -93,5 +110,5 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
             }
         }
         return sObjectsToDML;
-    }
+    } */
 }

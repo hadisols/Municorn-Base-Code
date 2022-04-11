@@ -4,6 +4,17 @@
     },
     onInit: function (component, event, helper) {
         var logApiResponses = true;
+        component.redirectToHome = function (status) {
+            if(status==true){
+                component.displayMessage('Success', 'Added to Cart Successfully..', 'Success','dismissible');
+            }else{
+                component.displayMessage('Failure', 'POS Invalid or Expired Order..', 'Error','dismissible');
+            }
+            var urlPath = '/'; //Invalid POS Member Open Tab
+            $A.get("e.force:navigateToURL").setParams({ 
+                "url": urlPath 
+             }).fire();   
+        };
         component.fireApplicationEventCall = function (eventControllerName, message, processedObjectToString) {
             var appEvent = $A.get('e.c:' + eventControllerName);
             appEvent.setParams({
@@ -61,6 +72,39 @@
 
     handleProductSelectionEvent : function (cmp, event) {
         var logApiResponses = true;
+
+        var orderUUID = cmp.get("v.orderUUID");
+        var action = cmp.get('c.getOrderDetails');
+        action.setParams({
+            "orderIdOrUUID" : orderUUID,
+        });
+        action.setCallback(this,function(response){
+            var state = response.getState();
+            if(state== 'SUCCESS'){
+                var orderRecordData = response.getReturnValue();
+                cmp.set('v.orderRecord',orderRecordData);
+                console.log('orderRecord '+orderRecordData);
+
+                cmp.set('v.orderItemRecord',orderRecordData.Order_Items__r);
+                console.log('Order_Items__r '+orderRecordData.Order_Items__r);
+                console.table(orderRecordData);
+            }else{
+                console.log('Failed  getOrderDetails action ');
+                cmp.redirectToHome(false);
+                /* var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        cmp.displayMessage('Failure!', 'Failed to Fetch Order Details: '+errors[0].message, 'error','dismissible');
+                    }
+                }
+                else{
+                    cmp.displayMessage('Failure!', 'Failed to Fetch Order Details: Unknown error', 'error','dismissible');
+                } */
+                
+            }
+        });
+        $A.enqueueAction(action);
+
         var message = event.getParam("message");
         if (logApiResponses) { console.log('Received Message: ' + message); }
         //Received JSON String
@@ -187,8 +231,10 @@
                 var message = 'Product Deleted Successfully';
                 cmp.fireApplicationEventCall('cartCommunicationEvent' , message, '' );
                 console.log('Called Products component and Cleared Selected Products Event Call: ');
+                cmp.redirectToHome(true);
             }else{
                 console.log('Failed to Add Order Item action ');
+                cmp.redirectToHome(false);
                 var errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {
@@ -198,6 +244,44 @@
                 else{
                     cmp.displayMessage('Failure!', 'Failed to Add Order Item: Unknown error', 'error','dismissible');
                 }
+                
+            }
+        });
+        $A.enqueueAction(action);
+
+    },
+    handleCharge : function(cmp, event) {
+        console.log('*** ' + 'handleCharge' + ' ***');
+
+        var currentOrderRecord = cmp.get('v.orderRecord');
+        
+        var action = cmp.get('c.createPaymentRecords');
+        action.setParams({
+            "orderId" : currentOrderRecord.Id,
+        });
+        action.setCallback(this,function(response){
+            var state = response.getState();
+            if(state== 'SUCCESS'){
+                // cmp.displayMessage('Success!', 'Successfully Charged Order', 'success','dismissible');
+                cmp.redirectToHome(true);
+                var transactionId = response.getReturnValue();
+                /* if( (transactionId.length > 0) && (transactionId.length > 18) ){
+                    
+
+                } */
+            }else{
+                console.log('Failed to Charge for Order ');
+                // cmp.redirectToHome(false);
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        cmp.displayMessage('Failure!', 'Failed to Charge Order : '+errors[0].message, 'error','dismissible');
+                    }
+                }
+                else{
+                    cmp.displayMessage('Failure!', 'Failed to Charge Order : Unknown error', 'error','dismissible');
+                }
+                
             }
         });
         $A.enqueueAction(action);
