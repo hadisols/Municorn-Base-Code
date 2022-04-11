@@ -1,113 +1,217 @@
-<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
-    <lightning:card>
-        <!-- HEADING AREA -->
-        <div class="slds-border_bottom">
-            <div class="slds-align_absolute-center">
-                <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate"  title="My Contacts">Municon Health check</h1>
-            </div>
-        </div>
-        <!-- / HEADING AREA -->
-       <div class="slds-p-left_large">
-        <h2 id="element-with-table-label" class="slds-text-heading_medium slds-m-bottom_xx-small">Health checks status</h2>
-       </div>
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global"
+   controller="municonhealthcheckcontroller">
+   <!-- Attributes-->
+   <aura:attribute name="Externalidfix" type="Boolean"  />
+   <aura:attribute name="Escapchrect" type="Boolean"  />
+    <aura:attribute name="Enablementattr" type="Boolean"  />
+    <aura:attribute name="notificationPartial" type="Boolean"  />
+    <aura:attribute name="Fieldlookup" type="Boolean"  />
+   <!-- Attributes-->
+   <aura:handler name="init" value="{!this}" action="{!c.myAction}" />
+   <lightning:card>
+      <!-- HEADING AREA -->
+      <!--{!v.Externalidfix}
+      {!v.intEnable} -->
+       {!v.Fieldlookup}
+      <div class="slds-border_bottom">
+         <div class="slds-align_absolute-center">
+            <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate"  title="My Contacts">Municon Health check</h1>
+         </div>
+      </div>
+      <!-- / HEADING AREA -->
+      <div class="slds-p-left_large">
+         <h2 id="element-with-table-label" class="slds-text-heading_medium slds-m-bottom_xx-small">Health checks status</h2>
+      </div>
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+         <thead>
+            <tr class="slds-line-height_reset">
+               <th class="" scope="col">
+                  <div class="slds-truncate" title="  helth check Name">NAME</div>
+               </th>
+               <th class="" scope="col">
+                  <div class="slds-truncate" title="Account Name">HEALTH</div>
+               </th>
+               <th class="" scope="col">
+                  <div class="slds-truncate" title="Close Date">on state from</div>
+               </th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr class="slds-hint-parent">
+               <th data-label="Opportunity Name" scope="row">
+                  <div class="slds-truncate" title="Cloudhub">
+                     <a href="#" tabindex="-1">EscapeChar cannot be NULL</a>
+                  </div>
+               </th>
+               <td data-label="Account Name">
+                  <lightning:icon iconName="utility:announcement" variant="error" />
+               </td>
+               <td data-label="Close Date">
+                  <div class="slds-truncate" title="4/14/2015">Updated few seconds ago</div>
+               </td>
+            </tr>
+            <tr class="slds-hint-parent">
+               <th data-label="Opportunity Name" scope="row">
+               </th>
+            </tr>
+         </tbody>
+      </table>
+      <div class="row dark-background slds-box slds-text-heading_small">
+         <lightning:icon iconName="utility:first_non_empty" alternativeText="Error!" variant="first_non_empty" title="first_non_empty variant x-small"
+            size="x-small" />
+         <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
             <thead>
-                <tr class="slds-line-height_reset">
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="  helth check Name">NAME</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Account Name">HEALTH</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Close Date">on state from</div>
-                    </th>
-                     </tr>
+               <tr class="slds-line-height_reset">
+                  <th class="" scope="col">
+                     <div class="slds-truncate" title="  helth check Name">NAME</div>
+                  </th>
+                  <th class="" scope="col">
+                     <div class="slds-truncate" title="Account Name">HEALTH</div>
+                  </th>
+                  <th class="" scope="col">
+                     <div class="slds-truncate" title="Close Date">DESCRIPTION</div>
+                  </th>
+               </tr>
             </thead>
             <tbody>
+               <tr class="slds-hint-parent">
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1">Integration Enablement</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.Enablementattr}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.Enablementattr}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.Enablementattr}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">Enable the Integration setting </div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
+               <tr class="slds-hint-parent">
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub + Anypoint Connectors">
+                        <a href="#" tabindex="-1">At least one FS with IsExternal field checked</a>
+                     </div>
+                      
+                  </th>
+                   
+                    <aura:if isTrue="{!v.Externalidfix}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.Externalidfix}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess</div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.intEnable}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">select the one fileld as external field</div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
                 <tr class="slds-hint-parent">
-                    <th data-label="Opportunity Name" scope="row">
-                        <div class="slds-truncate" title="Cloudhub">
-                            <a href="#" tabindex="-1">EscapeChar cannot be NULL</a>
-                        </div>
-                    </th>
-                    <td data-label="Account Name">
-                        <lightning:icon iconName="utility:announcement" variant="error" />
-                    </td>
-                    <td data-label="Close Date">
-                        <div class="slds-truncate" title="4/14/2015">Updated few seconds ago</div>
-                    </td>
-                   </tr>
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1">EscapeChar cannot be NULL</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.Escapchrect}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.Escapchrect}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.Escapchrect}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">Give Escap character # mentioned in integration settings </div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
                 <tr class="slds-hint-parent">
-                    <th data-label="Opportunity Name" scope="row">
-                        
-                    </th>
-                </tr>
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1">Notification partial</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.notificationPartial}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.notificationPartial}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.notificationPartial}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">Provide the wrapper class name in the integration setting </div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
+                 <tr class="slds-hint-parent">
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1">Lookupfield TOWAY Direction check</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.Fieldlookup}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.Fieldlookup}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.Fieldlookup}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">Lookupfieldsettings are not in TOWAY Direction </div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
             </tbody>
-        </table>
-        
-        <div class="row dark-background slds-box slds-text-heading_small">
+         </table>
+         <div class="row dark-background slds-box slds-text-heading_small">
             <lightning:icon iconName="utility:first_non_empty" alternativeText="Error!" variant="first_non_empty" title="first_non_empty variant x-small"
-                            size="x-small" />       
-            
-            
-            
-            
-            <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
-                <thead>
-                    <tr class="slds-line-height_reset">
-                        <th class="" scope="col">
-                            <div class="slds-truncate" title="  helth check Name">NAME</div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate" title="Account Name">HEALTH</div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate" title="Close Date">DESCRIPTION</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="slds-hint-parent">
-                        <th data-label="Opportunity Name" scope="row">
-                            <div class="slds-truncate" title="Cloudhub">
-                                <a href="#" tabindex="-1">EscapeChar cannot be NULL</a>
-                            </div>
-                        </th>
-                        <td data-label="Account Name">
-                            <lightning:icon iconName="utility:announcement" variant="error" />
-                        </td>
-                        <td data-label="Close Date">
-                            <div class="slds-truncate" title="4/14/2015">Give Escap character # mentioned in integration settings </div>
-                        </td>
-                        
-                        
-                        
-                        
-                    </tr>
-                    <tr class="slds-hint-parent">
-                        <th data-label="Opportunity Name" scope="row">
-                            <div class="slds-truncate" title="Cloudhub + Anypoint Connectors">
-                                <a href="#" tabindex="-1">At least one FS with IsExternal field checked</a>
-                            </div>
-                        </th>
-                        <td data-label="Account Name">
-                            <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
-                                            title="success variant" />
-                        </td>
-                        <td data-label="Close Date">
-                            <div class="slds-truncate" title="4/14/2015">-</div>
-                        </td>
-                        
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="row dark-background slds-box slds-text-heading_small">
-                <lightning:icon iconName="utility:first_non_empty" alternativeText="Error!" variant="first_non_empty" title="first_non_empty variant x-small"
-                                size="x-small" />
-                
-            </div>
-        </div>
-    </lightning:card>
+               size="x-small" />
+         </div>
+      </div>
+   </lightning:card>
 </aura:component>

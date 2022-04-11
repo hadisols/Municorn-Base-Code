@@ -8,6 +8,7 @@
     <columns>ChildFieldApiName__c</columns>
     <columns>ChildRootElement__c</columns>
     <columns>Direction__c</columns>
+    <columns>Is_External_Field__c</columns>
     <columns>Is_Active__c</columns>
     <columns>IsChild__c</columns>
     <columns>ObjectApiName__c</columns>
