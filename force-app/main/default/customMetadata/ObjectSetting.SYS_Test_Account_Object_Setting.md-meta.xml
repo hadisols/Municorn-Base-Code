@@ -43,10 +43,6 @@
         <value xsi:type="xsd:string">Account</value>
     </values>
     <values>
-        <field>Object__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
         <field>PATCH_URL_Pattern__c</field>
         <value xsi:type="xsd:string">callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account/{Id}</value>
     </values>
