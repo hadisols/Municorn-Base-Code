@@ -1,4 +1,6 @@
 public with sharing class PMA_ProductsController {
+    private static TransactionService txnService = new TransactionService();
+
     //To create Order Item records
     @AuraEnabled
     public static Order__c createOrderItems(Id orderId, String selectedProductsValues) {
@@ -104,6 +106,13 @@ public with sharing class PMA_ProductsController {
         
        return null;
     }
+    //To Return Transaction Details
+    @AuraEnabled
+    public static Transaction__c getTransactionDetails(Id txId) {
+        Transaction__c txn = txnService.getTransaction(txId);
+        return txn;
+    }
+
     //To return initial records
     @AuraEnabled
     public static Map <Id, SelectedProductWrapper > getAllProductRecords() {

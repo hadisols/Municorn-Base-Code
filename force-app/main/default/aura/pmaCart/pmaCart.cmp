@@ -12,6 +12,8 @@
 
     <aura:attribute name="orderRecord" type="Order__C" />
     <aura:attribute name="orderItemRecord" type="List" />
+
+    <aura:attribute name="transactionId" type="String" />
     
     <!-- Store Incoming Message of Map<Id,Wrapper> -->
     <aura:attribute name="selectedproductsString" type="String" />

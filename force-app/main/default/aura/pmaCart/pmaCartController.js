@@ -2,13 +2,22 @@
     setup: function (component, event, helper) {
         console.info('bootstrap loaded successfully.');
     },
+
+    showSpinner:function(cmp){
+      cmp.set("v.IsSpinner",true);
+    },
+    
+    hideSpinner:function(cmp){
+    cmp.set("v.IsSpinner",false);
+    }, 
+
     onInit: function (component, event, helper) {
         var logApiResponses = true;
-        component.redirectToHome = function (status) {
+        component.redirectToHome = function (status,message) {
             if(status==true){
-                component.displayMessage('Success', 'Added to Cart Successfully..', 'Success','dismissible');
+                component.displayMessage('Success', message, 'Success','dismissible');
             }else{
-                component.displayMessage('Failure', 'POS Invalid or Expired Order..', 'Error','dismissible');
+                component.displayMessage('Failure', message, 'Error','dismissible');
             }
             var urlPath = '/'; //Invalid POS Member Open Tab
             $A.get("e.force:navigateToURL").setParams({ 
@@ -90,7 +99,7 @@
                 console.table(orderRecordData);
             }else{
                 console.log('Failed  getOrderDetails action ');
-                cmp.redirectToHome(false);
+                cmp.redirectToHome(false, 'POS Invalid or Expired Order..');
                 /* var errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {
@@ -205,7 +214,7 @@
         if (logApiResponses) { console.log('Called Cart Event Call: '); }
 
     },
-    handleFinialize : function(cmp, event) {
+    handleFinialize : function(cmp, event, helper) {
         console.log('*** ' + 'handleFinialize' + ' ***');
         var currentOrderRecord = cmp.get('v.orderRecord');
         var selectedProductsValues  = JSON.stringify(cmp.get("v.selectedProductsValues"));
@@ -231,10 +240,10 @@
                 var message = 'Product Deleted Successfully';
                 cmp.fireApplicationEventCall('cartCommunicationEvent' , message, '' );
                 console.log('Called Products component and Cleared Selected Products Event Call: ');
-                cmp.redirectToHome(true);
+                cmp.redirectToHome(true , 'Added to Cart Successfully..');
             }else{
                 console.log('Failed to Add Order Item action ');
-                cmp.redirectToHome(false);
+                cmp.redirectToHome(false , 'POS Invalid or Expired Order..');
                 var errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {
@@ -250,7 +259,7 @@
         $A.enqueueAction(action);
 
     },
-    handleCharge : function(cmp, event) {
+    handleCharge : function(cmp, event, helper) {
         console.log('*** ' + 'handleCharge' + ' ***');
 
         var currentOrderRecord = cmp.get('v.orderRecord');
@@ -262,16 +271,19 @@
         action.setCallback(this,function(response){
             var state = response.getState();
             if(state== 'SUCCESS'){
-                // cmp.displayMessage('Success!', 'Successfully Charged Order', 'success','dismissible');
-                cmp.redirectToHome(true);
                 var transactionId = response.getReturnValue();
-                /* if( (transactionId.length > 0) && (transactionId.length > 18) ){
-                    
+                console.log('transactionId ASYNC Init '+ transactionId);
+                console.log('transactionId ASYNC Init '+ transactionId.length);
+                if( (transactionId.length > 0)){
+                    cmp.set('v.transactionId', transactionId);
+                    helper.pollApex(cmp, event, helper);
+                }else{
+                    console.log('Failed to Charge for Order Invalid Transaction Referrence ');
+                    cmp.displayMessage('Failure!', 'Failed to Charge Order : Invalid Transaction Referrence', 'error','dismissible');
+                }
 
-                } */
             }else{
                 console.log('Failed to Charge for Order ');
-                // cmp.redirectToHome(false);
                 var errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {
