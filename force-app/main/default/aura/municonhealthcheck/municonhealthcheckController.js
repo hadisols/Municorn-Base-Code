@@ -110,10 +110,90 @@
                 }
             }
         });
+        var action5 = component.get('c.flowActiveCheck');
+         action5.setCallback(this, function (response) {
+           var state = response.getState();
+            // alert('state'+response.getState());
+            if (state === "SUCCESS") {
+        var flowcheckresponse = response.getReturnValue();
+                
+        component.set('v.flowcheck',flowcheckresponse );  
+                } else {
+                // Failure
+                console.log('Error in Retriving Content Document');
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        component.displayMessage('Failure!', 'Failed to Charge Order : '+errors[0].message, 'error','dismissible');
+                    }
+                }
+            }
+        });
+        var action6 = component.get('c.NotificationInterfaceCheck');
+         action6.setCallback(this, function (response) {
+           var state = response.getState();
+            // alert('state'+response.getState());
+            if (state === "SUCCESS") {
+        var Interfaceresponse = response.getReturnValue();
+                
+        component.set('v.NotificationInterface',Interfaceresponse );  
+                } else {
+                // Failure
+                console.log('Error in Retriving Content Document');
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        component.displayMessage('Failure!', 'Failed to Charge Order : '+errors[0].message, 'error','dismissible');
+                    }
+                }
+            }
+        });
+        var action7 = component.get('c.ExtensionCheck');
+         action7.setCallback(this, function (response) {
+           var state = response.getState();
+            // alert('state'+response.getState());
+            if (state === "SUCCESS") {
+        var extensionResponse = response.getReturnValue();
+                
+        component.set('v.extension',extensionResponse );  
+                } else {
+                // Failure
+                console.log('Error in Retriving Content Document');
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        component.displayMessage('Failure!', 'Failed to Charge Order : '+errors[0].message, 'error','dismissible');
+                    }
+                }
+            }
+        });
+        var action8 = component.get('c.objectFieldLowercasecheck');
+         action8.setCallback(this, function (response) {
+           var state = response.getState();
+            // alert('state'+response.getState());
+            if (state === "SUCCESS") {
+        var FieldlowercaseResponse = response.getReturnValue();
+                
+        component.set('v.Fieldlowercase',FieldlowercaseResponse );  
+                } else {
+                // Failure
+                console.log('Error in Retriving Content Document');
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        component.displayMessage('Failure!', 'Failed to Charge Order : '+errors[0].message, 'error','dismissible');
+                    }
+                }
+            }
+        });
         $A.enqueueAction(action);
         $A.enqueueAction(action1);
         $A.enqueueAction(action2);
         $A.enqueueAction(action3);
         $A.enqueueAction(action4);
+        $A.enqueueAction(action5);
+        $A.enqueueAction(action6);
+        $A.enqueueAction(action7);
+        $A.enqueueAction(action8);
     },
 })

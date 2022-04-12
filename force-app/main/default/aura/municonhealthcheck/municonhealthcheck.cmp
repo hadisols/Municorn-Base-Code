@@ -6,13 +6,17 @@
     <aura:attribute name="Enablementattr" type="Boolean"  />
     <aura:attribute name="notificationPartial" type="Boolean"  />
     <aura:attribute name="Fieldlookup" type="Boolean"  />
+    <aura:attribute name="flowcheck" type="Boolean"  />
+    <aura:attribute name="NotificationInterface" type="Boolean"  />
+    <aura:attribute name="extension" type="Boolean"  />
+    <aura:attribute name="Fieldlowercase" type="Boolean"  />
    <!-- Attributes-->
    <aura:handler name="init" value="{!this}" action="{!c.myAction}" />
    <lightning:card>
       <!-- HEADING AREA -->
       <!--{!v.Externalidfix}
       {!v.intEnable} -->
-      
+      {!v.Fieldlowercase}
       <div class="slds-border_bottom">
          <div class="slds-align_absolute-center">
             <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate"  title="My Contacts">Municon Health check</h1>
@@ -202,6 +206,110 @@
                         </td>
                         <td data-label="Close Date">
                            <div class="slds-truncate" title="4/14/2015">Lookupfieldsettings are not in TOWAY Direction </div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
+                <tr class="slds-hint-parent">
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1">SYS_logretryflowcheck</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.flowcheck}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.flowcheck}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.flowcheck}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">Activate the SYS_logretry flow  </div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
+                <tr class="slds-hint-parent">
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1">wrapper class implement SYS_NotificationInterface Check</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.NotificationInterface}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.NotificationInterface}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.NotificationInterface}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">wrapper class doesnot have the implement SYS_NotificationInterface</div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
+                <tr class="slds-hint-parent">
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1">Extension of SYS_ApplicationService Check</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.extension}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.extension}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.extension}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">Apex Handlers should be an extension of SYS_ApplicationService</div>
+                        </td>
+                     </aura:set>
+                  </aura:if>
+               </tr>
+                <tr class="slds-hint-parent">
+                  <th data-label="Opportunity Name" scope="row">
+                     <div class="slds-truncate" title="Cloudhub">
+                        <a href="#" tabindex="-1"> Object API Name and Field API name Lowercase Check</a>
+                     </div>
+                  </th>
+                  <aura:if isTrue="{!v.Fieldlowercase}">
+                     <td data-label="Account Name">
+                        <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                           title="success variant"  />
+                        {!v.Fieldlowercase}
+                     </td>
+                     <td data-label="Close Date">
+                        <div class="slds-truncate" title="4/14/2015">Sucess </div>
+                     </td>
+                     <aura:set attribute="else">
+                        <td data-label="Account Name">
+                           <lightning:icon iconName="utility:announcement" variant="error" />
+                           {!v.Fieldlowercase}
+                        </td>
+                        <td data-label="Close Date">
+                           <div class="slds-truncate" title="4/14/2015">Object API Name and Field API name should be lower case</div>
                         </td>
                      </aura:set>
                   </aura:if>

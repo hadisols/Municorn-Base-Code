@@ -168,7 +168,13 @@ System.debug('========'+SYS_ApplicationService.class.isAssignableFrom(outType));
     }
         return Extension;
 }   
-    
+ @AuraEnabled
+public  static Boolean RemotesitesettingCheck() {
+Boolean fieldAvailabilty ;
+//list<RemoteProxy> remotesitesettings = [select id, SiteName, EndpointUrl from RemoteProxy];
+
+return true;
+}   
     
     /*@AuraEnabled
 public  static Boolean fieldAvailabiltyCheck() {
