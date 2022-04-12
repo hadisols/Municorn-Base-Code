@@ -12,7 +12,7 @@
       <!-- HEADING AREA -->
       <!--{!v.Externalidfix}
       {!v.intEnable} -->
-       {!v.Fieldlookup}
+      
       <div class="slds-border_bottom">
          <div class="slds-align_absolute-center">
             <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate"  title="My Contacts">Municon Health check</h1>
@@ -120,7 +120,7 @@
                      <aura:set attribute="else">
                         <td data-label="Account Name">
                            <lightning:icon iconName="utility:announcement" variant="error" />
-                           {!v.intEnable}
+                           {!v.Externalidfix}
                         </td>
                         <td data-label="Close Date">
                            <div class="slds-truncate" title="4/14/2015">select the one fileld as external field</div>

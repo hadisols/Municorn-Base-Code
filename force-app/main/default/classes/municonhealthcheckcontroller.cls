@@ -80,10 +80,10 @@ public class municonhealthcheckcontroller {
     }
     @AuraEnabled
     public  static Boolean fieldsettingLookupTowayCheck() {
-         Boolean fieldsettingLookup;
+        Boolean fieldsettingLookup;
         list<FieldSetting__mdt> fieldsettinglookupList = [Select id from FieldSetting__mdt WHERE Is_Lookup__c = true AND Direction__c = 'TWOWAY' ];
         system.debug('fieldsettinglookup++'+fieldsettinglookupList);
-       if( fieldsettinglookupList.size()== 0){
+        if( fieldsettinglookupList.size()== 0){
             fieldsettingLookup = true;
             system.debug('fieldsettingLookup=='+fieldsettingLookup);
             
@@ -94,6 +94,87 @@ public class municonhealthcheckcontroller {
         
         return fieldsettingLookup ;
     }
+    @AuraEnabled
+    public  static Boolean objectFieldLowercasecheck() {
+        Boolean  objectFieldLowercase;
+        list<FieldSetting__mdt> fsnullelemenated = new list<FieldSetting__mdt>();
+        list <FieldSetting__mdt> objectFieldLowercaseList = [select FieldApiName__c,ObjectApiName__c from FieldSetting__mdt ];
+        system.debug('objectFieldLowercaseList'+objectFieldLowercaseList);
+        for(FieldSetting__mdt fs :objectFieldLowercaseList){
+            if( fs.FieldApiName__c!= null && fs.ObjectApiName__c != null){
+                fsnullelemenated.add(fs);
+            }
+        }
+        for(FieldSetting__mdt fs :fsnullelemenated){
+            if(fs.FieldApiName__c==fs.FieldApiName__c.toLowerCase() && fs.ObjectApiName__c==fs.ObjectApiName__c.toLowerCase()){
+                
+                objectFieldLowercase = true;
+                system.debug('iffffff');
+            } else{
+                system.debug('errrrrrr');
+            }
+            
+        }
+        system.debug('objectFieldLowercase'+objectFieldLowercase);
+        return objectFieldLowercase;
+    }
+    
+    @AuraEnabled
+    public  static Boolean flowActiveCheck() {
+        Boolean flowActive;
+       List<FlowDefinitionView> flows = [
+            SELECT ApiName, DurableId, TriggerType, Label 
+            FROM FlowDefinitionView 
+            WHERE IsActive=true AND ApiName='SYS_Flow_for_log_retry'
+        ];
+        if( flows.size()!= 0){
+            flowActive = true;
+            system.debug('flows=='+flowActive);
+            
+        } else {
+            flowActive = false;  
+            system.debug('flowActive=='+flowActive);
+        }
+        
+        return flowActive ;
+        
+    }
+    @AuraEnabled
+public  static Boolean NotificationInterfaceCheck() {
+    Boolean NotificationInterface ;
+    String className = 'QB_Wrapper';
+Type t = Type.forName(className);
+System.debug('========'+SYS_NotificationInterface.class.isAssignableFrom(t));
+    if(SYS_NotificationInterface.class.isAssignableFrom(t)){
+         NotificationInterface = true;
+    }else{
+        NotificationInterface = false;
+    }
+        return NotificationInterface;
+}
+@AuraEnabled
+public  static Boolean ExtensionCheck() {
+    Boolean Extension ;
+    String classNameoutbound = 'SYS_QB_ApplicationServiceinbound';
+    String classNameinbound ='SYS_QB_ApplicationServiceinbound';
+Type outType = Type.forName(classNameoutbound);
+Type inType = Type.forName(classNameoutbound);
+System.debug('========'+SYS_ApplicationService.class.isAssignableFrom(outType));
+    if(SYS_ApplicationService.class.isAssignableFrom(outType) && SYS_ApplicationService.class.isAssignableFrom(inType)){
+         Extension = true;
+        system.debug('Extension++++'+ Extension);
+    }else{
+        Extension = false;
+    }
+        return Extension;
+}   
     
     
+    /*@AuraEnabled
+public  static Boolean fieldAvailabiltyCheck() {
+Boolean fieldAvailabilty ;
+set<ObjectSetting__C> objectsettingIds = [select Id from ObjectSetting__C];
+
+return true;
+}*/
 }
