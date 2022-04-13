@@ -9,9 +9,26 @@
     <aura:attribute name="orderUUID" type="String" default=""/>
     <aura:attribute name="currentMember" type="String" default=""/>
     <aura:attribute name="memberName" type="String" default=""/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="message" type="String" default=""/>
+    <aura:attribute name="eventMessage" type="String" default=""/>
+    <aura:handler event="c:componentCommunicationEvent" action="{!c.handleComponentCommunicationEvent}"/>
 
     <div>
         <lightning:layout multipleRows="true">
+            <aura:if isTrue="{!v.isLoading}">
+                <div class="slds-spinner_container">
+                    <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                      <span class="slds-assistive-text">Loading</span>
+                      <div class="slds-spinner__dot-a"></div>
+                      <div class="slds-spinner__dot-b"></div>
+                      <div class="custom-loading-text">
+                            {!v.message}
+                        </div>
+                    </div>
+                  </div>
+            </aura:if>
+            
             <lightning:layoutItem size="12" largeDeviceSize="8" mediumDeviceSize="8" smallDeviceSize="12">
                 <aura:if isTrue = "{!v.showChild}">
                     <c:PmaProducts orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />

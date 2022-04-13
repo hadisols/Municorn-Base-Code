@@ -24,6 +24,7 @@
                 console.table(transactionrec);
                 console.log('transactionrec status '+ transactionrec.Status__c);
                 if(transactionrec.Status__c == 'succeeded'){
+                    component.fireApplicationEventCall('componentCommunicationEvent' , { message : '', isLoading:false , eventMessage:'' } );
                     component.redirectToHome(true , 'Successfully Charged Order..');    
                 }else{
                     console.log('Poll Again  '); 

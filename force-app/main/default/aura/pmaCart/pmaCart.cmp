@@ -30,6 +30,8 @@
     <aura:registerEvent name="cartEvent" type="c:cartCommunicationEvent"/>
     <!-- Handler for Products Selection Application Event -->
     <aura:handler event="c:posCommunicationEvent" action="{!c.handleProductSelectionEvent}"/>
+    <!-- Register for Communications Application Event -->
+    <aura:registerEvent name="communicateEvent" type="c:componentCommunicationEvent"/>
 
     <aura:attribute name="loaded" type="Boolean" default="false" />
     <!--Aura Attributes END-->

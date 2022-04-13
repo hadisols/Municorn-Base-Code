@@ -3,14 +3,6 @@
         console.info('bootstrap loaded successfully.');
     },
 
-    showSpinner:function(cmp){
-      cmp.set("v.IsSpinner",true);
-    },
-    
-    hideSpinner:function(cmp){
-    cmp.set("v.IsSpinner",false);
-    }, 
-
     onInit: function (component, event, helper) {
         var logApiResponses = true;
         component.redirectToHome = function (status,message) {
@@ -24,13 +16,10 @@
                 "url": urlPath 
              }).fire();   
         };
-        component.fireApplicationEventCall = function (eventControllerName, message, processedObjectToString) {
+        component.fireApplicationEventCall = function (eventControllerName, params) {
             var appEvent = $A.get('e.c:' + eventControllerName);
-            appEvent.setParams({
-                "message" : message,
-                "selectedproducts":processedObjectToString
-            });
-            if (logApiResponses) { console.log('*** ' + 'Sending messagedata' + ' *** ' + processedObjectToString ); }   
+            appEvent.setParams(params);
+            if (logApiResponses) { console.log('*** ' + 'Sending messagedata' + ' *** ' + params ); }   
             if (logApiResponses) { console.log('*** ' + 'Sending application event' + ' *** ' + eventControllerName ); }   
             appEvent.fire();
             if (logApiResponses) { console.log('*** ' + 'Sent application event successfully' + ' *** ' + eventControllerName); }   
@@ -81,7 +70,6 @@
 
     handleProductSelectionEvent : function (cmp, event) {
         var logApiResponses = true;
-
         var orderUUID = cmp.get("v.orderUUID");
         var action = cmp.get('c.getOrderDetails');
         action.setParams({
@@ -100,16 +88,6 @@
             }else{
                 console.log('Failed  getOrderDetails action ');
                 cmp.redirectToHome(false, 'POS Invalid or Expired Order..');
-                /* var errors = response.getError();
-                if (errors) {
-                    if (errors[0] && errors[0].message) {
-                        cmp.displayMessage('Failure!', 'Failed to Fetch Order Details: '+errors[0].message, 'error','dismissible');
-                    }
-                }
-                else{
-                    cmp.displayMessage('Failure!', 'Failed to Fetch Order Details: Unknown error', 'error','dismissible');
-                } */
-                
             }
         });
         $A.enqueueAction(action);
@@ -210,7 +188,7 @@
         if (logApiResponses) { console.log('Current chargeAmount: ' + chargeAmount); }
         cmp.set("v.totalChargeAmount", chargeAmount);
 
-        cmp.fireApplicationEventCall('cartCommunicationEvent' , message, processedObjectToString );
+        cmp.fireApplicationEventCall('cartCommunicationEvent' , { message : message,selectedproducts:processedObjectToString } );
         if (logApiResponses) { console.log('Called Cart Event Call: '); }
 
     },
@@ -218,7 +196,7 @@
         console.log('*** ' + 'handleFinialize' + ' ***');
         var currentOrderRecord = cmp.get('v.orderRecord');
         var selectedProductsValues  = JSON.stringify(cmp.get("v.selectedProductsValues"));
-        
+        cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : 'Adding to Cart Please Wait...', isLoading:true , eventMessage:'' } );
         console.log('selectedProductsValues ObjType:: ' + typeof selectedProductsValues);
 
         var action = cmp.get('c.createOrderItems');
@@ -237,12 +215,16 @@
                 cmp.set('v.selectedproductsString','');
                 console.log('Order_Items__r '+orderRecordData.Order_Items__r);
                 console.table( cmp.get('v.orderItemRecord') );
-                var message = 'Product Deleted Successfully';
-                cmp.fireApplicationEventCall('cartCommunicationEvent' , message, '' );
+                var message = 'Product Selection Deleted Successfully';
+                cmp.fireApplicationEventCall('cartCommunicationEvent' ,{ message : message,selectedproducts:'' } );
+                cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : '', isLoading:false , eventMessage:'' } );
+
                 console.log('Called Products component and Cleared Selected Products Event Call: ');
                 cmp.redirectToHome(true , 'Added to Cart Successfully..');
             }else{
                 console.log('Failed to Add Order Item action ');
+                cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : '', isLoading:false , eventMessage:'' } );
+
                 cmp.redirectToHome(false , 'POS Invalid or Expired Order..');
                 var errors = response.getError();
                 if (errors) {
@@ -261,6 +243,7 @@
     },
     handleCharge : function(cmp, event, helper) {
         console.log('*** ' + 'handleCharge' + ' ***');
+        cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : 'Closing Tab Please Wait...', isLoading:true , eventMessage:'' } );
 
         var currentOrderRecord = cmp.get('v.orderRecord');
         
@@ -278,12 +261,15 @@
                     cmp.set('v.transactionId', transactionId);
                     helper.pollApex(cmp, event, helper);
                 }else{
+                    cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : '', isLoading:false , eventMessage:'' } );
+
                     console.log('Failed to Charge for Order Invalid Transaction Referrence ');
                     cmp.displayMessage('Failure!', 'Failed to Charge Order : Invalid Transaction Referrence', 'error','dismissible');
                 }
 
             }else{
                 console.log('Failed to Charge for Order ');
+                cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : '', isLoading:false , eventMessage:'' } );
                 var errors = response.getError();
                 if (errors) {
                     if (errors[0] && errors[0].message) {

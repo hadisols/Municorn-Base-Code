@@ -82,7 +82,17 @@
             
         });
         $A.enqueueAction(action);
-
-        
+    },
+    handleComponentCommunicationEvent : function(cmp, event) {
+        var message = event.getParam("message");
+        var eventMessage = event.getParam("eventMessage");
+        var isLoading = event.getParam("isLoading");
+        console.log('Message Received message ' + message);
+        console.log('Message Received eventMessage ' + eventMessage);
+        console.log('Message Received isLoading ' + isLoading);
+        // cmp.displayMessage('Alert', message, 'Alert','dismissible');
+        cmp.set('v.isLoading',isLoading);
+        cmp.set('v.message',message);
+        console.log('Message Received in Container Component');
     },
 })
