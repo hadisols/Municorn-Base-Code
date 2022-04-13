@@ -61,10 +61,10 @@ global inherited sharing class SYS_Helper {
             Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
             Map<String, Object> fieldsToValue = logs[0].getPopulatedFieldsAsMap();
             for(String fieldKey : fieldsToValue.keySet() ) {
-                if(fieldKey!=null && fieldMap.containsKey(fieldKey)){
+                if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest' ){
                     Schema.SObjectField fld = fieldMap.get(fieldKey);
                     
-                    if( fld.getDescribe().isCustom() && 
+                    if( fld.getDescribe().isCustom() && UserInfo.getUserType().toLowerCase()!='guest' &&
                         !fld.getDescribe().isCalculated() && 
                         !fld.getDescribe().isCreateable() && 
                         !fld.getDescribe().isUpdateable()) {
@@ -80,7 +80,7 @@ global inherited sharing class SYS_Helper {
         Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
         Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
         for(String fieldKey : fieldsToValue.keySet() ) {
-            if(fieldKey!=null && fieldMap.containsKey(fieldKey)){
+            if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest'){
                 Schema.SObjectField fld = fieldMap.get(fieldKey);
                 
                 if( fld.getDescribe().isCustom() && 
@@ -101,7 +101,7 @@ global inherited sharing class SYS_Helper {
             Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
             Map<String, Object> fieldsToValue = logs[0].getPopulatedFieldsAsMap();
             for(String fieldKey : fieldsToValue.keySet() ) {
-                if(fieldKey!=null && fieldMap.containsKey(fieldKey)){
+                if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest'){
                     Schema.SObjectField fld = fieldMap.get(fieldKey);
                     
                     if(fld.getDescribe().isCustom() && !fld.getDescribe().isCalculated() && !fld.getDescribe().isUpdateable()) {
@@ -117,7 +117,7 @@ global inherited sharing class SYS_Helper {
         Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
         Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
         for(String fieldKey : fieldsToValue.keySet() ) {
-            if(fieldKey!=null && fieldMap.containsKey(fieldKey)){
+            if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest'){
                 Schema.SObjectField fld = fieldMap.get(fieldKey);
                 
                 if(fld.getDescribe().isCustom() && !fld.getDescribe().isCalculated() && !fld.getDescribe().isUpdateable()) {
