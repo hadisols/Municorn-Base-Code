@@ -6,10 +6,12 @@
     onInit: function (component, event, helper) {
         var logApiResponses = true;
         component.redirectToHome = function (status,message) {
-            if(status==true){
-                component.displayMessage('Success', message, 'Success','dismissible');
-            }else{
-                component.displayMessage('Failure', message, 'Error','dismissible');
+            if (message != '') {
+                if (status == true) {
+                    component.displayMessage('Success', message, 'Success', 'dismissible');
+                } else {
+                    component.displayMessage('Failure', message, 'Error', 'dismissible');
+                }
             }
             var urlPath = '/'; //Invalid POS Member Open Tab
             $A.get("e.force:navigateToURL").setParams({ 
@@ -196,7 +198,7 @@
         console.log('*** ' + 'handleFinialize' + ' ***');
         var currentOrderRecord = cmp.get('v.orderRecord');
         var selectedProductsValues  = JSON.stringify(cmp.get("v.selectedProductsValues"));
-        cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : 'Adding to Cart Please Wait...', isLoading:true , eventMessage:'' } );
+        cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : 'Adding to Order Please Wait...', isLoading:true , eventMessage:'' } );
         console.log('selectedProductsValues ObjType:: ' + typeof selectedProductsValues);
 
         var action = cmp.get('c.createOrderItems');
@@ -220,7 +222,7 @@
                 cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : '', isLoading:false , eventMessage:'' } );
 
                 console.log('Called Products component and Cleared Selected Products Event Call: ');
-                cmp.redirectToHome(true , 'Added to Cart Successfully..');
+                cmp.redirectToHome(true , 'Added to Order Successfully..');
             }else{
                 console.log('Failed to Add Order Item action ');
                 cmp.fireApplicationEventCall('componentCommunicationEvent' , { message : '', isLoading:false , eventMessage:'' } );
@@ -284,5 +286,8 @@
         });
         $A.enqueueAction(action);
 
+    },
+    returnBacktoSearch : function (component, event) {
+        component.redirectToHome(true, '');
     },
 })

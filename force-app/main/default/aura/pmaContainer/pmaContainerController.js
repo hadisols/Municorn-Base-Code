@@ -45,8 +45,14 @@
             });
             toastEvent.fire();
         };
-        component.redirectToHome = function () {
-            component.displayMessage('Failure', 'POS Invalid or Expired Order..', 'Error','dismissible');
+        component.redirectToHome = function (status,message) {
+            if(message!=''){
+                if(status==true){
+                    component.displayMessage('Success', message, 'Success','dismissible');
+                }else{
+                    component.displayMessage('Failure', message, 'Error','dismissible');
+                }
+            }
             // component.displayMessage('Error', 'Invalid POS Order Open Tab Redirected to Home', 'Error','dismissible');
             var urlPath = '/'; //Invalid POS Member Open Tab
             $A.get("e.force:navigateToURL").setParams({ 
@@ -58,7 +64,7 @@
         component.set('v.orderUUID',orderUUID);
         console.log('orderUUID ' + orderUUID);
         if(orderUUID==''){
-            component.redirectToHome();
+            component.redirectToHome(false, 'POS Invalid or Expired Order..');
         }
 
         var action = component.get('c.getOrderDetailsByIdOrUUID');
@@ -77,7 +83,7 @@
                component.set('v.currentMember',orderRecord.Member__c); 
                component.set("v.showChild",true);           
            } else { // if any callback error, display error msg
-            component.redirectToHome();
+            component.redirectToHome(false, 'POS Invalid or Expired Order..');
            }
             
         });
@@ -94,5 +100,8 @@
         cmp.set('v.isLoading',isLoading);
         cmp.set('v.message',message);
         console.log('Message Received in Container Component');
+    },
+    returnBacktoSearch : function (component, event) {
+        component.redirectToHome(true, '');
     },
 })

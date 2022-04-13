@@ -28,7 +28,11 @@
                     </div>
                   </div>
             </aura:if>
-            
+            <div class="ts-back-wrap" onclick="{!c.returnBacktoSearch}">
+                <div class="smoothscroll-back">                  
+                    <i class="fa fa-arrow-left"></i>
+                </div>
+             </div>
             <lightning:layoutItem size="12" largeDeviceSize="8" mediumDeviceSize="8" smallDeviceSize="12">
                 <aura:if isTrue = "{!v.showChild}">
                     <c:PmaProducts orderUUID="{!v.orderUUID}" memberID="{!v.currentMember}" memberName="{!v.memberName}" />

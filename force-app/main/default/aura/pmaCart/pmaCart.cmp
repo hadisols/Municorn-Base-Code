@@ -54,6 +54,8 @@
                                             <hr/>
                                             <div class="cartitemsList listscroll-y">
                                                 <aura:if isTrue="{! (v.orderItemRecord.length > 0 ) }">
+                                                    <h6 class="mb-3 text-body text-center">Served Items</h6>
+                                                    <hr/>
                                                     <aura:iteration items="{!v.orderItemRecord}" var="orderLineItem" indexVar="key">
                                                         <div class="card mb-3 border-0 orderlineitem-container" data-id="{!orderLineItem.Product__c}">
                                                             <div class="card-body p-0">
@@ -76,8 +78,10 @@
                                                     </aura:iteration>  
                                                 </aura:if>
                                                 <hr/>
-                                                <hr/>
+                                                
                                                 <aura:if isTrue="{! and(!empty(v.selectedProductsValues),(v.selectedProductsValues.length > 0 ) )}">
+                                                    <h6 class="mb-3 text-body text-center">New Items</h6>
+                                                    <hr/>
                                                     <aura:iteration items="{!v.selectedProductsValues}" var="selectedproduct" indexVar="key">
                                                         <div class="card mb-3 border-0" data-id="{!selectedproduct.product.Id}" onclick="{!c.productDeleteHandler}">
                                                             <div class="card-body p-0">
@@ -124,15 +128,21 @@
                                     <div class="d-flex justify-content-center py-3 py-3">
                                         <div class="d-flex flex-row align-items-center flex-shrink-1">
                                             <aura:if isTrue="{! !empty(v.selectedProductsValues)}">
-                                                <button class="btn btn-primary btn-md mx-2" onclick="{! c.handleFinialize }">
-                                                    Add to Cart    
+                                                <button class="btn btn-info btn-md mx-2" onclick="{! c.handleFinialize }">
+                                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                    Add to Order    
                                                 </button>
                                             </aura:if>
                                             <aura:if isTrue="{! (v.orderItemRecord.length > 0)}">
-                                                <button class="btn btn-primary btn-md" onclick="{! c.handleCharge }">
+                                                <button class="btn btn-success btn-md mx-2" onclick="{! c.handleCharge }">
+                                                    <i class="fa fa-credit-card" aria-hidden="true"></i>
                                                     Close Tab     
                                                 </button>
                                             </aura:if>
+                                            <button class="btn btn-danger btn-md" onclick="{! c.returnBacktoSearch }">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                                Cancel     
+                                            </button>
                                         </div>
                                     </div>
                             </div>
