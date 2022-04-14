@@ -56,14 +56,29 @@
                                         </h3>
                                         <div aria-hidden="true" class="slds-section__content slds-grid slds-wrap slds-var-p-around_xx-small" id="searchResultSectioncontrol">
                                             <aura:if isTrue="{! !empty(v.searchResult)}">
-                                                <aura:iteration items="{!v.searchResult}" var="member" indexVar="key">
-                                                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-memberid="{!member.Id}" onclick="{!c.CreateOrder}">
+                                                <aura:iteration items="{!v.searchResult}" var="memberwrap" indexVar="key">
+                                                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-memberid="{!memberwrap.member.Id}" onclick="{!c.CreateOrder}">
                                                         <div class="product-wrapper">
-                                                            <div class="overflow-hidden mx-auto image-wrapper max-height">
-                                                                <img src="/sfsites/c/resource/1645719333000/nopicture?aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22nj61v-uP3bGswhb-VTdr6Q%22%2C%22app%22%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%22KbCmDBVbE10iCy1inwbbzA%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation%3Ao11yCoreCollector%22%3A%22kA6gW5EadEh9qZBKZj4IqQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D&amp;aura.pageURI=%2FPMAPOS%2Fs%2F%3Fapp%3Dcommeditor%26view%3Deditor%26viewid%3D517d790b-276c-44d4-b354-870a1c9cb302%26formFactor%3DLARGE%26livePreviewBrandingSetID%3D919ccc2e-4a7b-4754-9bdc-59f6a324c028&amp;aura.token=eyJub25jZSI6InRYUEphU3NvNDVtamlUVVhfbXhLbGJnbVo5bFdkN2YycGF1SnVzRGxGbFFcdTAwM2QiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IntcInRcIjpcIjAwRDVqMDAwMDAwR3lYWVwiLFwidlwiOlwiMDJHNWowMDAwMDAwWXFYXCIsXCJhXCI6XCJjYWltYW5zaWduZXJcIn0iLCJjcml0IjpbImlhdCJdLCJpYXQiOjE2NDgyMjAyNjY1MzAsImV4cCI6MH0%3D..KRiTfdHD3hSCVAlk_DaJLD_cDDK5blhLDdf29-EZunk%3D&amp;message=%7B%22actions%22%3A%5B%7B%22id%22%3A%22137%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F%2FProductsController%2FACTION%24getAllProductRecords%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2Fc%3APmaProducts%22%2C%22params%22%3A%7B%7D%7D%5D%7D&amp;other.Products.getAllProductRecords=1&amp;r=6"
-                                                                    alt="" class="prodctimage"/>
+                                                            <div class="overflow-hidden mx-auto image-wrapper max-height slds-is-relative">
+                                                                <aura:if isTrue="{! !(memberwrap.hasPictureURL) }">
+                                                                    <span class="slds-avatar noimage">
+                                                                        <abbr class="slds-avatar__initials slds-icon-standard-user noimagetext" title="{! memberwrap.member.Name }">{! memberwrap.shortNameCode }</abbr>
+                                                                    </span>
+                                                                </aura:if>    
+                                                                <aura:if isTrue="{! memberwrap.hasPictureURL }">
+                                                                    <img src="{! memberwrap.pictureURL }" alt="{! memberwrap.member.Name }" class="prodctimage"/>
+                                                                </aura:if>
+                                                                <aura:if isTrue="{! (memberwrap.member.Age__c le 18 ) }">
+                                                                    <span class="slds-theme_error member-age-label">{! memberwrap.member.Age__c }</span>
+                                                                </aura:if>
+                                                                <aura:if isTrue="{! and( (memberwrap.member.Age__c gt 18 ), (memberwrap.member.Age__c lt 21 )) }">
+                                                                    <span class="slds-theme_warning member-age-label">{! memberwrap.member.Age__c }</span>
+                                                                </aura:if>
+                                                                <aura:if isTrue="{! (memberwrap.member.Age__c ge 21 ) }">
+                                                                    <span class="slds-theme_success member-age-label">{! memberwrap.member.Age__c }</span>
+                                                                </aura:if>
                                                             </div>
-                                                            <div title="" class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">{!member.Name}</div>
+                                                            <div class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">{!memberwrap.member.Name}</div>
                                                         </div>
                                                     </div>
                                                 </aura:iteration>
@@ -90,13 +105,28 @@
                                             <!-- Start Contacts Results -->
                                         <aura:if isTrue="{! !empty(v.openTabMembers)}">
                                             <aura:iteration items="{!v.openTabMembers}" var="member" indexVar="key">
-                                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-orderuuid="{!member.UUID__c}" onclick="{!c.openPOSOrderScreen}">
+                                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-orderuuid="{!member.order.UUID__c}" onclick="{!c.openPOSOrderScreen}">
                                                     <div class="product-wrapper">
-                                                        <div class="overflow-hidden mx-auto image-wrapper max-height">
-                                                            <img src="/sfsites/c/resource/1645719333000/nopicture?aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22nj61v-uP3bGswhb-VTdr6Q%22%2C%22app%22%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%22KbCmDBVbE10iCy1inwbbzA%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation%3Ao11yCoreCollector%22%3A%22kA6gW5EadEh9qZBKZj4IqQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D&amp;aura.pageURI=%2FPMAPOS%2Fs%2F%3Fapp%3Dcommeditor%26view%3Deditor%26viewid%3D517d790b-276c-44d4-b354-870a1c9cb302%26formFactor%3DLARGE%26livePreviewBrandingSetID%3D919ccc2e-4a7b-4754-9bdc-59f6a324c028&amp;aura.token=eyJub25jZSI6InRYUEphU3NvNDVtamlUVVhfbXhLbGJnbVo5bFdkN2YycGF1SnVzRGxGbFFcdTAwM2QiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IntcInRcIjpcIjAwRDVqMDAwMDAwR3lYWVwiLFwidlwiOlwiMDJHNWowMDAwMDAwWXFYXCIsXCJhXCI6XCJjYWltYW5zaWduZXJcIn0iLCJjcml0IjpbImlhdCJdLCJpYXQiOjE2NDgyMjAyNjY1MzAsImV4cCI6MH0%3D..KRiTfdHD3hSCVAlk_DaJLD_cDDK5blhLDdf29-EZunk%3D&amp;message=%7B%22actions%22%3A%5B%7B%22id%22%3A%22137%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F%2FProductsController%2FACTION%24getAllProductRecords%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2Fc%3APmaProducts%22%2C%22params%22%3A%7B%7D%7D%5D%7D&amp;other.Products.getAllProductRecords=1&amp;r=6"
-                                                                alt="" class="prodctimage"/>
+                                                        <div class="overflow-hidden mx-auto image-wrapper max-height slds-is-relative">
+                                                            <aura:if isTrue="{! !(member.hasPictureURL) }">
+                                                                <span class="slds-avatar noimage">
+                                                                    <abbr class="slds-avatar__initials slds-icon-standard-user noimagetext" title="{! member.order.Member__r.Name }">{! member.shortNameCode }</abbr>
+                                                                </span>
+                                                            </aura:if>    
+                                                            <aura:if isTrue="{! member.hasPictureURL }">
+                                                                <img src="{! member.pictureURL }" alt="{! member.order.Member__r.Name }" class="prodctimage"/>
+                                                            </aura:if>
+                                                            <aura:if isTrue="{! (member.order.Member__r.Age__c le 18 ) }">
+                                                                <span class="slds-theme_error member-age-label">{! member.order.Member__r.Age__c }</span>
+                                                            </aura:if>
+                                                            <aura:if isTrue="{! and( (member.order.Member__r.Age__c gt 18 ), (member.order.Member__r.Age__c lt 21 )) }">
+                                                                <span class="slds-theme_warning member-age-label">{! member.order.Member__r.Age__c }</span>
+                                                            </aura:if>
+                                                            <aura:if isTrue="{! (member.order.Member__r.Age__c ge 21 ) }">
+                                                                <span class="slds-theme_success member-age-label">{! member.order.Member__r.Age__c }</span>
+                                                            </aura:if>
                                                         </div>
-                                                        <div title="" class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">{!member.Member__r.Name}</div>
+                                                        <div class="product-title text-center slds-truncate slds-text-align_center slds-var-p-bottom_x-small">{!member.order.Member__r.Name}</div>
                                                     </div>
                                                 </div>
                                             </aura:iteration>

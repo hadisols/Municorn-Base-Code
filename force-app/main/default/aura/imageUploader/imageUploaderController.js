@@ -56,6 +56,7 @@
                     if (state === "SUCCESS") {
                          // Success
                         component.displayMessage('Success!', 'Image Uploaded Successfully!', 'success');
+                        $A.get('e.force:refreshView').fire();
                     }
                     else{
                         // Failure

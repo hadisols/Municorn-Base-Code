@@ -1,6 +1,5 @@
 public with sharing class PMA_ProductsController {
     private static TransactionService txnService = new TransactionService();
-
     //To create Order Item records
     @AuraEnabled
     public static Order__c createOrderItems(Id orderId, String selectedProductsValues) {
@@ -129,9 +128,11 @@ public with sharing class PMA_ProductsController {
                 String recordPictureURL = ImageController.getSysTrackRecordPictureURL(prod.Id);
                 System.debug('Prod Name ' + prod.Name + ' recordPictureURL '+ recordPictureURL);
                 SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
-                selectedproduct.product=prod;
-                selectedproduct.quantity=1;
-                selectedproduct.pictureURL=recordPictureURL;
+                selectedproduct.product = prod;
+                selectedproduct.quantity = 1;
+                selectedproduct.shortNameCode = ImageController.getShortendImageName(prod.Name);
+                selectedproduct.hasPictureURL = (recordPictureURL=='noimage') ? false : true;
+                selectedproduct.pictureURL = recordPictureURL;
                 mapProductsList.put(prod.Id, selectedproduct);
             }
         } catch (Exception e) {
@@ -159,6 +160,12 @@ public with sharing class PMA_ProductsController {
         public Double totalProductPrice{
             get { return (productPrice != null) ? productPrice * quantity : 0; }
         }
+        @AuraEnabled
+        public String orderNotes;
+        @AuraEnabled
+        public String shortNameCode;
+        @AuraEnabled
+        public Boolean hasPictureURL = false;
         @AuraEnabled
         public String pictureURL;
     }

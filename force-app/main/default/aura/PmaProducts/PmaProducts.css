@@ -13,9 +13,22 @@
 .THIS .image-wrapper.max-height{
     min-width: 100%;
 }
+.THIS .noimage {
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+}
+.THIS .noimage:hover{
+    transform: scale(0.9);
+}
+.THIS .noimagetext{
+    font-size: 2rem;
+    font-weight: 600;
+}
 .THIS .prodctimage {
     margin: 0 auto;
-    width: 100%;
+    width: 150px;
+    height: 150px;
 }
 .THIS .prodctimage:hover{
     transform: scale(1.2);

@@ -72,16 +72,29 @@ public with sharing class ImageController {
                 // pictureURL = PageReference.forResource('nopicture').getUrl();
                 pictureURL='/sfc/servlet.shepherd/version/download/' + cvRecord.Id;
             } else{
-                pictureURL = PageReference.forResource('nopicture').getUrl();
+                // pictureURL = PageReference.forResource('nopicture').getUrl();
+                pictureURL = 'noimage';
             }
             System.debug('pictureURL ' + pictureURL);
             
         } else {
-            pictureURL = PageReference.forResource('nopicture').getUrl();
+            pictureURL = 'noimage';
+            // pictureURL = PageReference.forResource('nopicture').getUrl();
         }    
         // cvRecord = [SELECT Id, ContentDocumentId from ContentVersion where ContentDocumentId ='0695j000008d3lCAAQ' LIMIT 1]; 
         // pictureURL='/sfc/servlet.shepherd/version/download/' + cvRecord.Id;
 
-        return ( String.IsNotBlank(pictureURL) )? pictureURL : PageReference.forResource('nopicture').getUrl();
+        return ( String.IsNotBlank(pictureURL) )? pictureURL : 'noimage';
+    }
+    public static String getShortendImageName(String nameToShortend){
+        List<String> nameArray = nameToShortend.split(' ');
+        String newNameShortend = '';
+        for (String word : nameArray)
+        {
+            newNameShortend += word.substring(0,1).toUpperCase();
+        }
+        newNameShortend = String.isBlank(newNameShortend)?'NA':(newNameShortend.length()>3)? newNameShortend.substring(0,4) : newNameShortend ;
+        System.debug('Original Name:- ' + nameToShortend + ' Short Name:- ' + newNameShortend);
+        return newNameShortend;
     }
 }

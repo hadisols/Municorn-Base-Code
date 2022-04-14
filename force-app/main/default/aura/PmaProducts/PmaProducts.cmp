@@ -58,8 +58,16 @@
                     <div class="col col-lg-2 mx-2 my-2 product-wrapper" data-id="{! prod.product.Id}" onclick="{!c.productClickHandler}">
                         <div class="d-flex flex-column justify-content-start flex-wrap">
                             <div class="overflow-hidden mx-auto image-wrapper max-height">
-                                <img src="{!prod.pictureURL}" alt='{!prod.product.Name}'/>
-
+                                <aura:if isTrue="{! !(prod.hasPictureURL) }">
+                                    <span class="slds-avatar noimage">
+                                        <abbr class="slds-avatar__initials slds-icon-standard-user noimagetext" title="{! prod.product.Name }">{! prod.shortNameCode }</abbr>
+                                    </span>
+                                </aura:if>    
+                                <aura:if isTrue="{! prod.hasPictureURL }">
+                                    <img src="{! prod.pictureURL }" alt="{! prod.product.Name }" class="prodctimage"/>
+                                </aura:if>
+<!--                                 <img src="{!prod.pictureURL}" alt='{!prod.product.Name}'/>
+ -->
                                 <!-- <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
                                     alt='{!prod.product.Name}' /> -->
                             </div>

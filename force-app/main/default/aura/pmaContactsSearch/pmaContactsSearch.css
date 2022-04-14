@@ -13,12 +13,35 @@
 .THIS .image-wrapper.max-height{
     min-width: 100%;
 }
+.THIS .noimage {
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+}
+.THIS .noimage:hover{
+    transform: scale(0.9);
+}
+.THIS .noimagetext{
+    font-size: 2rem;
+    font-weight: 600;
+}
 .THIS .prodctimage {
     margin: 0 auto;
     width: 100%;
 }
 .THIS .prodctimage:hover{
     transform: scale(0.8);
+}
+.THIS .member-age-label{
+    position: absolute;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    padding: 5px 0;
+    color: #ffffff;
+    font-weight: 600;
 }
 .THIS .product-title{
     font-weight: 700;
