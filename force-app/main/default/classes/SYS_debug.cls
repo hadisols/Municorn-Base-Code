@@ -1,4 +1,4 @@
-public without sharing  class SYS_debug {
+public without sharing class SYS_debug {
     public string strLog;
 
     public static void log(String strLog) {

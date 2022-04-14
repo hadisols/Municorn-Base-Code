@@ -1,4 +1,4 @@
-public without sharing virtual class SYS_Transformer {
+public virtual class SYS_Transformer {
 
     public class SYS_TransformerException extends Exception{}
 	
@@ -46,14 +46,14 @@ public without sharing virtual class SYS_Transformer {
         String parentLevel = Integer.valueOf(level)+'';
         String childLevel = (Integer.valueOf(level) + 1) +'';
 
-        System.debug('MS parentLevel '+ parentLevel);
-        System.debug('MS childLevel '+ childLevel);
+        /*--*/SYS_debug.log('MS parentLevel '+ parentLevel);
+        /*--*/SYS_debug.log('MS childLevel '+ childLevel);
 
         SObjectType objectType = singleObj.getSObjectType();
         String primaryObj = JSON.serialize(objectType.getDescribe().getName()).replace('\"','');
         
-        System.debug('hbdebug objectType.getDescribe().getName() '+ primaryObj);
-        System.debug('hbdebug mappings '+ JSON.serialize(SYS_DataCache.FieldMappingOutbound));
+        /*--*/SYS_debug.log('hbdebug objectType.getDescribe().getName() '+ primaryObj);
+        /*--*/SYS_debug.log('hbdebug mappings '+ JSON.serialize(SYS_DataCache.FieldMappingOutbound));
 
         Map<Id, Map<String, List<sObject>>> parentChildObjMap = new Map<Id, Map<String, List<sObject>>>();
         Map<String, List<FieldSetting__mdt>> childMappingsMap = new Map<String, List<FieldSetting__mdt>>();
@@ -104,22 +104,22 @@ public without sharing virtual class SYS_Transformer {
             }
         }
 		
-        System.debug('hbdebug parentMappings '+ JSON.serialize(parentMappings));
-        System.debug('hbdebug childMappingsMap '+ JSON.serialize(childMappingsMap));
-        System.debug('hbdebug childFieldsMap '+ JSON.serialize(childFieldsMap));
-        System.debug('hbdebug primaryObjFieldsMap '+ JSON.serialize(primaryObjFieldsMap));
+        /*--*/SYS_debug.log('hbdebug parentMappings '+ JSON.serialize(parentMappings));
+        /*--*/SYS_debug.log('hbdebug childMappingsMap '+ JSON.serialize(childMappingsMap));
+        /*--*/SYS_debug.log('hbdebug childFieldsMap '+ JSON.serialize(childFieldsMap));
+        /*--*/SYS_debug.log('hbdebug primaryObjFieldsMap '+ JSON.serialize(primaryObjFieldsMap));
         
         List<String> parentIds = new List<String>();
         //for(sObject obj : objsList) {
         	parentIds.add((String)singleObj.get('Id'));
         //}
 		
-        System.debug('MS check 101:'+parentIds);
+        /*--*/SYS_debug.log('MS check 101:'+parentIds);
         //Dynamically fetch all metadata fields for the primary object
         List<sObject> objs = new List<sObject>();
-        System.debug('=============== external key by obj api name: '+ SYS_DataCache.externalKeyByObject);
+        /*--*/SYS_debug.log('=============== external key by obj api name: '+ SYS_DataCache.externalKeyByObject);
         if(primaryObjFieldsMap.size()>0){
-            System.debug('MS check 101 2:'+primaryObj+' ');
+            /*--*/SYS_debug.log('MS check 101 2:'+primaryObj+' ');
             String externalIdField = SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase());//!=NULL ? (SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())):',';
             String finalSubQuery = '';
             if(externalIdField != NULL ){
@@ -135,18 +135,19 @@ public without sharing virtual class SYS_Transformer {
                      primaryObj + 
                      ' where Id in :parentIds';
             
-            System.debug('query res@@=='+qry);
+            /*--*/SYS_debug.log('query res@@=='+qry);
        
-        	objs = Database.query(qry);
+        	objs = Database.query(String.escapeSingleQuotes(qry));
         }
-        // System.debug('query res@@=='+objs[0].getSObject('Account').get('SYS_Key__c'));
+        // /*--*/SYS_debug.log('query res@@=='+objs[0].getSObject('Account').get('SYS_Key__c'));
          
         
         for(String objectName : childFieldsMap.keySet()) {
-            String query = 'Select Id,'+ String.join(childFieldsMap.get(objectName), ',').removeEnd(',') +' from ' + objectName + ' where '+ childMappingsMap.get(objectName)[0].ParentField__c +' in :parentIds';
-           	System.debug('child query=='+query);
-            List<sObject> childObjects = Database.query('Select Id, '+ String.join(childFieldsMap.get(objectName), ',') + ',' +childMappingsMap.get(objectName)[0].ParentField__c +' from ' + objectName + ' where '+ childMappingsMap.get(objectName)[0].ParentField__c +' in :parentIds');
-           	
+            String query = 'Select Id, '+ String.join(childFieldsMap.get(objectName), ',') + ',' +childMappingsMap.get(objectName)[0].ParentField__c +' from ' + objectName;
+            String whereClause = ' where '+ String.escapeSingleQuotes(childMappingsMap.get(objectName)[0].ParentField__c) +' in :parentIds';
+            /*--*/SYS_debug.log('child query=='+query);
+            List<sObject> childObjects = Database.query(String.escapeSingleQuotes(query)+whereClause);
+
             for(sObject obj : childObjects) {
                 if(parentChildObjMap.get((String)obj.get(childMappingsMap.get(objectName)[0].ParentField__c)) == null) {
                     parentChildObjMap.put((String)obj.get(childMappingsMap.get(objectName)[0].ParentField__c), new Map<String, List<sObject>>());
@@ -158,7 +159,7 @@ public without sharing virtual class SYS_Transformer {
             }
         } 
 		
-        System.debug('hbdebug parentChildObjMap '+ JSON.serialize(parentChildObjMap));
+        /*--*/SYS_debug.log('hbdebug parentChildObjMap '+ JSON.serialize(parentChildObjMap));
         Map<String, Object> jsonMapObject = new Map<String, Object>();
 
         //objs will have only record
@@ -174,7 +175,7 @@ public without sharing virtual class SYS_Transformer {
                         if(jsonMapObject.get(childMappingsMap.get(childObjectName)[0].ChildRootElement__c) == null) {
                             jsonMapObject.put(childMappingsMap.get(childObjectName)[0].ChildRootElement__c, new List<Map<String, Object>>()); 
                         } 
-                        System.debug('hbdebug getRequestJsonSingle child - '+ childObjectName);
+                        /*--*/SYS_debug.log('hbdebug getRequestJsonSingle child - '+ childObjectName);
                     
                         for(sObject childObj : parentChildObjMap.get(objId).get(childObjectName)) {
                             
@@ -188,7 +189,7 @@ public without sharing virtual class SYS_Transformer {
                     }
                 }
             }
-            System.debug('Obj jsonMapObject==' + jsonMapObject);
+            /*--*/SYS_debug.log('Obj jsonMapObject==' + jsonMapObject);
             //jsonMap.put(objId, JSON.serialize(jsonMapObject));
             
         }
@@ -199,8 +200,8 @@ public without sharing virtual class SYS_Transformer {
     
     public static Map<String, Object> getRequestJsonSingle(String level,sObject obj , List<FieldSetting__mdt> mappings, Map<Id, Map<String, List<sObject>>> mapVal) {
         Map<String, Object> jsonMapObject = new Map<String, Object>();
-        System.debug('hbdebug getRequestJsonSingle obj'+ JSON.serialize(obj));
-        System.debug('hbdebug getRequestJsonSingle mapping'+ JSON.serialize(mappings));
+        /*--*/SYS_debug.log('hbdebug getRequestJsonSingle obj'+ JSON.serialize(obj));
+        /*--*/SYS_debug.log('hbdebug getRequestJsonSingle mapping'+ JSON.serialize(mappings));
                 
         for(FieldSetting__mdt mapping : mappings) {
 
@@ -210,7 +211,7 @@ public without sharing virtual class SYS_Transformer {
             String fsLevel = (mapping.Level__c == NULL)?'0':mapping.Level__c;
             if(fsLevel == level){
                 //TODO handle .'s and nested
-                System.debug('*** hbdebug getRequestJsonSingle mapping.Key__c'+ JSON.serialize(mapping.Key__c));
+                /*--*/SYS_debug.log('*** hbdebug getRequestJsonSingle mapping.Key__c'+ JSON.serialize(mapping.Key__c));
                 List<String> nodeList = new List<String>();
                 for(String node : mapping.Key__c.split('\\'+SYS_DataCache.FLAT_KEY_SEPERATOR)) {
                     if(SYS_DataCache.ESCAPE_CHAR != null) {
@@ -219,30 +220,30 @@ public without sharing virtual class SYS_Transformer {
                         nodeList.add(node);
                     }
                 }
-                System.debug('hbdebug getRequestJsonSingle nodeList'+ JSON.serialize(nodeList));
+                /*--*/SYS_debug.log('hbdebug getRequestJsonSingle nodeList'+ JSON.serialize(nodeList));
                 if(nodeList.size() < 2) {
                     
-                    System.debug('hbdebug getRequestJsonSingle nodeList[0]'+ JSON.serialize(nodeList[0]));
-                    System.debug('hbdebug getRequestJsonSingle mapping.FieldApiName__c'+ JSON.serialize(mapping.FieldApiName__c));
+                    /*--*/SYS_debug.log('hbdebug getRequestJsonSingle nodeList[0]'+ JSON.serialize(nodeList[0]));
+                    /*--*/SYS_debug.log('hbdebug getRequestJsonSingle mapping.FieldApiName__c'+ JSON.serialize(mapping.FieldApiName__c));
                     
                     //TODO mapping.FieldApiName__c can be parent queries on standard/custom
                     if(mapping.FieldApiName__c==NULL){
 
-                        System.debug('MS PBE If 1');
+                        /*--*/SYS_debug.log('MS PBE If 1');
                         jsonMapObject.put(nodeList[0], mapping.StaticValue__c);
 
                     }
                     /*
                     else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.Level__c =='0' ) {
                         
-                        System.debug('MS PBE If 2');
-                        System.debug('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)+'obj api anme=='+mapping.ObjectApiName__c );
-                        System.debug('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
+                        //SYS_debug.log('MS PBE If 2');
+                        //SYS_debug.log('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)+'obj api anme=='+mapping.ObjectApiName__c );
+                        //SYS_debug.log('inequality executed??' + mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
 
                         jsonMapObject.put(nodeList[0], mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
                     }*/
                     else{
-                        System.debug('MS PBE If 3');
+                        /*--*/SYS_debug.log('MS PBE If 3');
                         //-- SP jsonMapObject.put(nodeList[0], obj.get(mapping.FieldApiName__c));
                         String fieldMappingHandler = 'SYS_ApplicationService';
                         if(mapping.Field_Mapping_Handler__c != '' && mapping.Field_Mapping_Handler__c != NULL){
@@ -255,9 +256,9 @@ public without sharing virtual class SYS_Transformer {
                     
                 }
                 else {
-                    System.debug('hbdebug getRequestJsonSingle else'+ JSON.serialize(nodeList[0]));
+                    /*--*/SYS_debug.log('hbdebug getRequestJsonSingle else'+ JSON.serialize(nodeList[0]));
                     jsonMapObject = constructNestedObject(obj, mapping, nodeList, jsonMapObject);
-                    System.debug('returned json=='+jsonMapObject);
+                    /*--*/SYS_debug.log('returned json=='+jsonMapObject);
                 }
             }
         }
@@ -268,17 +269,17 @@ public without sharing virtual class SYS_Transformer {
     
     public static Map<String, Object> constructNestedObject(sObject obj, FieldSetting__mdt mapping, List<String> nodeList, Map<String, Object> jsonObj) {
         
-        System.debug('hbdebug constructNestedObject obj'+ JSON.serialize(obj));
-        System.debug('hbdebug constructNestedObject mapping'+ JSON.serialize(mapping));
-        System.debug('hbdebug constructNestedObject nodeList'+ JSON.serialize(nodeList));
-        System.debug('hbdebug constructNestedObject jsonObj'+ JSON.serialize(jsonObj));
+        /*--*/SYS_debug.log('hbdebug constructNestedObject obj'+ JSON.serialize(obj));
+        /*--*/SYS_debug.log('hbdebug constructNestedObject mapping'+ JSON.serialize(mapping));
+        /*--*/SYS_debug.log('hbdebug constructNestedObject nodeList'+ JSON.serialize(nodeList));
+        /*--*/SYS_debug.log('hbdebug constructNestedObject jsonObj'+ JSON.serialize(jsonObj));
        
         if(nodeList.size() == 2) {
             
             if(jsonObj.get(nodeList[0]) == null) {
                 jsonObj.put(nodeList[0], new Map<String, Object>()); 
             }
-            System.debug('node json=='+jsonObj.get(nodeList[0]));
+            /*--*/SYS_debug.log('node json=='+jsonObj.get(nodeList[0]));
 
             String fieldMappingHandler = 'SYS_ApplicationService';
             if(mapping.Field_Mapping_Handler__c != '' && mapping.Field_Mapping_Handler__c != NULL){
@@ -295,7 +296,7 @@ public without sharing virtual class SYS_Transformer {
                 
                 List<String> nodeSubList = subList(nodeList, 1);
                 Map<String, Object> intermediateJsonObj = new Map<String, Object>();
-                System.debug('inside node sublist=='+nodeSubList+ '@@==');
+                /*--*/SYS_debug.log('inside node sublist=='+nodeSubList+ '@@==');
                 intermediateJsonObj = constructNestedObject(obj, mapping, nodeSubList, new Map<String, Object>());
                 jsonObj.put(nodeList[0], intermediateJsonObj);
                 
@@ -304,7 +305,7 @@ public without sharing virtual class SYS_Transformer {
                 Map<String, Object> intermediateJsonObj = new Map<String, Object>();
                 Map<String, Object> intermediateTwoJsonObj = new Map<String, Object>();
                 intermediateTwoJsonObj = (Map<String, Object>)jsonObj.get(nodeList[0]);
-                System.debug('inside node sublist else==' + ' @@==');
+                /*--*/SYS_debug.log('inside node sublist else==' + ' @@==');
                 intermediateJsonObj = constructNestedObject(obj, mapping, subList(nodeList, 1), intermediateTwoJsonObj);
                 
                 ((Map<String, Object>)jsonObj.get(nodeList[0])).put(nodeList[1], intermediateJsonObj.get(nodeList[1]));
@@ -339,19 +340,19 @@ public without sharing virtual class SYS_Transformer {
         List<FieldSetting__mdt> mappings = new List<FieldSetting__mdt>();
         Map<String, FieldSetting__mdt> mapOfPaths = new Map<String, FieldSetting__mdt>();
 
-        System.debug('resource=='+resource); 
-        System.debug('jsonList=='+jsonList); 
+        /*--*/SYS_debug.log('resource=='+resource); 
+        /*--*/SYS_debug.log('jsonList=='+jsonList); 
         
         for(FieldSetting__mdt item : SYS_DataCache.FieldMappingInbound) { 
             if(resource.equals(item.RestResource__c.toLowerCase()) /*&& item.ChildRootElement__c == null*/) {
                 mappings.add(item);
                 String newKey = (isNotification && item.Key_For_Events__c!=NULL)?item.Key_For_Events__c:item.Key__c;//--M .replace( SYS_DataCache.ESCAPE_CHAR, '.'); 
                 mapOfPaths.put(newKey, item);
-                System.debug('mapof name== '+newKey + ' value==' + item.FieldApiName__c +' obj=='+item.ObjectApiName__c);
+                /*--*/SYS_debug.log('mapof name== '+newKey + ' value==' + item.FieldApiName__c +' obj=='+item.ObjectApiName__c);
             }
         }
         for(Integer i = 0; i < mappings.size() ; i++) {
-            System.debug('Field APIs for Inbound'+mappings[i].FieldApiName__c);
+            /*--*/SYS_debug.log('Field APIs for Inbound'+mappings[i].FieldApiName__c);
         }
         
         //If the current processing is not for child records the primary object is the Object setting value
@@ -364,7 +365,7 @@ public without sharing virtual class SYS_Transformer {
             
         }
 
-        System.debug('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer:'+SYS_DataCache.sObjectApiName);
+        /*--*/SYS_debug.log('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer:'+SYS_DataCache.sObjectApiName);
         //--M String sObjectApiName = null;
         SYS_DataCache.load();
         //TODO - To automate selection of integration setting
@@ -378,12 +379,12 @@ public without sharing virtual class SYS_Transformer {
         for(String jsonObj : jsonList) {
             Map<String, Object> mapDeserialized = (Map<String, Object>)JSON.deserializeUntyped(jsonObj);
             rootKey = new List<String>(mapDeserialized.keySet())[0];
-            System.debug('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer b4 method call:'+sObjectApiName);
+            /*--*/SYS_debug.log('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer b4 method call:'+sObjectApiName);
             objectsToUpsert.add(parseJsonToObject(jsonObj, sObjectApiName, mapOfPaths));
         }
         
         
-       	System.debug('\n\n ########### \n Child objects to upsert:'+objectsToUpsert+'\n ########### \n\n');
+       	/*--*/SYS_debug.log('\n\n ########### \n Child objects to upsert:'+objectsToUpsert+'\n ########### \n\n');
         return objectsToUpsert;
     }
     
@@ -400,7 +401,7 @@ public without sharing virtual class SYS_Transformer {
         // MS Added to avoid dependency on Casing of key in JSON ]
         sObject sObj;
         try{
-            System.debug('SYS_DataCache.sObjectApiName in parseJsonToObject:'+sObjectApiName);
+            /*--*/SYS_debug.log('SYS_DataCache.sObjectApiName in parseJsonToObject:'+sObjectApiName);
             sObj = Schema.getGlobalDescribe().get(sObjectApiName).newSObject();
         }
         catch(Exception e){
@@ -425,20 +426,20 @@ public without sharing virtual class SYS_Transformer {
             	sObjectApiName = fieldMapping.ObjectApiName__c;
 			*/
         }
-        System.debug('\n\n++++++++++++ After sObjectApiName: '+sObjectApiName);
+        /*--*/SYS_debug.log('\n\n++++++++++++ After sObjectApiName: '+sObjectApiName);
         
         //sObjectApiName is still empty means there are no outbound fields for the object as part of array processing
         if(sObjectApiName=='' || sObjectApiName==null) return null;
         
         
-        System.debug('flatKeyMap=='+JSON.serialize(flatKeyMap));
-        System.debug('mapofPath=='+JSON.serialize(mapOfPaths));
+        /*--*/SYS_debug.log('flatKeyMap=='+JSON.serialize(flatKeyMap));
+        /*--*/SYS_debug.log('mapofPath=='+JSON.serialize(mapOfPaths));
         for(String key : mapOfPaths.keySet()) {
             
             FieldSetting__mdt mapping = mapOfPaths.get(key);
             String fieldObj = mapping.ObjectApiName__c;
             //sObj.put('SYS_Key__c', '001');
-            System.debug('\n\nRunning for '+mapping.FieldApiName__c+' on:'+sObjectApiName + ' '+fieldObj+ 'key=='+key);
+            /*--*/SYS_debug.log('\n\nRunning for '+mapping.FieldApiName__c+' on:'+sObjectApiName + ' '+fieldObj+ 'key=='+key);
             
             if(mapping.FieldApiName__c==null){
                 continue;
@@ -466,7 +467,7 @@ public without sharing virtual class SYS_Transformer {
     public static Map<String, Object> makeJsonIntoKeyValuePairs(String jsonObj) {
         Object result = JSON.deserializeUntyped(jsonObj);
         Map<String, Object> flatKeyMap = new Map<String, Object>();
-        System.debug('MS Double check. in makeJsonIntoKeyValuePairs');
+        /*--*/SYS_debug.log('MS Double check. in makeJsonIntoKeyValuePairs');
         if (result instanceof Map<String, Object>) {
             recursiveJsonParser((Map<String, Object>)result, new List<String>(), flatKeyMap);
         }
@@ -476,7 +477,7 @@ public without sharing virtual class SYS_Transformer {
     /* *************************************************************************************************************************** */
     
     private static void recursiveJsonParser(Map<String, Object> jsonObject, List<String> parents, Map<String, Object> result) {
-        System.debug('MS Double check. jsonObject:'+jsonObject);
+        /*--*/SYS_debug.log('MS Double check. jsonObject:'+jsonObject);
         
         List<String> skipKeys;
         if(SYS_DataCache.INT_TYPE != null){
@@ -486,31 +487,31 @@ public without sharing virtual class SYS_Transformer {
 
         for(String key : jsonObject.keySet()) {
 
-            System.debug('MS ****** key:'+key);
-            System.debug('MS ****** skipKeys:'+skipKeys);
+            /*--*/SYS_debug.log('MS ****** key:'+key);
+            /*--*/SYS_debug.log('MS ****** skipKeys:'+skipKeys);
 
             if(skipKeys!=null && skipKeys.contains(key.toLowerCase())) continue;
             
             Object currentObj = jsonObject.get(key);
-            System.debug('##key='+key);
+            /*--*/SYS_debug.log('##key='+key);
             if (currentObj instanceof Map<String, Object>) {
-                System.debug('MS Double check. in IF:'+currentObj);
+                /*--*/SYS_debug.log('MS Double check. in IF:'+currentObj);
                 Map<String, Object> child = (Map<String, Object>)currentObj;
                 
                 parents.add(key);
-                System.debug('MS Double check. Parents:'+parents);
+                /*--*/SYS_debug.log('MS Double check. Parents:'+parents);
                 recursiveJsonParser(child, parents, result);
                 parents.remove(parents.size() - 1);
-                System.debug('MS Double check. Parents after:'+parents);
+                /*--*/SYS_debug.log('MS Double check. Parents after:'+parents);
            
             } else {
-                System.debug('MS Double check. in else:'+currentObj);
+                /*--*/SYS_debug.log('MS Double check. in else:'+currentObj);
                 String parentKey = '';
-                System.debug('params=='+key+' =='+parents.size()+' res=='+result);
+                /*--*/SYS_debug.log('params=='+key+' =='+parents.size()+' res=='+result);
                 if(parents.size() > 0) {
                     parentKey = String.join(parents, SYS_DataCache.FLAT_KEY_SEPERATOR);
                 } 
-                System.debug('parentkey=='+parentKey + ' @@custom obj is==' +currentObj);
+                /*--*/SYS_debug.log('parentkey=='+parentKey + ' @@custom obj is==' +currentObj);
                 if (currentObj instanceof Decimal) {
                     //Add
                 	result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, (Decimal) currentObj);
@@ -535,11 +536,11 @@ public without sharing virtual class SYS_Transformer {
                     if (((List<Object>)currentObj).size() > 0) {
                         for(Object obj:(List<Object>)currentObj){
                             if(obj instanceof Map<String, Object>) {
-                                System.debug('obj list inside@@ parent=='+result);
+                                /*--*/SYS_debug.log('obj list inside@@ parent=='+result);
                                 // --MS recursiveJsonParser((Map<String, Object>)obj, new List<String>(), result);
-                                System.debug('result after=='+result);
+                                /*--*/SYS_debug.log('result after=='+result);
                                 childFlatKeyList.add(result.clone());
-                                System.debug('check**'+childFlatKeyList[0]);
+                                /*--*/SYS_debug.log('check**'+childFlatKeyList[0]);
                             }
                             //--MSresult.clear();
                             String objString = JSON.serialize(obj);
@@ -549,9 +550,9 @@ public without sharing virtual class SYS_Transformer {
                             childRecList.add(objString);
                             
                         }
-                        System.debug('in else=='+result);
-                        System.debug('MS Child Objects to be processed:'+childRecList);
-                        System.debug('MS condition for Key: '+key+' = '+(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase())));
+                        /*--*/SYS_debug.log('in else=='+result);
+                        /*--*/SYS_debug.log('MS Child Objects to be processed:'+childRecList);
+                        /*--*/SYS_debug.log('MS condition for Key: '+key+' = '+(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase())));
 
                         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
 
@@ -568,15 +569,10 @@ public without sharing virtual class SYS_Transformer {
                             for(String singleChildJSON : childRecList){
                                 if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
                                     SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log.Id,key,singleChildJSON,SYS_DataCache.INT_TYPE);
-                                    if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isCreateable()) {
                                     newLog.Status__c = 'ENQUEUED_FOR_RETRY';
-                                    }
-                                     if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isCreateable()) {
                                     newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
-                                     }
-                                     if (Schema.sObjectType.SYS_IntegrationLog__c.fields.retry__c.isCreateable()) {
                                     newlog.retry__c = true;
-                                     }
+                                    
                                     if(newlog!=NULL){
                                         childRecordsToInsert.add(newlog);
                                     }
@@ -584,12 +580,12 @@ public without sharing virtual class SYS_Transformer {
                             }
                             if(!childRecordsToInsert.isEmpty()){
                                 //appService.doDML(childRecordsToInsert, 'INSERT', '');
-                                insert childRecordsToInsert;
+                                SYS_Helper.insertLog(childRecordsToInsert);
                             }
                             
 
                         }
-                        //System.debug('job id is==='+jobID);
+                        ///*--*/SYS_debug.log('job id is==='+jobID);
                     }
                 }
                 
@@ -614,7 +610,7 @@ public without sharing virtual class SYS_Transformer {
 
     public static Boolean fieldSettingIsToBeSkipped(sObject sobj, FieldSetting__mdt mapping){
 
-        System.debug('MS fieldSettingIsToBeSkipped Mapping: '+mapping+', sobj:'+sobj);
+        /*--*/SYS_debug.log('MS fieldSettingIsToBeSkipped Mapping: '+mapping+', sobj:'+sobj);
         Boolean skip = false;
 
         String objApiName = mapping.ObjectApiName__c;
@@ -628,7 +624,7 @@ public without sharing virtual class SYS_Transformer {
                                                     AND Is_External_Field__c = true
                                                     AND ObjectApiName__c =:objApiName
                                                     ];
-        System.debug('MS fieldSettingIsToBeSkipped Mapping========: '+extIdMapping+' '+mapping.ObjectSetting__c );
+        /*--*/SYS_debug.log('MS fieldSettingIsToBeSkipped Mapping========: '+extIdMapping+' '+mapping.ObjectSetting__c );
         if(extIdMapping.size()>0){
             String externalIdField = extIdMapping[0].FieldApiName__c;
             String mappingIsAllowedFor = mapping.Mapping_is_for__c;

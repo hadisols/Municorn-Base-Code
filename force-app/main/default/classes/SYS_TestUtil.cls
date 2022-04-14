@@ -1,5 +1,5 @@
 @IsTest
-public  without sharing class SYS_TestUtil {
+public class SYS_TestUtil {
     
     public static void invokeMockFlowForInsert(){
         

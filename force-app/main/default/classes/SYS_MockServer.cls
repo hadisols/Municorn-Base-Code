@@ -1,5 +1,5 @@
 @IsTest
-public without sharing class SYS_MockServer{
+public class SYS_MockServer{
 
     Map<String, HttpResponse> router;
 

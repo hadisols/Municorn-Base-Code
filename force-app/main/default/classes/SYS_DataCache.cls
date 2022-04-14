@@ -1,4 +1,4 @@
-public  without sharing class SYS_DataCache {
+public without sharing class SYS_DataCache {
 	private static Map<Id, sObject> oldObjMap = new Map<Id, sObject>();
     private static Map<Id, sObject> newObjMap = new Map<Id, sObject>();
     private static Map<String, List<FieldSetting__mdt>> ObjectSettingToFieldSettingsMap_OB;
@@ -45,10 +45,10 @@ public  without sharing class SYS_DataCache {
                 RestRequest req = RestContext.request;
                 String intSettingFromUrl = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
                 INT_TYPE = intSettingFromUrl;
-                System.debug('MS Stripe extension check:'+integrationSetting);
+                //# System.debug('MS Stripe extension check:'+integrationSetting);
                 String extFromUrl = integrationSetting.get(INT_TYPE).ApexHandler__c;
-                System.debug('\nintegrationSetting.get(INT_TYPE):'+integrationSetting.get(INT_TYPE));
-                System.debug('\nApexHandler__c:'+integrationSetting.get(INT_TYPE).ApexHandler__c);
+                //# System.debug('\nintegrationSetting.get(INT_TYPE):'+integrationSetting.get(INT_TYPE));
+                //# System.debug('\nApexHandler__c:'+integrationSetting.get(INT_TYPE).ApexHandler__c);
                 if(extFromUrl != '' && extFromUrl != NULL){
                     extension = extFromUrl;
                 }
@@ -237,7 +237,7 @@ public  without sharing class SYS_DataCache {
                                     FROM HttpHeaders__mdt 
                                     WHERE IntegrationType__c =:(integrationSetting.get(INT_TYPE)).id];
             }
-            System.debug('header=='+ headerMetadata);
+            //# System.debug('header=='+ headerMetadata);
             return headerMetadata;
         }
     }
@@ -664,7 +664,12 @@ public  without sharing class SYS_DataCache {
                                      WHERE developername = :SYS_DataCache.INT_TYPE LIMIT 1][0].DebugCheck__c;
             }
             */
-            return integrationSetting.get(SYS_DataCache.INT_TYPE).DebugCheck__c;
+            if(SYS_DataCache.INT_TYPE == null || integrationSetting == null)
+                return false;
+            else if(integrationSetting.get(SYS_DataCache.INT_TYPE) == null)
+                return false;
+            else
+                return integrationSetting.get(SYS_DataCache.INT_TYPE).DebugCheck__c;
             //return true;
         }
     } 

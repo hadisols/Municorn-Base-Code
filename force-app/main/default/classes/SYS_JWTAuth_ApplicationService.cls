@@ -14,8 +14,9 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
 
         // TODO add other supported algos. Handle RSA-SHA256 using Certificate
 
-        List<SYS_OAuthConfig__c> authConfigList = 
-            Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c') +' FROM SYS_OAuthConfig__c WHERE Id = \'' + log.WhatId__c + '\'');
+        String query = 'SELECT '+SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c') +' FROM SYS_OAuthConfig__c';
+        String whereClause = ' WHERE Id = \'' + String.escapeSingleQuotes(log.WhatId__c) + '\'';
+        List<SYS_OAuthConfig__c> authConfigList = Database.query(String.escapeSingleQuotes(query)+whereClause);
 
         String jwt = '';
     
@@ -52,9 +53,9 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
             logResp.Request_Digest__c = generateHash(resp.getBody(),algo);
 
         if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
-            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isUpdateable()) {
+
             log.Status__c = 'FAIL';
-            }
+
             logResp.Status__c = 'ERROR';
             
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
@@ -85,7 +86,7 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
         }
 
         //doDML(new List<SYS_IntegrationLog__c>{log}, 'UPSERT', '') ;
-        upsert log;
+        SYS_Helper.upsertLog(log);
         logResp.SYS_RequestId__c = log.Id;
 
         return logResp;
@@ -113,8 +114,9 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
             SYS_DataCache.INT_TYPE = 'SYS_Auth_Integration_Setting';
             SYS_DataCache.OBJ_TYPE = 'SYS_Auth_JWT_Object_Setting';
 
-            List<SYS_OAuthConfig__c> authConfigList = 
-            Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c') +' FROM '+ SYS_DataCache.namespacePrefix +'SYS_OAuthConfig__c WHERE Id = \'' + oauthConfigId + '\'');
+            String query = 'SELECT '+SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c') +' FROM '+ SYS_DataCache.namespacePrefix +'SYS_OAuthConfig__c';
+            String whereClause = ' WHERE Id = \'' + String.escapeSingleQuotes(oauthConfigId) + '\'';
+            List<SYS_OAuthConfig__c> authConfigList = Database.query(String.escapeSingleQuotes(query)+whereClause);
 
             SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
             Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(authConfigList);
@@ -141,7 +143,6 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
 
                 if(insertSysLog.size()>0 && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){
                     new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
-                    //insert insertSysLog;
                 }
             }
         } catch (Exception e) {

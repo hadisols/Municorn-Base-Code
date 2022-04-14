@@ -10,34 +10,30 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
         
         try {
 
-            System.debug('======:'+objSetting);
-            System.debug('======:'+recId);
-            System.debug('======:'+apexHandler);
-            System.debug('======:'+direction);
-            
             syncDirection = direction;
 
             SYS_DataCache.OBJ_TYPE = objSetting;
             SYS_DataCache.INT_TYPE = SYS_DataCache.objectSettingMap.get(objSetting).IntegrationType__r.DeveloperName;
             
             SYS_IntegrationLog__c  newSysLog = new SYS_IntegrationLog__c();
-            List<sObject> recList = 
-                Database.query('SELECT '+SYS_Helper.getAllFieldsFor(String.valueOf(recId.getsobjecttype())) +' FROM '+String.valueOf(recId.getsobjecttype())+' WHERE Id = \'' + recId + '\'');
+            String query = 'SELECT '+SYS_Helper.getAllFieldsFor(String.valueOf(recId.getsobjecttype())) +' FROM '+String.valueOf(recId.getsobjecttype());
+            String whereClause = ' WHERE Id = \'' + String.escapeSingleQuotes(recId) + '\'';
+            List<sObject> recList = Database.query(String.escapeSingleQuotes(query)+whereClause);
 
 
             if(direction == 'OUT'){
                 
-                System.debug('=========:'+SYS_DataCache.INT_TYPE+'['+recList+']');
+                /*--*/SYS_debug.log('=========:'+SYS_DataCache.INT_TYPE+'['+recList+']');
 
                 SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
                 Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(recList);
 
-                System.debug('=========:'+jsonListForOutbound);
+                /*--*/SYS_debug.log('=========:'+jsonListForOutbound);
                 
                 if(jsonListForOutbound.values().size() > 0){
                     for(Id jsonRecordId:jsonListForOutbound.keyset()){ 
                         String finalJsonForOutbound;
-                        System.debug('MS jsonRecordId =========:'+jsonRecordId);
+                        /*--*/SYS_debug.log('MS jsonRecordId =========:'+jsonRecordId);
 
                         finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
 

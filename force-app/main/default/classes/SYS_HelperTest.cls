@@ -1,5 +1,5 @@
 @isTest
-public without sharing class SYS_HelperTest {
+public class SYS_HelperTest {
 
     @TestSetup
     static void makeData(){

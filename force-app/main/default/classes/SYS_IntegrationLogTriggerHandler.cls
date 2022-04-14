@@ -1,4 +1,4 @@
-public  without sharing class SYS_IntegrationLogTriggerHandler {
+public without sharing class SYS_IntegrationLogTriggerHandler {
     public static void handleAfterInsert() {
 
         List<Id> newOutboundLogIds = new List<Id>();

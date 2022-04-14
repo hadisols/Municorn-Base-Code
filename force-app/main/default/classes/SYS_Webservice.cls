@@ -1,5 +1,5 @@
 @RestResource(urlMapping = '/municorn/v1/*')
-global  without sharing class SYS_Webservice{
+global without sharing class SYS_Webservice{
 
     
     @HttpPost
@@ -10,7 +10,7 @@ global  without sharing class SYS_Webservice{
             appService.doPost();
         }  
         else {
-            insert appService.generateLogForWebhookSigFail('POST','Signature Verification Failed in POST');
+            SYS_Helper.insertLog(appService.generateLogForWebhookSigFail('POST','Signature Verification Failed in POST'));
             appService.setErrorHttpResponse('Signature Verification Failed in POST');
         }
     }
@@ -23,7 +23,7 @@ global  without sharing class SYS_Webservice{
             appService.doPut();
         }  
         else {
-            insert appService.generateLogForWebhookSigFail('PUT','Signature Verification Failed in PUT');
+            SYS_Helper.insertLog(appService.generateLogForWebhookSigFail('PUT','Signature Verification Failed in PUT'));
             appService.setErrorHttpResponse('Signature Verification Failed in PUT');
         }
         
@@ -39,7 +39,7 @@ global  without sharing class SYS_Webservice{
             appService.doGet();
         }  
         else {
-            insert appService.generateLogForWebhookSigFail('GET','Signature Verification Failed in GET');
+            SYS_Helper.insertLog(appService.generateLogForWebhookSigFail('GET','Signature Verification Failed in GET'));
             appService.setErrorHttpResponse('Signature Verification Failed in GET');
         }
         
@@ -54,7 +54,7 @@ global  without sharing class SYS_Webservice{
             appService.doDelete();
         }  
         else {
-            insert appService.generateLogForWebhookSigFail('DELETE','Signature Verification Failed in DELETE');
+            SYS_Helper.insertLog(appService.generateLogForWebhookSigFail('DELETE','Signature Verification Failed in DELETE'));
             appService.setErrorHttpResponse('Signature Verification Failed in DELETE');
         }
         
@@ -68,7 +68,7 @@ global  without sharing class SYS_Webservice{
             appService.doPatch();
         }  
         else{
-            insert appService.generateLogForWebhookSigFail('PATCH','Signature Verification Failed in PATCH');
+            SYS_Helper.insertLog(appService.generateLogForWebhookSigFail('PATCH','Signature Verification Failed in PATCH'));
             appService.setErrorHttpResponse('Signature Verification Failed in PATCH');
         }
         

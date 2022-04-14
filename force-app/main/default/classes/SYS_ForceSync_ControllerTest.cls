@@ -1,5 +1,5 @@
 @isTest
-public without sharing class SYS_ForceSync_ControllerTest {
+public class SYS_ForceSync_ControllerTest {
     @TestSetup
     static void makeData(){
         SYS_TestDataFactory.createTestRecords(1, 1);

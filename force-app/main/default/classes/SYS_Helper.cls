@@ -7,6 +7,129 @@ global inherited sharing class SYS_Helper {
         return secondsToDatetime(Integer.valueOf(expiry));
     }
 
+    /* ------------------------------------------------------------------------ */
+
+    global static void insertLog(List<SYS_IntegrationLog__c> logs){
+        if(logs.size()>0){
+            Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
+            Map<String, Object> fieldsToValue = logs[0].getPopulatedFieldsAsMap();
+            for(String fieldKey : fieldsToValue.keySet()) {
+                if(!fieldMap.get(fieldKey).getDescribe().isCreateable() ) {
+                    throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
+                }
+            }
+            insert logs;
+        }
+    }
+
+    global static Database.SaveResult insertLog(SYS_IntegrationLog__c log){
+        Database.SaveResult result;
+        Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
+        Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
+        for(String fieldKey : fieldsToValue.keySet()){
+            if(!fieldMap.get(fieldKey).getDescribe().isCreateable()) {
+                throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
+            }
+        }
+        //insert log;
+        result = Database.insert(log,false);
+        return result;
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+
+    global static Database.DeleteResult[] deleteWithFLSCheck(List<sObject> sObjects){
+        Database.DeleteResult[] results;
+        if(sObjects.size()>0){
+            Id recId = sObjects[0].Id;
+            String sObjectApiName = String.valueOf(recId.getsobjecttype());
+            Boolean isObjDeletable = Schema.getGlobalDescribe().get(sObjectApiName).getDescribe().isDeletable();
+            
+            if(isObjDeletable){
+                results = Database.delete(sObjects,false);
+            }
+        }
+        return results;
+        
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+    global static void upsertLog(List<SYS_IntegrationLog__c> logs){
+        if(logs.size()>0){
+            Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
+            Map<String, Object> fieldsToValue = logs[0].getPopulatedFieldsAsMap();
+            for(String fieldKey : fieldsToValue.keySet() ) {
+                if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest' ){
+                    Schema.SObjectField fld = fieldMap.get(fieldKey);
+                    
+                    if( fld.getDescribe().isCustom() && UserInfo.getUserType().toLowerCase()!='guest' &&
+                        !fld.getDescribe().isCalculated() && 
+                        !fld.getDescribe().isCreateable() && 
+                        !fld.getDescribe().isUpdateable()) {
+                        throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
+                    }
+                }
+            }
+            Database.upsert(logs);
+        }
+    }
+
+    global static void upsertLog(SYS_IntegrationLog__c log){
+        Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
+        Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
+        for(String fieldKey : fieldsToValue.keySet() ) {
+            if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest'){
+                Schema.SObjectField fld = fieldMap.get(fieldKey);
+                
+                if( fld.getDescribe().isCustom() && 
+                    !fld.getDescribe().isCalculated() && 
+                    !fld.getDescribe().isCreateable() && 
+                    !fld.getDescribe().isUpdateable()) {
+                    throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
+                }
+            }
+        }
+        Database.upsert(log);
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+    global static void updateLog(List<SYS_IntegrationLog__c> logs){
+        if(logs.size()>0){
+            Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
+            Map<String, Object> fieldsToValue = logs[0].getPopulatedFieldsAsMap();
+            for(String fieldKey : fieldsToValue.keySet() ) {
+                if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest'){
+                    Schema.SObjectField fld = fieldMap.get(fieldKey);
+                    
+                    if(fld.getDescribe().isCustom() && !fld.getDescribe().isCalculated() && !fld.getDescribe().isUpdateable()) {
+                        throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
+                    }
+                }
+            }
+            update logs;
+        }
+    }
+
+    global static void updateLog(SYS_IntegrationLog__c log){
+        Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
+        Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
+        for(String fieldKey : fieldsToValue.keySet() ) {
+            if(fieldKey!=null && fieldMap.containsKey(fieldKey) && UserInfo.getUserType().toLowerCase()!='guest'){
+                Schema.SObjectField fld = fieldMap.get(fieldKey);
+                
+                if(fld.getDescribe().isCustom() && !fld.getDescribe().isCalculated() && !fld.getDescribe().isUpdateable()) {
+                    throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
+                }
+            }
+        }
+        update log;
+    }
+
+    /* ------------------------------------------------------------------------ */
+
     global static String urlFromPattern(String httpMethod, Id recId){
 
         String finalurl;
@@ -27,9 +150,10 @@ global inherited sharing class SYS_Helper {
             String qry;
             if(fieldApis.size()>0){
                 try{
-                    qry = 'SELECT ' + String.join(new List<String>(fieldApis),',') + ' FROM ' + String.valueOf(recId.getsobjecttype()) + ' WHERE Id = \'' + recId+'\'';
-                    System.debug('=========== ::'+qry);
-                    sObject sobj = Database.query(qry);
+                    qry = 'SELECT ' + String.join(new List<String>(fieldApis),',') + ' FROM ' + String.valueOf(recId.getsobjecttype());
+                    String whereClause = ' WHERE Id = \'' + String.escapeSingleQuotes(recId)+'\'';
+                    /*--*/SYS_debug.log('=========== ::'+qry);
+                    sObject sobj = Database.query(String.escapeSingleQuotes(qry)+whereClause);
                     finalurl = urlFromPattern(httpMethod, sobj);
                 }catch(QueryException e){
                     throw new SYS_HelperException('\nInvalid field api names provided for URL Pattern. Query execution failed.');
@@ -75,7 +199,7 @@ global inherited sharing class SYS_Helper {
         Integer minutesout = Integer.valueOf(Math.floor((totalseconds - daysout * day - hoursout * hour)/minute));
         Integer secondsout = Integer.valueOf(totalseconds - daysout * day - hoursout * hour - minutesout * minute);
         String inpputString = System.now().yearGmt()+'-'+System.now().monthGmt()+'-'+(System.now().dayGmt()+daysout)+'T'+(System.now().hourGmt()+hoursout)+':'+(System.now().minuteGmt()+minutesout)+':'+(System.now().secondGmt()+secondsout)+'.'+'000Z';
-        System.debug('MS Date time:'+inpputString);
+        /*--*/SYS_debug.log('MS Date time:'+inpputString);
         DateTime resultDateTime = DateTime.valueof(inpputString.replace('T', ' '));
         return resultDateTime;
     }
@@ -184,23 +308,19 @@ global inherited sharing class SYS_Helper {
         //log.Type__c = 'EXCEPTION';
 
         flagLogForRetry(log.Id);
-        if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Status__c.isUpdateable()) {
+        
         log.Status__c = 'FAIL';
-        }
-        if (Schema.sObjectType.SYS_IntegrationLog__c.fields.Message__c.isUpdateable()) {
         log.Message__c = stackTrace;
-        }
-        upsert log;
+        
+        upsertLog(log);
     }
 
     @future
     global static void flagLogForRetry(Id logId){
         if(logId!=NULL){
             SYS_IntegrationLog__c log = new SYS_IntegrationLog__c(Id=logId);
-            if (Schema.sObjectType.SYS_IntegrationLog__c.fields.retry__c.isUpdateable()) {
             log.retry__c = true;
-            }
-            update log;
+            updateLog(log);
         }else{
             //TODO - How to update the log record?
         }
@@ -226,7 +346,7 @@ global inherited sharing class SYS_Helper {
         String close = String.fromCharArray( new List<integer>{pattern.getChars()[3]});
         open = open.replace('_', SYS_DataCache.FLAT_KEY_SEPERATOR);
         close = close.trim();
-        System.debug('*********** open:'+open+' '+'close:'+close);
+        /*--*/SYS_debug.log('*********** open:'+open+' '+'close:'+close);
 
         for(String key : jsonObject.keySet()) {
             Object currentObj = jsonObject.get(key);
