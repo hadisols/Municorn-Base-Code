@@ -881,7 +881,8 @@ global virtual inherited sharing class SYS_ApplicationService {
             //String errorMessage = 'Error while processing inbound';
 
             logResp.Status__c = 'FAIL';
-            SYS_Helper.flagLogForRetry(logResp.Id);
+            logResp.retry__c = true;
+            //## SYS_Helper.flagLogForRetry(logResp.Id);
             
 
             /*
@@ -926,7 +927,8 @@ global virtual inherited sharing class SYS_ApplicationService {
                 /*--*/SYS_debug.log('MS Queueable Allowed:'+Limits.getLimitQueueableJobs());
 
                 logResp.Status__c = 'PENDING_PARENT';
-                SYS_Helper.flagLogForRetry(logResp.Id);
+                logResp.retry__c = true;
+                //## SYS_Helper.flagLogForRetry(logResp.Id);
 
                 if(!(Limits.getQueueableJobs() + 1 > Limits.getLimitQueueableJobs())){
                     System.enqueueJob(new SYS_ParentingQueueable(String.valueOf(log.Parent__c),SYS_DataCache.INT_TYPE,log));

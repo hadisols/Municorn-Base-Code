@@ -307,7 +307,8 @@ global inherited sharing class SYS_Helper {
     global static void logException(SYS_IntegrationLog__c log,String stackTrace){
         //log.Type__c = 'EXCEPTION';
 
-        flagLogForRetry(log.Id);
+        //## flagLogForRetry(log.Id);
+        log.retry__c = true;
         
         log.Status__c = 'FAIL';
         log.Message__c = stackTrace;
@@ -315,6 +316,7 @@ global inherited sharing class SYS_Helper {
         upsertLog(log);
     }
 
+    /*
     @future
     global static void flagLogForRetry(Id logId){
         if(logId!=NULL){
@@ -325,6 +327,7 @@ global inherited sharing class SYS_Helper {
             //TODO - How to update the log record?
         }
     }
+    */
 
     /* ------------------------------------------------------------------------ */
 
