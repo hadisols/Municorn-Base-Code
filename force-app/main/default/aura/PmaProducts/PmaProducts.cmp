@@ -55,7 +55,7 @@
         <div class="sfappwrapper">
             <div class="d-flex flex-row justify-content-start flex-wrap my-2">
                 <aura:iteration items="{!v.productData}" var="prod" indexVar="key">
-                    <div class="col col-lg-2 mx-2 my-2 product-wrapper" data-id="{! prod.product.Id}" onclick="{!c.productClickHandler}">
+                    <div class="{! ( prod.isVisible) ? 'col col-lg-2 mx-2 my-2 product-wrapper'  : 'col col-lg-2 mx-2 my-2 product-wrapper inactiveProduct' }" data-id="{! prod.product.Id}" onclick="{! ( prod.isVisible) ? c.productClickHandler  : c.productNotEligible}">
                         <div class="d-flex flex-column justify-content-start flex-wrap">
                             <div class="overflow-hidden mx-auto image-wrapper max-height">
                                 <aura:if isTrue="{! !(prod.hasPictureURL) }">
@@ -66,10 +66,6 @@
                                 <aura:if isTrue="{! prod.hasPictureURL }">
                                     <img src="{! prod.pictureURL }" alt="{! prod.product.Name }" class="prodctimage"/>
                                 </aura:if>
-<!--                                 <img src="{!prod.pictureURL}" alt='{!prod.product.Name}'/>
- -->
-                                <!-- <img class="prodctimage" src="https://source.unsplash.com/random/100x100/?product"
-                                    alt='{!prod.product.Name}' /> -->
                             </div>
                             <div class="product-title text-center slds-truncate" title='{!prod.product.Name}'>{!prod.product.Name}</div>
                             <div class="product-title text-center slds-truncate" title='{!prod.productPrice}'>$ <lightning:formattedNumber value="{!prod.productPrice}" minimumFractionDigits="2" maximumFractionDigits="2" currencyCode="USD"/></div>

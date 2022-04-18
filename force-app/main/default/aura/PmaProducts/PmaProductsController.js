@@ -32,7 +32,11 @@
             });
             toastEvent.fire();
         };
+        var orderUUID = component.get("v.orderUUID");
         var action = component.get("c.getAllProductRecords");
+        action.setParams({
+            "orderIdOrUUID" : orderUUID,
+        });
         action.setCallback(this, function (response) {
             //Init Map
            var state = response.getState();
@@ -131,7 +135,6 @@
         component.fireApplicationEventCall('posCommunicationEvent' , message, processedObjectToString );
         
     },
-
     handleProductDeletionCartEvent : function (cmp, event) {
         var logApiResponses = true;
         var message = event.getParam("message");
@@ -191,5 +194,8 @@
         var numEventsHandled = parseInt(cmp.get("v.numEvents")) + 1;
         cmp.set("v.numEvents", numEventsHandled);
         //cmp.displayMessage('Success!', message, 'success');
+    },
+    productNotEligible : function (cmp, event) {
+        cmp.displayMessage('Error', 'You are not Eligible to Order this Product ', 'Error','dismissible');
     },
 })

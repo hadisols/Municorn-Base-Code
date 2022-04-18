@@ -13,6 +13,12 @@
 .THIS .image-wrapper.max-height{
     min-width: 100%;
 }
+.THIS .inactiveProduct{
+    filter: grayscale(60%);
+    background: #7e7575;
+    color: #fff;
+    opacity: 0.8;
+}
 .THIS .noimage {
     margin: 0 auto;
     width: 150px;

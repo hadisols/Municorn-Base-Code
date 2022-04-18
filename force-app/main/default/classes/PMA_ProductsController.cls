@@ -114,22 +114,27 @@ public with sharing class PMA_ProductsController {
 
     //To return initial records
     @AuraEnabled
-    public static Map <Id, SelectedProductWrapper > getAllProductRecords() {
+    public static Map <Id, SelectedProductWrapper > getAllProductRecords( String orderIdOrUUID ) {
         List < Product__c > productsList = new List < Product__c >();
         Map <Id, SelectedProductWrapper > mapProductsList = new Map <Id, SelectedProductWrapper >();
+        Order__c currentOrder = PMA_SearchController.getOrderDetailsByIdOrUUID( orderIdOrUUID );
+        Decimal memberAge = currentOrder.Member__r.Age__c;
         try {
             //TODO  - change query from PBE instead of product
            // productsList = Database.query('SELECT '+ SYS_Helper.getAllFieldsFor('Product__c') + '\')');
            
-            productsList = [SELECT Id,Name,Unit_Price__c,Account__c,Account__r.Name,Active__c,Contact__c,Display_URL__c,External_ID__c,Product_Code__c,Product_Description__c,Product_Family__c,Product_SKU__c,Quantity_Unit_Of_Measure__c,SystemModstamp,OwnerId,CreatedById,CreatedDate,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate FROM Product__c WHERE Product_Family__c = 'POS' ORDER BY Name ASC];
-            //productsList = [SELECT Id, Name, Unit_Price__c, Account__c, ProductCode, Description, IsActive, DisplayUrl, Family, QuantityUnitOfMeasure, StockKeepingUnit, ExternalDataSourceId, ExternalId FROM Product2 ORDER BY Name ASC];
+            productsList = [SELECT Id,Name,Unit_Price__c,Account__c,Account__r.Name,Active__c,Contact__c, Minimum_Age__c, Special_Minimum_Age__c, Special_Status__c,Display_URL__c,External_ID__c,Product_Code__c,Product_Description__c,Product_Family__c,Product_SKU__c,Quantity_Unit_Of_Measure__c,SystemModstamp,OwnerId,CreatedById,CreatedDate,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate FROM Product__c WHERE Product_Family__c = 'POS' ORDER BY Name ASC];
            
             for( Product__c prod: productsList){
                 String recordPictureURL = ImageController.getSysTrackRecordPictureURL(prod.Id);
                 System.debug('Prod Name ' + prod.Name + ' recordPictureURL '+ recordPictureURL);
+                Decimal prodAge = ( prod.Special_Status__c == true ) ? ( prod.Special_Minimum_Age__c ) :  (prod.Minimum_Age__c);
+                Boolean prodVisible = ( ( prodAge == null ) || ( prodAge <= memberAge) ) ? true : false;                
                 SelectedProductWrapper selectedproduct = new SelectedProductWrapper();
                 selectedproduct.product = prod;
                 selectedproduct.quantity = 1;
+                selectedproduct.isVisible = prodVisible;
+                selectedproduct.prodMinimumAge = prodAge;
                 selectedproduct.shortNameCode = ImageController.getShortendImageName(prod.Name);
                 selectedproduct.hasPictureURL = (recordPictureURL=='noimage') ? false : true;
                 selectedproduct.pictureURL = recordPictureURL;
@@ -160,6 +165,10 @@ public with sharing class PMA_ProductsController {
         public Double totalProductPrice{
             get { return (productPrice != null) ? productPrice * quantity : 0; }
         }
+        @AuraEnabled
+        public Boolean isVisible;
+        @AuraEnabled
+        public Decimal prodMinimumAge;
         @AuraEnabled
         public String orderNotes;
         @AuraEnabled
