@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>On_Complete_Handler__c</fullName>
     <defaultValue>&quot;SYS_ApplicationService&quot;</defaultValue>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <label>On Complete Handler</label>
     <length>50</length>

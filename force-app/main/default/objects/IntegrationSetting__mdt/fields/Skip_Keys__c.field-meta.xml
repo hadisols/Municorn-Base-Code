@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Skip_Keys__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Enter comma separated JSON keys that should be skipped while processing Inbound</inlineHelpText>

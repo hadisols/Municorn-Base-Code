@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Datetime_Conversion_Format__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>If this field setting is for a Datetime field, select the conversion format</inlineHelpText>

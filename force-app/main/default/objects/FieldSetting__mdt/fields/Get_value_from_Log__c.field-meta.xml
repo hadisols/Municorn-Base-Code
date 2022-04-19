@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Get_value_from_Log__c</fullName>
     <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
     <description>If this checkbox is checked then the value for the field corresponding to this field setting will be derived from the field referred by the API name in Log API for field mapping</description>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>

@@ -657,7 +657,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         jsonBody = preprocessJSONForInbound(log,jsonBody);
 
         if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c && 
-            log.Type__c == 'INBOUND' 
+            log.Type__c == 'INBOUND' && log.Parent__c == null
             ){
             String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String getURLPattern = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).GET_URL_Pattern__c;
@@ -767,7 +767,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             }
             else{
                 //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
-                resourceUrl+= '/'+ externalId;
+               // resourceUrl+= '/'+ externalId;
             }
             /*--*/SYS_debug.log('====== MS Endpoint check:'+resourceUrl);
             log.Callout_URL__c = resourceUrl;
@@ -881,7 +881,8 @@ global virtual inherited sharing class SYS_ApplicationService {
             //String errorMessage = 'Error while processing inbound';
 
             logResp.Status__c = 'FAIL';
-            SYS_Helper.flagLogForRetry(logResp.Id);
+            logResp.retry__c = true;
+            //## SYS_Helper.flagLogForRetry(logResp.Id);
             
 
             /*
@@ -926,7 +927,8 @@ global virtual inherited sharing class SYS_ApplicationService {
                 /*--*/SYS_debug.log('MS Queueable Allowed:'+Limits.getLimitQueueableJobs());
 
                 logResp.Status__c = 'PENDING_PARENT';
-                SYS_Helper.flagLogForRetry(logResp.Id);
+                logResp.retry__c = true;
+                //## SYS_Helper.flagLogForRetry(logResp.Id);
 
                 if(!(Limits.getQueueableJobs() + 1 > Limits.getLimitQueueableJobs())){
                     System.enqueueJob(new SYS_ParentingQueueable(String.valueOf(log.Parent__c),SYS_DataCache.INT_TYPE,log));

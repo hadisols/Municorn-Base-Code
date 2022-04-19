@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AuthenticationType__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Authentication Type</label>
@@ -24,18 +25,6 @@
                 <fullName>public</fullName>
                 <default>false</default>
                 <label>Public</label>
-            </value>
-            <value>
-                <fullName>AccessToken</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>AccessToken</label>
-            </value>
-            <value>
-                <fullName>UsernamePassword</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>UsernamePassword</label>
             </value>
         </valueSetDefinition>
     </valueSet>

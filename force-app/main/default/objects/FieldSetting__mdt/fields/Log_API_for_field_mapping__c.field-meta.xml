@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Log_API_for_field_mapping__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Enter the API Name of the field on SYS Log that should be used for setting the value to this field setting. This applies only when the Get Value from log is checked</inlineHelpText>

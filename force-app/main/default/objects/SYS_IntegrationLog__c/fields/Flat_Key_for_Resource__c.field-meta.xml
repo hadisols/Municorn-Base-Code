@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Flat_Key_for_Resource__c</fullName>
+    <deprecated>false</deprecated>
     <description>Defines the flat key in incoming JSON that will be used to identify the Resource and hence the object setting</description>
     <externalId>false</externalId>
     <label>Flat Key for Resource</label>

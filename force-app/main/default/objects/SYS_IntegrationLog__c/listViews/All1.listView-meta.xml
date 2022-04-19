@@ -12,6 +12,7 @@
     <columns>WhatId__c</columns>
     <columns>data0__c</columns>
     <columns>Request_Digest__c</columns>
+    <columns>Message__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>
