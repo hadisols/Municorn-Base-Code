@@ -19,6 +19,9 @@ public class SYS_HelperTest {
         String pattern = SYS_Datacache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE).PATCH_URL_Pattern__c;
         SYS_Helper.urlFromPattern('PATCH', accounts[0].Id);
 
+        SYS_Helper.deleteWithFLSCheck(accounts);
+        
+
         System.assert(SYS_Datacache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE).PATCH_URL_Pattern__c == pattern);
     }
 }

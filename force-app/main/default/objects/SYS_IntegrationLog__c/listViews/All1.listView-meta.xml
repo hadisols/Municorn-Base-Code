@@ -9,6 +9,8 @@
     <columns>Type__c</columns>
     <columns>Status__c</columns>
     <columns>SYS_Operation_Type__c</columns>
+    <columns>retry__c</columns>
+    <columns>Retry_Count__c</columns>
     <columns>WhatId__c</columns>
     <columns>data0__c</columns>
     <columns>Request_Digest__c</columns>
