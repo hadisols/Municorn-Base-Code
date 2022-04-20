@@ -3,6 +3,14 @@
     <label>SYS_CustomerQB</label>
     <protected>false</protected>
     <values>
+        <field>All_OR_None__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Always_Ignore_Response__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>ApexHandler__c</field>
         <value xsi:type="xsd:string">SYS_QB_ApplicationServiceOutbound</value>
     </values>
@@ -11,12 +19,20 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>DELETE_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">TWOWAY</value>
     </values>
     <values>
         <field>ExternalFieldApi__c</field>
-        <value xsi:type="xsd:string">Quickbooks_Id__c</value>
+        <value xsi:type="xsd:string">#quickbooks_id__c</value>
+    </values>
+    <values>
+        <field>GET_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>IntegrationType__c</field>
@@ -27,8 +43,16 @@
         <value xsi:type="xsd:string">SYS_Customer__c</value>
     </values>
     <values>
-        <field>Object__c</field>
-        <value xsi:type="xsd:string">SYS_Customer__c</value>
+        <field>PATCH_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>POST_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PUT_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>QueryClause__c</field>
@@ -37,6 +61,10 @@
     <values>
         <field>ResourcePath__c</field>
         <value xsi:type="xsd:string">customer?minorversion=63</value>
+    </values>
+    <values>
+        <field>Resource_Name__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>TriggerEvents__c</field>

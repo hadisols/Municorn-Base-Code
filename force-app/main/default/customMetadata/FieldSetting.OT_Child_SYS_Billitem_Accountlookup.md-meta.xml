@@ -11,12 +11,16 @@
         <value xsi:type="xsd:string">Line</value>
     </values>
     <values>
+        <field>Datetime_Conversion_Format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">OUTBOUND</value>
     </values>
     <values>
         <field>FieldApiName__c</field>
-        <value xsi:type="xsd:string">SYS_Account__r.Quickbooks_Id__c</value>
+        <value xsi:type="xsd:string">#SYS_Account__r.Quickbooks_Id__c</value>
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>
@@ -43,6 +47,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Key_For_Events__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Key__c</field>
         <value xsi:type="xsd:string">AccountBasedExpenseLineDetail.AccountRef.value</value>
     </values>
@@ -63,8 +71,12 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Mapping_is_for__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>ObjectApiName__c</field>
-        <value xsi:type="xsd:string">sys_Bill_lineItem__c</value>
+        <value xsi:type="xsd:string">#sys_Bill_lineItem__c</value>
     </values>
     <values>
         <field>ObjectSetting__c</field>
@@ -72,11 +84,15 @@
     </values>
     <values>
         <field>ParentField__c</field>
-        <value xsi:type="xsd:string">SYS_BillId__c</value>
+        <value xsi:type="xsd:string">#SYS_BillId__c</value>
     </values>
     <values>
         <field>RestResource__c</field>
         <value xsi:type="xsd:string">bill1</value>
+    </values>
+    <values>
+        <field>Send_Blanks_as_Empty_String__c</field>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>StaticValue__c</field>

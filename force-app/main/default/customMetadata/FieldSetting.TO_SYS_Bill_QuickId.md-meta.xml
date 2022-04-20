@@ -11,12 +11,16 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Datetime_Conversion_Format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">TWOWAY</value>
     </values>
     <values>
         <field>FieldApiName__c</field>
-        <value xsi:type="xsd:string">Quickbooks_Id__c</value>
+        <value xsi:type="xsd:string">#quickbooks_id__c</value>
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>
@@ -43,6 +47,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Key_For_Events__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Key__c</field>
         <value xsi:type="xsd:string">Id</value>
     </values>
@@ -63,8 +71,12 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Mapping_is_for__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>ObjectApiName__c</field>
-        <value xsi:type="xsd:string">SYS_Bill__c</value>
+        <value xsi:type="xsd:string">#SYS_Bill__c</value>
     </values>
     <values>
         <field>ObjectSetting__c</field>
@@ -77,6 +89,10 @@
     <values>
         <field>RestResource__c</field>
         <value xsi:type="xsd:string">bill</value>
+    </values>
+    <values>
+        <field>Send_Blanks_as_Empty_String__c</field>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>StaticValue__c</field>

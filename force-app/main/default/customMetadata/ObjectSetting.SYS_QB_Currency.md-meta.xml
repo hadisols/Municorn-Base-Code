@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>SYS_QB_Currency</label>
+    <protected>false</protected>
+    <values>
+        <field>All_OR_None__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Always_Ignore_Response__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>ApexHandler__c</field>
+        <value xsi:type="xsd:string">SYS_QB_ApplicationServiceOutbound</value>
+    </values>
+    <values>
+        <field>BypassTrigger__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>DELETE_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Direction__c</field>
+        <value xsi:type="xsd:string">TWOWAY</value>
+    </values>
+    <values>
+        <field>ExternalFieldApi__c</field>
+        <value xsi:type="xsd:string">#quickbooks_id__c</value>
+    </values>
+    <values>
+        <field>GET_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IntegrationType__c</field>
+        <value xsi:type="xsd:string">Quickbooks</value>
+    </values>
+    <values>
+        <field>ObjectApiName__c</field>
+        <value xsi:type="xsd:string">#SYS_Currency__c</value>
+    </values>
+    <values>
+        <field>PATCH_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>POST_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PUT_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>QueryClause__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ResourcePath__c</field>
+        <value xsi:type="xsd:string">companycurrency</value>
+    </values>
+    <values>
+        <field>Resource_Name__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>TriggerEvents__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Trigger_Condition__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>isInboundList__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>url_params__c</field>
+        <value xsi:type="xsd:string">?minorversion=63</value>
+    </values>
+</CustomMetadata>

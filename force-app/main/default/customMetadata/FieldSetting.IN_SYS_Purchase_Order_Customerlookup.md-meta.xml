@@ -11,12 +11,16 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Datetime_Conversion_Format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">INBOUND</value>
     </values>
     <values>
         <field>FieldApiName__c</field>
-        <value xsi:type="xsd:string">AccountId__c</value>
+        <value xsi:type="xsd:string">#AccountId__c</value>
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>
@@ -32,7 +36,7 @@
     </values>
     <values>
         <field>Is_Active__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>Is_External_Field__c</field>
@@ -41,6 +45,10 @@
     <values>
         <field>Is_Lookup__c</field>
         <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Key_For_Events__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Key__c</field>
@@ -56,15 +64,19 @@
     </values>
     <values>
         <field>Lookup_External_Key__c</field>
-        <value xsi:type="xsd:string">Quickbooks_Id__c</value>
+        <value xsi:type="xsd:string">#Quickbooks_Id__c</value>
     </values>
     <values>
         <field>Lookup_Object_API_Name__c</field>
         <value xsi:type="xsd:string">Account</value>
     </values>
     <values>
+        <field>Mapping_is_for__c</field>
+        <value xsi:type="xsd:string">All Records</value>
+    </values>
+    <values>
         <field>ObjectApiName__c</field>
-        <value xsi:type="xsd:string">SYS_Purchase_Order__c</value>
+        <value xsi:type="xsd:string">#SYS_Purchase_Order__c</value>
     </values>
     <values>
         <field>ObjectSetting__c</field>
@@ -77,6 +89,10 @@
     <values>
         <field>RestResource__c</field>
         <value xsi:type="xsd:string">purchaseorder</value>
+    </values>
+    <values>
+        <field>Send_Blanks_as_Empty_String__c</field>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>StaticValue__c</field>

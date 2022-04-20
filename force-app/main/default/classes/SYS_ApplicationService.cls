@@ -662,7 +662,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c && 
             log.Is_Notification_Only__c && log.Parent__c == null
             ){
-            //String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+            String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String getURLPattern = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).GET_URL_Pattern__c;
             
             SYS_NotificationInterface it = 
@@ -681,7 +681,8 @@ global virtual inherited sharing class SYS_ApplicationService {
 
                 newSysLog.Status__c = 'NEW';
                 newSysLog.HTTP_Method__c = 'GET';
-                newSysLog.Callout_URL__c = getURL;
+                 
+                newSysLog.Callout_URL__c = baseEndpoint + getURL;
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.WhatId__c = log.Id;
                 newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;

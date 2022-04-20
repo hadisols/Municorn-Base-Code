@@ -11,12 +11,16 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Datetime_Conversion_Format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">TWOWAY</value>
     </values>
     <values>
         <field>FieldApiName__c</field>
-        <value xsi:type="xsd:string">Quantity_on_Hand__c</value>
+        <value xsi:type="xsd:string">#Quantity_on_Hand__c</value>
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>
@@ -43,6 +47,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Key_For_Events__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Key__c</field>
         <value xsi:type="xsd:string">QtyOnHand</value>
     </values>
@@ -63,6 +71,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Mapping_is_for__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>ObjectApiName__c</field>
         <value xsi:type="xsd:string">Product2</value>
     </values>
@@ -77,6 +89,10 @@
     <values>
         <field>RestResource__c</field>
         <value xsi:type="xsd:string">item</value>
+    </values>
+    <values>
+        <field>Send_Blanks_as_Empty_String__c</field>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>StaticValue__c</field>
