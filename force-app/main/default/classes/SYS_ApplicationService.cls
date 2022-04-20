@@ -443,6 +443,9 @@ global virtual inherited sharing class SYS_ApplicationService {
         if(algo!=NULL && algo!='')
         log.Request_Digest__c = generateHash(requestBody,algo);
 
+        if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c)
+            log.Is_Notification_Only__c = true;
+
         log.Type__c = 'INBOUND';
         log.SYS_Operation_Type__c = getOperationTypeFor(method);
         log.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
@@ -657,9 +660,9 @@ global virtual inherited sharing class SYS_ApplicationService {
         jsonBody = preprocessJSONForInbound(log,jsonBody);
 
         if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c && 
-            log.Type__c == 'INBOUND'
+            log.Is_Notification_Only__c
             ){
-            String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+            //String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String getURLPattern = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).GET_URL_Pattern__c;
             
             SYS_NotificationInterface it = 
@@ -678,7 +681,7 @@ global virtual inherited sharing class SYS_ApplicationService {
 
                 newSysLog.Status__c = 'NEW';
                 newSysLog.HTTP_Method__c = 'GET';
-                newSysLog.Callout_URL__c = baseEndpoint + getURL;
+                newSysLog.Callout_URL__c = getURL;
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.WhatId__c = log.Id;
                 newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
@@ -1021,13 +1024,20 @@ global virtual inherited sharing class SYS_ApplicationService {
 
         if(SYS_DataCache.objectSettingMap.get(childLog.ObjectSettingId__c).All_OR_None__c){
 
-            String qry = 'SELECT Id FROM '+fsm[0].ObjectApiName__c+' WHERE '+fsm[0].FieldApiName__c+'=\''+childLogs[0].Parent__r.WhatId__c+'\''+
-                            ' AND Id NOT IN (\''+ String.join(dupeCheckList,'\',\'')+'\')';  
+            String qry = 
+            'SELECT Id FROM '+
+            fsm[0].ObjectApiName__c;
+
+            String whereClause = 
+            ' WHERE '+String.escapeSingleQuotes(fsm[0].FieldApiName__c)+'=\''+
+            String.escapeSingleQuotes(childLogs[0].Parent__r.WhatId__c)+'\''+
+                            ' AND Id NOT IN (\''+ 
+            String.join(dupeCheckList,'\',\'')+'\')';  
             
             /*--*/SYS_debug.log('MS All or none delete records query:'+qry);
 
             List<sObject> childRecordsToDelete = new List<sObject>();
-            childRecordsToDelete = Database.query(String.escapeSingleQuotes(qry));
+            childRecordsToDelete = Database.query(String.escapeSingleQuotes(qry)+whereClause);
 
             /*--*/SYS_debug.log('MS All or none delete records:'+childRecordsToDelete);
             if(childRecordsToDelete.size() > 0)
