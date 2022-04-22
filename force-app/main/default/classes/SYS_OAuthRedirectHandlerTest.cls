@@ -26,6 +26,9 @@ public class SYS_OAuthRedirectHandlerTest {
         SYS_OAuthRedirectHandler.doGet();
         Test.stopTest();
 
+        List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c WHERE Status__c = 'DONE'];
+        System.assert(log.size()>0);
+
        
     }
 
@@ -47,6 +50,9 @@ public class SYS_OAuthRedirectHandlerTest {
         Test.startTest();
         SYS_OAuthRedirectHandler.doGet();
         Test.stopTest();
+
+        List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c WHERE Status__c = 'FAIL'];
+        System.assert(log.size()>0);
         
     }
 

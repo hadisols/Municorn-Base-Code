@@ -1,4 +1,4 @@
-public class SYS_ParentingQueueable implements Queueable{
+public without sharing class SYS_ParentingQueueable implements Queueable{
 
     private String parentLog;
     private String integrationSetting;

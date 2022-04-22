@@ -1,4 +1,4 @@
-global class SYS_InvocableHandler {
+global without sharing class SYS_InvocableHandler {
 	
     global class MyInvocableVariable {
         @InvocableVariable(label='Id' required=true)  
@@ -54,7 +54,7 @@ global class SYS_InvocableHandler {
        
         if(jsonListForOutbound.values().size() > 0){
             for(Id jsonRecordId:jsonListForOutbound.keyset()){ 
-                system.debug('Id:'+jsonRecordId);
+                /*--*/SYS_debug.log('Id:'+jsonRecordId);
                 String finalJsonForOutbound;
                 
 
@@ -65,7 +65,7 @@ global class SYS_InvocableHandler {
                 */
 
                 finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
-                System.debug('cleanJSON'+finalJsonForOutbound); 
+                /*--*/SYS_debug.log('cleanJSON'+finalJsonForOutbound); 
 
                 SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
 
@@ -83,9 +83,8 @@ global class SYS_InvocableHandler {
                 insertSysLog.add(newSysLog);
             }
             if(!insertSysLog.isEmpty() && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){ 
-                SYS_debug.log('inside insert'+insertSysLog.size());
-                insert insertSysLog;
-                system.debug('insertSysLog=='+insertSysLog);
+                SYS_Helper.insertLog(insertSysLog);
+                /*--*/SYS_debug.log('insertSysLog=='+insertSysLog);
             }
             
         }

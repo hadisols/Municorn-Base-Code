@@ -23,6 +23,10 @@
                 <behavior>Edit</behavior>
                 <field>SYS_RequestId__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Is_Notification_Only__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>FieldApiName__c</field>
-        <value xsi:type="xsd:string">SYS_Key__c</value>
+        <value xsi:type="xsd:string">#SYS_Key__c</value>
     </values>
     <values>
         <field>Field_Mapping_Handler__c</field>
@@ -48,10 +48,6 @@
     </values>
     <values>
         <field>Key_For_Events__c</field>
-        <value xsi:nil="true"/>
-    </values>
-    <values>
-        <field>Key_For_Response__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>

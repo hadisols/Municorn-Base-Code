@@ -3,7 +3,7 @@
     <fullName>Flat_Key_Pattern__c</fullName>
     <defaultValue>&quot;A_B&quot;</defaultValue>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Flat Key Pattern</label>
     <required>false</required>
     <type>Picklist</type>

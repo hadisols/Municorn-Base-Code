@@ -3,7 +3,7 @@
     <fullName>All_OR_None__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>Check this option if child records for this object setting should be inserted all at once after deleting the existing records.</inlineHelpText>
     <label>Process Child records as All-OR-None</label>
     <type>Checkbox</type>

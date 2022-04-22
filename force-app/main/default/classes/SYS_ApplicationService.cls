@@ -1,4 +1,4 @@
-global virtual class SYS_ApplicationService {
+global virtual inherited sharing class SYS_ApplicationService {
 
     public class SYS_ApplicationServiceException extends Exception{}
 
@@ -94,7 +94,9 @@ global virtual class SYS_ApplicationService {
     //TODO Test coverage
     global virtual String getIdFromExternalKey(String objectApiName, String externalKey, String externalId){
         List<sObject> parentRecord = new List<sObject>();
-        parentRecord = Database.query('SELECT Id FROM '+objectApiName+' WHERE '+externalKey+'= \''+externalId+'\'');
+        String query = 'SELECT Id FROM '+objectApiName;
+        String whereClause = ' WHERE '+String.escapeSingleQuotes(externalKey)+'= \''+String.escapeSingleQuotes(externalId)+'\'';
+        parentRecord = Database.query(String.escapeSingleQuotes(query)+whereClause);
         if(parentRecord!=NULL && parentRecord.size()>0)
             return String.valueOf(parentRecord[0].get('Id'));
         else
@@ -161,7 +163,7 @@ global virtual class SYS_ApplicationService {
     global virtual Boolean doDelete(List<sObject> records,SYS_IntegrationLog__c log){
         Database.DeleteResult[] results;
         Boolean success = true;
-        results = Database.delete(records, false);
+        results = SYS_Helper.deleteWithFLSCheck(records);
         if(!results[0].isSuccess()){
             success = false;
             handleDMLErrors(results[0].getErrors(),log);
@@ -179,16 +181,16 @@ global virtual class SYS_ApplicationService {
         if(additionalSetting=='')
             results = Database.upsert(records, false);
         else{
-            System.debug('--MS externalIdField for:'+records[0]);
+            /*--*/SYS_debug.log('--MS externalIdField for:'+records[0]);
             //Schema.SObjectField externalIdField = Schema.getGlobalDescribe().get(SYS_DataCache.sObjectApiName).getDescribe().fields.getMap().get(additionalSetting); 
             
             Schema.SObjectField externalIdField = records[0].getSObjectType().getDescribe().fields.getMap().get(additionalSetting); 
-            System.debug('--MS externalIdField in doUpsert:'+externalIdField);
+            /*--*/SYS_debug.log('--MS externalIdField in doUpsert:'+externalIdField);
             
             results = Database.upsert(records, externalIdField, false);
         }
         
-        System.debug('--MS Log check # '+log.Id+' has WhatId: '+results[0].getId());
+        /*--*/SYS_debug.log('--MS Log check # '+log.Id+' has WhatId: '+results[0].getId());
 
         if(!results[0].isSuccess()){
             success = false;
@@ -197,7 +199,7 @@ global virtual class SYS_ApplicationService {
         else{
             log.WhatId__c = results[0].getId();
         }
-        System.debug('--MS Log re-check # '+log.Id+' has WhatId: '+log.WhatId__c);
+        /*--*/SYS_debug.log('--MS Log re-check # '+log.Id+' has WhatId: '+log.WhatId__c);
 
         return success;
     }
@@ -227,7 +229,7 @@ global virtual class SYS_ApplicationService {
                 } 
                 return obj.get(splitedFields[splitedFields.size()-1]);
             }catch(exception ex){
-               System.debug('****** Exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
+               /*--*/SYS_debug.log('****** Exception while fetching fieldValues as relationship '+fieldAPIName+'  value is blank.'+ex.getmessage()); 
                return null;
             }
             
@@ -324,7 +326,7 @@ global virtual class SYS_ApplicationService {
                             minutes, 
                             seconds, 
                             ms );
-        System.debug('=============== '+timeValue);
+        /*--*/SYS_debug.log('=============== '+timeValue);
 
         return timeValue;
      }
@@ -340,7 +342,7 @@ global virtual class SYS_ApplicationService {
      */
     global virtual sObject processFieldMapping(FieldSetting__mdt mapping,sObject sObj,Object value, String sObjectApiName){
 
-        System.debug(mapping.FieldApiName__c+' +MS+ '+value);
+        /*--*/SYS_debug.log(mapping.FieldApiName__c+' +MS+ '+value);
         if(mapping.Get_value_from_Log__c)
             value = SYS_DataCache.log.get(mapping.Log_API_for_field_mapping__c);
 
@@ -441,6 +443,9 @@ global virtual class SYS_ApplicationService {
         if(algo!=NULL && algo!='')
         log.Request_Digest__c = generateHash(requestBody,algo);
 
+        if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c)
+            log.Is_Notification_Only__c = true;
+
         log.Type__c = 'INBOUND';
         log.SYS_Operation_Type__c = getOperationTypeFor(method);
         log.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
@@ -485,8 +490,10 @@ global virtual class SYS_ApplicationService {
      */
     global virtual SYS_IntegrationLog__c generateLogForChildRecords(String parentLogId,String resource,String recordsJson,String integrationSetting) {
 
+        String query = 'SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c';
+        String whereClause = ' WHERE Id in (' + '\'' + String.escapeSingleQuotes(parentLogId) + '\')';
         List<SYS_IntegrationLog__c> parentLog = 
-        Database.query('SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c WHERE Id in (' + '\'' + parentLogId + '\')');
+        Database.query(String.escapeSingleQuotes(query)+whereClause);
 
         SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(recordsJson);
 
@@ -562,7 +569,7 @@ global virtual class SYS_ApplicationService {
     }
 
     global virtual String preprocessJSONForOutbound(SYS_IntegrationLog__c log,String jsonBody,HttpRequest req) {
-        System.debug('Default preprocessJSONForOutbound called');
+        /*--*/SYS_debug.log('Default preprocessJSONForOutbound called');
         
         if(req.getHeader('content-type') == 'application/x-www-form-urlencoded'){
             String formUrlEncodedBody='';
@@ -601,7 +608,7 @@ global virtual class SYS_ApplicationService {
 
         String resource = '';
         if(log.Resource__c!=NULL){
-            System.debug('-- MS Resource defined in Log'+log.Resource__c.toLowerCase());
+            /*--*/SYS_debug.log('-- MS Resource defined in Log'+log.Resource__c.toLowerCase());
             return log.Resource__c.toLowerCase();
         }
 
@@ -612,16 +619,16 @@ global virtual class SYS_ApplicationService {
             if(responseType instanceof Map<String,Object>){
                 resource = new List<String>(((Map<String, Object>)responseType).keySet())[0];
             }
-            System.debug('-- MS Root defines resource'+resource.toLowerCase());
+            /*--*/SYS_debug.log('-- MS Root defines resource'+resource.toLowerCase());
         }
         else{
             //Key mentioned in Flat_Key_for_Resource__c identifies Resource
             Map<String, Object> flatKeyMap = SYS_Helper.getFlatKeys(jsonBody,'A_B');
-            System.debug('-- MS flatKeyMap in getResourceFromJSON:'+flatKeyMap);
+            /*--*/SYS_debug.log('-- MS flatKeyMap in getResourceFromJSON:'+flatKeyMap);
             resource = (String)flatKeyMap.get(log.Flat_Key_for_Resource__c);
         }
 
-        System.debug('-- MS Final identified resource in getResourceFromJSON:'+resource?.toLowerCase());
+        /*--*/SYS_debug.log('-- MS Final identified resource in getResourceFromJSON:'+resource?.toLowerCase());
 
         return resource?.toLowerCase();
     }
@@ -653,9 +660,9 @@ global virtual class SYS_ApplicationService {
         jsonBody = preprocessJSONForInbound(log,jsonBody);
 
         if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c && 
-            log.Type__c == 'INBOUND'
+            log.Is_Notification_Only__c
             ){
-            String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+            //String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String getURLPattern = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).GET_URL_Pattern__c;
             
             SYS_NotificationInterface it = 
@@ -670,11 +677,11 @@ global virtual class SYS_ApplicationService {
                     getURL = getURL.replaceAll('\\{'+key+'\\}',rMap.get(key));
   
                 }
-                System.debug('=============== '+ getURL);
+                /*--*/SYS_debug.log('=============== '+ getURL);
 
                 newSysLog.Status__c = 'NEW';
                 newSysLog.HTTP_Method__c = 'GET';
-                newSysLog.Callout_URL__c = baseEndpoint + getURL;
+                newSysLog.Callout_URL__c = getURL;
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.WhatId__c = log.Id;
                 newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
@@ -686,7 +693,7 @@ global virtual class SYS_ApplicationService {
 
             
             if(insertSysLog.size()>0 && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){
-                insert insertSysLog;
+                SYS_Helper.insertLog(insertSysLog);
             }
 
             return true;
@@ -749,7 +756,7 @@ global virtual class SYS_ApplicationService {
             String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String resourceUrl = baseEndpoint + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ResourcePath__c;
             
-            System.debug('====== MS Endpoint check:'+resourceUrl);
+            /*--*/SYS_debug.log('====== MS Endpoint check:'+resourceUrl);
 
             //Log is to create resource
             if(req.getMethod() == 'POST' && (externalId == NULL || externalId == '')){
@@ -765,7 +772,7 @@ global virtual class SYS_ApplicationService {
                 //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
                 resourceUrl+= '/'+ externalId;
             }
-            System.debug('====== MS Endpoint check:'+resourceUrl);
+            /*--*/SYS_debug.log('====== MS Endpoint check:'+resourceUrl);
             log.Callout_URL__c = resourceUrl;
             return resourceUrl;
         }
@@ -812,10 +819,10 @@ global virtual class SYS_ApplicationService {
             externalIdField = externalIdField != null ? externalIdField.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : externalIdField;
 
 
-            List<sObject> recList = 
-                Database.query( 'SELECT ' + externalIdField +
-                                ' FROM ' +  objApiName +
-                                ' WHERE Id = \'' + log.WhatId__c + '\' ALL ROWS');
+            String query = 'SELECT ' + externalIdField + ' FROM ' +  objApiName;
+            String whereClause = ' WHERE Id = \'' + String.escapeSingleQuotes(log.WhatId__c) + '\' ALL ROWS';
+            List<sObject> recList = Database.query(String.escapeSingleQuotes(query)+whereClause);
+                
     
             if(!recList.isEmpty()){
     
@@ -868,7 +875,7 @@ global virtual class SYS_ApplicationService {
 
         SYS_IntegrationLog__c logResp = new SYS_IntegrationLog__c();
         
-        System.debug('Beginning. Log status for:'+logResp.Request_Digest__c+'='+logResp.Status__c);
+        /*--*/SYS_debug.log('Beginning. Log status for:'+logResp.Request_Digest__c+'='+logResp.Status__c);
 
 
         if(!result){
@@ -877,7 +884,8 @@ global virtual class SYS_ApplicationService {
             //String errorMessage = 'Error while processing inbound';
 
             logResp.Status__c = 'FAIL';
-            SYS_Helper.flagLogForRetry(logResp.Id);
+            logResp.retry__c = true;
+            //## SYS_Helper.flagLogForRetry(logResp.Id);
             
 
             /*
@@ -901,13 +909,13 @@ global virtual class SYS_ApplicationService {
              * Check if there are other siblings. Call parenting queueable only if all are done
              */
 
-            System.debug('MS totalChildRecords B4:'+SYS_QueueableForInboundChild.totalChildRecords);
+            /*--*/SYS_debug.log('MS totalChildRecords B4:'+SYS_QueueableForInboundChild.totalChildRecords);
             SYS_QueueableForInboundChild.totalChildRecords--;
-            System.debug('MS totalChildRecords After:'+SYS_QueueableForInboundChild.totalChildRecords);
+            /*--*/SYS_debug.log('MS totalChildRecords After:'+SYS_QueueableForInboundChild.totalChildRecords);
            
-            System.debug('MS Condition chck for Parenting:'+log.Requires_process_on_complete__c);
-            System.debug('MS Condition chck for Parenting:'+(SYS_QueueableForInboundChild.totalChildRecords==0));
-            System.debug('MS Condition chck for Parenting:'+log.Status__c);
+            /*--*/SYS_debug.log('MS Condition chck for Parenting:'+log.Requires_process_on_complete__c);
+            /*--*/SYS_debug.log('MS Condition chck for Parenting:'+(SYS_QueueableForInboundChild.totalChildRecords==0));
+            /*--*/SYS_debug.log('MS Condition chck for Parenting:'+log.Status__c);
 
 
             /**
@@ -918,11 +926,12 @@ global virtual class SYS_ApplicationService {
             if(log.Requires_process_on_complete__c 
                 && (SYS_QueueableForInboundChild.totalChildRecords==0 || log.Status__c=='READY_FOR_PROCESSING'))
             {
-                System.debug('MS Queueable Jobs in queue:'+Limits.getQueueableJobs());
-                System.debug('MS Queueable Allowed:'+Limits.getLimitQueueableJobs());
+                /*--*/SYS_debug.log('MS Queueable Jobs in queue:'+Limits.getQueueableJobs());
+                /*--*/SYS_debug.log('MS Queueable Allowed:'+Limits.getLimitQueueableJobs());
 
                 logResp.Status__c = 'PENDING_PARENT';
-                SYS_Helper.flagLogForRetry(logResp.Id);
+                logResp.retry__c = true;
+                //## SYS_Helper.flagLogForRetry(logResp.Id);
 
                 if(!(Limits.getQueueableJobs() + 1 > Limits.getLimitQueueableJobs())){
                     System.enqueueJob(new SYS_ParentingQueueable(String.valueOf(log.Parent__c),SYS_DataCache.INT_TYPE,log));
@@ -972,7 +981,7 @@ global virtual class SYS_ApplicationService {
         //SYS_DataCache.log = childLog;
         List<FieldSetting__mdt> fsm = getPrimaryLookupFieldSetting(childLog.Resource__c);
 
-        System.debug('MS Fixing Relationship:'+fsm);
+        /*--*/SYS_debug.log('MS Fixing Relationship:'+fsm);
 
         List<sObject> childRecords = new List<sObject>();
         List<String> dupeCheckList = new List<String>();
@@ -980,13 +989,13 @@ global virtual class SYS_ApplicationService {
 
         for(SYS_IntegrationLog__c cLog:childLogs)
         {
-            System.debug('MS dupeCheckList:'+dupeCheckList);
+            /*--*/SYS_debug.log('MS dupeCheckList:'+dupeCheckList);
 
             if(!dupeCheckList.contains(cLog.WhatId__c) && cLog.WhatId__c!=null){
                 childRecords.clear();
                 sObject sObj = Schema.getGlobalDescribe().get(fsm[0].ObjectApiName__c).newSObject();
-                System.debug('MS cLog:'+cLog);
-                System.debug('MS cLog.Parent__r.WhatId__c:'+cLog.Parent__r.WhatId__c);
+                /*--*/SYS_debug.log('MS cLog:'+cLog);
+                /*--*/SYS_debug.log('MS cLog.Parent__r.WhatId__c:'+cLog.Parent__r.WhatId__c);
                 sObj.put('Id',cLog.WhatId__c);
                 sObj.put(fsm[0].FieldApiName__c,cLog.Parent__r.WhatId__c);
                 childRecords.add(sObj);
@@ -996,7 +1005,7 @@ global virtual class SYS_ApplicationService {
                 if(doDML(childRecords, 'UPDATE', '',cLog)){
                     cLog.Status__c ='DONE';
                     cLog.retry__c =false;
-                    update cLog;
+                    SYS_Helper.updateLog(cLog);
                 }
             }
         }
@@ -1015,17 +1024,24 @@ global virtual class SYS_ApplicationService {
 
         if(SYS_DataCache.objectSettingMap.get(childLog.ObjectSettingId__c).All_OR_None__c){
 
-            String qry = 'SELECT Id FROM '+fsm[0].ObjectApiName__c+' WHERE '+fsm[0].FieldApiName__c+'=\''+childLogs[0].Parent__r.WhatId__c+'\''+
-                            ' AND Id NOT IN (\''+ String.join(dupeCheckList,'\',\'')+'\')';  
+            String qry = 
+            'SELECT Id FROM '+
+            fsm[0].ObjectApiName__c;
+
+            String whereClause = 
+            ' WHERE '+String.escapeSingleQuotes(fsm[0].FieldApiName__c)+'=\''+
+            String.escapeSingleQuotes(childLogs[0].Parent__r.WhatId__c)+'\''+
+                            ' AND Id NOT IN (\''+ 
+            String.join(dupeCheckList,'\',\'')+'\')';  
             
-            System.debug('MS All or none delete records query:'+qry);
+            /*--*/SYS_debug.log('MS All or none delete records query:'+qry);
 
             List<sObject> childRecordsToDelete = new List<sObject>();
-            childRecordsToDelete = Database.query(qry);
+            childRecordsToDelete = Database.query(String.escapeSingleQuotes(qry)+whereClause);
 
-            System.debug('MS All or none delete records:'+childRecordsToDelete);
+            /*--*/SYS_debug.log('MS All or none delete records:'+childRecordsToDelete);
             if(childRecordsToDelete.size() > 0)
-                delete childRecordsToDelete;
+                SYS_Helper.deleteWithFLSCheck(childRecordsToDelete);
         }
 
         /* ------------------------------------ ALL OR NONE HANDLING ENDS ---------------------------------------- */
@@ -1056,7 +1072,6 @@ global virtual class SYS_ApplicationService {
                 log.retry__c = true;
 
             logResp.Status__c = 'ERROR';
-            //SYS_Helper.flagLogForRetry(log.Id);
             
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
             logResp.WhatId__c = log.WhatId__c;
@@ -1106,7 +1121,7 @@ global virtual class SYS_ApplicationService {
         }
 
         //doDML(new List<SYS_IntegrationLog__c>{log}, 'UPSERT', '') ;
-        upsert log;
+        SYS_Helper.upsertLog(log);
         logResp.SYS_RequestId__c = log.Id;
 
         return logResp;
@@ -1155,7 +1170,7 @@ global virtual class SYS_ApplicationService {
 
     public void insertWebhookLog(SYS_IntegrationLog__c log){
         try{
-            Database.SaveResult result = Database.insert(log,false);
+            Database.SaveResult result = SYS_Helper.insertLog(log);// Database.insert(log,false);
             //TODO check if result is success/error and take action
 
             if(!result.isSuccess()){
