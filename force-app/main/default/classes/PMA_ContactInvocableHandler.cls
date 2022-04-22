@@ -19,6 +19,7 @@ global class PMA_ContactInvocableHandler {
     global static void captureContactChangeRequest(List<MyInvocableVariable> myInvocableVariableList) {
         List<Contact> newList = new List<Contact>();
         List<Contact> oldList = new List<Contact>();
+        List<Contact> updateContactList = new List<Contact>();
         Id orderId;
         
         List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
@@ -62,7 +63,8 @@ global class PMA_ContactInvocableHandler {
                 String subject = 'Outbound SMS to ' + g.LastName + ' - ' + toPhone + ' for PMA MemberShip Purchase';
                 String messageBody = 'Please Pay $' + payreq.Amount__c + ' to Start PMA Membership ' + payreq.Payment_Link__c;
                 Activity__c activityCreate = CustomActivityService.createNewSmsActivity(contactId, toPhone, email, subject, messageBody);
-                
+                g.Registration_Order_Created__c = true;
+                updateContactList.add(g);
             } else{
                 //TODO write handler if failure
                 System.debug('DML Error in Creation of Payment Intent: ');
@@ -72,6 +74,9 @@ global class PMA_ContactInvocableHandler {
                 errorLog.Status__c = 'ERROR';
                 errorLog.How_To_Process__c = 'ignore_log';
             }
+        }
+        if(updateContactList.size()>0){
+            update updateContactList;
         }
         if (errorLog != new SYS_IntegrationLog__c()) {
             insert errorLog;
