@@ -6,17 +6,20 @@
 		<members>StripeService</members>
 		<members>StripeRestService</members>
 		<members>CustomLabelsService</members>
-		<members>PaymentsService</members>
+		<members>PaymentIntentService</members>
 		<members>TransactionController</members>
 		<members>TransactionService</members>
+		<members>CustomActivityService</members>
 		<!-- End Payment Classes -->
 		<!-- Start PMA Classes -->
+		<members>PMA_ChargeInvocableHandler</members>
 		<members>PMA_ContactInvocableHandler</members>
-		<!--
 		<members>PMA_ContactTriggerHandler</members>
-		-->
 		<members>PMA_ExternalSiteFormsUtility</members>
+		<members>PMA_InvocableUUIDGenerator</members>
 		<members>PMA_ProductsController</members>
+		<members>PMA_SearchController</members>
+		<members>ImageController</members>
 		<!-- End PMA Classes -->
 		<!-- Start Municorn Override Classes -->
 		<members>Plivo_Inbound_SYS_ApplicationService</members>
@@ -30,8 +33,9 @@
 		<name>ApexPage</name>
 	</types>
 	<types>
-		<members>SYS_IntegrationLogTrigger</members>
-		<name>ApexTrigger</name>
+		<members>PMA_Managers</members>
+		<members>PMA_Vendors</members>
+		<name>Audience</name>
 	</types>
 	<types>
 		<members>pmaContainer</members>
@@ -39,8 +43,11 @@
 		<members>pmaCart</members>
 		<members>posCommunicationEvent</members>
 		<members>cartCommunicationEvent</members>
+		<members>componentCommunicationEvent</members>
 		<members>pmaContactsSearch</members>
 		<members>ManagerNavigation</members>
+		<members>imagePreview</members>
+		<members>imageUploader</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
@@ -54,10 +61,25 @@
 		<name>CustomApplication</name>
 	</types>
 	<types>
-		<!-- Start PMA Fields -->
 		<members>Account.Active__c</members>
+		<members>Account.Plivo_Sender_Id__c</members>
+
+		<members>Contact.Active__c</members>
+		<members>Contact.Age__c</members>
+		<members>Contact.Default_Payment_Method__c</members>
+		<members>Contact.Gender__c</members>
+		<members>Contact.License_Plate_Number__c</members>
+		<members>Contact.Payment_Date_Time__c</members>
+		<members>Contact.Payment_SMS_Sent__c</members>
+		<members>Contact.Phone_Number__c</members>
+		<members>Contact.Registration_Order_Created__c</members>
+		<members>Contact.Sponsor__c</members>
+		<members>Contact.StripeCustomerId__c</members>
+		<members>Contact.UUID__c</members>
+		<!-- Custom Object Fields
 		<members>Activity__c.Customer__c</members>
 		<members>Activity__c.Email__c</members>
+		<members>Activity__c.Formatted_Phone__c</members>
 		<members>Activity__c.Log__c</members>
 		<members>Activity__c.Message__c</members>
 		<members>Activity__c.Phone__c</members>
@@ -67,30 +89,84 @@
 		<members>Activity__c.Type__c</members>
 		<members>Activity__c.UUID__c</members>
 		<members>Activity__c.When__c</members>
-		<members>Contact.Active__c</members>
-		<members>Contact.Default_Payment_Method__c</members>
-		<members>Contact.Gender__c</members>
-		<members>Contact.Payment_Date_Time__c</members>
-		<members>Contact.Payment_SMS_Sent__c</members>
-		<members>Contact.Phone_Number__c</members>
-		<members>Contact.StripeCustomerId__c</members>
-		<members>Contact.UUID__c</members>
-		<!--
-		<members>Contact.ContentVersionId__c</members>
-		<members>Contact.Picture_Id__c</members>
-		<members>Contact.Picture_Image__c</members>
-		<members>Contact.Picture_Text__c</members>
-		<members>Contact.Picture_URL__c</members>
-		-->
-		<!-- End PMA Fields -->
-		<!-- Start Municorn Fields -->
-		<members>Account.Trigger_Flow__c</members>
-		<!-- Start Payment Fields -->
+
+		<members>Product__c.Account__c</members>
+		<members>Product__c.Active__c</members>
+		<members>Product__c.Contact__c</members>
+		<members>Product__c.Display_URL__c</members>
+		<members>Product__c.External_ID__c</members>
+		<members>Product__c.Minimum_Age__c</members>
+		<members>Product__c.Product_Code__c</members>
+		<members>Product__c.Product_Description__c</members>
+		<members>Product__c.Product_Family__c</members>
+		<members>Product__c.Product_SKU__c</members>
+		<members>Product__c.Quantity_Unit_Of_Measure__c</members>
+		<members>Product__c.Special_Minimum_Age__c</members>
+		<members>Product__c.Special_Status__c</members>
+		<members>Product__c.Unit_Price__c</members>
+
+		<members>Catalog__c.Bundle__c</members>
+		<members>Catalog__c.Product__c</members>
+
+		<members>Options__c.Available_Stock_Quantity__c</members>
+		<members>Options__c.Catalog__c</members>
+		<members>Options__c.Is_Option_Available__c</members>
+		<members>Options__c.Optional__c</members>
+		<members>Options__c.Product_Inventory__c</members>
+		<members>Options__c.Required_Quantity__c</members>
+
+		<members>Order__c.Account__c</members>
+		<members>Order__c.Member__c</members>
+		<members>Order__c.Order_Type__c</members>
+		<members>Order__c.Status__c</members>
+		<members>Order__c.Total_Price__c</members>
+		<members>Order__c.UUID__c</members>
+		<members>Order__c.Vendor__c</members>
+		<members>Order_Item__c.Line_Total_Price__c</members>
+		<members>Order_Item__c.List_Price__c</members>
+		<members>Order_Item__c.Notes__c</members>
+		<members>Order_Item__c.Order__c</members>
+		<members>Order_Item__c.Product__c</members>
+		<members>Order_Item__c.Product_Name__c</members>
+		<members>Order_Item__c.Quantity__c</members>
+		<members>Order_Item__c.Total_Price__c</members>
+
+		<members>Inventory__c.Product__c</members>
+		<members>Inventory__c.Stock_Quantity__c</members>
+		<members>Inventory_Transaction__c.Product__c</members>
+		<members>Inventory_Transaction__c.Quantity__c</members>
+		<members>Inventory_Transaction__c.Type__c</members>
+
+		<members>Connected_Account__c.Account__c</members>
+		<members>Connected_Account__c.Payment_Gateway__c</members>
+
+		<members>Payment_Gateway__c.Access_Token__c</members>
+		<members>Payment_Gateway__c.Gateway_Public_Key__c</members>
+		<members>Payment_Gateway__c.Relationship_Settings__c</members>
+		<members>Payment_Gateway__c.Test_Mode__c</members>
+
+		<members>Payment_Gateway_Customer__c.Account__c</members>
+		<members>Payment_Gateway_Customer__c.Contact__c</members>
+		<members>Payment_Gateway_Customer__c.Lead__c</members>
+		<members>Payment_Gateway_Customer__c.Payment_Gateway__c</members>
+
+		<members>Payment_Intent__c.Account__c</members>
+		<members>Payment_Intent__c.Amount__c</members>
+		<members>Payment_Intent__c.Contact__c</members>
+		<members>Payment_Intent__c.Currency_Code__c</members>
+		<members>Payment_Intent__c.Email__c</members>
+		<members>Payment_Intent__c.First_Charge_Date__c</members>
+		<members>Payment_Intent__c.Frequency__c</members>
+		<members>Payment_Intent__c.Opportunity__c</members>
+		<members>Payment_Intent__c.Order__c</members>
+		<members>Payment_Intent__c.Payment_Gateway__c</members>
+		<members>Payment_Intent__c.Payment_Link__c</members>
+		<members>Payment_Intent__c.Payment_Reference_Id__c</members>
+		<members>Payment_Intent__c.Payment_Type__c</members>
+		<members>Payment_Intent__c.Status__c</members>
+		<members>Payment_Intent__c.UUID__c</members>
+
 		<members>Payment_Method__c.Account__c</members>
-		<members>Payment_Method__c.Account_Holder_Type__c</members>
-		<members>Payment_Method__c.Account_Number__c</members>
-		<members>Payment_Method__c.Bank_Account_Type__c</members>
-		<members>Payment_Method__c.Bank_Name__c</members>
 		<members>Payment_Method__c.Billing_City__c</members>
 		<members>Payment_Method__c.Billing_Country__c</members>
 		<members>Payment_Method__c.Billing_Email__c</members>
@@ -100,58 +176,22 @@
 		<members>Payment_Method__c.Brand__c</members>
 		<members>Payment_Method__c.Card_Expiration_Month__c</members>
 		<members>Payment_Method__c.Card_Expiration_Year__c</members>
-		<members>Payment_Method__c.Card_Holder_Name__c</members>
 		<members>Payment_Method__c.Card_Id__c</members>
 		<members>Payment_Method__c.Card_Last_4_Digit__c</members>
-		<members>Payment_Method__c.Card_Number__c</members>
 		<members>Payment_Method__c.Contact__c</members>
-		<members>Payment_Method__c.Country_ISO__c</members>
-		<members>Payment_Method__c.Currency_ISO__c</members>
 		<members>Payment_Method__c.Customer_Id__c</members>
-		<members>Payment_Method__c.CVV__c</members>
 		<members>Payment_Method__c.CVV_Check__c</members>
-		<members>Payment_Method__c.Default_Payment_Method__c</members>
-		<members>Payment_Method__c.Default_Payout_Method__c</members>
-		<members>Payment_Method__c.ECheck_Type__c</members>
-		<members>Payment_Method__c.Error_Code__c</members>
-		<members>Payment_Method__c.Error_Message__c</members>
-		<members>Payment_Method__c.Error_Param__c</members>
-		<members>Payment_Method__c.Error_Type__c</members>
-		<members>Payment_Method__c.External_Account__c</members>
+		<members>Payment_Method__c.Expiration_Status__c</members>
 		<members>Payment_Method__c.Fingerprint__c</members>
 		<members>Payment_Method__c.Funding__c</members>
 		<members>Payment_Method__c.Lead__c</members>
-		<members>Payment_Method__c.Micro_Deposit_One__c</members>
-		<members>Payment_Method__c.Micro_Deposit_Two__c</members>
+		<members>Payment_Method__c.Payment_Gateway__c</members>
+		<members>Payment_Method__c.Payment_Gateway_Customer__c</members>
 		<members>Payment_Method__c.Payment_Method_Id__c</members>
-		<members>Payment_Method__c.Payment_Method_Status__c</members>
-		<members>Payment_Method__c.POS_Device_Id__c</members>
 		<members>Payment_Method__c.Postal_Code_Check__c</members>
-		<members>Payment_Method__c.Reader_Id__c</members>
-		<members>Payment_Method__c.Read_Method__c</members>
-		<members>Payment_Method__c.Remove_from_Stripe__c</members>
-		<members>Payment_Method__c.Response_Message__c</members>
-		<members>Payment_Method__c.Routing_Number__c</members>
-		<members>Payment_Method__c.Send_to_Gateway__c</members>
-		<members>Payment_Method__c.Street_Check__c</members>
 		<members>Payment_Method__c.Stripe_Token__c</members>
 		<members>Payment_Method__c.Total_Transaction_Count__c</members>
-		<members>PaymentRequest__c.Account__c</members>
-		<members>PaymentRequest__c.Amount__c</members>
-		<members>PaymentRequest__c.Contact__c</members>
-		<members>PaymentRequest__c.Currency_Code__c</members>
-		<members>PaymentRequest__c.Email__c</members>
-		<members>PaymentRequest__c.FirstChargeDate__c</members>
-		<members>PaymentRequest__c.Frequency__c</members>
-		<members>PaymentRequest__c.ItemNumber__c</members>
-		<members>PaymentRequest__c.Opportunity__c</members>
-		<members>PaymentRequest__c.Payment_Reference_Id__c</members>
-		<members>PaymentRequest__c.PaymentRequests__c</members>
-		<members>PaymentRequest__c.PaymentType__c</members>
-		<members>PaymentRequest__c.Status__c</members>
-		<members>PaymentRequest__c.Status_Message__c</members>
-		<members>PaymentRequest__c.SubscriptionId__c</members>
-		<members>Payment_Request_Group__c.uuid__c</members>
+
 		<members>Transaction__c.Account__c</members>
 		<members>Transaction__c.Amount__c</members>
 		<members>Transaction__c.Amount_Captured__c</members>
@@ -165,45 +205,46 @@
 		<members>Transaction__c.Billing_State__c</members>
 		<members>Transaction__c.Billing_Street_Address_Line_1__c</members>
 		<members>Transaction__c.Billing_Street_Address_Line_2__c</members>
+		<members>Transaction__c.Connected_Account__c</members>
 		<members>Transaction__c.Contact__c</members>
 		<members>Transaction__c.CurrencyCode__c</members>
+		<members>Transaction__c.Description__c</members>
 		<members>Transaction__c.FailureCode__c</members>
 		<members>Transaction__c.FailureMessage__c</members>
+		<members>Transaction__c.Invoice__c</members>
+		<members>Transaction__c.Lead__c</members>
 		<members>Transaction__c.PaymentBankLast4Digits__c</members>
 		<members>Transaction__c.PaymentBankName__c</members>
 		<members>Transaction__c.PaymentCardLast4Digits__c</members>
+		<members>Transaction__c.Payment_Gateway__c</members>
+		<members>Transaction__c.Payment_Gateway_Customer__c</members>
+		<members>Transaction__c.Payment_Intent__c</members>
+		<members>Transaction__c.Payment_Method__c</members>
 		<members>Transaction__c.PaymentMethod__c</members>
 		<members>Transaction__c.PaymentMethodType__c</members>
-		<members>Transaction__c.PaymentRequestId__c</members>
 		<members>Transaction__c.Status__c</members>
 		<members>Transaction__c.StatusMessage__c</members>
 		<members>Transaction__c.StripeChargeId__c</members>
-		<members>Transaction__c.Stripe_Customer_Id__c</members>
 		<members>Transaction__c.Stripe_Receipt_URL__c</members>
 		<members>Transaction__c.TransactionDate__c</members>
 		<members>Transaction__c.TransactionReference__c</members>
-		<members>Transaction__c.uuid__c</members>
-		<!-- End Payment Fields -->
-		<!-- Start Inventory Fields -->
-		<members>Catalog__c.Bundle__c</members>
-		<members>Catalog__c.Product__c</members>
-		<members>Options__c.Available_Stock_Quantity__c</members>
-		<members>Options__c.Catalog2__c</members>
-		<members>Options__c.Catalog__c</members>
-		<members>Options__c.Is_Option_Available__c</members>
-		<members>Options__c.Optional__c</members>
-		<members>Options__c.Product_Inventory__c</members>
-		<members>Options__c.Required_Quantity__c</members>
-		<members>Inventory__c.Product__c</members>
-		<members>Inventory_Transaction__c.Product__c</members>
-		<members>Inventory_Transaction__c.Quantity__c</members>
-		<members>Inventory_Transaction__c.Type__c</members>
-		<!-- End Inventory Fields -->
+		<members>Transaction__c.UUID__c</members>
+		-->
+		<!-- Payment DataModel Fields
+		<members>Payment_Schedule__c.Account__c</members>
+		<members>Payment_Schedule__c.Contact__c</members>
+		<members>Payment_Schedule__c.Payment_Gateway__c</members>
+		<members>Payment_Schedule__c.Payment_Method__c</members>
+		<members>Stripe_Price__c.Product__c</members>
+		<members>Subscription__c.Account__c</members>
+		<members>Subscription__c.Contact__c</members>
+		<members>Subscription__c.Payment_Gatway_Customer__c</members>
+		<members>Subscription__c.Payment_Method__c</members>
+		<members>Subscription_Schedule__c.Payment_Gateway_Customer__c</members>
+		-->
 		<name>CustomField</name>
 	</types>
 	<types>
-        <members>Authenticated_User_Payment_Link</members>
-		<members>GuestUserPaymentLink</members>
 		<members>ach_account_number</members>
 		<members>ach_account_number_reenter</members>
 		<members>ach_bank_status_error</members>
@@ -220,6 +261,7 @@
 		<members>ach_saved_accounts</members>
 		<members>ach_select_bank_account_and_pay_title</members>
 		<members>add_to_cart_text</members>
+		<members>Authenticated_User_Payment_Link</members>
 		<members>bank_payment</members>
 		<members>button_code_payment_button_text</members>
 		<members>checkout_cart_items</members>
@@ -245,6 +287,7 @@
 		<members>frequency_quarter</members>
 		<members>frequency_single</members>
 		<members>frequency_year</members>
+		<members>GuestUserPaymentLink</members>
 		<members>no_saved_cards_available</members>
 		<members>pay_now</members>
 		<members>process_cart_items</members>
@@ -262,139 +305,236 @@
 		<name>CustomLabels</name>
 	</types>
 	<types>
-		<members>*</members>
+		<members>FieldSetting.Card_Address_Postal_Code</members>
+		<members>FieldSetting.Card_Address_Postal_Code_Check</members>
+		<members>FieldSetting.Card_Billing_Country</members>
+		<members>FieldSetting.Card_Brand</members>
+		<members>FieldSetting.Card_Customer_Id</members>
+		<members>FieldSetting.Card_CVV_Check</members>
+		<members>FieldSetting.Card_Expiration_Month</members>
+		<members>FieldSetting.Card_Expiration_Year</members>
+		<members>FieldSetting.Card_Fingerprint</members>
+		<members>FieldSetting.Card_Funding</members>
+		<members>FieldSetting.Card_Last_4_Digits</members>
+		<members>FieldSetting.Card_Payment_Method_ID</members>
+		<members>FieldSetting.SMS_From_Phone</members>
+		<members>FieldSetting.SMS_Message</members>
+		<members>FieldSetting.SMS_Message_Callback_Method</members>
+		<members>FieldSetting.SMS_Message_Callback_URL</members>
+		<members>FieldSetting.SMS_Message_Delivery_Status</members>
+		<members>FieldSetting.SMS_Message_Log</members>
+		<members>FieldSetting.SMS_Message_Trackable_2FA</members>
+		<members>FieldSetting.SMS_Message_Type</members>
+		<members>FieldSetting.SMS_Message_UUID</members>
+		<members>FieldSetting.SMS_To_Phone</members>
+		<members>FieldSetting.Stripe_IB_Customer_Id</members>
+		<members>FieldSetting.Stripe_IB_Default_Payment_Method</members>
+		<members>FieldSetting.Stripe_OB_Charge_Amount</members>
+		<members>FieldSetting.Stripe_OB_Charge_Currency</members>
+		<members>FieldSetting.Stripe_OB_Charge_CustomerID</members>
+		<members>FieldSetting.Stripe_OB_Charge_Description</members>
+		<members>FieldSetting.Stripe_OB_Charge_Meta_Account_Id</members>
+		<members>FieldSetting.Stripe_OB_Charge_Meta_Contact_Id</members>
+		<members>FieldSetting.Stripe_OB_Charge_Meta_Payment_Intent_Id</members>
+		<members>FieldSetting.Stripe_OB_Charge_Payment_Method</members>
+		<members>FieldSetting.Stripe_TW_Customer_Description</members>
+		<members>FieldSetting.Stripe_TW_Customer_Email</members>
+		<members>FieldSetting.Stripe_TW_Customer_Name</members>
+		<members>FieldSetting.Stripe_TW_Customer_Phone</members>
+		<members>FieldSetting.Transaction_Amount</members>
+		<members>FieldSetting.Transaction_Amount_Captured</members>
+		<members>FieldSetting.Transaction_Amount_Refunded</members>
+		<members>FieldSetting.Transaction_bank_last4</members>
+		<members>FieldSetting.Transaction_bank_name</members>
+		<members>FieldSetting.Transaction_Billing_City</members>
+		<members>FieldSetting.Transaction_Billing_Country</members>
+		<members>FieldSetting.Transaction_Billing_Email</members>
+		<members>FieldSetting.Transaction_Billing_Name</members>
+		<members>FieldSetting.Transaction_Billing_Phone</members>
+		<members>FieldSetting.Transaction_Billing_Postal_Code</members>
+		<members>FieldSetting.Transaction_Billing_State</members>
+		<members>FieldSetting.Transaction_Billing_Street_1</members>
+		<members>FieldSetting.Transaction_Billing_Street_2</members>
+		<members>FieldSetting.Transaction_card_last4</members>
+		<members>FieldSetting.Transaction_Charge_Id</members>
+		<members>FieldSetting.Transaction_Currency_Code</members>
+		<members>FieldSetting.Transaction_Failure_Code</members>
+		<members>FieldSetting.Transaction_Failure_Message</members>
+		<members>FieldSetting.Transaction_Method</members>
+		<members>FieldSetting.Transaction_Method_Lookup</members>
+		<members>FieldSetting.Transaction_Method_Type</members>
+		<members>FieldSetting.Transaction_Payment_Request_Id</members>
+		<members>FieldSetting.Transaction_Ref_Account</members>
+		<members>FieldSetting.Transaction_Ref_Contact</members>
+		<members>FieldSetting.Transaction_Status</members>
+		<members>FieldSetting.Transaction_Stripe_Customer</members>
+		<members>FieldSetting.Transaction_Stripe_Receipt_Link</members>
+		<members>HttpHeaders.Plivo_Content_Type</members>
+		<members>HttpHeaders.Stripe_Content_Type</members>
+		<members>IntegrationEnablement.Plivo</members>
+		<members>IntegrationEnablement.Stripe</members>
+		<members>IntegrationSetting.Plivo</members>
+		<members>IntegrationSetting.Stripe</members>
+		<members>ObjectSetting.PlivoSMS</members>
+		<members>ObjectSetting.Stripe_Cards</members>
+		<members>ObjectSetting.StripeCustomer</members>
+		<members>ObjectSetting.Stripe_Transaction</members>
 		<name>CustomMetadata</name>
 	</types>
 	<types>
-		<!-- Start PMA Objects-->
 		<!--
 		<members>Account</members>
 		<members>Contact</members>
 		-->
 		<members>Activity__c</members>
-		
-		<!-- End PMA Objects-->
-		<!-- Start Payment Objects-->
-		<members>Payment_Method__c</members>
-		<members>PaymentRequest__c</members>
-		<members>Payment_Request_Group__c</members>
-		<members>Transaction__c</members>
-		<!-- End Payment Objects-->
-		<!-- Start Inventory Objects-->
+		<members>Product__c</members>
 		<members>Catalog__c</members>
 		<members>Options__c</members>
-		<members>Product__c</members>
+		<members>Order__c</members>
+		<members>Order_Item__c</members>
 		<members>Inventory__c</members>
 		<members>Inventory_Transaction__c</members>
-		<!-- End Inventory Objects-->
+
+		<members>Connected_Account__c</members>
+		<members>Payment_Gateway__c</members>
+		<members>Payment_Gateway_Customer__c</members>
+		<members>Payment_Intent__c</members>
+		<members>Payment_Method__c</members>
+		<members>Transaction__c</members>
+		<!--
+		<members>Payment_Schedule__c</members>
+		<members>Stripe_Price__c</members>
+		<members>Subscription__c</members>
+		<members>Subscription_Item__c</members>
+		<members>Subscription_Schedule__c</members>
+		-->
 		<name>CustomObject</name>
 	</types>
 	<types>
-		<!-- Start PMA Tabs-->
 		<members>Activity__c</members>
-		<members>Order__c</members>
-		<members>Order_Item__c</members>
-		<members>PMA_Products_POS</members>
-		<!-- End PMA Tabs-->
-		<!-- Start Inventory Tabs-->
-		<members>PMA_Products__c</members>
+
 		<members>Catalog__c</members>
 		<members>Options__c</members>
+		<members>Product__c</members>
+		<members>Order__c</members>
+		<members>Order_Item__c</members>
 		<members>Inventory__c</members>
 		<members>Inventory_Transaction__c</members>
-		<!-- End Inventory Tabs-->
-		<!-- Start Payment Tabs-->
+
+		<members>Connected_Account__c</members>
 		<members>Payment_Gateway__c</members>
-		<members>Payment_Method__c</members>
+		<members>Payment_Gateway_Customer__c</members>
 		<members>Payment_Intent__c</members>
+		<members>Payment_Method__c</members>
 		<members>Transaction__c</members>
-		<!-- End Payment Tabs-->
-		<!-- Start Municorn Tabs-->
-		<members>SYS_IntegrationLog__c</members>
-		<members>SYS_OAuthConfig__c</members>
+
 		<members>SYS_Tracker__c</members>
-		<!-- End Municorn Tabs-->
 		<name>CustomTab</name>
 	</types>
 	<types>
-		<!-- Start PMA Lightning Page-->
 		<members>Vendor_Account_Record_Page</members>
-		<members>Activity_Record_Page</members>
 		<members>Contact_Record_Page</members>
+		<members>Activity_Record_Page</members>
+
 		<members>PMA_Inventory_UtilityBar</members>
+		<members>PMA_Product_Record_Page</members>
+		<members>Catalog_Record_Page</members>
+		<members>Options_Record_Page</members>
+		<members>PMA_Order_Record_Page</members>
+		<members>Inventory_Record_Page</members>
+		<members>Inventory_Transaction_Record_Page</members>
+
 		<members>PMA_Private_Membership_Association_UtilityBar</members>
-		<members>PMA_Products_POS</members>
-		<!-- End PMA Lightning Page-->
+		<members>Payment_Gateway_Record_Page</members>
+		<members>Payment_Intent_Record_Page</members>
+		<members>Transaction_Record_Page</members>
 		<name>FlexiPage</name>
 	</types>
 	<types>
+		<members>SYS_Contact_Account_Lookup_Clean</members>
+		<members>SYS_Contact_Portal_Account_and_Owner_Set</members>
+		<members>SYS_Customer</members>
 		<members>PMA_Order_Line_Total_Price_Update</members>
 		<members>PMA_Orders_Processor_Batch</members>
-		<members>SYS_Customer</members>
-		<members>SYS_Payment_Method</members>
 		<members>SYS_SMS_Activity</members>
 		<members>SYS_Transaction</members>
+		<members>SYS_Payment_Method</members>
 		<name>Flow</name>
 	</types>
 	<types>
-		<!-- Start PMA Layout -->
-		<members>Account-Vendor Account Layout</members>
+		<members>Account-Manager Account Layout</members>
 		<members>Activity__c-Activity Layout</members>
-		<members>Contact-Customer Registration</members>
-		<!-- End PMA Layout -->
-		<!-- Start Inventory Layout -->
+		<members>Contact-PMA Manager %7C Vendor</members>
+		<members>Contact-PMA Member</members>
+
+		<members>Product__c-Product Layout</members>
 		<members>Catalog__c-Catalog Layout</members>
 		<members>Options__c-Options Layout</members>
-		<members>Product2-Product Layout</members>
+		<members>Order__c-Order Layout</members>
+		<members>Order_Item__c-Order Item Layout</members>
 		<members>Inventory__c-Inventory Layout</members>
 		<members>Inventory_Transaction__c-Product Transaction Layout</members>
-		<!-- End Inventory Layout -->
-		<!-- Start Payment Layout -->
+
+		<members>Connected_Account__c-Connected Account Layout</members>
+		<members>Payment_Gateway__c-Payment Gateway Layout</members>
+		<members>Payment_Gateway_Customer__c-Payment Gateway Customer Layout</members>
+		<members>Payment_Intent__c-Payment Intent Layout</members>
 		<members>Payment_Method__c-Payment Method Layout</members>
-		<members>PaymentRequest__c-Payment Request Layout</members>
-		<members>Payment_Request_Group__c-Payment Requests Layout</members>
 		<members>Transaction__c-Transaction Layout</members>
-		<!-- End Payment Layout -->
+		<!--
+		<members>Payment_Schedule__c-Payment Schedule Layout</members>    
+		<members>Subscription__c-Subscription Layout</members>
+		<members>Subscription_Item__c-Subscription Item Layout</members>
+		<members>Subscription_Schedule__c-Subscription Schedule Layout</members>
+		-->
 		<name>Layout</name>
 	</types>
 	<types>
-		<!-- Start PMA ListView -->
-		<members>Account.All_Vendors</members>
+		<members>Account.All_POS_Systems</members>
 		<members>Activity__c.All</members>
-		<members>Contact.AllCustomers</members>
-		<!-- End PMA ListView -->
-		<!-- Start Municorn ListView -->
-		<members>FieldSetting__mdt.All_Field_Settings</members>
-		<members>FieldSetting__mdt.Customer</members>
-		<members>FieldSetting__mdt.SMS</members>
-		<members>FieldSetting__mdt.Stripe_Cards</members>
-		<members>FieldSetting__mdt.Stripe_Transactions</members>
-		<members>HttpHeaders__mdt.All_Http_Headers</members>
-		<members>IntegrationEnablement__mdt.All_Integration_Enablement</members>
-		<members>IntegrationSetting__mdt.All_Integration_Settings</members>
-		<members>ObjectSetting__mdt.All_Object_Settings</members>
-		<members>RelationshipSetting__mdt.All_Relationship_Settings</members>
-		<members>SYS_IntegrationLog__c.All</members>
-		<members>SYS_IntegrationLog__c.Error_Logs</members>
-		<members>SYS_OAuthConfig__c.All</members>
-		<members>SYS_Tracker__c.All</members>
-		<!-- End Municorn ListView -->
-		<!-- Start Inventory ListView -->
+		<members>Contact.All_PMA_Managers</members>
+		<members>Contact.All_PMA_Members</members>
+		<members>Contact.All_PMA_Users</members>
+		<members>Contact.All_PMA_Vendors</members>
+
+		<members>Product__c.All</members>
 		<members>Catalog__c.All</members>
 		<members>Options__c.All</members>
-		<members>Product2.AllProducts</members>
 		<members>Inventory__c.All</members>
 		<members>Inventory_Transaction__c.All</members>
-		<!-- End Inventory ListView -->
-		<!-- Start Payment ListView -->
+		<members>Order__c.All</members>
+		<members>Order__c.All_Completed_Membership_Orders</members>
+		<members>Order__c.All_Completed_Orders</members>
+		<members>Order__c.All_Open_Tab_Orders</members>
+		<members>Order__c.All_Pending_Membership_Orders</members>
+		<members>Order_Item__c.All</members>
+
+		<members>Connected_Account__c.All</members>
+		<members>Payment_Gateway__c.All</members>
+		<members>Payment_Gateway_Customer__c.All</members>
+		<members>Payment_Intent__c.All</members>
 		<members>Payment_Method__c.All</members>
 		<members>Payment_Method__c.All_ACH_Payment_Methods</members>
 		<members>Payment_Method__c.All_Card_Payment_Methods</members>
 		<members>Payment_Method__c.Errors</members>
 		<members>Payment_Method__c.To_Fix_Errors</members>
-		<members>PaymentRequest__c.All</members>
+		<members>Transaction__c.All</members>
 		<members>Transaction__c.AllTransactions</members>
-		<!-- End Payment ListView -->
+
+		<members>FieldSetting__mdt.Customer</members>
+		<members>FieldSetting__mdt.SMS</members>
+		<members>FieldSetting__mdt.Stripe_Cards</members>
+		<members>FieldSetting__mdt.Stripe_Transactions</members>
+
+		<members>FieldSetting__mdt.All_Field_Settings</members>
+		<members>HttpHeaders__mdt.All_Http_Headers</members>
+		<members>IntegrationEnablement__mdt.All_Integration_Enablement</members>
+		<members>IntegrationSetting__mdt.All_Integration_Settings</members>
+		<members>ObjectSetting__mdt.All_Object_Settings</members>
+		<members>RelationshipSetting__mdt.All_Relationship_Settings</members>
+
+		<members>SYS_IntegrationLog__c.All_SYS_Logs</members>
+		<members>SYS_IntegrationLog__c.Error_Logs</members>
 		<name>ListView</name>
 	</types>
 	<types>
@@ -403,32 +543,68 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
+		<members>PMA_Managers</members>
+		<name>NavigationMenu</name>
+	</types>
+	<types>
 		<members>SYS_PMA_Guest_User_Permission_Set</members>
+		<members>SYS_PMA_Manager_Permission_Set</members>
 		<members>SYS_PMA_Permission_Set</members>
 		<members>User_Password_Never_Expires</members>
 		<name>PermissionSet</name>
+	</types>
+	<types>
+		<members>PMA_Manager</members>
+		<members>PMA_Vendor</members>
+		<name>PermissionSetGroup</name>
+	</types>
+	<types>
+		<members>PMA Manager</members>
+		<members>PMA Vendor</members>
+		<name>Profile</name>
+	</types>
+	<types>
+		<members>Contact.Manager</members>
+		<members>Contact.Member</members>
+		<members>Contact.Vendor</members>
+		<members>Payment_Method__c.ACH</members>
+		<members>Payment_Method__c.Card</members>
+		<members>Payment_Method__c.Other</members>
+		<members>Transaction__c.Adjustment</members>
+		<members>Transaction__c.Charge</members>
+		<members>Transaction__c.Payout</members>
+		<members>Transaction__c.Transfer</members>
+		<name>RecordType</name>
+	</types>
+	<types>
+		<members>Contact.New_Member_Create</members>
+		<name>QuickAction</name>
 	</types>
 	<types>
 		<members>StripeToken</members>
 		<name>RemoteSiteSetting</name>
 	</types>
 	<types>
+		<members>PMA_Manager</members>
+		<members>PMA_Vendors</members>
+		<name>SharingSet</name>
+	</types>
+	<types>
 		<members>AmericanExpress</members>
 		<members>Bootstrap</members>
-		<members>FontAwesome</members>
 		<members>button_code_css</members>
 		<members>Cirrus</members>
 		<members>DinersClub</members>
 		<members>Discover</members>
 		<members>donation_template</members>
 		<members>failure_icon</members>
-		<members>jasonEmerLogo</members>
+		<members>FontAwesome</members>
 		<members>JCB</members>
 		<members>jquery</members>
 		<members>Maestro</members>
 		<members>Mastercard</members>
+		<members>nopicture</members>
 		<members>pending_verification</members>
-		<members>SiteSamples</members>
 		<members>success_icon</members>
 		<members>tab_panel_arrow_image</members>
 		<members>transaction_css</members>
@@ -440,5 +616,13 @@
 		<members>visa</members>
 		<name>StaticResource</name>
 	</types>
-	<version>53.0</version>
+	<types>
+		<members>Payment_Method__c.Micro_Deposit_Field_Value_Greater_Than_1</members>
+		<members>Payment_Method__c.Required_Expiration_Month</members>
+		<members>Payment_Method__c.Required_Expiration_Year</members>
+		<members>Payment_Method__c.Required_Name</members>
+		<members>Payment_Method__c.Required_Number</members>
+		<name>ValidationRule</name>
+	</types>
+	<version>54.0</version>
 </Package>
