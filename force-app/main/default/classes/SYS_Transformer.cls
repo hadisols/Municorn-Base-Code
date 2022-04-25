@@ -557,6 +557,7 @@ public virtual class SYS_Transformer {
                         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
 
 
+                        SYS_DataCache.log.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
                         //AP-106
                         if(Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs())
                         {
@@ -568,8 +569,8 @@ public virtual class SYS_Transformer {
         
                             for(String singleChildJSON : childRecList){
                                 if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
-                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log.Id,key,singleChildJSON,SYS_DataCache.INT_TYPE);
-                                    newLog.Status__c = 'ENQUEUED_FOR_RETRY';
+                                    system.debug('SYS_DataCache.log'+SYS_DataCache.log.ObjectSettingId__c);
+                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log,key,singleChildJSON,SYS_DataCache.INT_TYPE);                                   newLog.Status__c = 'ENQUEUED_FOR_RETRY';
                                     newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
                                     newlog.retry__c = true;
                                     

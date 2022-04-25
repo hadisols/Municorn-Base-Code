@@ -496,7 +496,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         Database.query(String.escapeSingleQuotes(query)+whereClause);
 
         SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(recordsJson);
-
+        
         log.ObjectSettingId__c = parentLog[0].ObjectSettingId__c;
 
         /* ------------------------------------ FOR ALL OR NONE HANDLING -------------------------------------- */
@@ -597,7 +597,68 @@ global virtual inherited sharing class SYS_ApplicationService {
         }
         return jsonBody;
     }
+    //Added because of package is already made
+    global virtual SYS_IntegrationLog__c generateLogForChildRecords(SYS_IntegrationLog__c parentLog,String resource,String recordsJson,String integrationSetting) {
 
+        /*
+        String query = 'SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c';
+        String whereClause = ' WHERE Id in (' + '\'' + String.escapeSingleQuotes(parentLogId) + '\')';
+        List<SYS_IntegrationLog__c> parentLog = 
+        Database.query(String.escapeSingleQuotes(query)+whereClause);
+        */
+
+        SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(recordsJson);
+       
+        log.ObjectSettingId__c = parentLog.ObjectSettingId__c;
+
+        /* ------------------------------------ FOR ALL OR NONE HANDLING -------------------------------------- */
+        if(log.ObjectSettingId__c!=NULL && SYS_DataCache.objectSettingMap.get(log.ObjectSettingId__c).All_OR_None__c){
+            //log.Custom_Field_Value__c = parentLog[0].WhatId__c;
+            log.SYS_Operation_Type__c = 'INSERT';
+        }
+        else {
+            log.SYS_Operation_Type__c = 'UPSERT';
+        }
+        /* ------------------------------------ FOR ALL OR NONE HANDLING -------------------------------------- */
+
+        String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
+        if(algo!=NULL && algo!='')
+            log.Request_Digest__c = generateHash(recordsJson,algo);
+
+        SYS_debug.log('MS SYS_DataCache.log in generate child log:'+SYS_DataCache.log.Id);
+        log.Parent__c = parentLog.Id;       
+        log.Type__c = 'INBOUND';
+ 
+        /**
+         * If there the Parent Resource Map is defined on IS the use it to derive the resource for child records else
+         * If Flat key to identify resource for child records is defined on Integration Setting, consider that
+         * Else take the root key as Resource that is passed on while processing parent record
+         */
+        String flat_key_for_child = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Child__c;
+
+        if(SYS_DataCache.PARENT_RESOURCE_MAP != NULL){
+            log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(parentLog.Resource__c);
+        }
+        else if(flat_key_for_child != NULL && flat_key_for_child!='')
+            log.Flat_Key_for_Resource__c = flat_key_for_child;
+        else{
+            log.Resource__c = resource;
+            log.Flat_Key_for_Resource__c = '';
+        }
+        log.Integration_Setting__c = integrationSetting;
+        log.Status__c = 'NEW';
+        /**
+         * Applies when the child records require parenting after creation
+         */
+        log.Requires_process_on_complete__c = true;
+        log.On_Complete_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+        /** */
+
+        log.How_to_process__c = 'use_custom_apex_handler';
+        log.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+
+        return log;
+    }
     /**
      * This hook is called from doInbound to identify resource from incoming JSON
      * Arguement: SYS Log record and JSON Body
@@ -771,7 +832,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             }
             else{
                 //Method is PUT / PATCH / DELETE / GET - so the URL will be of the form https://<xyz.abc>/v1/resource/:id
-              //  resourceUrl+= '/'+ externalId;
+                resourceUrl+= '/'+ externalId;
             }
             /*--*/SYS_debug.log('====== MS Endpoint check:'+resourceUrl);
             log.Callout_URL__c = resourceUrl;
