@@ -20,6 +20,22 @@ public class SYS_HelperTest {
         SYS_Helper.urlFromPattern('PATCH', accounts[0].Id);
 
         SYS_Helper.deleteWithFLSCheck(accounts);
+
+        //Datetime and Time method coverage
+        for(FieldSetting__mdt fs : [SELECT Key__c, StaticValue__c, Datetime_Conversion_Format__c FROM FieldSetting__mdt WHERE Is_Active__c=false AND ObjectSetting__r.DeveloperName = 'SYS_Test_Account_Object_Setting']) {
+
+            SYS_ApplicationService appService = new SYS_ApplicationService();
+
+            if(fs.Key__c == 'testdatetime' || fs.Key__c == 'testepoch'){
+                appService.getDatetimeValue(fs,fs.StaticValue__c);
+                appService.getDateValue(fs, '2022-10-10');
+            }
+            if(fs.Key__c == 'testtimefield'){
+                appService.getTimeValue(fs,fs.StaticValue__c);
+            }
+
+            
+        }
         
 
         System.assert(SYS_Datacache.objectSettingMap.get(SYS_Datacache.OBJ_TYPE).PATCH_URL_Pattern__c == pattern);

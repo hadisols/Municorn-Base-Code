@@ -488,16 +488,18 @@ global virtual inherited sharing class SYS_ApplicationService {
      * Arguement: record json and Integration setting
      * Override if custom log generation is required
      */
-    global virtual SYS_IntegrationLog__c generateLogForChildRecords(String parentLogId,String resource,String recordsJson,String integrationSetting) {
+    global virtual SYS_IntegrationLog__c generateLogForChildRecords(SYS_IntegrationLog__c parentLog,String resource,String recordsJson,String integrationSetting) {
 
+        /*
         String query = 'SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c';
         String whereClause = ' WHERE Id in (' + '\'' + String.escapeSingleQuotes(parentLogId) + '\')';
         List<SYS_IntegrationLog__c> parentLog = 
         Database.query(String.escapeSingleQuotes(query)+whereClause);
+        */
 
         SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(recordsJson);
 
-        log.ObjectSettingId__c = parentLog[0].ObjectSettingId__c;
+        log.ObjectSettingId__c = parentLog.ObjectSettingId__c;
 
         /* ------------------------------------ FOR ALL OR NONE HANDLING -------------------------------------- */
         if(log.ObjectSettingId__c!=NULL && SYS_DataCache.objectSettingMap.get(log.ObjectSettingId__c).All_OR_None__c){
@@ -514,7 +516,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             log.Request_Digest__c = generateHash(recordsJson,algo);
 
         SYS_debug.log('MS SYS_DataCache.log in generate child log:'+SYS_DataCache.log.Id);
-        log.Parent__c = parentLogId;       
+        log.Parent__c = parentLog.Id;       
         log.Type__c = 'INBOUND';
  
         /**
@@ -525,7 +527,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         String flat_key_for_child = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Child__c;
 
         if(SYS_DataCache.PARENT_RESOURCE_MAP != NULL){
-            log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(parentLog[0].Resource__c);
+            log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(parentLog.Resource__c);
         }
         else if(flat_key_for_child != NULL && flat_key_for_child!='')
             log.Flat_Key_for_Resource__c = flat_key_for_child;

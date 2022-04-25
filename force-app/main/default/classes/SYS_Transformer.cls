@@ -568,7 +568,7 @@ public virtual class SYS_Transformer {
         
                             for(String singleChildJSON : childRecList){
                                 if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
-                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log.Id,key,singleChildJSON,SYS_DataCache.INT_TYPE);
+                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log,key,singleChildJSON,SYS_DataCache.INT_TYPE);
                                     newLog.Status__c = 'ENQUEUED_FOR_RETRY';
                                     newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
                                     newlog.retry__c = true;
