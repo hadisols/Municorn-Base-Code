@@ -3,11 +3,6 @@
 public class SYS_QB_ApplicationServiceinbound extends SYS_ApplicationService {
     public SYS_QB_ApplicationServiceinbound() {
  }
-    public static final Map<String,String> resourceChildMap = new Map<String,String>{'invoice'=>'line','refundreceipt'=>'salesitemlinedetail','bill'=>'billline','estimate'=>'estimateline',
-    'purchase'=>'purchaseline','salesreceipt'=>'salesreceiptline','vendorcredit'=>'vendorcreditline','creditmemo'=>'creditmemoline','deposit'=>'depositline','billpayment'=>'billpaymentline','payment'=>'paymentline'};
-   
-    // give that response and return the syslog 
-   
     //when we removed the root key it not returing the restresorce that path so it not identifying the sobject so thats why 
     //we overriden the get resource method for identifying the ecaxt resource path 
 
@@ -19,24 +14,24 @@ public class SYS_QB_ApplicationServiceinbound extends SYS_ApplicationService {
      */
     public override  List<sObject> transformJsonToSObject(String jsonBody,String resource,SYS_IntegrationLog__c log) {
         Object responseType = JSON.deserializeUntyped(jsonBody);
-        system.debug('jsonBody+++===**'+jsonBody);
+       
         Object JSONwithoutrootkey;
         if(SYS_DataCache.log.Parent__c==Null){
         if(responseType instanceof Map<String,Object>){
             JSONwithoutrootkey = (((Map<String, Object>)responseType).values())[0];
-            system.debug('JSONForUpsert+++'+JSONwithoutrootkey);
+           
             //((Map<String, Object>)responseType).get(JSONForUpsert);
             jsonBody = JSON.serialize(JSONwithoutrootkey);
-              system.debug('jsonBody++++===='+jsonBody);
+             
         }
 
     }
   
   
-      system.debug('jsonBody++++===='+jsonBody);
+     
       List<sObject> sobjlist=  SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource,(log.Type__c=='INBOUND'));
      
-      system.debug('sobjlist+++++=='+sobjlist);
+     
       
         return sobjlist;
     
@@ -52,8 +47,7 @@ public class SYS_QB_ApplicationServiceinbound extends SYS_ApplicationService {
       SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(recordsJson);
 
       log.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
-      system.debug('log.ObjectSettingId__c'+parentLog[0].municonqb__Resource__c);
-      system.debug('log++++++'+parentLog[0]);
+     
       /* ------------------------------------ FOR ALL OR NONE HANDLING -------------------------------------- */
       if(log.ObjectSettingId__c!=NULL && SYS_DataCache.objectSettingMap.get(log.ObjectSettingId__c).All_OR_None__c){
           //log.Custom_Field_Value__c = parentLog[0].WhatId__c;
@@ -80,12 +74,9 @@ public class SYS_QB_ApplicationServiceinbound extends SYS_ApplicationService {
       String flat_key_for_child = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Child__c;
 
       if(SYS_DataCache.PARENT_RESOURCE_MAP != NULL){
-          system.debug('SYS_DataCache.PARENT_RESOURCE_MAP'+SYS_DataCache.PARENT_RESOURCE_MAP.size());
+         
           log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(SYS_DataCache.log.Resource__c);
-          system.debug('municonqb__Resource__c++++----'+SYS_DataCache.log.Resource__c);
-          system.debug('parentLog[0].municonqb__Resource__c'+parentLog[0].municonqb__Resource__c);
-          system.debug('parentLog[0].Resource__c'+parentLog);
-          system.debug('log.Resource__c++==---'+log.Resource__c);
+         
       }
       else if(flat_key_for_child != NULL && flat_key_for_child!='')
           log.Flat_Key_for_Resource__c = flat_key_for_child;

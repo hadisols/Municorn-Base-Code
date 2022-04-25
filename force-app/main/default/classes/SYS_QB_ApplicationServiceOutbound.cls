@@ -3,7 +3,7 @@ public class SYS_QB_ApplicationServiceOutbound extends SYS_ApplicationService {
 
     }
     //We are removing the root of the json to make sure that inbound and outbound mappings are same
-    public override List<sObject> transformJsonToSObject(String jsonBody,String resource,SYS_IntegrationLog__c log) {
+   /* public override List<sObject> transformJsonToSObject(String jsonBody,String resource,SYS_IntegrationLog__c log) {
         
         Object responseType = JSON.deserializeUntyped(jsonBody);
         Object JSONwithoutrootkey ;
@@ -18,7 +18,7 @@ public class SYS_QB_ApplicationServiceOutbound extends SYS_ApplicationService {
 
         return SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource,(log.Type__c=='INBOUND'));
         
-    }
+    }*/
   
  }
    
