@@ -19,8 +19,7 @@ public class QB_Wrapper implements SYS_NotificationInterface{
 	}
 	
 	public static QB_Wrapper parse(String json) {
-		system.debug('json++'+json);
-		system.debug('parse++++==='+(QB_Wrapper) System.JSON.deserialize(json, QB_Wrapper.class));
+
 		return (QB_Wrapper) System.JSON.deserialize(json, QB_Wrapper.class);
 	}
 
@@ -28,10 +27,7 @@ public class QB_Wrapper implements SYS_NotificationInterface{
 
 		List<Map<string,String>> records = new List<Map<string,String>>();
 		QB_Wrapper sw = parse(json);
-		system.debug('sw+++==='+sw);
-		system.debug('eventNotifications+++==='+eventNotifications);
-		system.debug('sw.eventNotifications[0].dataChangeEvent+++==='+sw.eventNotifications[0].dataChangeEvent);
-		system.debug('sw.eventNotifications.size()==='+sw.eventNotifications.size());
+		
 		if(sw.eventNotifications.size()>0){
 
 			if(sw.eventNotifications[0].dataChangeEvent != NULL){
