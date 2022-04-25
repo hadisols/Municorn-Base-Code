@@ -557,6 +557,7 @@ public virtual class SYS_Transformer {
                         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
 
 
+                        SYS_DataCache.log.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
                         //AP-106
                         if(Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs())
                         {
