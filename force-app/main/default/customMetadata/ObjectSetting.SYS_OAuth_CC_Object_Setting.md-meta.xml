@@ -48,7 +48,7 @@
     </values>
     <values>
         <field>POST_URL_Pattern__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">callout:OAUTH_CLIENT_CREDS_NC/token</value>
     </values>
     <values>
         <field>PUT_URL_Pattern__c</field>
