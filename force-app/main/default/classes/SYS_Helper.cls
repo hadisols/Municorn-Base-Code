@@ -412,12 +412,9 @@ global inherited sharing class SYS_Helper {
                             parents.remove(parents.size() - 1);
                         }
                         else{
-                            /*
-                            parents.add(key+'[]');
-                            recursiveJsonParser(new Map<String, Object>{key+'[]'=>childArray[i]}, parents, result,pattern);
-                            parents.remove(parents.size() - 1);
-                            */
-                            //TODO Handle keys of type "key": ["value1", "value2"];
+                            //List is multiselect picklist. So recurse with values joined with ; and break - assuming rest will be same as first value
+                            recursiveJsonParser(new Map<String, String>{key+'[]'=>String.join(childArray,';')},parents,result,pattern);
+                            break;
                         }
                     }
                 }

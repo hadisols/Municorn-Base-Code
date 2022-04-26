@@ -243,7 +243,19 @@ global virtual inherited sharing class SYS_ApplicationService {
         }
         */
         else if(obj.get(fieldAPIName)!=null){
-            return obj.get(fieldAPIName);
+            SObjectType r = obj.getSObjectType();
+            DescribeSObjectResult d = r.getDescribe();
+                    
+            String fieldType = d.fields
+                                .getMap()
+                                .get(mapping.FieldApiName__c)
+                                .getDescribe()
+                                .getType()+'';
+            if(fieldType == 'MULTIPICKLIST'){
+                return ((String)obj.get(fieldAPIName)).split(';');
+            }
+            else
+                return obj.get(fieldAPIName);
         }
         return fvalue;
     }
@@ -365,13 +377,11 @@ global virtual inherited sharing class SYS_ApplicationService {
                             .getDescribe()
                             .getType()+'';
 
-        
         //TODO add other field types
         if(fieldType=='DATE'){
             sObj.put(mapping.FieldApiName__c, getDateValue(mapping,String.valueOf(value)) /*Date.valueOf((String)value)*/);
         }
         else if(fieldType=='DATETIME'){
-            
             sObj.put(mapping.FieldApiName__c, getDatetimeValue(mapping, String.valueOf(value)));
         }
         else if(fieldType=='TIME'){
@@ -381,6 +391,9 @@ global virtual inherited sharing class SYS_ApplicationService {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
         }else if (fieldType == 'BOOLEAN') {
             sObj.put(mapping.FieldApiName__c, Boolean.valueof(value));
+        }
+        else if(fieldType == 'MULTIPICKLIST'){
+            sObj.put(mapping.FieldApiName__c,  String.valueof(value));
         }
         else{
             sObj.put(mapping.FieldApiName__c, value);
@@ -1029,10 +1042,11 @@ global virtual inherited sharing class SYS_ApplicationService {
             String qry = 
             'SELECT Id FROM '+
             fsm[0].ObjectApiName__c;
-
+            
+            String whereClauseVal = (childLogs[0].Parent__r.WhatId__c==null)?'':childLogs[0].Parent__r.WhatId__c;
             String whereClause = 
             ' WHERE '+String.escapeSingleQuotes(fsm[0].FieldApiName__c)+'=\''+
-            String.escapeSingleQuotes(childLogs[0].Parent__r.WhatId__c)+'\''+
+            String.escapeSingleQuotes(whereClauseVal)+'\''+
                             ' AND Id NOT IN (\''+ 
             String.join(dupeCheckList,'\',\'')+'\')';  
             

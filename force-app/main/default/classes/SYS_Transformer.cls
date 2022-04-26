@@ -536,18 +536,15 @@ public virtual class SYS_Transformer {
                     if (((List<Object>)currentObj).size() > 0) {
                         for(Object obj:(List<Object>)currentObj){
                             if(obj instanceof Map<String, Object>) {
-                                /*--*/SYS_debug.log('obj list inside@@ parent=='+result);
-                                // --MS recursiveJsonParser((Map<String, Object>)obj, new List<String>(), result);
-                                /*--*/SYS_debug.log('result after=='+result);
-                                childFlatKeyList.add(result.clone());
-                                /*--*/SYS_debug.log('check**'+childFlatKeyList[0]);
+                                String objString = JSON.serialize(obj);
+                                childRecList.add(objString);
                             }
-                            //--MSresult.clear();
-                            String objString = JSON.serialize(obj);
-                            //-- MS childRecList.add('{\"'+key+'\":'+objString+'}');
-                            //-- MS Root element of array is not required. The Resource field on log record
-                            // will be used to identify fieldmappings
-                            childRecList.add(objString);
+                            else{
+                                //List is multiselect picklist. So recurse with values joined with ; and break - assuming rest will be same as first value
+                                List<Object> childArray = (List<Object>)currentObj;
+                                recursiveJsonParser(new Map<String, String>{key+'[]'=>String.join(childArray,';')}, parents, result);
+                                break;
+                            }
                             
                         }
                         /*--*/SYS_debug.log('in else=='+result);
