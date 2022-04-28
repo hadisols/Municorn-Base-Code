@@ -536,18 +536,15 @@ public virtual class SYS_Transformer {
                     if (((List<Object>)currentObj).size() > 0) {
                         for(Object obj:(List<Object>)currentObj){
                             if(obj instanceof Map<String, Object>) {
-                                /*--*/SYS_debug.log('obj list inside@@ parent=='+result);
-                                // --MS recursiveJsonParser((Map<String, Object>)obj, new List<String>(), result);
-                                /*--*/SYS_debug.log('result after=='+result);
-                                childFlatKeyList.add(result.clone());
-                                /*--*/SYS_debug.log('check**'+childFlatKeyList[0]);
+                                String objString = JSON.serialize(obj);
+                                childRecList.add(objString);
                             }
-                            //--MSresult.clear();
-                            String objString = JSON.serialize(obj);
-                            //-- MS childRecList.add('{\"'+key+'\":'+objString+'}');
-                            //-- MS Root element of array is not required. The Resource field on log record
-                            // will be used to identify fieldmappings
-                            childRecList.add(objString);
+                            else{
+                                //List is multiselect picklist. So recurse with values joined with ; and break - assuming rest will be same as first value
+                                List<Object> childArray = (List<Object>)currentObj;
+                                recursiveJsonParser(new Map<String, String>{key+'[]'=>String.join(childArray,';')}, parents, result);
+                                break;
+                            }
                             
                         }
                         /*--*/SYS_debug.log('in else=='+result);
@@ -557,6 +554,7 @@ public virtual class SYS_Transformer {
                         SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
 
 
+                        SYS_DataCache.log.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
                         //AP-106
                         if(Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs())
                         {
@@ -568,7 +566,7 @@ public virtual class SYS_Transformer {
         
                             for(String singleChildJSON : childRecList){
                                 if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
-                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log.Id,key,singleChildJSON,SYS_DataCache.INT_TYPE);
+                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log,key,singleChildJSON,SYS_DataCache.INT_TYPE);
                                     newLog.Status__c = 'ENQUEUED_FOR_RETRY';
                                     newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
                                     newlog.retry__c = true;

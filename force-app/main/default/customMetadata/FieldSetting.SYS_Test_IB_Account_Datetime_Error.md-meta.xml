@@ -36,7 +36,7 @@
     </values>
     <values>
         <field>Is_Active__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>Is_External_Field__c</field>
@@ -52,7 +52,7 @@
     </values>
     <values>
         <field>Key__c</field>
-        <value xsi:type="xsd:string">NoKey2</value>
+        <value xsi:type="xsd:string">testdatetime</value>
     </values>
     <values>
         <field>Level__c</field>

@@ -243,7 +243,19 @@ global virtual inherited sharing class SYS_ApplicationService {
         }
         */
         else if(obj.get(fieldAPIName)!=null){
-            return obj.get(fieldAPIName);
+            SObjectType r = obj.getSObjectType();
+            DescribeSObjectResult d = r.getDescribe();
+                    
+            String fieldType = d.fields
+                                .getMap()
+                                .get(mapping.FieldApiName__c)
+                                .getDescribe()
+                                .getType()+'';
+            if(fieldType == 'MULTIPICKLIST'){
+                return ((String)obj.get(fieldAPIName)).split(';');
+            }
+            else
+                return obj.get(fieldAPIName);
         }
         return fvalue;
     }
@@ -365,13 +377,11 @@ global virtual inherited sharing class SYS_ApplicationService {
                             .getDescribe()
                             .getType()+'';
 
-        
         //TODO add other field types
         if(fieldType=='DATE'){
             sObj.put(mapping.FieldApiName__c, getDateValue(mapping,String.valueOf(value)) /*Date.valueOf((String)value)*/);
         }
         else if(fieldType=='DATETIME'){
-            
             sObj.put(mapping.FieldApiName__c, getDatetimeValue(mapping, String.valueOf(value)));
         }
         else if(fieldType=='TIME'){
@@ -381,6 +391,9 @@ global virtual inherited sharing class SYS_ApplicationService {
             sObj.put(mapping.FieldApiName__c, String.valueof(value));
         }else if (fieldType == 'BOOLEAN') {
             sObj.put(mapping.FieldApiName__c, Boolean.valueof(value));
+        }
+        else if(fieldType == 'MULTIPICKLIST'){
+            sObj.put(mapping.FieldApiName__c,  String.valueof(value));
         }
         else{
             sObj.put(mapping.FieldApiName__c, value);
@@ -443,6 +456,9 @@ global virtual inherited sharing class SYS_ApplicationService {
         if(algo!=NULL && algo!='')
         log.Request_Digest__c = generateHash(requestBody,algo);
 
+        if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c)
+            log.Is_Notification_Only__c = true;
+
         log.Type__c = 'INBOUND';
         log.SYS_Operation_Type__c = getOperationTypeFor(method);
         log.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
@@ -485,16 +501,18 @@ global virtual inherited sharing class SYS_ApplicationService {
      * Arguement: record json and Integration setting
      * Override if custom log generation is required
      */
-    global virtual SYS_IntegrationLog__c generateLogForChildRecords(String parentLogId,String resource,String recordsJson,String integrationSetting) {
+    global virtual SYS_IntegrationLog__c generateLogForChildRecords(SYS_IntegrationLog__c parentLog,String resource,String recordsJson,String integrationSetting) {
 
+        /*
         String query = 'SELECT '+SYS_Helper.getAllFieldsFor('SYS_IntegrationLog__c')+', Parent__r.WhatId__c, Parent__r.SYS_Operation_Type__c FROM SYS_IntegrationLog__c';
         String whereClause = ' WHERE Id in (' + '\'' + String.escapeSingleQuotes(parentLogId) + '\')';
         List<SYS_IntegrationLog__c> parentLog = 
         Database.query(String.escapeSingleQuotes(query)+whereClause);
+        */
 
         SYS_IntegrationLog__c log = SYS_Helper.getLogsToInsert(recordsJson);
 
-        log.ObjectSettingId__c = parentLog[0].ObjectSettingId__c;
+        log.ObjectSettingId__c = parentLog.ObjectSettingId__c;
 
         /* ------------------------------------ FOR ALL OR NONE HANDLING -------------------------------------- */
         if(log.ObjectSettingId__c!=NULL && SYS_DataCache.objectSettingMap.get(log.ObjectSettingId__c).All_OR_None__c){
@@ -511,7 +529,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             log.Request_Digest__c = generateHash(recordsJson,algo);
 
         SYS_debug.log('MS SYS_DataCache.log in generate child log:'+SYS_DataCache.log.Id);
-        log.Parent__c = parentLogId;       
+        log.Parent__c = parentLog.Id;       
         log.Type__c = 'INBOUND';
  
         /**
@@ -522,7 +540,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         String flat_key_for_child = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Child__c;
 
         if(SYS_DataCache.PARENT_RESOURCE_MAP != NULL){
-            log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(parentLog[0].Resource__c);
+            log.Resource__c = SYS_DataCache.PARENT_RESOURCE_MAP.get(parentLog.Resource__c);
         }
         else if(flat_key_for_child != NULL && flat_key_for_child!='')
             log.Flat_Key_for_Resource__c = flat_key_for_child;
@@ -657,9 +675,9 @@ global virtual inherited sharing class SYS_ApplicationService {
         jsonBody = preprocessJSONForInbound(log,jsonBody);
 
         if(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Notifications_are_partial__c && 
-            log.Type__c == 'INBOUND'
+            log.Is_Notification_Only__c
             ){
-            String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
+            //String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;
             String getURLPattern = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).GET_URL_Pattern__c;
             
             SYS_NotificationInterface it = 
@@ -678,7 +696,7 @@ global virtual inherited sharing class SYS_ApplicationService {
 
                 newSysLog.Status__c = 'NEW';
                 newSysLog.HTTP_Method__c = 'GET';
-                newSysLog.Callout_URL__c = baseEndpoint + getURL;
+                newSysLog.Callout_URL__c = getURL;
                 newSysLog.Type__c = 'OUTBOUND';
                 newSysLog.WhatId__c = log.Id;
                 newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
@@ -1021,13 +1039,21 @@ global virtual inherited sharing class SYS_ApplicationService {
 
         if(SYS_DataCache.objectSettingMap.get(childLog.ObjectSettingId__c).All_OR_None__c){
 
-            String qry = 'SELECT Id FROM '+fsm[0].ObjectApiName__c+' WHERE '+fsm[0].FieldApiName__c+'=\''+childLogs[0].Parent__r.WhatId__c+'\''+
-                            ' AND Id NOT IN (\''+ String.join(dupeCheckList,'\',\'')+'\')';  
+            String qry = 
+            'SELECT Id FROM '+
+            fsm[0].ObjectApiName__c;
+            
+            String whereClauseVal = (childLogs[0].Parent__r.WhatId__c==null)?'':childLogs[0].Parent__r.WhatId__c;
+            String whereClause = 
+            ' WHERE '+String.escapeSingleQuotes(fsm[0].FieldApiName__c)+'=\''+
+            String.escapeSingleQuotes(whereClauseVal)+'\''+
+                            ' AND Id NOT IN (\''+ 
+            String.join(dupeCheckList,'\',\'')+'\')';  
             
             /*--*/SYS_debug.log('MS All or none delete records query:'+qry);
 
             List<sObject> childRecordsToDelete = new List<sObject>();
-            childRecordsToDelete = Database.query(String.escapeSingleQuotes(qry));
+            childRecordsToDelete = Database.query(String.escapeSingleQuotes(qry)+whereClause);
 
             /*--*/SYS_debug.log('MS All or none delete records:'+childRecordsToDelete);
             if(childRecordsToDelete.size() > 0)

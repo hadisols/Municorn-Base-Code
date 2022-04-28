@@ -32,6 +32,8 @@
 		<members>SYS_debug</members>
 		<members>SampleWrapper</members>
 
+		<members>BatchObjectCleaner</members>
+
 		<name>ApexClass</name>
 	</types>
 	<types>
