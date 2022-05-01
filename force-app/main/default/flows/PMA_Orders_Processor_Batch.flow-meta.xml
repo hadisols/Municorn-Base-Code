@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Create_Payment_Intent_And_Auto_Charge</name>
+        <label>Create Payment Intent And Auto Charge</label>
+        <locationX>588</locationX>
+        <locationY>780</locationY>
+        <actionName>PMA_ChargeInvocableHandler</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>newVal</name>
+            <value>
+                <elementReference>Get_All_Active_Records</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
     <apiVersion>54.0</apiVersion>
     <decisions>
         <name>Check_If_there_are_any_Draft_or_Active_Orders</name>
         <label>Check If there are any Draft or Active Orders</label>
-        <locationX>270</locationX>
-        <locationY>516</locationY>
+        <locationX>570</locationX>
+        <locationY>587</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Draft_Orders_Exists</name>
@@ -32,6 +47,9 @@
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Create_Payment_Intent_And_Auto_Charge</targetReference>
+            </connector>
             <label>Active Orders Exists</label>
         </rules>
     </decisions>
@@ -46,7 +64,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -59,15 +77,15 @@
     <recordDeletes>
         <name>Delete_All_Draft_Orders</name>
         <label>Delete All Draft Orders</label>
-        <locationX>50</locationX>
-        <locationY>636</locationY>
+        <locationX>320</locationX>
+        <locationY>684</locationY>
         <inputReference>Get_All_Draft_Orders</inputReference>
     </recordDeletes>
     <recordLookups>
         <name>Get_All_Active_Records</name>
         <label>Get All Active Records</label>
-        <locationX>270</locationX>
-        <locationY>396</locationY>
+        <locationX>584</locationX>
+        <locationY>444</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_If_there_are_any_Draft_or_Active_Orders</targetReference>
@@ -80,6 +98,34 @@
                 <stringValue>Active</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>Order_Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>POS</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Account__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Member__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Total_Price__c</field>
+            <operator>GreaterThan</operator>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
+        </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Order__c</object>
         <sortField>CreatedDate</sortField>
@@ -89,8 +135,8 @@
     <recordLookups>
         <name>Get_All_Draft_Orders</name>
         <label>Get All Draft Orders</label>
-        <locationX>270</locationX>
-        <locationY>276</locationY>
+        <locationX>584</locationX>
+        <locationY>324</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_All_Active_Records</targetReference>
@@ -110,8 +156,8 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>144</locationX>
-        <locationY>0</locationY>
+        <locationX>458</locationX>
+        <locationY>48</locationY>
         <connector>
             <targetReference>Get_All_Draft_Orders</targetReference>
         </connector>

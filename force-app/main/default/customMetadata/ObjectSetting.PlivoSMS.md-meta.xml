@@ -3,6 +3,14 @@
     <label>PlivoSMS</label>
     <protected>false</protected>
     <values>
+        <field>All_OR_None__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Always_Ignore_Response__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>ApexHandler__c</field>
         <value xsi:type="xsd:string">Plivo_Outbound_SYS_ApplicationService</value>
     </values>
@@ -11,12 +19,20 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>DELETE_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">TWOWAY</value>
     </values>
     <values>
         <field>ExternalFieldApi__c</field>
-        <value xsi:type="xsd:string">UUID__c</value>
+        <value xsi:type="xsd:string">uuid__c</value>
+    </values>
+    <values>
+        <field>GET_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>IntegrationType__c</field>
@@ -27,8 +43,16 @@
         <value xsi:type="xsd:string">Activity__c</value>
     </values>
     <values>
-        <field>Object__c</field>
-        <value xsi:type="xsd:string">Activity__c</value>
+        <field>PATCH_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>POST_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>PUT_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>QueryClause__c</field>
@@ -36,7 +60,11 @@
     </values>
     <values>
         <field>ResourcePath__c</field>
-        <value xsi:type="xsd:string">Message</value>
+        <value xsi:type="xsd:string">Message/</value>
+    </values>
+    <values>
+        <field>Resource_Name__c</field>
+        <value xsi:type="xsd:string">sms</value>
     </values>
     <values>
         <field>TriggerEvents__c</field>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_PMA_Members</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Phone_Number__c</columns>
+    <columns>CONTACT.EMAIL</columns>
+    <columns>StripeCustomerId__c</columns>
+    <columns>Active__c</columns>
+    <columns>Sponsor__c</columns>
+    <columns>CONTACT.CREATED_DATE</columns>
+    <columns>CONTACT.LAST_UPDATE</columns>
+    <columns>CONTACT.BIRTHDATE</columns>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CONTACT.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Contact.Member</value>
+    </filters>
+    <label>All PMA Members</label>
+</ListView>

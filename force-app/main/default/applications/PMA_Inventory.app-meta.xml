@@ -8,16 +8,18 @@
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <label>PMA Inventory</label>
     <navType>Standard</navType>
-    <tabs>PMA_Products_POS</tabs>
-    <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
     <tabs>Catalog__c</tabs>
     <tabs>Options__c</tabs>
-    <tabs>standard-Product2</tabs>
+    <tabs>Product__c</tabs>
     <tabs>Inventory__c</tabs>
     <tabs>Inventory_Transaction__c</tabs>
+    <tabs>Order__c</tabs>
+    <tabs>SYS_Tracker__c</tabs>
+    <tabs>SYS_IntegrationLog__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>PMA_Inventory_UtilityBar</utilityBar>
 </CustomApplication>

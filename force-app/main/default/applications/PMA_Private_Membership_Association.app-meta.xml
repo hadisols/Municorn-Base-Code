@@ -27,22 +27,24 @@
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <label>PMA :: Private Membership Association</label>
     <navType>Standard</navType>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
     <tabs>Activity__c</tabs>
-    <tabs>PaymentRequest__c</tabs>
+    <tabs>Payment_Intent__c</tabs>
     <tabs>Payment_Method__c</tabs>
     <tabs>Transaction__c</tabs>
+    <tabs>SYS_IntegrationLog__c</tabs>
+    <tabs>Connected_Account__c</tabs>
+    <tabs>Payment_Gateway__c</tabs>
+    <tabs>Payment_Gateway_Customer__c</tabs>
     <tabs>Product__c</tabs>
-    <tabs>Product_Family__c</tabs>
-    <tabs>Catalog__c</tabs>
-    <tabs>Inventory__c</tabs>
-    <tabs>Options__c</tabs>
-    <tabs>Order_Item__c</tabs>
     <tabs>Order__c</tabs>
+    <tabs>Order_Item__c</tabs>
     <tabs>SYS_OAuthConfig__c</tabs>
+    <tabs>SYS_Tracker__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>PMA_Private_Membership_Association_UtilityBar</utilityBar>
 </CustomApplication>

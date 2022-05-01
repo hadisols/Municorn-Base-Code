@@ -6,7 +6,6 @@
     <columns>PaymentMethodType__c</columns>
     <columns>PaymentMethod__c</columns>
     <columns>Contact__c</columns>
-    <columns>PaymentRequestId__c</columns>
     <columns>Status__c</columns>
     <columns>TransactionReference__c</columns>
     <columns>TransactionDate__c</columns>

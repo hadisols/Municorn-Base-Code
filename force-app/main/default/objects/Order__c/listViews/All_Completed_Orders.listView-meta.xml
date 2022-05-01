@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Completed_Orders</fullName>
+    <columns>NAME</columns>
+    <columns>Account__c</columns>
+    <columns>Member__c</columns>
+    <columns>Vendor__c</columns>
+    <columns>Status__c</columns>
+    <columns>Total_Price__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Completed</value>
+    </filters>
+    <filters>
+        <field>Order_Type__c</field>
+        <operation>equals</operation>
+        <value>POS</value>
+    </filters>
+    <label>All Completed Orders</label>
+</ListView>

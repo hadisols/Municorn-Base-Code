@@ -1,5 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Charge_Request_Outbound_Log</name>
+        <label>Charge Request Outbound Log</label>
+        <locationX>1370</locationX>
+        <locationY>575</locationY>
+        <actionName>SYS_InvocableHandler</actionName>
+        <actionType>apex</actionType>
+        <dataTypeMappings>
+            <typeName>T__oldVal</typeName>
+            <typeValue>Transaction__c</typeValue>
+        </dataTypeMappings>
+        <dataTypeMappings>
+            <typeName>T__newVal</typeName>
+            <typeValue>Transaction__c</typeValue>
+        </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>newVal</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>integrationSetting</name>
+            <value>
+                <stringValue>Stripe</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>objectSetting</name>
+            <value>
+                <stringValue>Stripe_Transaction</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>oldVal</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>operationType</name>
+            <value>
+                <stringValue>INSERT</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
     <apiVersion>53.0</apiVersion>
     <decisions>
         <name>Check_if_Contact_is_Selected</name>
@@ -68,9 +121,73 @@
         </rules>
     </decisions>
     <decisions>
+        <name>Check_Required_Fields_Before_Charge</name>
+        <label>Check Required Fields Before Charge</label>
+        <locationX>1502</locationX>
+        <locationY>455</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Ready_to_Charge</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Amount__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.CurrencyCode__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Account__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Contact__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Payment_Intent__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TransactionDate__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>IsNew</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Charge_Request_Outbound_Log</targetReference>
+            </connector>
+            <label>Ready to Charge</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Check_Transaction_Status</name>
         <label>Check Transaction Status</label>
-        <locationX>875</locationX>
+        <locationX>1139</locationX>
         <locationY>335</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -103,8 +220,54 @@
             </connector>
             <label>Transaction Status is Failed</label>
         </rules>
+        <rules>
+            <name>Transaction_is_Scheduled_or_initiated</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>initiated</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Required_Fields_Before_Charge</targetReference>
+            </connector>
+            <label>Transaction is Scheduled or initiated</label>
+        </rules>
     </decisions>
     <description>Upon Transaction Completed Update Payment Request Status and Activate Customer</description>
+    <formulas>
+        <description>Charge Activity Subject</description>
+        <name>ActivityMessage</name>
+        <dataType>String</dataType>
+        <expression>&apos;Charged $&apos;&amp;TEXT({!$Record.Amount__c})&amp;&apos; for &apos;&amp;{!$Record.Account__r.Name}&amp;&apos; &apos;&amp; TEXT({!$Record.Payment_Intent__r.Order__r.Order_Type__c})&amp;&apos; Service. Payment Receipt Link &apos;&amp;{!$Record.Stripe_Receipt_URL__c}</expression>
+    </formulas>
+    <formulas>
+        <name>ActivitySubject</name>
+        <dataType>String</dataType>
+        <expression>&apos;Outbound SMS to Member - &apos;&amp;{!$Record.Contact__r.Phone_Number__c}&amp;&apos; for &apos;&amp;{!$Record.Account__r.Name}&amp;&apos; &apos;&amp;TEXT({!$Record.Payment_Intent__r.Order__r.Order_Type__c})&amp;&apos; Service.&apos;</expression>
+    </formulas>
+    <formulas>
+        <name>FormatPhone</name>
+        <dataType>String</dataType>
+        <expression>if(begins ( {!$Record.Contact__r.Phone_Number__c} , &quot;5&quot;), 
+	substitute( {!$Record.Contact__r.Phone_Number__c} , {!$Record.Contact__r.Phone_Number__c} , &quot;1&quot;&amp; {!$Record.Contact__r.Phone_Number__c} ),
+		if(begins ( {!$Record.Contact__r.Phone_Number__c} , &quot;6&quot;), 
+			substitute( {!$Record.Contact__r.Phone_Number__c} , {!$Record.Contact__r.Phone_Number__c} , &quot;1&quot;&amp; {!$Record.Contact__r.Phone_Number__c} ),
+				if(	begins ( {!$Record.Contact__r.Phone_Number__c} , &quot;7&quot;), 
+						substitute( {!$Record.Contact__r.Phone_Number__c} , {!$Record.Contact__r.Phone_Number__c} , &quot;91&quot;&amp; {!$Record.Contact__r.Phone_Number__c} ),
+					if(begins ( {!$Record.Contact__r.Phone_Number__c} , &quot;8&quot;), 
+						substitute( {!$Record.Contact__r.Phone_Number__c} , {!$Record.Contact__r.Phone_Number__c} , &quot;91&quot;&amp; {!$Record.Contact__r.Phone_Number__c} ),
+						if(begins ( {!$Record.Contact__r.Phone_Number__c} , &quot;9&quot;), 
+							substitute( {!$Record.Contact__r.Phone_Number__c} , {!$Record.Contact__r.Phone_Number__c} , &quot;91&quot;&amp; {!$Record.Contact__r.Phone_Number__c} ),							
+		{!$Record.Contact__r.Phone_Number__c} )))))</expression>
+    </formulas>
+    <formulas>
+        <name>IsNew</name>
+        <dataType>Boolean</dataType>
+        <expression>ISNEW()</expression>
+    </formulas>
     <interviewLabel>SYS Transaction {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SYS Transaction</label>
     <processMetadataValues>
@@ -126,6 +289,62 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Activity_for_Charging_an_Order</name>
+        <label>Create Activity for Charging an Order</label>
+        <locationX>50</locationX>
+        <locationY>1055</locationY>
+        <inputAssignments>
+            <field>Customer__c</field>
+            <value>
+                <elementReference>$Record.Contact__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Email__c</field>
+            <value>
+                <elementReference>$Record.Contact__r.Email</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Message__c</field>
+            <value>
+                <elementReference>ActivityMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Phone__c</field>
+            <value>
+                <elementReference>FormatPhone</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>Queued</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject__c</field>
+            <value>
+                <elementReference>ActivitySubject</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Type__c</field>
+            <value>
+                <stringValue>sms</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>When__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Activity__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
     <recordUpdates>
         <name>Update_Customer_Status_to_Active</name>
         <label>Update Customer Status to Active</label>
@@ -168,12 +387,22 @@
         <label>Update Order Status Completed</label>
         <locationX>50</locationX>
         <locationY>935</locationY>
+        <connector>
+            <targetReference>Create_Activity_for_Charging_an_Order</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>$Record.Payment_Intent__r.Order__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Completed</stringValue>
             </value>
         </filters>
         <inputAssignments>
@@ -251,7 +480,7 @@
         <object>Payment_Intent__c</object>
     </recordUpdates>
     <start>
-        <locationX>749</locationX>
+        <locationX>1013</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Check_Transaction_Status</targetReference>

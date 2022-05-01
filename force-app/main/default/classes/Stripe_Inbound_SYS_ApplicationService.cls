@@ -19,6 +19,7 @@ public with sharing class Stripe_Inbound_SYS_ApplicationService extends SYS_Appl
 
         log.Type__c = 'INBOUND';
         log.SYS_Operation_Type__c = getOperationTypeFor(method);
+        //Flat_Key_for_Resource_Response__c
         log.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource__c;
         log.Integration_Setting__c = SYS_DataCache.INT_TYPE;
         log.Status__c = 'NEW';

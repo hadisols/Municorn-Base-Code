@@ -4,9 +4,9 @@
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
     <label>Product</label>
-    <referenceTo>Product2</referenceTo>
+    <referenceTo>Product__c</referenceTo>
     <relationshipLabel>Inventory</relationshipLabel>
-    <relationshipName>Inventory</relationshipName>
+    <relationshipName>Inventories</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

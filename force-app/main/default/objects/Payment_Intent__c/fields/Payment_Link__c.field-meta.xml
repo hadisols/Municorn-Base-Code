@@ -3,7 +3,7 @@
     <fullName>Payment_Link__c</fullName>
     <externalId>false</externalId>
     <formula>IF( NOT(ISBLANK(UUID__c )) , 
-    ( $Label.Authenticated_User_Payment_Link  +  UUID__c) , &quot;&quot;)</formula>
+    ( $Label.GuestUserPaymentLink  +  UUID__c) , &quot;&quot;)</formula>
     <label>Payment Link</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

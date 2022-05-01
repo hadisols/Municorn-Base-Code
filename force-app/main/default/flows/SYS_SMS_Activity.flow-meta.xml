@@ -4,8 +4,8 @@
         <description>Create Log to Make Callout to Plivo Send SMS API</description>
         <name>Log_to_Make_Callout_Plivo_Send_SMS</name>
         <label>Log to Make Callout Plivo Send SMS</label>
-        <locationX>860</locationX>
-        <locationY>226</locationY>
+        <locationX>884</locationX>
+        <locationY>119</locationY>
         <actionName>SYS_InvocableHandler</actionName>
         <actionType>apex</actionType>
         <dataTypeMappings>
@@ -62,13 +62,13 @@
     </actionCalls>
     <apiVersion>53.0</apiVersion>
     <decisions>
-        <name>Check_If_Message_is_Empty_or_Not</name>
-        <label>Check If Message is Empty or Not?</label>
-        <locationX>505</locationX>
-        <locationY>94</locationY>
+        <name>Check_If_Message_is_Empty_or_Not_for_Outbound_Activity</name>
+        <label>Check If Message is Empty or Not for Outbound Activity</label>
+        <locationX>538</locationX>
+        <locationY>118</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>New_Outbound_SMS</name>
+            <name>New_Outbound_SMS_0</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Message__c</leftValueReference>
@@ -96,6 +96,13 @@
             </connector>
             <label>New Outbound SMS</label>
         </rules>
+    </decisions>
+    <decisions>
+        <name>Update_Customer_Record_Sms_Status</name>
+        <label>Update Customer Record Sms Status</label>
+        <locationX>517</locationX>
+        <locationY>310</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>SMS_is_Delivered_to_Customer</name>
             <conditionLogic>and</conditionLogic>
@@ -127,6 +134,11 @@
         </rules>
     </decisions>
     <description>Flow to log Callout to Plivo Send SMS</description>
+    <formulas>
+        <name>IsNew</name>
+        <dataType>Boolean</dataType>
+        <expression>IsNew()</expression>
+    </formulas>
     <interviewLabel>SYS SMS Activity {!$Flow.CurrentDateTime}</interviewLabel>
     <label>SYS SMS Activity</label>
     <processMetadataValues>
@@ -151,8 +163,8 @@
     <recordUpdates>
         <name>Update_Contact_Records</name>
         <label>Update Contact Records</label>
-        <locationX>496</locationX>
-        <locationY>309</locationY>
+        <locationX>894</locationX>
+        <locationY>314</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -177,10 +189,10 @@
         <object>Contact</object>
     </recordUpdates>
     <start>
-        <locationX>50</locationX>
-        <locationY>50</locationY>
+        <locationX>48</locationX>
+        <locationY>42</locationY>
         <connector>
-            <targetReference>Check_If_Message_is_Empty_or_Not</targetReference>
+            <targetReference>Update_Customer_Record_Sms_Status</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -199,7 +211,26 @@
         </filters>
         <object>Activity__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <scheduledPaths>
+            <name>Delay_One_Minute</name>
+            <connector>
+                <targetReference>Check_If_Message_is_Empty_or_Not_for_Outbound_Activity</targetReference>
+            </connector>
+            <label>Delay One Minute</label>
+            <offsetNumber>1</offsetNumber>
+            <offsetUnit>Minutes</offsetUnit>
+            <recordField>LastModifiedDate</recordField>
+            <timeSource>RecordField</timeSource>
+        </scheduledPaths>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
+    <variables>
+        <name>DebugActivityRecord</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Activity__c</objectType>
+    </variables>
 </Flow>

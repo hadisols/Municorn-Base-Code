@@ -3,9 +3,10 @@
     <fullName>Customer_Compact_Layout</fullName>
     <fields>Name</fields>
     <fields>AccountId</fields>
-    <fields>Phone</fields>
+    <fields>Phone_Number__c</fields>
     <fields>Gender__c</fields>
     <fields>Birthdate</fields>
     <fields>Active__c</fields>
+    <fields>RecordTypeId</fields>
     <label>Customer Compact Layout</label>
 </CompactLayout>

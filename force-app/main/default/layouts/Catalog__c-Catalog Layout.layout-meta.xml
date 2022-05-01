@@ -58,6 +58,18 @@
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
+        <excludeButtons>MassChangeOwner</excludeButtons>
+        <fields>NAME</fields>
+        <fields>Product_Inventory__c</fields>
+        <fields>Is_Option_Available__c</fields>
+        <fields>Required_Quantity__c</fields>
+        <fields>Available_Stock_Quantity__c</fields>
+        <fields>Optional__c</fields>
+        <fields>CREATED_DATE</fields>
+        <fields>LAST_ACTIVITY</fields>
+        <relatedList>Options__c.Catalog__c</relatedList>
+    </relatedLists>
+    <relatedLists>
         <fields>TASK.SUBJECT</fields>
         <fields>TASK.WHO_NAME</fields>
         <fields>ACTIVITY.TASK</fields>

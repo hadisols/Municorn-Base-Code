@@ -3,7 +3,6 @@
     <fullName>Lead__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
-    <inlineHelpText>The Salesforce Lead related to this Payment Method.</inlineHelpText>
     <label>Lead</label>
     <referenceTo>Lead</referenceTo>
     <relationshipLabel>Payment Methods</relationshipLabel>

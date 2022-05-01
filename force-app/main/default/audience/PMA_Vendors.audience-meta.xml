@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Audience xmlns="http://soap.sforce.com/2006/04/metadata">
+    <audienceName>PMA Vendors</audienceName>
+    <container>POS</container>
+    <criteria>
+        <criterion>
+            <criteriaNumber>1</criteriaNumber>
+            <criterionValue>
+                <profile>pma vendor external app</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>1</criteriaNumber>
+            <criterionValue>
+                <profile>pma vendor</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
+    </criteria>
+    <formulaFilterType>AllCriteriaMatch</formulaFilterType>
+    <isDefaultAudience>false</isDefaultAudience>
+    <targets>
+        <target>
+            <groupName>517d790b-276c-44d4-b354-870a1c9cb302$#$5d898107-03a6-40d0-8713-d420d2d97c14</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Home_pmaContactsSearch_Component</targetValue>
+        </target>
+        <target>
+            <groupName>0a32670f-452b-44f6-b521-b2f3daf39843$#$afc959d2-a663-4e89-90ab-e6dd8e4e3168</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>POS_Selection_pmaContainer_Component</targetValue>
+        </target>
+    </targets>
+</Audience>

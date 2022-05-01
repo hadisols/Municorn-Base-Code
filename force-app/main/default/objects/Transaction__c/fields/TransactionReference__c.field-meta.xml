@@ -4,6 +4,7 @@
     <displayFormat>T{0000000000}</displayFormat>
     <externalId>false</externalId>
     <label>Transaction Reference Id</label>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>AutoNumber</type>
 </CustomField>

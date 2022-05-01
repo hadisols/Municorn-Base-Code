@@ -3,7 +3,6 @@
     <fullName>Account__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
-    <inlineHelpText>The Salesforce Business Account or Person Account related to this Payment Method.</inlineHelpText>
     <label>Account</label>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Payment Methods</relationshipLabel>

@@ -1,5 +1,7 @@
 <aura:component implements="force:appHostable,forceCommunity:availableForAllPageTypes"
                 access="global" >
+
+                
     <div class="slds-grid slds-grid–vertical slds-navigation-list–vertical">
         <div class="nav">
             <div class="nav-header">

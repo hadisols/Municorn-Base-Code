@@ -12,7 +12,7 @@
     </values>
     <values>
         <field>BaseAPIEndPoint__c</field>
-        <value xsi:type="xsd:string">callout:Plivo/Account/MAM2VIZMJLZJK3N2Y0MJ/</value>
+        <value xsi:type="xsd:string">callout:Plivo/Account/MAZJM3ZDZLNWRKZWJJYW/</value>
     </values>
     <values>
         <field>DebugCheck__c</field>
@@ -23,12 +23,28 @@
         <value xsi:type="xsd:string">#</value>
     </values>
     <values>
+        <field>Flat_Key_Pattern__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Flat_Key_Separator__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Flat_Key_for_Resource_Child__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Flat_Key_for_Resource_Response__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>
         <field>Flat_Key_for_Resource__c</field>
         <value xsi:type="xsd:string">type</value>
+    </values>
+    <values>
+        <field>GET_URL_Pattern__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Hashing_Algo__c</field>
@@ -39,7 +55,27 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Notification_Wrapper__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Notifications_are_partial__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>OAuth_Config_Record_Id__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Operation_Map__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Parent_Resource_Map__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Skip_Keys__c</field>
         <value xsi:nil="true"/>
     </values>
     <values>

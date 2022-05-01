@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <assignments>
+        <name>Clean_Account_Id</name>
+        <label>Clean Account Id</label>
+        <locationX>434</locationX>
+        <locationY>400</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.AccountId</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Owner.Contact.Account.OwnerId</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Check_UserType</name>
+        <label>Check UserType</label>
+        <locationX>702</locationX>
+        <locationY>338</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Portal_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>UserType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>CustomerSuccess</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Clean_Account_Id</targetReference>
+            </connector>
+            <label>Is Portal User</label>
+        </rules>
+    </decisions>
+    <description>Remove Account Lookup for Customer Portal User UserType</description>
+    <formulas>
+        <name>UserType</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!$User.UserType})</expression>
+    </formulas>
+    <interviewLabel>SYS_Contact_AccountCleanup {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>SYS Contact Account Lookup Clean</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>458</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Check_UserType</targetReference>
+        </connector>
+        <object>Contact</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

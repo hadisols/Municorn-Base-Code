@@ -3,6 +3,5 @@
     <fullName>Required_Name</fullName>
     <active>false</active>
     <errorConditionFormula>AND(ISBLANK(TEXT(Payment_Method_Status__c)), ISBLANK(Card_Holder_Name__c))</errorConditionFormula>
-    <errorDisplayField>Card_Holder_Name__c</errorDisplayField>
     <errorMessage>Holder&apos;s Name is required</errorMessage>
 </ValidationRule>

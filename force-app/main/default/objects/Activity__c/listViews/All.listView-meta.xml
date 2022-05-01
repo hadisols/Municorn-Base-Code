@@ -5,11 +5,11 @@
     <columns>Customer__c</columns>
     <columns>Phone__c</columns>
     <columns>Message__c</columns>
-    <columns>Subject__c</columns>
     <columns>Status__c</columns>
     <columns>When__c</columns>
     <columns>LAST_UPDATE</columns>
     <columns>CREATED_DATE</columns>
+    <columns>UUID__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

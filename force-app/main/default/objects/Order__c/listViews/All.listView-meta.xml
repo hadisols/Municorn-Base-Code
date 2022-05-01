@@ -3,6 +3,11 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Account__c</columns>
+    <columns>Member__c</columns>
+    <columns>Vendor__c</columns>
+    <columns>Order_Type__c</columns>
+    <columns>Status__c</columns>
+    <columns>Total_Price__c</columns>
     <columns>CREATED_DATE</columns>
     <columns>LAST_UPDATE</columns>
     <filterScope>Everything</filterScope>

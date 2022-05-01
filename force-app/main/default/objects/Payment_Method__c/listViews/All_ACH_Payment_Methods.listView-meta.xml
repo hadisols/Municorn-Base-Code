@@ -2,17 +2,8 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All_ACH_Payment_Methods</fullName>
     <columns>NAME</columns>
-    <columns>Card_Holder_Name__c</columns>
     <columns>Account__c</columns>
     <columns>Contact__c</columns>
-    <columns>Payment_Method_Status__c</columns>
-    <columns>Account_Holder_Type__c</columns>
-    <columns>Country_ISO__c</columns>
-    <columns>Currency_ISO__c</columns>
     <filterScope>Everything</filterScope>
-    <filters>
-        <field>Account_Number__c</field>
-        <operation>notEqual</operation>
-    </filters>
     <label>All ACH Payment Methods</label>
 </ListView>

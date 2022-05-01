@@ -12,7 +12,7 @@
             <sorted>false</sorted>
             <value>
                 <fullName>payment_new</fullName>
-                <default>false</default>
+                <default>true</default>
                 <label>payment_new</label>
             </value>
             <value>

@@ -11,6 +11,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Datetime_Conversion_Format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>Direction__c</field>
         <value xsi:type="xsd:string">INBOUND</value>
     </values>
@@ -43,8 +47,12 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
-        <field>Key__c</field>
+        <field>Key_For_Events__c</field>
         <value xsi:type="xsd:string">data.object.payment_method_details.ach_debit.bank_name</value>
+    </values>
+    <values>
+        <field>Key__c</field>
+        <value xsi:type="xsd:string">payment_method_details.ach_debit.bank_name</value>
     </values>
     <values>
         <field>Level__c</field>
@@ -63,6 +71,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Mapping_is_for__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>ObjectApiName__c</field>
         <value xsi:type="xsd:string">Transaction__c</value>
     </values>
@@ -77,6 +89,10 @@
     <values>
         <field>RestResource__c</field>
         <value xsi:type="xsd:string">charge</value>
+    </values>
+    <values>
+        <field>Send_Blanks_as_Empty_String__c</field>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>StaticValue__c</field>

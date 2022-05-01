@@ -1,65 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Create_Stripe_Customer_Outbound_Log</name>
-        <label>Create Stripe Customer Outbound Log</label>
-        <locationX>1046</locationX>
-        <locationY>623</locationY>
-        <actionName>SYS_InvocableHandler</actionName>
-        <actionType>apex</actionType>
-        <dataTypeMappings>
-            <typeName>T__newVal</typeName>
-            <typeValue>Contact</typeValue>
-        </dataTypeMappings>
-        <dataTypeMappings>
-            <typeName>T__oldVal</typeName>
-            <typeValue>Contact</typeValue>
-        </dataTypeMappings>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>httpMethod</name>
-            <value>
-                <stringValue>POST</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>newVal</name>
-            <value>
-                <elementReference>$Record</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>recId</name>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>integrationSetting</name>
-            <value>
-                <stringValue>Stripe</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>objectSetting</name>
-            <value>
-                <stringValue>StripeCustomer</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>oldVal</name>
-            <value>
-                <elementReference>$Record</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>operationType</name>
-            <value>
-                <stringValue>INSERT</stringValue>
-            </value>
-        </inputParameters>
-    </actionCalls>
-    <actionCalls>
         <name>Generate_UUID_for_Registration_Order</name>
         <label>Generate UUID for Registration Order</label>
         <locationX>163</locationX>
@@ -122,10 +63,13 @@
     <actionCalls>
         <name>PMA_Contact_Trigger</name>
         <label>PMA Contact Trigger</label>
-        <locationX>419</locationX>
+        <locationX>392</locationX>
         <locationY>955</locationY>
         <actionName>PMA_ContactInvocableHandler</actionName>
         <actionType>apex</actionType>
+        <connector>
+            <targetReference>Limit_Flow_start_Scheduled</targetReference>
+        </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>newVal</name>
@@ -155,6 +99,59 @@
             <name>orderId</name>
             <value>
                 <elementReference>Create_Member_Register_Order</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Stripe_Customer_Outbound_Log</name>
+        <label>Stripe Customer Outbound Log</label>
+        <locationX>1212</locationX>
+        <locationY>426</locationY>
+        <actionName>SYS_InvocableHandler</actionName>
+        <actionType>apex</actionType>
+        <dataTypeMappings>
+            <typeName>T__newVal</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <dataTypeMappings>
+            <typeName>T__oldVal</typeName>
+            <typeValue>Contact</typeValue>
+        </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>newVal</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>integrationSetting</name>
+            <value>
+                <stringValue>Stripe</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>objectSetting</name>
+            <value>
+                <stringValue>StripeCustomer</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>oldVal</name>
+            <value>
+                <elementReference>$Record</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>operationType</name>
+            <value>
+                <stringValue>INSERT</stringValue>
             </value>
         </inputParameters>
     </actionCalls>
@@ -188,11 +185,33 @@
         <name>Limit_Flow_start</name>
         <label>Limit Flow start</label>
         <locationX>914</locationX>
-        <locationY>503</locationY>
+        <locationY>520</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>New_Contact_Created</name>
+            <name>Non_Member_Record_Type</name>
             <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Member</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Active__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mark_Contact_Status_to_Active</targetReference>
+            </connector>
+            <label>Non Member Record Type</label>
+        </rules>
+        <rules>
+            <name>New_Contact_Created</name>
+            <conditionLogic>(1 OR 6 ) AND ( 2 AND 3 AND 4 AND 5 AND 7 )</conditionLogic>
             <conditions>
                 <leftValueReference>IsNew</leftValueReference>
                 <operator>EqualTo</operator>
@@ -228,17 +247,116 @@
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>$User.UserType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>CustomerSuccess</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Registration_Order_Created__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>Create_Member_Register_Order</targetReference>
             </connector>
             <label>New Contact Created</label>
         </rules>
         <rules>
-            <name>Non_Member_Record_Type</name>
+            <name>Update_Customer</name>
+            <conditionLogic>1 AND 2 AND 8 AND (  3 OR 4 OR 5 OR 6 OR 7)</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Registration_Order_Created__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.StripeCustomerId__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.LastName</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.FirstName</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Phone_Number__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Email</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Description</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.RecordType.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Member</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stripe_Customer_Outbound_Log</targetReference>
+            </connector>
+            <label>Update Customer</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Limit_Flow_start_Scheduled</name>
+        <label>Limit Flow start Scheduled</label>
+        <locationX>1206</locationX>
+        <locationY>953</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>New_Contact_Created_0</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
+                <leftValueReference>$Record.Phone_Number__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.AccountId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
                 <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Member</stringValue>
                 </rightValue>
@@ -250,26 +368,11 @@
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
-            <connector>
-                <targetReference>Mark_Contact_Status_to_Active</targetReference>
-            </connector>
-            <label>Non Member Record Type</label>
-        </rules>
-        <rules>
-            <name>Create_Stripe_Customer</name>
-            <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.Payment_SMS_Sent__c</leftValueReference>
+                <leftValueReference>$Record.Registration_Order_Created__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Member</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -279,17 +382,10 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.Payment_SMS_Sent__c</leftValueReference>
-                <operator>IsChanged</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
             <connector>
-                <targetReference>Create_Stripe_Customer_Outbound_Log</targetReference>
+                <targetReference>Stripe_Customer_Outbound_Log</targetReference>
             </connector>
-            <label>Create Stripe Customer</label>
+            <label>New Contact Created</label>
         </rules>
     </decisions>
     <formulas>
@@ -458,7 +554,7 @@
         <name>Mark_Contact_Status_to_Active</name>
         <label>Mark Contact Status to Active</label>
         <locationX>918</locationX>
-        <locationY>823</locationY>
+        <locationY>824</locationY>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
