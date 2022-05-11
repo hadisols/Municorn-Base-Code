@@ -15,6 +15,7 @@ public with sharing class PMA_ProductsController {
         for(SelectedProductWrapper selectedProduct : prodWrapperList){
             Order_Item__c orderItemNew = new Order_Item__c();
             orderItemNew.Order__c = orderId;
+            orderItemNew.Item_Status__c = 'New';
             orderItemNew.Product__c = selectedProduct.product.Id;
             orderItemNew.Quantity__c = selectedProduct.quantity;
             orderItemList.add(orderItemNew);

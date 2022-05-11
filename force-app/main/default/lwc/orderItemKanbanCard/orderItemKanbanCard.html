@@ -1,0 +1,39 @@
+<template>
+    <template if:true={isSameStage}>
+        <li class="forceRecordLayout" draggable="true" ondragstart={itemDragStart}>
+            <article class="pipelineViewCard uiDraggable">
+                <div class="pipelineViewCardInnerWrapper">
+                    <h3 class="slds-truncate" title={record.Name}>
+                        <a href="#" target="_blank" data-id={record.Id} onclick={navigateOrderItemHandler}>
+                            <span class="slds-truncate" data-id={record.Id}>
+                                {record.Name}
+                            </span>
+                        </a>
+                    </h3>
+                    <h3 class="slds-truncate" title={record.OrderName}>
+                        <a href="#" target="_blank" data-id={record.OrderId} onclick={navigateOrderHandler}>
+                            <span class="slds-truncate" data-id={record.OrderId}>
+                                {record.OrderName}
+                            </span>
+                        </a>
+                    </h3>
+                    <h3 class="slds-truncate" title={record.MemberName}>
+                        <a href="#" target="_blank" data-id={record.MemberId} onclick={navigateMemberHandler}>
+                            <span class="slds-truncate" data-id={record.MemberId}>
+                                {record.MemberName}
+                            </span>
+                        </a>
+                    </h3>
+                    <h3 class="slds-truncate" title={record.Product_Name__c}>
+                        <a href="#" target="_blank" data-id={record.Product__c} onclick={navigateProductHandler}>
+                            <span class="slds-truncate" data-id={record.Product__c}>
+                                {record.Product_Name__c} x {record.Quantity__c}
+                            </span>
+                        </a>
+                    </h3>
+                </div>
+
+            </article>
+        </li>
+    </template>
+</template>

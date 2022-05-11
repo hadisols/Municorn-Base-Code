@@ -1,0 +1,20 @@
+.card_wrapper{
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    background: #fff;
+}
+.column_heading{
+    padding: 0.5rem 1.25rem;
+    font-size: 16px;
+    background: #005fb2;
+    color: #fff;
+    margin-bottom: 1rem;
+    border-radius: 0 30px 35px 0;
+}
+.stageContainer{
+    float:left;
+    border: 1px solid #d8dde6;
+    margin: 0;
+    border-radius: .25rem;
+}

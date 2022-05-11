@@ -1,0 +1,34 @@
+.slds-item {
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    background-clip: padding-box;
+    padding: 0.45rem;
+    margin: 0.25rem;
+}
+.pipelineViewCard {
+    position: relative;
+    margin: 0.5rem;
+    border-radius: 0.25rem;
+    list-style: none;
+}
+.uiDraggable {
+    cursor: move;
+    -webkit-user-drag: element;
+}
+.pipelineViewCardInnerWrapper {
+    position: relative;
+    padding: 0.5rem;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(229, 229, 229);
+    border-radius: 0.25rem;
+    list-style: none;
+}
+.pipelineViewCard:active{
+    box-shadow: 0 0 10px #195594;
+}
+.pipelineViewCard:hover, .pipelineViewCard:focus {
+    outline: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}

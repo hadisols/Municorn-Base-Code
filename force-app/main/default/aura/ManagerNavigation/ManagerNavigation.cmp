@@ -24,6 +24,8 @@
 			-->
             
                 <ul class="nav-links">
+                    <li><a href="/s/search-members">POS Search</a></li>
+                    <li><a href="/s/order-fulfillment">Order Fullfillment</a></li>
                     <li><a href="/s/vendors">Vendors</a></li>
                     <li><a href="/s/members">Members</a></li>
                     <li><a href="/s/products">Products</a></li>

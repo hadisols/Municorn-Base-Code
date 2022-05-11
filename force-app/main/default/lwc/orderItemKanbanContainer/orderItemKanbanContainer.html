@@ -1,0 +1,13 @@
+<template>
+    <div class="card_wrapper">
+        <template for:each={pickVals} for:item="item">
+            <div class="stageContainer" key={item} style={calcWidth}>
+                <h1 class="column_heading">{item}</h1>
+                <c-order-item-kanban-list records={records} stage={item}
+                 onlistitemdrag={handleListItemDrag}
+                 onitemdrop={handleItemDrop}
+                 ></c-order-item-kanban-list>
+            </div>
+        </template>
+    </div>
+</template>
