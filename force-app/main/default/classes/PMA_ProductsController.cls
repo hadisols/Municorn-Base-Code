@@ -3,29 +3,41 @@ public with sharing class PMA_ProductsController {
     //To create Order Item records
     @AuraEnabled
     public static Order__c createOrderItems(Id orderId, String selectedProductsValues) {
-        Order__c checkOrderStatus = PMA_SearchController.getOrderDetailsByIdOrUUID( orderId );
-       System.debug('checkOrderStatus  ' + checkOrderStatus);
-       if(checkOrderStatus.Status__c == 'Draft'){
-           checkOrderStatus.Status__c = 'Active';
-           update checkOrderStatus;
-       }
-        List<Order_Item__c> orderItemList = new List<Order_Item__c>();
+        Order__c checkOrderStatus = PMA_SearchController.getOrderDetailsByIdOrUUID(orderId);
+        System.debug('checkOrderStatus  ' + checkOrderStatus);
+        List < Order_Item__c > orderItemList = new List < Order_Item__c > ();
+        Id productVendorId;
+        Integer i = 1;
         System.debug('selectedProductsValues ' + selectedProductsValues);
-        List< SelectedProductWrapper> prodWrapperList = (List< SelectedProductWrapper>)JSON.deserialize(selectedProductsValues,List<SelectedProductWrapper>.class); //re is response body string
-        for(SelectedProductWrapper selectedProduct : prodWrapperList){
+        List < SelectedProductWrapper > prodWrapperList = (List < SelectedProductWrapper > ) JSON.deserialize(selectedProductsValues, List < SelectedProductWrapper > .class);
+        for (SelectedProductWrapper selectedProduct: prodWrapperList) {
             Order_Item__c orderItemNew = new Order_Item__c();
             orderItemNew.Order__c = orderId;
             orderItemNew.Item_Status__c = 'New';
             orderItemNew.Product__c = selectedProduct.product.Id;
             orderItemNew.Quantity__c = selectedProduct.quantity;
             orderItemList.add(orderItemNew);
+            if(i == 1){
+                productVendorId = selectedProduct.product.Contact__c;    
+            }
+            i++;
         }
-       System.debug('orderItemList  ' + orderItemList);
-       insert orderItemList;
+        System.debug('orderItemList  ' + orderItemList);
+        insert orderItemList;
 
-       Order__c currentOrder = PMA_SearchController.getOrderDetailsByIdOrUUID( orderId );
-       System.debug('currentOrder  ' + currentOrder);
-       return currentOrder;
+        if (( (checkOrderStatus.Vendor__c == null) && (productVendorId != null) ) || (checkOrderStatus.Status__c == 'Draft') ) {
+            if ( (checkOrderStatus.Vendor__c == null) && (productVendorId != null) ) {
+                checkOrderStatus.Vendor__c = productVendorId;
+            }
+            if (checkOrderStatus.Status__c == 'Draft') {
+                checkOrderStatus.Status__c = 'Active';
+            }
+            update checkOrderStatus;
+        }
+
+        Order__c currentOrder = PMA_SearchController.getOrderDetailsByIdOrUUID(orderId);
+        System.debug('currentOrder  ' + currentOrder);
+        return currentOrder;
     }
     //To create Payment Intent and Transaction Record
     @AuraEnabled

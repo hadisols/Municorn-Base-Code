@@ -51,6 +51,12 @@
 		<name>AuraDefinitionBundle</name>
 	</types>
 	<types>
+        <members>OrderItemKanbanCard</members>
+        <members>OrderItemKanbanList</members>
+        <members>OrderItemKanbanContainer</members>
+        <name>LightningComponentBundle</name>
+    </types>
+	<types>
 		<members>Account.Vendor_Compact_Layout</members>
 		<members>Contact.Customer_Compact_Layout</members>
 		<name>CompactLayout</name>

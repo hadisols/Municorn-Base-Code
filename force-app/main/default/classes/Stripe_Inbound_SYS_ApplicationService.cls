@@ -146,7 +146,7 @@ public with sharing class Stripe_Inbound_SYS_ApplicationService extends SYS_Appl
         } 
         else if(obj.get(fieldAPIName)!=null && ( (fieldAPIName == SYS_DataCache.namespacePrefix + 'Amount__c') || (fieldAPIName == SYS_DataCache.namespacePrefix + 'Amount_Captured__c') || (fieldAPIName == SYS_DataCache.namespacePrefix + 'AmountRefunded__c') ) ){
             Decimal amount = (Decimal)obj.get(fieldAPIName);
-            return (amount > 0) ? ( (amount.intValue()) * 100 ) : 0;
+            return (amount > 0) ? ( (amount) * 100 ).intValue() : 0;
         }
         /*
         else if(obj.get(fieldAPIName)!=null && fieldAPIName == SYS_DataCache.namespacePrefix + 'Is_Taxable__c') { //TODO - specific to quickbooks
