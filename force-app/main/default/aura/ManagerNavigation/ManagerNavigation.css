@@ -1,117 +1,80 @@
 .THIS .nav {
   height: 50px;
   width: 100%;
-  background-color: #4d4d4d;
+  background: #ffffff;
   position: relative;
 }
 
-.THIS .nav > .nav-header {
+.THIS .navbar-borderbottom {
+  border-bottom: 3px solid #1b96ff;
+}
+
+.THIS .nav>.nav-header {
   display: inline;
 }
 
-.THIS .nav > .nav-header > .nav-title {
+.THIS .nav>.nav-header>.nav-title {
   display: inline-block;
   font-size: 22px;
   color: #fff;
   padding: 10px 10px 10px 10px;
 }
 
-.THIS .nav > .nav-btn {
+.THIS .nav>.nav-btn {
   display: none;
 }
-.THIS .nav > .nav-links > li {
-    width: 100px;
-    display: inline;
+
+.THIS .nav>.nav-links>li {
+  width: 100px;
+  display: inline;
 }
-.THIS .nav > .nav-links {
+
+.THIS .nav>.nav-links {
   display: inline;
   float: right;
   font-size: 18px;
 }
 
-.THIS .nav > .nav-links > li > a{
+.THIS .nav>.nav-links>li>a {
   display: inline-block;
-  padding: 13px 10px 13px 10px;
+  padding: 10px 10px 10px 10px;
   text-decoration: none;
-  color: #efefef;
+  color: #000000;
 }
+
 .THIS ul li ul.dropdown li a {
-    width:100%;
+  width: 100%;
   padding: 15px 10px;
   text-decoration: none;
-  color: #efefef;
+  color: #000000;
 }
-.THIS .nav > .nav-links > li > a:hover, .THIS ul li ul.dropdown li:hover  {
-  background-color: rgba(0, 0, 0, 0.3);
-}
- 
-/*
-.THIS .nav > #nav-check {
-  display: none;
-}*/
 
-@media (max-width:600px) {
-  .THIS .nav > .nav-btn {
-    display: inline-block;
-    position: absolute;
-    right: 0px;
-    top: 0px;
-  }
-  .THIS .nav > .nav-btn > label {
-    display: inline-block;
-    width: 50px;
-    height: 50px;
-    padding: 13px;
-  }
-  .THIS .nav > .nav-btn > label:hover,.THIS .nav  #nav-check:checked ~ .nav-btn > label {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-  .THIS .nav > .nav-btn > label > span {
-    display: block;
-    width: 25px;
-    height: 10px;
-    border-top: 2px solid #eee;
-  }
-  .THIS .nav > .nav-links {
-    position: absolute;
-    display: block;
-    width: 100%;
-    background-color: #333;
-    height: 0px;
-    transition: all 0.3s ease-in;
-    overflow-y: hidden;
-    top: 50px;
-    left: 0px;
-  }
-  .THIS .nav > .nav-links > li > a {
-    display: block;
-    width: 100%;
-  }
-    /*
-  .THIS .nav > #nav-check:not(:checked) ~ .nav-links {
-    height: 0px;
-  }
-  .THIS .nav > #nav-check:checked ~ .nav-links {
-    height: calc(100vh - 50px);
-    overflow-y: auto;
-  }*/
+/* .THIS .nav > .nav-links > li > a , .THIS .nav > .nav-links > li{
+  background-color: rgba(0, 0, 0, 0.3);
+} */
+
+.THIS .nav .nav-links li a:hover,
+.THIS ul li ul.dropdown li:hover {
+  background-color: rgb(27 150 255 / 23%);
+  border-top: 3px solid #1b96ff;
 }
 
 .THIS ul li ul {
-  background: #4d4d4d;
+  background: #cae5fc;
   visibility: hidden;
   opacity: 0;
   min-width: 5rem;
   position: absolute;
   transition: all 0.5s ease;
   margin-top: 1rem;
-   right: 0;
-    top: 34px;
+  right: 0;
+  top: 34px;
   display: none;
+  z-index: 99999;
 }
 
-.THIS ul li:hover > ul,
-.THIS ul li:focus-within > ul,
+.THIS ul li:hover>ul,
+.THIS ul li:focus-within>ul,
 .THIS ul li ul:hover,
 .THIS ul li ul:focus {
   visibility: visible;
@@ -122,4 +85,84 @@
 .THIS ul li ul li {
   clear: both;
   width: 100%;
+}
+
+.THIS .nav .nav-check {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  padding: 13px;
+}
+
+@media (max-width:600px) {
+  .THIS .nav>.nav-btn {
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
+
+  .THIS .nav>.nav-btn>label {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    padding: 13px;
+  }
+
+  .THIS .nav>.nav-btn>label:hover,
+  .THIS .nav .nav-check:checked~.nav-btn>label {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .THIS .nav>.nav-btn>label>span {
+    display: block;
+    width: 25px;
+    height: 10px;
+    border-top: 2px solid #1b96ff;
+  }
+
+  .THIS .nav>.nav-links {
+    position: absolute;
+    display: block;
+    width: 100%;
+    background-color: #fff;
+    height: 0px;
+    transition: all 0.3s ease-in;
+    overflow-y: hidden;
+    top: 50px;
+    left: 0px;
+    z-index: 999;
+  }
+
+  .THIS .nav>.nav-links>li {
+    width: 100% !important;
+    display: block !important;
+  }
+
+  .THIS .nav>.nav-links>a {
+    display: block;
+    width: 100% !important;
+  }
+
+  .THIS .nav>.nav-links>li>a {
+    width: 100% !important;
+  }
+
+  .THIS .nav .nav-check {
+    display: block !important;
+    z-index: 99999;
+    opacity: 0;
+  }
+
+  .THIS .nav .nav-check:not(:checked)~.nav-links {
+    height: 0px;
+  }
+
+  .THIS .nav .nav-check:checked~.nav-links {
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+  }
 }
