@@ -19,6 +19,9 @@
     color: #fff;
     opacity: 0.8;
 }
+.THIS .flex-productbasis{
+    flex-basis: 150px;
+}
 .THIS .noimage {
     margin: 0 auto;
     width: 150px;
@@ -43,11 +46,17 @@
     font-weight: 700;
     padding: 0.2em 0.2rem 0;
 }
+.THIS .mr-2rem{
+    margin-right: 0.2rem;
+}
 @media only screen and (max-width: 768px){
     .THIS .product-wrapper {
-        max-width: 75px;
+        max-width: 100px;
         height: max-content;
         text-align: center;
+    }
+    .THIS .flex-productbasis {
+        flex-basis: 100px;
     }
     .THIS .image-wrapper, .THIS .image-wrapper img{
         width: 75px;
@@ -56,12 +65,18 @@
 }
 @media only screen and (max-width: 480px){
     .THIS .product-wrapper {
-        max-width: 110px;
+        max-width: 90px;
         height: max-content;
         text-align: center;
+    }
+    .THIS .flex-productbasis {
+        flex-basis: 100px;
     }
     .THIS .image-wrapper, .THIS .image-wrapper img{
         width: 75px;
         height: 75px;
+    }
+    .THIS .sm-justify-content-center{
+        justify-content: center!important;
     }
 }

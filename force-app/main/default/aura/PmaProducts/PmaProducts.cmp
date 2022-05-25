@@ -10,6 +10,9 @@
     <aura:attribute name="orderUUID" type="String" />
     <aura:attribute name="memberName" type="String" />
 
+    <!-- Init() Loggend in User Record Details -->
+    <aura:attribute name="userInfo" type="User"/> 
+
     <!-- Init() Products Map<Id, Wrapper> from Apex Controller -->
     <aura:attribute name="allProductsMap" type="Map" />
     <!-- Init() Extract Values form allProductsMap to Itereate over Products -->
@@ -53,10 +56,13 @@
     <div class="slds-card my-2">
         <!--Start Bootstrap Products data markup-->
         <div class="sfappwrapper">
-            <div class="d-flex flex-row justify-content-start flex-wrap my-2">
+            <div class="slds-grid slds-wrap slds-var-p-around_xx-small my-2 sm-justify-content-center">
                 <aura:iteration items="{!v.productData}" var="prod" indexVar="key">
-                    <div class="{! ( prod.isVisible) ? 'col col-lg-2 mx-2 my-2 product-wrapper'  : 'col col-lg-2 mx-2 my-2 product-wrapper inactiveProduct' }" data-id="{! prod.product.Id}" onclick="{! ( prod.isVisible) ? c.productClickHandler  : c.productNotEligible}">
-                        <div class="d-flex flex-column justify-content-start flex-wrap">
+                    <!-- <div class="slds-col slds-grid slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center">
+
+                    </div> -->
+                    <div class="{! ( prod.isVisible) ? 'slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center flex-productbasis mr-2rem my-2'  : 'slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center flex-productbasis mr-2rem my-2 inactiveProduct' }" data-id="{! prod.product.Id}" onclick="{! ( prod.isVisible) ? c.productClickHandler  : c.productNotEligible}">
+                        <div class="product-wrapper">
                             <div class="overflow-hidden mx-auto image-wrapper max-height">
                                 <aura:if isTrue="{! !(prod.hasPictureURL) }">
                                     <span class="slds-avatar noimage">

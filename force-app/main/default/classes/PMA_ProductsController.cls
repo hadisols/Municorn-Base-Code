@@ -164,6 +164,13 @@ public with sharing class PMA_ProductsController {
         Order__c currentOrder = PMA_SearchController.getOrderDetailsByIdOrUUID( orderIdOrUUID );
         return currentOrder;
     }
+    @AuraEnabled
+    public static User fetchCurrentUser() {
+        // query current user information  
+        User currentUserRecord = PMA_SearchController.fetchCurrentUser();
+
+        return currentUserRecord;
+    }
     // wrapper class selectedProduct.PricebookEntries[0].UnitPrice
     public class SelectedProductWrapper {
         @AuraEnabled

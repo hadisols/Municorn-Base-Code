@@ -10,6 +10,10 @@
     <aura:attribute name="currentMember" type="String" default=""/>
     <aura:attribute name="memberName" type="String" default=""/>
     <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    
+    <!-- Init() Loggend in User Record Details -->
+    <aura:attribute name="userInfo" type="User"/> 
+    
     <aura:attribute name="message" type="String" default=""/>
     <aura:attribute name="eventMessage" type="String" default=""/>
     <aura:handler event="c:componentCommunicationEvent" action="{!c.handleComponentCommunicationEvent}"/>

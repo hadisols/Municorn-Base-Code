@@ -14,12 +14,11 @@ public class Plivo_Outbound_SYS_ApplicationService extends SYS_ApplicationServic
         String jsonBody = resp.getBody();
 
         PlivoMessage plivoRespObj = (PlivoMessage)System.JSON.deserialize(jsonBody,PlivoMessage.class);
-        String messageUUID = String.valueof(plivoRespObj.message_uuid[0]);
-
         Object convert  = System.JSON.deserializeUntyped(jsonBody);
         if(convert instanceof Map<String, Object> && ( ((Map<String, Object>)convert).get('api_id') != null) 
                         && ( ((Map<String, Object>)convert).get('message_uuid') != null)
                         && ( ((Map<String, Object>)convert).get('message') != null) ) {
+            String messageUUID = String.valueof(plivoRespObj.message_uuid[0]);               
             ((Map<String, Object>)convert).put('messageuuid', messageUUID); 
             ((Map<String, Object>)convert).put('type', 'sms');
             ((Map<String, Object>)convert).remove('message_uuid'); 

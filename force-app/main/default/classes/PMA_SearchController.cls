@@ -103,4 +103,14 @@ public with sharing class PMA_SearchController {
         Order__C getOrderDetails = getOrderDetailsByIdOrUUID(orderUUID);
         return getOrderDetails;
     }
+    @AuraEnabled
+    public static User fetchCurrentUser() {
+        // query current user information  
+        User currentUserRecord = [SELECT ContactId, Contact.Name, Contact.AccountId, Contact.Account.Name, Email,
+            FirstName, Id, IsActive, LastName, MobilePhone, Name, Phone, ProfileId, Contact.RecordType.Name,
+            Username, UserRoleId, UserType FROM User WHERE Id =: UserInfo.getUserId()
+        ];
+
+        return currentUserRecord;
+    }
 }

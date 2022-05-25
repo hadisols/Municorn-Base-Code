@@ -57,7 +57,7 @@
                                         <div aria-hidden="true" class="slds-section__content slds-grid slds-wrap slds-var-p-around_xx-small" id="searchResultSectioncontrol">
                                             <aura:if isTrue="{! !empty(v.searchResult)}">
                                                 <aura:iteration items="{!v.searchResult}" var="memberwrap" indexVar="key">
-                                                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-memberid="{!memberwrap.member.Id}" onclick="{!c.CreateOrder}">
+                                                    <div class="slds-col slds-grid slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center" data-memberid="{!memberwrap.member.Id}" onclick="{!c.CreateOrder}">
                                                         <div class="product-wrapper">
                                                             <div class="overflow-hidden mx-auto image-wrapper max-height slds-is-relative">
                                                                 <aura:if isTrue="{! !(memberwrap.hasPictureURL) }">
@@ -105,7 +105,7 @@
                                             <!-- Start Contacts Results -->
                                         <aura:if isTrue="{! !empty(v.openTabMembers)}">
                                             <aura:iteration items="{!v.openTabMembers}" var="member" indexVar="key">
-                                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-large-size_1-of-6 slds-grid slds-var-p-around_xx-small slds-grid_align-center" data-orderuuid="{!member.order.UUID__c}" onclick="{!c.openPOSOrderScreen}">
+                                                <div class="slds-col slds-grid slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center" data-orderuuid="{!member.order.UUID__c}" onclick="{!c.openPOSOrderScreen}">
                                                     <div class="product-wrapper">
                                                         <div class="overflow-hidden mx-auto image-wrapper max-height slds-is-relative">
                                                             <aura:if isTrue="{! !(member.hasPictureURL) }">

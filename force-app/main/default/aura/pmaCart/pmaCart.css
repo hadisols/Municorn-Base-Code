@@ -21,9 +21,12 @@
 .THIS .cartitemname{
     width:180px;
 }
+.THIS .flex-row-gap-10px{
+    row-gap: 10px;
+}
 @media only screen and (max-width: 768px){
     .THIS .cartitemname{
-        width:100px;
+        width:135px;
     }
     .THIS .cartitemsList{
         height: 400px;

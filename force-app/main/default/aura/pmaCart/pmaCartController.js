@@ -6,6 +6,7 @@
     onInit: function (component, event, helper) {
         var logApiResponses = true;
         component.redirectToHome = function (status,message) {
+            var urlPath = '/'; //Invalid POS Member Open Tab
             if (message != '') {
                 if (status == true) {
                     component.displayMessage('Success', message, 'Success', 'dismissible');
@@ -13,7 +14,14 @@
                     component.displayMessage('Failure', message, 'Error', 'dismissible');
                 }
             }
-            var urlPath = '/'; //Invalid POS Member Open Tab
+            var currentuserrec = component.get("v.userInfo");
+            console.log('currentuserrec ' + currentuserrec);
+            if( (currentuserrec!= undefined) || (currentuserrec != null) ){
+                console.log('currentuserrec ' + currentuserrec.Contact.RecordType.Name);
+                if( ( currentuserrec.Contact.RecordType.Name == 'Manager' ) ){
+                    urlPath = '/search-members'; //Invalid POS Member Open Tab For Manager
+                }
+            }
             $A.get("e.force:navigateToURL").setParams({ 
                 "url": urlPath 
              }).fire();   
@@ -66,6 +74,18 @@
             }
         });
         $A.enqueueAction(action);
+        var fetchUserAction = component.get("c.fetchCurrentUser");
+        fetchUserAction.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var storeResponse = response.getReturnValue();
+               // set current user information on userInfo attribute
+                component.set("v.userInfo", storeResponse);
+            } else { // if any callback error, display error msg
+            component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error','dismissible');
+           }
+        });
+        $A.enqueueAction(fetchUserAction);
         var orderRecord = component.get("v.orderRecord");
        
     },

@@ -10,6 +10,9 @@
     <aura:attribute name="memberName" type="String" />
     <aura:attribute name="pmaContainer" type="Aura.Component"/>
 
+    <!-- Init() Loggend in User Record Details -->
+    <aura:attribute name="userInfo" type="User"/> 
+    
     <aura:attribute name="orderRecord" type="Order__C" />
     <aura:attribute name="orderItemRecord" type="List" />
 
@@ -41,7 +44,7 @@
         <div class="slds-card cartcontainer">
             <section class="h-100 h-custom">
                 <div class="container py-1 h-100">
-                    <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="row slds-grid slds-grid_align-center slds-grid_vertical-align-center h-100">
                         <div class="col">
                             <div class="card border-0 height72">
                                 <div class="card-body p-0">
@@ -59,13 +62,13 @@
                                                     <aura:iteration items="{!v.orderItemRecord}" var="orderLineItem" indexVar="key">
                                                         <div class="card mb-3 border-0 orderlineitem-container" data-id="{!orderLineItem.Product__c}">
                                                             <div class="card-body p-0">
-                                                                <div class="d-flex justify-content-between">
-                                                                    <div class="d-flex flex-row align-items-center flex-shrink-1">
+                                                                <div class="slds-grid slds-grid_align-spread">
+                                                                    <div class="slds-grid slds-wrap slds-grid_align-center flex-shrink-1">
                                                                         <div class="cartitemname">
                                                                             <h5 class="slds-truncate mb-0 sm-text-highlight skyblue-text pl-5px">{!orderLineItem.Product_Name__c}<span> x </span>{!orderLineItem.Quantity__c}</h5>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="d-flex justify-content-end flex-row align-items-center w-100 px-1">
+                                                                    <div class="slds-grid slds-grid_align-end slds-grid_vertical-align-center w-100 px-1">
                                                                         <!-- <div style="width: 50px;">
                                                                             <h5 class="fw-normal mb-0">2</h5>
                                                                         </div> -->
@@ -85,13 +88,13 @@
                                                     <aura:iteration items="{!v.selectedProductsValues}" var="selectedproduct" indexVar="key">
                                                         <div class="card mb-3 border-0" data-id="{!selectedproduct.product.Id}" onclick="{!c.productDeleteHandler}">
                                                             <div class="card-body p-0">
-                                                                <div class="d-flex justify-content-between">
-                                                                    <div class="d-flex flex-row align-items-center flex-shrink-1">
+                                                                <div class="slds-grid slds-grid_align-spread">
+                                                                    <div class="slds-grid slds-wrap slds-grid_align-center flex-shrink-1">
                                                                         <div class="cartitemname">
                                                                             <h5 class="slds-truncate mb-0 sm-text-highlight skyblue-text pl-5px">{!selectedproduct.product.Name}<span> x </span>{!selectedproduct.quantity}</h5>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="d-flex justify-content-end flex-row align-items-center w-100 px-1">
+                                                                    <div class="slds-grid slds-wrap slds-grid_align-end slds-grid_vertical-align-center w-100 px-1">
                                                                         <!-- <div style="width: 50px;">
                                                                             <h5 class="fw-normal mb-0">2</h5>
                                                                         </div> -->
@@ -110,8 +113,8 @@
                                             <aura:if isTrue="{! and( empty(v.selectedProductsValues) , ( (v.orderItemRecord.length == 0)||(v.orderItemRecord==undefined) ) ) }">
                                                 <div class="card mb-3 border-0">
                                                     <div class="card-body px-1 py-1">
-                                                        <div class="d-flex justify-content-center">
-                                                            <div class="d-flex flex-row align-items-center flex-shrink-1">
+                                                        <div class="slds-grid slds-grid_align-center">
+                                                            <div class="slds-grid slds-wrap slds-grid_align-center flex-shrink-1">
                                                                 <div class="ms-3">
                                                                     <h5 class="slds-truncate mb-0 sm-text-highlight skyblue-text">Cart is Empty</h5>
                                                                 </div>
@@ -125,8 +128,8 @@
                                     </div>
                                 </div>
                                 
-                                    <div class="d-flex justify-content-center py-3 py-3">
-                                        <div class="d-flex flex-row align-items-center flex-shrink-1">
+                                    <div class="slds-grid slds-wrap slds-grid_align-center py-3 py-3">
+                                        <div class="slds-grid slds-wrap slds-grid_align-center slds-grid_vertical-align-center flex-shrink-1 flex-row-gap-10px">
                                             <aura:if isTrue="{! !empty(v.selectedProductsValues)}">
                                                 <button class="btn btn-info btn-md mx-2" onclick="{! c.handleFinialize }">
                                                     <i class="fa fa-shopping-cart" aria-hidden="true"></i>

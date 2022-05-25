@@ -3,8 +3,16 @@
         var logApiResponses = true;
 
         component.redirectToHome = function () {
-            component.displayMessage('Failure', 'POS Invalid or Expired Order..', 'Error','dismissible');
             var urlPath = '/'; //Invalid POS Member Open Tab
+            component.displayMessage('Failure', 'POS Invalid or Expired Order..', 'Error','dismissible');
+            var currentuserrec = component.get("v.userInfo");
+            console.log('currentuserrec ' + currentuserrec);
+            if( (currentuserrec!= undefined) || (currentuserrec != null) ){
+                console.log('currentuserrec ' + currentuserrec.Contact.RecordType.Name);
+                if( ( currentuserrec.Contact.RecordType.Name == 'Manager' ) ){
+                    urlPath = '/search-members'; //Invalid POS Member Open Tab For Manager
+                }
+            }
             $A.get("e.force:navigateToURL").setParams({ 
                 "url": urlPath 
              }).fire();   
@@ -56,6 +64,18 @@
            }
        });
        $A.enqueueAction(action);
+       var fetchUserAction = component.get("c.fetchCurrentUser");
+        fetchUserAction.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var storeResponse = response.getReturnValue();
+               // set current user information on userInfo attribute
+                component.set("v.userInfo", storeResponse);
+            } else { // if any callback error, display error msg
+            component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error','dismissible');
+           }
+        });
+        $A.enqueueAction(fetchUserAction);
 
     },
 
