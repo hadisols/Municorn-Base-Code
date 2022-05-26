@@ -7,10 +7,6 @@
         <locationX>434</locationX>
         <locationY>400</locationY>
         <assignmentItems>
-            <assignToReference>$Record.AccountId</assignToReference>
-            <operator>Assign</operator>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>$Record.OwnerId</assignToReference>
             <operator>Assign</operator>
             <value>
@@ -18,28 +14,6 @@
             </value>
         </assignmentItems>
     </assignments>
-    <decisions>
-        <name>Check_UserType</name>
-        <label>Check UserType</label>
-        <locationX>702</locationX>
-        <locationY>338</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Is_Portal_User</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>UserType</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>CustomerSuccess</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Clean_Account_Id</targetReference>
-            </connector>
-            <label>Is Portal User</label>
-        </rules>
-    </decisions>
     <description>Remove Account Lookup for Customer Portal User UserType</description>
     <formulas>
         <name>UserType</name>
@@ -71,11 +45,11 @@
         <locationX>458</locationX>
         <locationY>48</locationY>
         <connector>
-            <targetReference>Check_UserType</targetReference>
+            <targetReference>Clean_Account_Id</targetReference>
         </connector>
         <object>Contact</object>
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
     </start>
-    <status>Active</status>
+    <status>Obsolete</status>
 </Flow>

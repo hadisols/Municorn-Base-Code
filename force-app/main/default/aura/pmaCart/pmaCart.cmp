@@ -86,7 +86,7 @@
                                                     <h6 class="mb-3 text-body text-center">New Items</h6>
                                                     <hr/>
                                                     <aura:iteration items="{!v.selectedProductsValues}" var="selectedproduct" indexVar="key">
-                                                        <div class="card mb-3 border-0" data-id="{!selectedproduct.product.Id}" onclick="{!c.productDeleteHandler}">
+                                                        <div class="card mb-3 border-0">
                                                             <div class="card-body p-0">
                                                                 <div class="slds-grid slds-grid_align-spread">
                                                                     <div class="slds-grid slds-wrap slds-grid_align-center flex-shrink-1">
@@ -99,7 +99,7 @@
                                                                             <h5 class="fw-normal mb-0">2</h5>
                                                                         </div> -->
                                                                         <h5 class="mb-0 px-2 sm-text-highlight grey-text">$ <lightning:formattedNumber value="{!selectedproduct.totalProductPrice}" minimumFractionDigits="2" maximumFractionDigits="2" currencyCode="USD"/></h5>
-                                                                        <div class="slds-text-color_destructive">
+                                                                        <div class="slds-text-color_destructive" data-id="{!selectedproduct.product.Id}" onclick="{!c.productDeleteHandler}">
                                                                             <i class="fas fa-trash-alt"></i>
                                                                         </div>
                                                                     </div>

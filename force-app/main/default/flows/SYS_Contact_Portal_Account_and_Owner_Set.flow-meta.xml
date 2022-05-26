@@ -11,13 +11,6 @@
             <name>Is_Customer_Portal_User</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>UserType</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>CustomerSuccess</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
                 <leftValueReference>$Record.AccountId</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>

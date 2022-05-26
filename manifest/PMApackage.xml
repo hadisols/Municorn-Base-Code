@@ -19,6 +19,8 @@
 		<members>PMA_InvocableUUIDGenerator</members>
 		<members>PMA_ProductsController</members>
 		<members>PMA_SearchController</members>
+		<members>UserCreationResponse</members>
+		<members>PortalUserService</members>
 		<members>ImageController</members>
 		<!-- End PMA Classes -->
 		<!-- Start Municorn Override Classes -->
@@ -27,6 +29,10 @@
 		<members>Stripe_Inbound_SYS_ApplicationService</members>
 		<!-- End Municorn Override Classes -->
 		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>PMA_ContactTrigger</members>
+		<name>ApexTrigger</name>
 	</types>
 	<types>
 		<members>StripePaymentPage</members>
