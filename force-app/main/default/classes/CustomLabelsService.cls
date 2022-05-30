@@ -25,7 +25,7 @@ public with sharing class CustomLabelsService {
         labelsMap.putAll(getObjectFieldLabels(Opportunity.SObjectType));
         labelsMap.putAll(getObjectFieldLabels(Contact.SObjectType));
         labelsMap.putAll(getObjectFieldLabels(Transaction__c.SObjectType));
-        labelsMap.putAll(getObjectFieldLabels(PaymentRequest__c.SObjectType));
+        labelsMap.putAll(getObjectFieldLabels(Payment_Intent__c.SObjectType));
 
         return labelsMap;
     }

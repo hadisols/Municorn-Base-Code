@@ -5,7 +5,7 @@
     <label>Bank Last 4 Digits</label>
     <length>20</length>
     <required>false</required>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>

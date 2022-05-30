@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Required_Expiration_Year</fullName>
-    <active>false</active>
-    <description>Expiration Year is required for charge cards</description>
-    <errorConditionFormula>AND(ISBLANK(TEXT(Payment_Method_Status__c)), ISBLANK( Card_Expiration_Year__c))</errorConditionFormula>
-    <errorDisplayField>Card_Expiration_Year__c</errorDisplayField>
-    <errorMessage>Expiration Year is required</errorMessage>
-</ValidationRule>

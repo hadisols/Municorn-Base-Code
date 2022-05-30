@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Required_Number</fullName>
-    <active>false</active>
-    <description>Card Number is required</description>
-    <errorConditionFormula>AND(ISBLANK(TEXT(Payment_Method_Status__c)),LEN(Card_Number__c) = 0)</errorConditionFormula>
-    <errorMessage>Card Number is required</errorMessage>
-</ValidationRule>

@@ -14,7 +14,6 @@
 		<!-- Start PMA Classes -->
 		<members>PMA_ChargeInvocableHandler</members>
 		<members>PMA_ContactInvocableHandler</members>
-		<members>PMA_ContactTriggerHandler</members>
 		<members>PMA_ExternalSiteFormsUtility</members>
 		<members>PMA_InvocableUUIDGenerator</members>
 		<members>PMA_ProductsController</members>
@@ -555,20 +554,10 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
-		<members>PMA_Managers</members>
-		<name>NavigationMenu</name>
-	</types>
-	<types>
 		<members>SYS_PMA_Guest_User_Permission_Set</members>
-		<members>SYS_PMA_Manager_Permission_Set</members>
 		<members>SYS_PMA_Permission_Set</members>
 		<members>User_Password_Never_Expires</members>
 		<name>PermissionSet</name>
-	</types>
-	<types>
-		<members>PMA_Manager</members>
-		<members>PMA_Vendor</members>
-		<name>PermissionSetGroup</name>
 	</types>
 	<types>
 		<members>PMA Manager</members>
@@ -589,6 +578,7 @@
 		<name>RecordType</name>
 	</types>
 	<types>
+		<members>Account.New_Customer</members>
 		<members>Contact.New_Member_Create</members>
 		<name>QuickAction</name>
 	</types>
@@ -627,14 +617,6 @@
 		<members>verified</members>
 		<members>visa</members>
 		<name>StaticResource</name>
-	</types>
-	<types>
-		<members>Payment_Method__c.Micro_Deposit_Field_Value_Greater_Than_1</members>
-		<members>Payment_Method__c.Required_Expiration_Month</members>
-		<members>Payment_Method__c.Required_Expiration_Year</members>
-		<members>Payment_Method__c.Required_Name</members>
-		<members>Payment_Method__c.Required_Number</members>
-		<name>ValidationRule</name>
 	</types>
 	<version>54.0</version>
 </Package>
