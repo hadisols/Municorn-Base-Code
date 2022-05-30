@@ -15,10 +15,9 @@
     <accessMappings>
         <accessLevel>Read</accessLevel>
         <object>Product__c</object>
-        <objectField>Account__c</objectField>
-        <userField>Contact.Account</userField>
+        <objectField>Contact__c</objectField>
+        <userField>Contact</userField>
     </accessMappings>
     <name>PMA Vendors</name>
-    <profiles>PMA Vendor</profiles>
     <profiles>pma vendor external app</profiles>
 </SharingSet>

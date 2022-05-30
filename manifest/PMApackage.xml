@@ -560,8 +560,8 @@
 		<name>PermissionSet</name>
 	</types>
 	<types>
-		<members>PMA Manager</members>
-		<members>PMA Vendor</members>
+		<members>PMA Manager External App</members>
+		<members>PMA Vendor External App</members>
 		<name>Profile</name>
 	</types>
 	<types>
@@ -578,8 +578,7 @@
 		<name>RecordType</name>
 	</types>
 	<types>
-		<members>Account.New_Customer</members>
-		<members>Contact.New_Member_Create</members>
+		<members>*</members>
 		<name>QuickAction</name>
 	</types>
 	<types>

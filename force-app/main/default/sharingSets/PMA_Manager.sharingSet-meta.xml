@@ -31,6 +31,5 @@
         <userField>Contact.Account</userField>
     </accessMappings>
     <name>PMA Manager</name>
-    <profiles>PMA Manager</profiles>
     <profiles>pma manager external app</profiles>
 </SharingSet>
