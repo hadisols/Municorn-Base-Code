@@ -7,11 +7,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Account.Trigger_Flow__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Contact.SYS_Child_Key__c</field>
         <readable>true</readable>
@@ -396,6 +391,10 @@
     </tabSettings>
     <tabSettings>
         <tab>SYS_OAuthConfig__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>SYS_Tracker__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

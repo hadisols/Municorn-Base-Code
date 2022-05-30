@@ -459,6 +459,16 @@
 		<members>Payment_Gateway_Record_Page</members>
 		<members>Payment_Intent_Record_Page</members>
 		<members>Transaction_Record_Page</members>
+		
+		<members>POS_Home</members>
+		<members>POS_Members</members>
+		<members>POS_Order_Fulfillment</members>
+		<members>POS_Orders</members>
+		<members>POS_POS_Selection</members>
+		<members>POS_Products</members>
+		<members>POS_Search_Members_search_members</members>
+		<members>POS_Transactions</members>
+		<members>POS_Vendors</members>
 		<name>FlexiPage</name>
 	</types>
 	<types>
@@ -617,5 +627,21 @@
 		<members>visa</members>
 		<name>StaticResource</name>
 	</types>
+    <!-- Start Experience Cloud Site -->
+    <!-- 
+    <types>
+        <members>*</members>
+        <name>Network</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomSite</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ExperienceBundle</name>
+    </types>
+    -->
+    <!-- End  Experience Cloud Site -->
 	<version>54.0</version>
 </Package>
