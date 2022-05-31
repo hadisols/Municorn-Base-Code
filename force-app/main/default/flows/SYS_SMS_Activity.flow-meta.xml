@@ -97,42 +97,6 @@
             <label>New Outbound SMS</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>Update_Customer_Record_Sms_Status</name>
-        <label>Update Customer Record Sms Status</label>
-        <locationX>517</locationX>
-        <locationY>310</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>SMS_is_Delivered_to_Customer</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.Status__c</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Delivered</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.UUID__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.Customer__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Update_Contact_Records</targetReference>
-            </connector>
-            <label>SMS is Delivered to Customer</label>
-        </rules>
-    </decisions>
     <description>Flow to log Callout to Plivo Send SMS</description>
     <formulas>
         <name>IsNew</name>
@@ -160,40 +124,9 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordUpdates>
-        <name>Update_Contact_Records</name>
-        <label>Update Contact Records</label>
-        <locationX>894</locationX>
-        <locationY>314</locationY>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Customer__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Payment_SMS_Sent__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>Payment_SMS_Sent__c</field>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </inputAssignments>
-        <object>Contact</object>
-    </recordUpdates>
     <start>
         <locationX>48</locationX>
         <locationY>42</locationY>
-        <connector>
-            <targetReference>Update_Customer_Record_Sms_Status</targetReference>
-        </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Type__c</field>
