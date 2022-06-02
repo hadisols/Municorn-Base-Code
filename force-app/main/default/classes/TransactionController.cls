@@ -47,7 +47,7 @@ public without sharing class TransactionController {
         }
         // TO DO Make it Dynamic
         // Integration Config
-        stripePaymentGateway = [SELECT Id,Name,Gateway_Public_Key__c,Access_Token__c,Test_Mode__c,CreatedDate,LastModifiedDate,OwnerId FROM Payment_Gateway__c WHERE Id = 'a0K5j000000lRqBEAU'];
+        stripePaymentGateway = [SELECT Id,Name,Gateway_Public_Key__c,Access_Token__c,Test_Mode__c,CreatedDate,LastModifiedDate,OwnerId FROM Payment_Gateway__c LIMIT 1];
 
         organization = stripePaymentGateway.Name;
         stripePublishableKey = stripePaymentGateway.Gateway_Public_Key__c;

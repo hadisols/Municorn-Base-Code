@@ -35,7 +35,7 @@ global class PMA_ContactInvocableHandler {
         /* for (Contact g: newList) {
             g.UUID__c = SYS_Helper.getUUID();
         } */
-        Payment_Gateway__c pmasandBox = new Payment_Gateway__c();
+        Payment_Gateway__c pymtGateway = new Payment_Gateway__c();
         List < Activity__c > activityList = new List < Activity__c > ();
         SYS_IntegrationLog__c errorLog = new SYS_IntegrationLog__c();
         Order__c order = new Order__c();
@@ -43,7 +43,10 @@ global class PMA_ContactInvocableHandler {
                 (SELECT Id,Name,Line_Total_Price__c,List_Price__c,Order__c,Product__c,Quantity__c,Total_Price__c,CreatedDate,LastModifiedDate FROM Order_Items__r)
                 FROM Order__c
                 WHERE Id = :orderId AND (Order_Type__c = 'Registration') AND (Status__c = 'Active' )];
-        pmasandBox = [SELECT Access_Token__c,CreatedDate,Gateway_Public_Key__c,Id,LastModifiedDate,Name,OwnerId,Test_Mode__c FROM Payment_Gateway__c LIMIT 1];
+        pymtGateway = [SELECT Access_Token__c,CreatedDate,Gateway_Public_Key__c,Id,LastModifiedDate,Name,OwnerId,Test_Mode__c FROM Payment_Gateway__c LIMIT 1];
+        if (pymtGateway == null) {
+            return;
+        }
         //Payment Intent Init
         Date firstChargeDate = System.TODAY();
         String frequency = 'single';
@@ -57,7 +60,7 @@ global class PMA_ContactInvocableHandler {
             String toPhone = PMA_ExternalSiteFormsUtility.formatPhone(g.Phone_Number__c);
             String email = g.Email;
             String paymentName = 'Payment for Membership Fees by ' + g.FirstName + ' ' + g.LastName;
-            Id paymentGatewayId = pmasandBox.Id;
+            Id paymentGatewayId = pymtGateway.Id;
             Payment_Intent__c payreq = PaymentIntentService.createNewPaymentIntent(paymentName , paymentGatewayId , contactId, accountId, opportunityId, orderId, paymentType, amount, email, frequency, firstChargeDate);
             if (payreq.Id != null) {
                 String subject = 'Outbound SMS to ' + g.LastName + ' - ' + toPhone + ' for PMA MemberShip Purchase';

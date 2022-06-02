@@ -22,9 +22,12 @@
             var state = a.getState();
             if (state === "SUCCESS") {
                     var imageURL = a.getReturnValue();
-                    // Success
-                    component.set("v.imageURL", imageURL);    
-                    $A.get('e.force:refreshView').fire();
+                    console.log('imageURL ' + imageURL);
+                    if(imageURL !== 'noimage'){
+                        // Success
+                        component.set("v.imageURL", imageURL);    
+                        // $A.get('e.force:refreshView').fire();
+                    }
             }
             else{
                 // Failure

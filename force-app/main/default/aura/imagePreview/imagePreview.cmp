@@ -1,4 +1,4 @@
-<aura:component description="Image Preview" controller="ImageController" implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+<aura:component description="Image Preview" controller="ImageController" implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
     <aura:attribute name="recordId" type="String" />
     <aura:attribute name="imageURL" type="String" />

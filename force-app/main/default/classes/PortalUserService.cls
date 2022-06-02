@@ -35,26 +35,38 @@ public without sharing class PortalUserService {
             currentRecordProfile = 'PMA Vendor External App';
         } else {
             response.ErrorMessage = 'Profile with Name PMA Manager | Vendor External App not exist';
-            // return response;
+            return;
         }
         Profile partnerProfile = [SELECT Id FROM Profile WHERE Name =: currentRecordProfile LIMIT 1];
-        if(partnerProfile==null)
+        if(partnerProfile == null)
         {
             response.ErrorMessage = 'Profile with Name PMA Manager | Vendor External App not exist';
-            // return response;
+            return;
         }
         
-        List<User> users=[SELECT Id,Name from USER WHERE ContactId=:contactId];
+        List<User> users = [SELECT Id,Name FROM USER WHERE ContactId=:contactId];
         if(!users.isEmpty())
         {
-            response.ErrorMessage='User already exist for contact ('+users[0].Name+')';
-            // return response;
+            response.ErrorMessage='User already exist for Contact ('+users[0].Name+')';
+            return;
+        }
+        String userNameSuffix;
+        String userName;
+        String alias;
+
+        List<Contact> contactsList = [SELECT Id, Name, Email FROM Contact WHERE Email =: currentContact.Email];
+        if(contactsList.size() > 1){
+            System.debug('Email already exist for Contact ('+contactsList[0].Email+')');
+            //Change username to Make unique
+            userNameSuffix='pma' +  + Integer.valueof(Math.random() * 1000);
+        } else{
+            userNameSuffix='pma';
         }
         
-        String userNameSuffix='pma';
-        String userName=currentContact.Email+'.'+userNameSuffix;
-        String alias=currentContact.Name.length()>8 ? currentContact.Name.substring(0,8) : currentContact.Name;
-        
+        userName = currentContact.Email + '.' + userNameSuffix;
+        // alias=currentContact.Name.length()>8 ? currentContact.Name.substring(0,8) : currentContact.Name;
+        alias = String.valueof(currentContact.FirstName.substring(0,1) + currentContact.LastName.substring(0,1) + Integer.valueof(Math.random() * 1000) );
+
         User theUser = new User(
             Username = userName,
             ContactId = currentContact.Id,	
@@ -68,39 +80,13 @@ public without sharing class PortalUserService {
             LocaleSidKey = 'en_US',
             LanguageLocaleKey = 'en_US'
         );
-        // User currentUserRecord = PMA_SearchController.fetchCurrentUser();
-        // UserRole userRole=getUserRole(currentUserRecord.Contact.Account.Name);
-        // if(userRole!=null)
-        // {
-        //    theUser.UserRoleId = userRole.Id;
-        // }
+       
         System.debug('theUser ' + theUser);
         insert theUser;
         
-       	// if(userRole!=null)
-        // {
-        //     userRole=getUserRole(currentUserRecord.Contact.Account.Name);
-        //     update theUser;
-        // }
+       
         response.UserId=theUser.id;
         response.UserName=theUser.Username;
         // return response;
-    }
-    
-    public static UserRole getUserRole(string actName)
-    {
-        // Account Name + Partner User
-        // Account Name + Partner Manager
-        // Account Name + Partner Executive
-        // Account Name + Customer User
-        string roleName=actName+' Customer User';
-        UserRole userRole;
-        List<UserRole> portalRoles = [Select Id From UserRole Where PortalType = 'CustomerPortal' and Name=:roleName Limit 1];
-		if(!portalRoles.isEmpty())
-        {
-            userRole=portalRoles[0];
-        }
-        System.debug('userRole ' + userRole);
-        return userRole;
     }
 }

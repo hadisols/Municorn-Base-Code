@@ -48,7 +48,8 @@ public with sharing class ImageController {
     @AuraEnabled
     public static String getSysTrackRecordDocumentId(String recordId) { 
         //SYS_Tracker__c sysTracker = Database.query('SELECT '+ SYS_Helper.getAllFieldsFor('SYS_Tracker__c') + '  WHERE WhatId__c =' + '\'' + recordId+'\'' + ' LIMIT 1 ' + '\')');
-        SYS_Tracker__c sysTracker = [SELECT Id, Name, Type__c, WhatId__c, WhoId__c FROM SYS_Tracker__c WHERE WhatId__c =: recordId  LIMIT 1];
+        List<SYS_Tracker__c> sysTrackerList = [SELECT Id, Name, Type__c, WhatId__c, WhoId__c FROM SYS_Tracker__c WHERE WhatId__c =: recordId AND (Type__c = 'Display Pic')];
+        SYS_Tracker__c sysTracker = ( sysTrackerList.size()>0) ? sysTrackerList[0] : new SYS_Tracker__c() ;
         return sysTracker.WhoId__c;
     }
     @AuraEnabled

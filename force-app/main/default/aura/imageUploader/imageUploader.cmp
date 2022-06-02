@@ -1,5 +1,5 @@
 <aura:component description="ImageUploader" controller="ImageController"
-    implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
     <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
     <aura:attribute name="multiple" type="Boolean" default="false" />

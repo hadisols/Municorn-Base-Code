@@ -20,9 +20,13 @@
             var state = a.getState();
             if (state === "SUCCESS") {
                     var documentId = a.getReturnValue();
-                    // Success
-                    component.set("v.contentDocumentId", documentId);
-                    $A.get('e.force:refreshView').fire();
+                    if ( (documentId != null) && (documentId != undefined) && (documentId != '') ){
+                        // Success
+                        console.log('Successfully retrived Content Document' + documentId);
+                        component.set("v.contentDocumentId", documentId);
+                        // $A.get('e.force:refreshView').fire();
+                    }
+                    
             }
             else{
                 // Failure
