@@ -58,7 +58,7 @@ public with sharing class PMA_SearchController {
             membersList = [SELECT Id, Name, LastName, FirstName, Gender__c, Age__c, Birthdate, Phone_Number__c, Email,
                 AccountId, Sponsor__c, StripeCustomerId__c, Active__c, Default_Payment_Method__c, Description, Fax,
                 MailingAddress, MailingCity, MailingCountry, MailingPostalCode, MailingState, MailingStreet, Salutation, Title,
-                Payment_Date_Time__c, Payment_SMS_Sent__c, RecordTypeId, LastModifiedDate, CreatedDate, OwnerId FROM Contact WHERE (RecordTypeId =: memberRecordTypeId) AND (Active__c = TRUE) AND (Phone_Number__c LIKE : tempkeyword ) AND (Id NOT IN  : memberIds) ];
+                Payment_Date_Time__c, Payment_SMS_Sent__c, RecordTypeId, LastModifiedDate, CreatedDate, OwnerId FROM Contact WHERE (RecordTypeId =: memberRecordTypeId) AND (Active__c = TRUE) AND ( (Phone_Number__c LIKE : tempkeyword ) OR ( LastName LIKE : tempkeyword )  OR ( FirstName LIKE : tempkeyword ) ) AND (Id NOT IN  : memberIds) ];
                 System.debug('searched keyword'+ keyword);
                 System.debug('searched membersList'+ membersList);
                 for(Contact member : membersList){
@@ -79,11 +79,11 @@ public with sharing class PMA_SearchController {
         Order__c currentOrder = new Order__c();
         if( (orderIdOrUUID.length()==15) || (orderIdOrUUID.length()==18) ){
             currentOrder = [SELECT Id,Name,Order_Type__c,Member__c,Member__r.Name,Member__r.Active__c, Member__r.Age__c, Member__r.Birthdate,Vendor__c,Vendor__r.Name,Account__c,Account__r.Name,Status__c,Total_Price__c,UUID__c,CreatedDate,LastModifiedDate,OwnerId,
-            (SELECT Id,Name,Order__c,Product__c,Product_Name__c,Quantity__c,List_Price__c,Line_Total_Price__c,Total_Price__c,CreatedDate,LastModifiedDate FROM Order_Items__r) FROM Order__c WHERE ( Order_Type__c = 'POS' ) AND ( Status__c != 'Completed' ) AND ( Id =: orderIdOrUUID )  ];
+            (SELECT Id,Name,Order__c,Product__c,Product_Name__c,Quantity__c,List_Price__c,Line_Total_Price__c,Total_Price__c,Notes__c,CreatedDate,LastModifiedDate FROM Order_Items__r) FROM Order__c WHERE ( Order_Type__c = 'POS' ) AND ( Status__c != 'Completed' ) AND ( Id =: orderIdOrUUID )  ];
         }
         else{
             currentOrder = [SELECT Id,Name,Order_Type__c,Member__c,Member__r.Name,Member__r.Active__c, Member__r.Age__c, Member__r.Birthdate,Vendor__c,Vendor__r.Name,Account__c,Account__r.Name,Status__c,Total_Price__c,UUID__c,CreatedDate,LastModifiedDate,OwnerId,
-            (SELECT Id,Name,Order__c,Product__c,Product_Name__c,Quantity__c,List_Price__c,Line_Total_Price__c,Total_Price__c,CreatedDate,LastModifiedDate FROM Order_Items__r)  FROM Order__c WHERE ( Order_Type__c = 'POS' ) AND ( Status__c != 'Completed' ) AND ( UUID__c =: orderIdOrUUID )  ];
+            (SELECT Id,Name,Order__c,Product__c,Product_Name__c,Quantity__c,List_Price__c,Line_Total_Price__c,Total_Price__c,Notes__c,CreatedDate,LastModifiedDate FROM Order_Items__r)  FROM Order__c WHERE ( Order_Type__c = 'POS' ) AND ( Status__c != 'Completed' ) AND ( UUID__c =: orderIdOrUUID )  ];
         }
         return currentOrder;
     }

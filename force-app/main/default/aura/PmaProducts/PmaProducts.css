@@ -49,6 +49,21 @@
 .THIS .mr-2rem{
     margin-right: 0.2rem;
 }
+.THIS .noproducts{
+    width: 100%;
+    min-height: 300px;
+    text-align: center;
+    position: relative;
+    top: 0;
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%, 50%);
+    font-size: 1.25rem;
+}
+.THIS .scrollable-container{
+    max-height: 450px;
+    overflow: hidden scroll;
+}
 @media only screen and (max-width: 768px){
     .THIS .product-wrapper {
         max-width: 100px;
@@ -59,8 +74,8 @@
         flex-basis: 100px;
     }
     .THIS .image-wrapper, .THIS .image-wrapper img{
-        width: 75px;
-        height: 75px;
+        width: 100px;
+        height: 100px;
     }
 }
 @media only screen and (max-width: 480px){

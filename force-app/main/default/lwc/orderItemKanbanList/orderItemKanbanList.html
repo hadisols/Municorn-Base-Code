@@ -1,10 +1,20 @@
 <template>
+    <div class="slds-m-around_large">
+        <template if:true={listSpinnerStatus}>
+            <div class="slds-is-relative">
+                <section class="slds-modal slds-fade-in-open">
+                    <lightning-spinner variant="brand" alternative-text="Loading..."></lightning-spinner>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open" style="background:none;"></div>
+            </div>
+        </template>
+    </div>
     <ul class="slds-has-dividers_around-space dropZone" 
     ondrop={handleDrop}
     ondragover={handleDragOver}
     style="height:70vh; overflow-y:auto;">
         <template for:each={records} for:item="recordItem">
-            <c-order-item-kanban-card stage={stage} record={recordItem} key={recordItem.Id} onitemdrag={handleItemDrag}></c-order-item-kanban-card>
+            <c-order-item-kanban-card stage={stage} allstages={stages} record={recordItem} key={recordItem.Id} onitemdrag={handleItemDrag} ontouchdrop={handleTouchDrop}></c-order-item-kanban-card>
         </template>
     </ul>
 </template>

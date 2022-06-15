@@ -16,6 +16,7 @@ public with sharing class PMA_ProductsController {
             orderItemNew.Item_Status__c = 'New';
             orderItemNew.Product__c = selectedProduct.product.Id;
             orderItemNew.Quantity__c = selectedProduct.quantity;
+            orderItemNew.Notes__c = selectedProduct.orderNotes;
             orderItemList.add(orderItemNew);
             if(i == 1){
                 productVendorId = selectedProduct.product.Contact__c;    

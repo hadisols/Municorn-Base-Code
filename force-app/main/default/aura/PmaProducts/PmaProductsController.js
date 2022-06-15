@@ -1,7 +1,7 @@
 ({
     onInit: function (component, event, helper) {
         var logApiResponses = true;
-
+        component.set('v.isLoading',true);
         component.redirectToHome = function () {
             var urlPath = '/'; //Invalid POS Member Open Tab
             component.displayMessage('Failure', 'POS Invalid or Expired Order..', 'Error','dismissible');
@@ -55,11 +55,12 @@
                 //For Aura attribute Iterate for UI
                 let productObjectData = Object.values(allProductsMap);
                 component.set('v.productData',productObjectData);
-
+                component.set('v.isLoading',false);
                 if (logApiResponses) { console.log('Init productData'); }
                 if (logApiResponses) { console.table(productObjectData); }
               
            } else { // if any callback error, display error msg
+            component.set('v.isLoading',false);
             component.displayMessage('Error', 'An error occurred during Initialization ' + state, 'Error','dismissible');
            }
        });

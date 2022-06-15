@@ -9,6 +9,7 @@
     <aura:attribute name="memberId" type="String" />
     <aura:attribute name="orderUUID" type="String" />
     <aura:attribute name="memberName" type="String" />
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
 
     <!-- Init() Loggend in User Record Details -->
     <aura:attribute name="userInfo" type="User"/> 
@@ -52,15 +53,37 @@
     <!-- <div class="slds-page-header" role="banner">
         <span class="slds-page-header__title">Products List</span>
     </div> -->
-    <aura:if isTrue="{! !empty(v.productData)}">
+    
     <div class="slds-card my-2">
         <!--Start Bootstrap Products data markup-->
         <div class="sfappwrapper">
-            <div class="slds-grid slds-wrap slds-var-p-around_xx-small my-2 sm-justify-content-center">
+            <aura:if isTrue="{!v.isLoading}">
+                <div class="slds-card my-2">
+                    <div class="spinnercontain" style="height:6rem;position:relative">
+                        <div class="slds-spinner_container">
+                            <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{! and(empty(v.productData), (v.isLoading == false ) )}">
+                <div class="slds-card my-2">
+                    <!--Start Bootstrap Products data markup-->
+                    <div class="sfappwrapper">
+                        <div class="slds-grid slds-wrap slds-var-p-around_xx-small my-2 sm-justify-content-center">
+                            <div class="noproducts">No Products Added for {! v.userInfo.Name }. <div></div>
+                                Contact Manager to Add Products
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aura:if>
+            <div class="slds-grid slds-wrap slds-var-p-around_xx-small my-2 sm-justify-content-center scrollable-container">
                 <aura:iteration items="{!v.productData}" var="prod" indexVar="key">
-                    <!-- <div class="slds-col slds-grid slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center">
-
-                    </div> -->
                     <div class="{! ( prod.isVisible) ? 'slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center flex-productbasis mr-2rem my-2'  : 'slds-var-p-around_xx-small slds-var-m-bottom_xx-small slds-grid_align-center flex-productbasis mr-2rem my-2 inactiveProduct' }" data-id="{! prod.product.Id}" onclick="{! ( prod.isVisible) ? c.productClickHandler  : c.productNotEligible}">
                         <div class="product-wrapper">
                             <div class="overflow-hidden mx-auto image-wrapper max-height">
@@ -81,7 +104,6 @@
             </div>
         </div>
     </div>
-    </aura:if>
     <!--End Bootstrap Products data markup-->
     
 </aura:component>

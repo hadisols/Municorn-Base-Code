@@ -27,7 +27,7 @@ public without sharing class PortalUserService {
         UserCreationResponse response = new UserCreationResponse();
         Contact currentContact = new Contact();
         String currentRecordProfile;
-        currentContact = [Select Id,Name,FirstName,LastName, Email, Account.Name,RecordType.Name FROM Contact where Id =: contactId LIMIT 1];
+        currentContact = [Select Id,Name,FirstName,LastName, Phone_Number__c, Email, Account.Name,RecordType.Name FROM Contact where Id =: contactId LIMIT 1];
         if (currentContact.RecordType.Name == 'Manager'){
             currentRecordProfile = 'PMA Manager External App';
         } 
@@ -64,7 +64,6 @@ public without sharing class PortalUserService {
         }
         
         userName = currentContact.Email + '.' + userNameSuffix;
-        // alias=currentContact.Name.length()>8 ? currentContact.Name.substring(0,8) : currentContact.Name;
         alias = String.valueof(currentContact.FirstName.substring(0,1) + currentContact.LastName.substring(0,1) + Integer.valueof(Math.random() * 1000) );
 
         User theUser = new User(
@@ -73,6 +72,7 @@ public without sharing class PortalUserService {
             ProfileId = partnerProfile.Id,
             Alias = alias,
             Email = currentContact.Email,
+            Phone = PMA_ExternalSiteFormsUtility.formatPhone(currentContact.Phone_Number__c),
             EmailEncodingKey = 'UTF-8',
             LastName = currentContact.LastName,
             CommunityNickname = alias,

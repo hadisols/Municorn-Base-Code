@@ -32,3 +32,41 @@
     transform: translateY(-2px);
     transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+.carditem-title{
+    color: var(--lwc-brandTextLink,#2574A9);
+    text-decoration: none;
+    transition: color .1s linear;
+}
+.next-stagebtnwrap{
+    padding: 0 0.8rem 0 0;
+}
+.flex-row{
+    flex-direction: row;
+}
+.flex-column{
+    flex-direction: column;
+}
+.movetonextstage {
+    background: #98cefe;
+    padding: 0.25rem;
+}
+.movetonextstage:hover {
+    background: #0189ff;
+    padding: 0.25rem;
+}
+.movetonextstage svg {
+    fill: #000000;
+}
+/*Desktops devices */
+@media (min-width: 1199px) {
+    .d-largescreen-none {
+        display: none !important;
+    }
+}
+
+/*Mobile Screens*/
+@media only screen and (max-width: 1198px) {
+    .d-largescreen-none {
+        display: flex !important;
+    }
+}

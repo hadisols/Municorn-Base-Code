@@ -1,36 +1,36 @@
 <template>
+    <div class="slds-m-around_large">
+        <template if:true={spinnerStatus}>
+            <div class="slds-is-relative">
+                <section class="slds-modal slds-fade-in-open">
+                    <lightning-spinner variant="brand" alternative-text="Loading..."></lightning-spinner>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open" style="background:none;"></div>
+            </div>
+        </template>
+    </div>
     <template if:true={isSameStage}>
-        <li class="forceRecordLayout" draggable="true" ondragstart={itemDragStart}>
+        <li class="forceRecordLayout" draggable="true" ondragstart={itemDragStart} onhidespinner={hideSpinner}>
             <article class="pipelineViewCard uiDraggable">
                 <div class="pipelineViewCardInnerWrapper">
-                    <h3 class="slds-truncate" title={record.Name}>
-                        <a href="#" target="_blank" data-id={record.Id} onclick={navigateOrderItemHandler}>
-                            <span class="slds-truncate" data-id={record.Id}>
-                                {record.Name}
-                            </span>
-                        </a>
-                    </h3>
-                    <h3 class="slds-truncate" title={record.OrderName}>
-                        <a href="#" target="_blank" data-id={record.OrderId} onclick={navigateOrderHandler}>
-                            <span class="slds-truncate" data-id={record.OrderId}>
-                                {record.OrderName}
-                            </span>
-                        </a>
-                    </h3>
-                    <h3 class="slds-truncate" title={record.MemberName}>
-                        <a href="#" target="_blank" data-id={record.MemberId} onclick={navigateMemberHandler}>
-                            <span class="slds-truncate" data-id={record.MemberId}>
-                                {record.MemberName}
-                            </span>
-                        </a>
-                    </h3>
-                    <h3 class="slds-truncate" title={record.Product_Name__c}>
-                        <a href="#" target="_blank" data-id={record.Product__c} onclick={navigateProductHandler}>
-                            <span class="slds-truncate" data-id={record.Product__c}>
-                                {record.Product_Name__c} x {record.Quantity__c}
-                            </span>
-                        </a>
-                    </h3>
+                    <div class="slds-grid slds-grid_align-spread">
+                        <div class="slds-grid flex-column">
+                            <h3 class="slds-truncate" title={record.Product_Name__c}>
+                                <span class="slds-truncate carditem-title" data-id={record.Product__c}>
+                                    {record.Product_Name__c} x {record.Quantity__c}
+                                </span>
+                            </h3>
+                            <h3 class="order-notes" title={record.Notes}>
+                                <span class="slds-text-align_left">
+                                    {record.Notes}
+                                </span>
+                            </h3>
+                        </div>
+                        
+                        <div class="slds-grid slds-gutters_direct slds-grid_align-end slds-grid_vertical-align-center next-stagebtnwrap d-largescreen-none"  onclick={itemTouchNextStage}>
+                            <lightning-icon class="movetonextstage" icon-name="utility:jump_to_right" size="xx-small" alternative-text="jump_to_right"></lightning-icon>
+                        </div>
+                    </div>
                 </div>
 
             </article>

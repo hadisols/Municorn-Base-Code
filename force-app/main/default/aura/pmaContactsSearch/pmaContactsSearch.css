@@ -12,6 +12,9 @@
 }
 .THIS .image-wrapper.max-height{
     min-width: 100%;
+    max-width: 150px;
+    height: 150px;
+    overflow: hidden;
 }
 .THIS .noimage {
     margin: 0 auto;
