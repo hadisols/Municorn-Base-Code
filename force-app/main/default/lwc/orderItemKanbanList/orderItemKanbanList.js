@@ -1,6 +1,8 @@
 import { LightningElement, api } from 'lwc';
 
 export default class OrderItemKanbanList extends LightningElement {
+    @api timeoutInMiliseconds = 10000;
+    @api timeoutId;
     @api records
     @api stage
     @api allstages
@@ -59,4 +61,5 @@ export default class OrderItemKanbanList extends LightningElement {
     hideSpinner() {
         this.listSpinnerStatus = false;
     }
+    
 }

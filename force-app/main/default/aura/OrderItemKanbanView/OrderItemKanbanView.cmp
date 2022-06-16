@@ -1,0 +1,53 @@
+<aura:component description="KanbanDragAndDropComp" 
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" 
+    controller="PMA_SearchController">
+    <aura:attribute name="sObjectName" type="String" default="Order_Item__c"/>
+    <aura:attribute name="sObjectFields" type="String[]" default="['Name', 'Product__c','Product_Name__c' , 'Product__r.Name', 'Quantity__c', 'Notes__c', 'Item_Status__c', 'Order__c' , 'Order__r.Order_Type__c','Order__r.Status__c']"/>
+    <aura:attribute name="sObjectPickListValue" type="String" default="Item_Status__c"/>
+    <!-- Pooling Attributes -->
+    <aura:attribute name="timeoutInMiliseconds" type="Integer" default="30000"/>
+    <aura:attribute name="setIntervalId" type="Integer"/>
+    <aura:attribute name="userInteraction" type="Boolean" default="false"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="sObjectRecordList" type="PMA_SearchController.kanbanWrap"/>
+    
+    <div class="card_wrapper slds-grid slds-grid_align-center">
+        <aura:iteration var="pickVal" items="{!v.sObjectRecordList.pickVals}">
+            <div class="stageContainer stage_width" key="{!pickVal}" >
+                    <h1 class="column_heading">{!pickVal}</h1>
+                    <ul ondrop="{!c.drop}" ondragover="{!c.allowDrop}"
+                    class="slds-has-dividers_around-space dropZone list-style-none" data-Pick-Val="{!pickVal}" style="height:70vh;overflow-y:auto;">
+                        <aura:iteration var="objRecord" items="{!v.sObjectRecordList.records}">
+                            <aura:if isTrue="{!pickVal == objRecord.Item_Status__c}">
+                                <li class="cusCursor forceRecordLayout" draggable="true" ondragstart="{!c.drag}" data-drag-id="{!objRecord.Id}">
+                                    <article class="pipelineViewCard uiDraggable">
+                                        <div class="pipelineViewCardInnerWrapper">
+                                            <div class="slds-grid slds-grid_align-spread">
+                                                <div class="slds-grid flex-column">
+                                                    <h3 class="slds-truncate" title="{!objRecord.Product_Name__c}">
+                                                        <span class="slds-truncate carditem-title" data-id="{!objRecord.Product__c}">
+                                                            {!objRecord.Product_Name__c} x {!objRecord.Quantity__c}
+                                                        </span>
+                                                    </h3>
+                                                    <h3 class="order-notes" title="{!objRecord.Notes__c}">
+                                                        <span class="slds-text-align_left">
+                                                            {!objRecord.Notes__c}
+                                                        </span>
+                                                    </h3>
+                                                </div>
+                                                
+                                                <div class="slds-grid slds-gutters_direct slds-grid_align-end slds-grid_vertical-align-center next-stagebtnwrap d-largescreen-none xx-small" data-record-id="{!objRecord.Id}"  onclick="{!c.itemTouchNextStage}">
+                                                    <lightning:icon class="movetonextstage" size="xx-small" iconName="utility:jump_to_right" alternativeText="jump_to_right" ></lightning:icon>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </li>
+                            </aura:if> 
+                        </aura:iteration>
+                    </ul>
+                </div>
+        </aura:iteration>
+    </div>
+</aura:component>

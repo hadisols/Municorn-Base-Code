@@ -4,36 +4,11 @@ export default class OrderItemKanbanCard extends NavigationMixin(LightningElemen
     @api stage
     @api record
     @api spinnerStatus = false;
-
+    
     get isSameStage(){
         return this.stage === this.record.Item_Status__c
     }
-    navigateMemberHandler(event){
-        event.preventDefault()
-        this.navigateHandler(event.target.dataset.id, 'Contact')
-    }
-    navigateOrderHandler(event){
-        event.preventDefault()
-        this.navigateHandler(event.target.dataset.id, 'Order__c')
-    }
-    navigateOrderItemHandler(event){
-        event.preventDefault()
-        this.navigateHandler(event.target.dataset.id, 'Order_Item__c')
-    }
-    navigateProductHandler(event){
-        event.preventDefault()
-        this.navigateHandler(event.target.dataset.id, 'Product__c')
-    }
-    navigateHandler(Id, apiName) {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: Id,
-                objectApiName: apiName,
-                actionName: 'view',
-            },
-        });
-    }
+    
     itemDragStart(){
         console.log('itemDragStart');
         console.log(this.record.Id);

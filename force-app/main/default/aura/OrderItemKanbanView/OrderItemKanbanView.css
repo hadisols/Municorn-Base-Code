@@ -1,0 +1,114 @@
+.THIS .dropZone{
+    min-height:25rem;
+}
+.THIS .list-style-none{
+    padding-left: 0px;
+    list-style-type: none;
+}
+.THIS .cusCursor {
+    cursor: all-scroll;
+} 
+.THIS .card_wrapper{
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    background: #fff;
+}
+.THIS .column_heading{
+    padding: 0.5rem 1.25rem;
+    font-size: 16px;
+    background: #005fb2;
+    color: #fff;
+    margin-bottom: 1rem;
+    border-radius: 0 30px 35px 0;
+}
+.THIS .stageContainer{
+    float:left;
+    border: 1px solid #d8dde6;
+    margin: 0;
+    border-radius: .25rem;
+}
+.THIS .stage_width{
+    width: calc(85vw/ 3);
+}
+@media only screen and (max-width: 768px){
+    .THIS .card_wrapper {
+        flex-direction: column;
+    }
+    .THIS .stage_width{
+        width: 100%;
+    }  
+}
+
+.THIS .slds-item {
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    background-clip: padding-box;
+    padding: 0.45rem;
+    margin: 0.25rem;
+}
+.THIS .pipelineViewCard {
+    position: relative;
+    margin: 0.5rem;
+    border-radius: 0.25rem;
+    list-style: none;
+}
+.THIS .uiDraggable {
+    cursor: move;
+    -webkit-user-drag: element;
+}
+.THIS .pipelineViewCardInnerWrapper {
+    position: relative;
+    padding: 0.5rem;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(229, 229, 229);
+    border-radius: 0.25rem;
+    list-style: none;
+}
+.THIS .pipelineViewCard:active{
+    box-shadow: 0 0 10px #195594;
+}
+.THIS .pipelineViewCard:hover,.THIS  .pipelineViewCard:focus {
+    outline: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.THIS .carditem-title{
+    color: var(--lwc-brandTextLink,#2574A9);
+    text-decoration: none;
+    transition: color .1s linear;
+}
+.THIS .next-stagebtnwrap{
+    padding: 0 0.8rem 0 0;
+}
+.THIS .flex-row{
+    flex-direction: row;
+}
+.THIS .flex-column{
+    flex-direction: column;
+}
+.THIS .movetonextstage {
+    background: #98cefe;
+    padding: 0.25rem;
+}
+.THIS .movetonextstage:hover {
+    background: #0189ff;
+    padding: 0.25rem;
+}
+.THIS .movetonextstage svg {
+    fill: #000000;
+}
+/*Desktops devices */
+@media (min-width: 1199px) {
+    .THIS .d-largescreen-none {
+        display: none !important;
+    }
+}
+
+/*Mobile Screens*/
+@media only screen and (max-width: 1198px) {
+    .THIS .d-largescreen-none {
+        display: flex !important;
+    }
+}

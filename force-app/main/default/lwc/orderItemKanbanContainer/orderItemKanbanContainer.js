@@ -8,32 +8,47 @@ import STAGE_FIELD from '@salesforce/schema/Order_Item__c.Item_Status__c'
 import ID_FIELD from '@salesforce/schema/Order_Item__c.Id'
 import getOrderItems from '@salesforce/apex/PMA_SearchController.getOrderItemsForFulfillment';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 export default class OrderItemKanbanContainer extends LightningElement {
     @api timeoutInMiliseconds = 10000;
     @api timeoutId;
-    _wiredOrderItemsData;
-    
-    records
-    pickVals
-    recordId
+    @api _wiredOrderItemsData;
+    @api records
+    @api pickVals
+    @api recordId
     connectedCallback(){
+        this.loadOrderItemsData();
         this.startTimer();
+        // console.log(this.template.querySelector('.refreshbutton'));
     }
     /*** fetching Order_Item__c lists ***/
-    @wire(getOrderItems,{})
-    wiredOrderItems(wireResult){
-        const { data, error } = wireResult;
-        this._wiredOrderItemsData = wireResult;
-        if(data){
-            console.log("getOrderItems", data);
-            this.records = data.map(item => {
+    loadOrderItemsData(){
+        getOrderItems()
+        .then(result => {
+            console.log("getOrderItems", result);
+            this.records = result.map(item => {
                 return { 'Id': item.Id, 'Name': item.Name, 'Product__c': item.Product__c, 'Product_Name__c': item.Product__r.Name, 'Quantity__c': item.Quantity__c, 'Item_Status__c': item.Item_Status__c, 'List_Price__c': item.List_Price__c, 'Total_Price__c': item.Total_Price__c, 'OrderId': item.Order__c, 'OrderName': item.Order__r.Name, 'MemberName': item.Order__r.Member__r.Name, 'MemberId': item.Order__r.MemberId__c, 'Notes': item.Notes__c }
             })
-        }
-        if(error) {
+        })
+        .catch(error => {
             console.error(error)
-        }
+        });
     }
+
+    // @wire(getOrderItems,{})
+    // wiredOrderItems(wireResult){
+    //     const { data, error } = wireResult;
+    //     this._wiredOrderItemsData = wireResult;
+    //     if(data){
+    //         console.log("getOrderItems", data);
+    //         this.records = data.map(item => {
+    //             return { 'Id': item.Id, 'Name': item.Name, 'Product__c': item.Product__c, 'Product_Name__c': item.Product__r.Name, 'Quantity__c': item.Quantity__c, 'Item_Status__c': item.Item_Status__c, 'List_Price__c': item.List_Price__c, 'Total_Price__c': item.Total_Price__c, 'OrderId': item.Order__c, 'OrderName': item.Order__r.Name, 'MemberName': item.Order__r.Member__r.Name, 'MemberId': item.Order__r.MemberId__c, 'Notes': item.Notes__c }
+    //         })
+    //     }
+    //     if(error) {
+    //         console.error(error)
+    //     }
+    // }
 
     /** Fetch metadata abaout the opportunity object**/
     @wire(getObjectInfo, {objectApiName:ORDERITEM_OBJECT})
@@ -83,7 +98,8 @@ export default class OrderItemKanbanContainer extends LightningElement {
         .then(()=>{
             this.showToast();
             console.log('UI Refreshed');
-            return refreshApex(this._wiredOrderItemsData);
+            this.loadOrderItemsData();
+            // return refreshApex(this._wiredOrderItemsData);
         }).catch(error=>{
             console.error(error)
         })
@@ -97,32 +113,36 @@ export default class OrderItemKanbanContainer extends LightningElement {
             })
         )
     }
+    
     //Polling Functions
-    doInactive() {
+    refreshDatainUI() {
         // does whatever you need it to actually do - probably signs them out or stops polling the server for info
         console.log('Do Pooling');
-        refreshApex(this.wiredOrderItems);
-        return refreshApex(this._wiredOrderItemsData);
+        getOrderItems()
+        .then(result => {
+            console.log("getOrderItems", result);
+            this.records = result.map(item => {
+                return { 'Id': item.Id, 'Name': item.Name, 'Product__c': item.Product__c, 'Product_Name__c': item.Product__r.Name, 'Quantity__c': item.Quantity__c, 'Item_Status__c': item.Item_Status__c, 'List_Price__c': item.List_Price__c, 'Total_Price__c': item.Total_Price__c, 'OrderId': item.Order__c, 'OrderName': item.Order__r.Name, 'MemberName': item.Order__r.Member__r.Name, 'MemberId': item.Order__r.MemberId__c, 'Notes': item.Notes__c }
+            })
+        })
+        .catch(error => {
+            console.error(error)
+        });
+        console.log('Done refreshApex');
+        // return refreshApex(this._wiredOrderItemsData);
     }
     resetTimer() {
-        console.log('resetTimer'); 
+        // console.log('resetTimer'); 
         window.clearInterval(this.timeoutId)
         this.startTimer();
     }
     startTimer() { 
-        console.log('startTimer');
+        // console.log('startTimer');
         // window.setTimeout returns an Id that can be used to start and stop a timer
-        this.timeoutId = window.setInterval(this.doInactive, this.timeoutInMiliseconds)
+        this.timeoutId = window.setInterval(this.refreshDatainUI, this.timeoutInMiliseconds)
     }
-     
-    
-    setupTimers () {
-        console.log('setupTimers');
-        window.addEventListener('load', resetTimer, false);
-        var events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart','touchmove','click'];
-        events.forEach(function(name) {
-         document.addEventListener(name, resetTimer, false);
-        });
-        
+    getLatest() {
+        this.loadOrderItemsData();
+    //    return refreshApex(this._wiredOrderItemsData);
     } 
 }

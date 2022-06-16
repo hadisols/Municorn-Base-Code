@@ -50,17 +50,20 @@
 		<members>cartCommunicationEvent</members>
 		<members>componentCommunicationEvent</members>
 		<members>pmaContactsSearch</members>
+		<members>OrderItemKanbanView</members>
 		<members>ManagerNavigation</members>
 		<members>imagePreview</members>
 		<members>imageUploader</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
+	<!--
 	<types>
         <members>OrderItemKanbanCard</members>
         <members>OrderItemKanbanList</members>
         <members>OrderItemKanbanContainer</members>
         <name>LightningComponentBundle</name>
     </types>
+	-->
 	<types>
 		<members>Account.Vendor_Compact_Layout</members>
 		<members>Contact.Customer_Compact_Layout</members>

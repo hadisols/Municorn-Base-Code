@@ -1,9 +1,15 @@
+<!-- sldsValidatorIgnore -->
 <template>
+    <span class="refreshbutton" onclick={getLatest}> <lightning-icon icon-name="utility:refresh" size="xx-small" alternative-text="refresh!" title="refresh"></lightning-icon> </span>
     <div class="card_wrapper">
         <template for:each={pickVals} for:item="item">
-            <div class="stageContainer stage_width" key={item}>
+            <div class="stageContainer stage_width" key={item} onclick={resetTimer} 
+            onscroll={resetTimer} ontouchstart={resetTimer} ontouchmove={resetTimer} ontouchend={resetTimer}
+            ondragstart={resetTimer}  ondrop={resetTimer} ondragover={resetTimer} 
+            onmousedown={resetTimer} onmousemove={resetTimer} onkeypress={resetTimer}>
+            
                 <h1 class="column_heading">{item}</h1>
-                <c-order-item-kanban-list records={records} stage={item} allstages={pickVals}
+                <c-order-item-kanban-list records={records} stage={item} allstages={pickVals} counter={counter}
                  onlistitemdrag={handleListItemDrag}
                  onitemdrop={handleItemDrop}
                  ontouchitemdrop={handleTouchItemDrop}

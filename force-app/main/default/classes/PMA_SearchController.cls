@@ -113,4 +113,67 @@ public with sharing class PMA_SearchController {
 
         return currentUserRecord;
     }
+    @AuraEnabled
+    public static List<Order_Item__c> getOrderItemsForFulfillment(){
+        List<Order_Item__c> ordersList = new List< Order_Item__c >();
+        ordersList = [SELECT Id,Name,Order__c,Item_Status__c,Product__c,Product__r.Name,Product_Name__c,Quantity__c,
+        List_Price__c,Line_Total_Price__c,Total_Price__c,Notes__c,
+        CreatedDate,LastModifiedDate,
+        Order__r.Name,Order__r.Order_Type__c,Order__r.Member__c,Order__r.Member__r.Name,
+        Order__r.Member__r.Active__c,Order__r.Member__r.Age__c,Order__r.Vendor__c,Order__r.Vendor__r.Name,
+        Order__r.Account__c,Order__r.Account__r.Name,Order__r.Status__c,Order__r.Total_Price__c,
+        Order__r.UUID__c,Order__r.CreatedDate,Order__r.LastModifiedDate,Order__r.OwnerId FROM Order_Item__c WHERE ( Order__r.Order_Type__c = 'POS' ) AND (  Order__r.Status__c != 'Completed' ) ];
+        System.debug('ordersList '  + ordersList);
+        return  ordersList;
+    }
+    @AuraEnabled(cacheable=true)
+    public static List<Order_Item__c> getOrderItemsForFulfillmentCache(){
+        List<Order_Item__c> ordersList = new List< Order_Item__c >();
+        ordersList = [SELECT Id,Name,Order__c,Item_Status__c,Product__c,Product__r.Name,Product_Name__c,Quantity__c,
+        List_Price__c,Line_Total_Price__c,Total_Price__c,Notes__c,
+        CreatedDate,LastModifiedDate,
+        Order__r.Name,Order__r.Order_Type__c,Order__r.Member__c,Order__r.Member__r.Name,
+        Order__r.Member__r.Active__c,Order__r.Member__r.Age__c,Order__r.Vendor__c,Order__r.Vendor__r.Name,
+        Order__r.Account__c,Order__r.Account__r.Name,Order__r.Status__c,Order__r.Total_Price__c,
+        Order__r.UUID__c,Order__r.CreatedDate,Order__r.LastModifiedDate,Order__r.OwnerId FROM Order_Item__c WHERE ( Order__r.Order_Type__c = 'POS' ) AND (  Order__r.Status__c != 'Completed' ) ];
+        System.debug('ordersList '  + ordersList);
+        return  ordersList;
+    }
+    @AuraEnabled
+    public static kanbanWrap getKanbanWrapperDetails_Apex(String sObjectName, String[] sObjectFields, String sObjectPickListValue) {
+        List<String> lstPickvals=new List<String>();
+        for (Schema.PicklistEntry a : Schema.getGlobalDescribe().get(sObjectName).getDescribe().fields.getMap().get(sObjectPickListValue).getDescribe().getPickListValues()) {
+            lstPickvals.add(a.getValue());
+        }
+        String query = 'SELECT Id, ';
+        for(String fields : sObjectFields){
+            query += fields + ' ,';
+        }
+        query = query.removeEnd(',');
+        query += ' FROM ' + sObjectName + ' WHERE Order__r.Order_Type__c = \'POS\' AND Order__r.Status__c != \'Completed\'' ;
+        System.debug('query '+ query);
+        return new kanbanWrap(Database.query(query), lstPickvals);
+    }
+    
+    @AuraEnabled
+    public static String getUpdatePickListValue_Apex(Id recordId, String sObjectPickListValue, String pickListUpdatedValue) {
+        SObject sObjectRecord = recordId.getSObjectType().newSObject(recordId);
+        sObjectRecord.put(sObjectPickListValue, pickListUpdatedValue);
+        update sObjectRecord;
+        return 'Success';
+    }
+    
+    
+    
+    public class kanbanWrap{
+        @AuraEnabled
+        public List<sObject> records {get;set;}
+        @AuraEnabled
+        public List<String> pickVals {get;set;}
+        
+        public kanbanWrap(List<sObject> recs, List<String> pVals){
+            this.records = recs;
+            this.pickVals = pVals;
+        }
+    }
 }
