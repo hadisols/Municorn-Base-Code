@@ -697,6 +697,7 @@ public without sharing class SYS_DataCache {
     public static Boolean enforce_limit {
         get {
             if(enforce_limit_map == NULL) {
+                enforce_limit_map = new Map<String, Boolean>();
                 for(IntegrationSetting__mdt iter : IntegrationSetting__mdt.getAll().values()) {
                     enforce_limit_map.put(iter.developerName, iter.Enforce_Limit__c);
                 }
