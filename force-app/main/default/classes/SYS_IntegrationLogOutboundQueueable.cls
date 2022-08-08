@@ -80,7 +80,8 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
         if(outboundResultLogs.size() > 0){
 
             //new SYS_ApplicationService().doDML(outboundResultLogs, 'UPSERT','');
-            upsert outboundResultLogs;
+            SYS_Helper.upsertLog(outboundResultLogs);
+            // upsert outboundResultLogs;
         } 
         
     }
