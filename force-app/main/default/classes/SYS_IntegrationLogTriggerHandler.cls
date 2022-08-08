@@ -1,6 +1,10 @@
 public without sharing class SYS_IntegrationLogTriggerHandler {
     public static void handleAfterInsert() {
 
+        if(enforceLimitCheck()) {
+            return;
+        }
+
         List<Id> newOutboundLogIds = new List<Id>();
         List<Id> newInboundLogIds = new List<Id>();
         for(SYS_IntegrationLog__c log : ((List<SYS_IntegrationLog__c>)Trigger.new)){
@@ -23,6 +27,11 @@ public without sharing class SYS_IntegrationLogTriggerHandler {
     }
 
     public static void handleAfterUpdate() {
+        
+        if(enforceLimitCheck()) {
+            return;
+        }
+
         List<Id> newOutboundLogIds = new List<Id>();
         List<Id> newInboundLogIds = new List<Id>();
         for(SYS_IntegrationLog__c log : ((List<SYS_IntegrationLog__c>)Trigger.new)){
@@ -43,6 +52,17 @@ public without sharing class SYS_IntegrationLogTriggerHandler {
         if(newInboundLogIds.size()>0)
             new SYS_IntegrationLogInboundImmediate(newInboundLogIds).execute(); 
         
+    }
+
+    public static Boolean enforceLimitCheck() {
+
+        if(SYS_DataCache.enforce_limit) {
+            List<SYS_IntegrationLog__c> logs = [select id from SYS_IntegrationLog__c LIMIT 10];
+            if(logs.size() >= 5) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
