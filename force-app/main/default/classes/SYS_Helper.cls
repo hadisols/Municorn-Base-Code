@@ -1,4 +1,4 @@
-global without sharing class SYS_Helper {
+global inherited sharing class SYS_Helper {
 
     public class SYS_HelperException extends Exception{}
     /* ------------------------------------------------------------------------ */
@@ -10,33 +10,7 @@ global without sharing class SYS_Helper {
     /* ------------------------------------------------------------------------ */
 
     global static void insertLog(List<SYS_IntegrationLog__c> logs){
-        if(logs.size()>0){ 
-            
-            
-            List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-            String matrixId;
-            if(matrix.size() == 0) {
-                SYS_Matrix__c matrixRec = new SYS_Matrix__c(
-                    Date__c = Date.today()
-                );
-                Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_Matrix__c.fields.getMap();
-                Map<String, Object> fieldsToValue = matrixRec.getPopulatedFieldsAsMap();
-                for(String fieldKey : fieldsToValue.keySet()) {
-                    if(!fieldMap.get(fieldKey).getDescribe().isCreateable() ) {
-                        throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
-                    }
-                }
-                Database.SaveResult result = Database.insert(matrixRec, false);
-                if (result.isSuccess()) {
-                    matrixId = matrixRec.Id;
-                }
-            } else {
-                matrixId = matrix[0].Id;
-            }
-
-            for(SYS_IntegrationLog__c log:logs) {
-                log.SYS_Matrix__c = matrixId;
-            }
+        if(logs.size()>0){
             Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
             Map<String, Object> fieldsToValue = logs[0].getPopulatedFieldsAsMap();
             for(String fieldKey : fieldsToValue.keySet()) {
@@ -50,29 +24,6 @@ global without sharing class SYS_Helper {
 
     global static Database.SaveResult insertLog(SYS_IntegrationLog__c log){
         Database.SaveResult result;
-        
-        //insert log;
-        List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-        String matrixId;
-        if(matrix.size() == 0) {
-            SYS_Matrix__c matrixRec = new SYS_Matrix__c(
-                Date__c = Date.today()
-            );
-            Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_Matrix__c.fields.getMap();
-            Map<String, Object> fieldsToValue = matrixRec.getPopulatedFieldsAsMap();
-            for(String fieldKey : fieldsToValue.keySet()) {
-                if(!fieldMap.get(fieldKey).getDescribe().isCreateable() ) {
-                    throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
-                }
-            }
-            result = Database.insert(matrixRec, false);
-            if (result.isSuccess()) {
-                matrixId = matrixRec.Id;
-            }
-        } else {
-            matrixId = matrix[0].Id;
-        }
-        log.SYS_Matrix__c = matrixId;
         Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
         Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
         for(String fieldKey : fieldsToValue.keySet()){
@@ -80,6 +31,7 @@ global without sharing class SYS_Helper {
                 throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
             }
         }
+        //insert log;
         result = Database.insert(log,false);
         return result;
     }
@@ -93,7 +45,7 @@ global without sharing class SYS_Helper {
             Id recId = sObjects[0].Id;
             String sObjectApiName = String.valueOf(recId.getsobjecttype());
             Boolean isObjDeletable = Schema.getGlobalDescribe().get(sObjectApiName).getDescribe().isDeletable();
-            System.debug('delete permission '+isObjDeletable);
+            
             if(isObjDeletable){
                 results = Database.delete(sObjects,false);
             }
@@ -106,31 +58,6 @@ global without sharing class SYS_Helper {
 
     global static void upsertLog(List<SYS_IntegrationLog__c> logs){
         if(logs.size()>0){
-            List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-            String matrixId;
-            if(matrix.size() == 0) {
-                SYS_Matrix__c matrixRec = new SYS_Matrix__c(
-                    Date__c = Date.today()
-                );
-                Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_Matrix__c.fields.getMap();
-                Map<String, Object> fieldsToValue = matrixRec.getPopulatedFieldsAsMap();
-                for(String fieldKey : fieldsToValue.keySet()) {
-                    if(!fieldMap.get(fieldKey).getDescribe().isCreateable() ) {
-                        throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
-                    }
-                }
-                Database.SaveResult result = Database.insert(matrixRec, false);
-                if (result.isSuccess()) {
-                    matrixId = matrixRec.Id;
-                }
-            } else {
-                matrixId = matrix[0].Id;
-            }
-
-            for(SYS_IntegrationLog__c log:logs) {
-                log.SYS_Matrix__c = matrixId;
-            }
-
             Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
             Map<String, Object> fieldsToValue = logs[0].getPopulatedFieldsAsMap();
             for(String fieldKey : fieldsToValue.keySet() ) {
@@ -150,28 +77,6 @@ global without sharing class SYS_Helper {
     }
 
     global static void upsertLog(SYS_IntegrationLog__c log){
-        Database.SaveResult result;
-        List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-        String matrixId;
-        if(matrix.size() == 0) {
-            SYS_Matrix__c matrixRec = new SYS_Matrix__c(
-                Date__c = Date.today()
-            );
-            Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_Matrix__c.fields.getMap();
-            Map<String, Object> fieldsToValue = matrixRec.getPopulatedFieldsAsMap();
-            for(String fieldKey : fieldsToValue.keySet()) {
-                if(!fieldMap.get(fieldKey).getDescribe().isCreateable() ) {
-                    throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
-                }
-            }
-            result = Database.insert(matrixRec, false);
-            if (result.isSuccess()) {
-                matrixId = matrixRec.Id;
-            }
-        } else {
-            matrixId = matrix[0].Id;
-        }
-        log.SYS_Matrix__c = matrixId;
         Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
         Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
         for(String fieldKey : fieldsToValue.keySet() ) {
@@ -522,23 +427,5 @@ global without sharing class SYS_Helper {
         }
         return;
         
-    }
-
-    public static List<string> getFields(String selectedObject){
-        List<String> reqFields = new List<String>();
-        Map <String,Schema.SObjectType> gd = Schema.getGlobalDescribe();
-        Schema.SObjectType sobjType = gd.get(selectedObject);
-        Schema.DescribeSObjectResult r = sobjType.getDescribe();
-        Map<String, Schema.SObjectField> MapofField = r.fields.getMap();
-        
-        for(String fieldName : MapofField.keySet()) {
-            Schema.SObjectField field = MapofField.get(fieldName);
-            Schema.DescribeFieldResult F = field.getDescribe();
-            System.debug('field-->'+field);
-            System.debug('F-->'+F.getType()); //type of field
-	        reqFields.add(field+'');
-        }
-        System.debug(reqFields);
-        return reqFields;
     }
 }
