@@ -88,6 +88,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>MemberPlan__c.AccountId__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>MemberPlan__c.Account__c</field>
         <readable>false</readable>
     </fieldPermissions>
