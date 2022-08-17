@@ -9,9 +9,10 @@ global without sharing class SYS_Helper {
 
     /* ------------------------------------------------------------------------ */
 
-    global static void insertLog(List<SYS_IntegrationLog__c> logs){
+    global static Database.SaveResult[] insertLog(List<SYS_IntegrationLog__c> logs){
+        Database.SaveResult[] results;
         if(logs.size()>0){ 
-            
+
             
             List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
             String matrixId;
@@ -44,8 +45,10 @@ global without sharing class SYS_Helper {
                     throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
                 }
             }
-            insert logs;
+            System.debug('insert method');
+            results = Database.insert( logs, false);
         }
+        return results;
     }
 
     global static Database.SaveResult insertLog(SYS_IntegrationLog__c log){
@@ -208,7 +211,7 @@ global without sharing class SYS_Helper {
         }
     }
 
-    global static void updateLog(SYS_IntegrationLog__c log){
+    /* global static void updateLog(SYS_IntegrationLog__c log){
         Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
         Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
         for(String fieldKey : fieldsToValue.keySet() ) {
@@ -221,7 +224,7 @@ global without sharing class SYS_Helper {
             }
         }
         update log;
-    }
+    } */
 
     /* ------------------------------------------------------------------------ */
 
@@ -408,7 +411,7 @@ global without sharing class SYS_Helper {
         log.Status__c = 'FAIL';
         log.Message__c = stackTrace;
         
-        upsertLog(log);
+        upsertLog(new List<SYS_IntegrationLog__c>{log});
     }
 
     /*
