@@ -702,7 +702,7 @@ public without sharing class SYS_DataCache {
                     enforce_limit_map.put(iter.developerName, iter.Enforce_Limit__c);
                 }
             }
-            return enforce_limit_map?.get(INT_TYPE) != NULL ? enforce_limit_map?.get(INT_TYPE) : false ;
+            return enforce_limit_map.get(INT_TYPE);
         }
     }
 
