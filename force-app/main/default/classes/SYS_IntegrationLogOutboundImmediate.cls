@@ -80,8 +80,7 @@ public without sharing class SYS_IntegrationLogOutboundImmediate{
         if(outboundResultLogs.size() > 0){
 
             //new SYS_ApplicationService().doDML(outboundResultLogs, 'UPSERT','');
-            // upsert outboundResultLogs;
-            SYS_Helper.upsertLog(outboundResultLogs);
+            upsert outboundResultLogs;
         } 
         
     }
