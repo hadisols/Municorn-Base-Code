@@ -33,9 +33,14 @@
 		<members>SampleWrapper</members>
 
 		<members>BatchObjectCleaner</members>
+		<members>*</members>
 
 		<name>ApexClass</name>
 	</types>
+    <types>
+        <members>*</members>
+        <name>ApexPage</name>
+    </types>
 	<types>
 		<members>SYS_IntegrationLogTrigger</members>
 		<name>ApexTrigger</name>
@@ -130,11 +135,17 @@
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
 		<members>SYS_Tracker__c</members>
+		<members>SYS_Matrix__c</members>
+		<members>Guarantor__c</members>
+		
+		<members>MemberPlan__c</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
+		<members>SYS_Matrix__c</members>
+
 		<name>CustomTab</name>
 	</types>
 	<types>
@@ -191,6 +202,9 @@
 		<members>SYS_Test_Inbound_Body</members>
 		<members>SYS_Test_Inbound_Body_Large</members>
 		<members>SYS_Test_Outbound_Response_Body</members>
+		<members>jwt_deploy_helper</members>
+		<members>OAuth_Test_Records</members>
+
 		<name>StaticResource</name>
 	</types>
 	<types>
