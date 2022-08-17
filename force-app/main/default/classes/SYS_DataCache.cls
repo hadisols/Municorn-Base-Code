@@ -5,7 +5,7 @@ public without sharing class SYS_DataCache {
     private static Map<String, List<FieldSetting__mdt>> ObjectSettingToFieldSettingsMap_IB;
 
     private static Map<String, Map<String, List<FieldSetting__mdt>>> childFieldSettingMap; // NOT USED
-    public static List<FieldSetting__mdt> AllFieldSettingsList;
+    private static List<FieldSetting__mdt> AllFieldSettingsList;
 
     private static SYS_IntegrationLog__c sysLog;
     public static SYS_IntegrationLog__c log{
@@ -257,10 +257,10 @@ public without sharing class SYS_DataCache {
             if(AllFieldSettingsList == null){
                 AllFieldSettingsList = new List<FieldSetting__mdt>();
                 
-                AllFieldSettingsList = [Select developername,Id,Datetime_Conversion_Format__c,Send_Blanks_as_Empty_String__c,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+                AllFieldSettingsList = [Select Id,Datetime_Conversion_Format__c,Send_Blanks_as_Empty_String__c,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
                             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c 
                             from FieldSetting__mdt WHERE Is_Active__c=true  
-                            AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE /*AND Direction__c != 'INBOUND'*/];
+                            AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE/* AND Direction__c != 'INBOUND'*/];
                 
                 for(FieldSetting__mdt item : AllFieldSettingsList) {
                     
@@ -282,7 +282,6 @@ public without sharing class SYS_DataCache {
                 ObjectSettingToFieldSettingsMap_IB = new Map<String, List<FieldSetting__mdt>>();
                 for(FieldSetting__mdt fs : SYS_DataCache.AllFieldSettingMappings){
                     if(fs.Direction__c != 'OUTBOUND'){
-                        fs.Key__c = fs.Key__c?.replace(SYS_DataCache.ESCAPE_CHAR, '.')?.toLowerCase();
                         if(ObjectSettingToFieldSettingsMap_IB.containsKey(fs.ObjectSetting__r.DeveloperName)){
                             ObjectSettingToFieldSettingsMap_IB.get(fs.ObjectSetting__r.DeveloperName).add(fs);
                         }
@@ -693,18 +692,6 @@ public without sharing class SYS_DataCache {
         }
     }
 
-    public static Map<String, Boolean> enforce_limit_map;
-    public static Boolean enforce_limit {
-        get {
-            if(enforce_limit_map == NULL) {
-                for(IntegrationSetting__mdt iter : IntegrationSetting__mdt.getAll().values()) {
-                    enforce_limit_map.put(iter.developerName, iter.Enforce_Limit__c);
-                }
-            }
-            return enforce_limit_map.get(INT_TYPE);
-        }
-    }
-
     public static String namespace;
     public static String namespacePrefix {
         get {
@@ -748,6 +735,5 @@ public without sharing class SYS_DataCache {
         }
     }
     */
-    public static String REQ_TYPE;
     
 }
