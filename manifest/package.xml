@@ -33,7 +33,7 @@
 		<members>SampleWrapper</members>
 
 		<members>SampleWrapper</members>
-        <members>BatchObjectCleaner</members>
+    <members>BatchObjectCleaner</members>
 		<members>BatchObjectCleanerTest</members>
 
 		<name>ApexClass</name>
