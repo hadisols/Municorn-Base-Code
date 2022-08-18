@@ -13,6 +13,7 @@
     <columns>retry__c</columns>
     <columns>HTTP_Method__c</columns>
     <columns>CREATED_DATE</columns>
+    <columns>Integration_Setting__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

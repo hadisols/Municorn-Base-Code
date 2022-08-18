@@ -27,12 +27,12 @@
                 <behavior>Edit</behavior>
                 <field>Is_Notification_Only__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>SYS_Matrix__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>OwnerId</field>
-            </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
                 <field>Type__c</field>

@@ -1013,6 +1013,7 @@ global virtual inherited sharing class SYS_ApplicationService {
                 /*--*/SYS_debug.log('MS cLog.Parent__r.WhatId__c:'+cLog.Parent__r.WhatId__c);
                 sObj.put('Id',cLog.WhatId__c);
                 sObj.put(fsm[0].FieldApiName__c,cLog.Parent__r.WhatId__c);
+                System.debug('sObj =='+sObj);
                 childRecords.add(sObj);
                 dupeCheckList.add(String.valueOf(sObj.get('Id')));
 
@@ -1020,7 +1021,7 @@ global virtual inherited sharing class SYS_ApplicationService {
                 if(doDML(childRecords, 'UPDATE', '',cLog)){
                     cLog.Status__c ='DONE';
                     cLog.retry__c =false;
-                    SYS_Helper.updateLog(cLog);
+                    SYS_Helper.updateLog(new List<SYS_IntegrationLog__c>{cLog});
                 }
             }
         }
@@ -1050,7 +1051,7 @@ global virtual inherited sharing class SYS_ApplicationService {
                             ' AND Id NOT IN (\''+ 
             String.join(dupeCheckList,'\',\'')+'\')';  
             
-            /*--*/SYS_debug.log('MS All or none delete records query:'+qry);
+            /*--*/SYS_debug.log('MS All or none delete records query:'+qry+whereClause);
 
             List<sObject> childRecordsToDelete = new List<sObject>();
             childRecordsToDelete = Database.query(String.escapeSingleQuotes(qry)+whereClause);
@@ -1137,7 +1138,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         }
 
         //doDML(new List<SYS_IntegrationLog__c>{log}, 'UPSERT', '') ;
-        SYS_Helper.upsertLog(log);
+        SYS_Helper.upsertLog(new List<SYS_IntegrationLog__c>{log});
         logResp.SYS_RequestId__c = log.Id;
 
         return logResp;
@@ -1186,14 +1187,15 @@ global virtual inherited sharing class SYS_ApplicationService {
 
     public void insertWebhookLog(SYS_IntegrationLog__c log){
         try{
-            Database.SaveResult result = SYS_Helper.insertLog(log);// Database.insert(log,false);
+            Database.SaveResult[] result = SYS_Helper.insertLog(new List<SYS_IntegrationLog__c>{log});// Database.insert(log,false);
             //TODO check if result is success/error and take action
-
-            if(!result.isSuccess()){
-                handleDMLErrors(result.getErrors(),log);
-            }
-            else{
-                setSuccessHttpResponse();
+            if(result?.size() > 0){    
+                if(!result[0].isSuccess()){
+                    handleDMLErrors(result[0].getErrors(),log);
+                }
+                else{
+                    setSuccessHttpResponse();
+                }
             }
         } catch ( Exception e ) {
             setErrorHttpResponse(e.getStackTraceString());

@@ -30,6 +30,11 @@ public class SYS_TestDataFactory {
     }
 
     public static void createIgnoreLog(){
+        SYS_Matrix__c matrix = new SYS_Matrix__c(
+            Date__c = Date.today()
+        );
+        insert matrix;
+
         SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
@@ -38,10 +43,16 @@ public class SYS_TestDataFactory {
         newSysLog.whatid__c = 'a005f000007K9hlAAC';
         newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
         newSysLog.How_to_process__c = 'ignore_log';
+        newSysLog.SYS_Matrix__c = matrix.Id;
         insert newSysLog;
     }
 
     public static void createObjectSettingLog(){
+        SYS_Matrix__c matrix = new SYS_Matrix__c(
+            Date__c = Date.today()
+        );
+        insert matrix;
+
         SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
@@ -50,10 +61,16 @@ public class SYS_TestDataFactory {
         newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
         newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
         newSysLog.How_to_process__c = 'use_object_setting';
+        newSysLog.SYS_Matrix__c = matrix.Id;
         insert newSysLog;
     }
 
     public static void createCustomApexHandlerLog(){
+        SYS_Matrix__c matrix = new SYS_Matrix__c(
+            Date__c = Date.today()
+        );
+        insert matrix;
+        
         SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
         newSysLog.Status__c = 'NEW';
         newSysLog.Type__c = 'OUTBOUND';
@@ -63,6 +80,7 @@ public class SYS_TestDataFactory {
         newSysLog.ObjectSettingId__c = 'SYS_Test_Account_Object_Setting';
         newSysLog.How_to_process__c = 'use_custom_apex_handler';
         newSysLog.Custom_Apex_Handler__c = 'SYS_ApplicationService';
+        newSysLog.SYS_Matrix__c = matrix.Id;
         insert newSysLog;
 
     }

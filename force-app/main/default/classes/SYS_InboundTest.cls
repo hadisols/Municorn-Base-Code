@@ -139,7 +139,7 @@ public class SYS_InboundTest {
         List<SYS_IntegrationLog__c> log = [SELECT Id,data1__c FROM SYS_IntegrationLog__c];
         SYS_Helper.upsertLog(log);
         SYS_Helper.updateLog(log);
-        SYS_Helper.updateLog(log[0]);
+        SYS_Helper.updateLog(new List<SYS_IntegrationLog__c>{log[0]});
         System.assert(log.size()>0);
         System.assertNotEquals(NULL, log[0].data1__c);
     }

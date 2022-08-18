@@ -32,7 +32,8 @@
 		<members>SYS_debug</members>
 		<members>SampleWrapper</members>
 
-		<members>BatchObjectCleaner</members>
+		<members>SampleWrapper</members>
+		<members>BatchObjectCleanerTest</members>
 
 		<name>ApexClass</name>
 	</types>
@@ -130,6 +131,7 @@
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
 		<members>SYS_Tracker__c</members>
+		<members>SYS_Matrix__c</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
@@ -171,11 +173,11 @@
 		<members>OAUTH_PWD_NC</members>
 		<name>NamedCredential</name>
 	</types>
-	<types>
+	<!--types>
 		<members>SYS_Municorn_Guest_User_Permission_Set</members>
 		<members>SYS_Municorn_Permission_Set</members>
 		<name>PermissionSet</name>
-	</types>
+	</types-->
 	<types>
 		<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
 		<name>QuickAction</name>

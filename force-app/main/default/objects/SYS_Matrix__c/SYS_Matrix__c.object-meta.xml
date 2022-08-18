@@ -128,14 +128,11 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>SYS_IntegrationLog_Record_Page</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
+        <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
+        <formFactor>Large</formFactor>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -149,22 +146,21 @@
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>true</enableHistory>
+    <enableHistory>false</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>ControlledByParent</externalSharingModel>
-    <label>SYS_IntegrationLog</label>
+    <externalSharingModel>Private</externalSharingModel>
+    <label>SYS_Matrix</label>
     <nameField>
-        <displayFormat>I-{0000000000}</displayFormat>
-        <label>SYS_IntegrationLog Name</label>
-        <trackHistory>false</trackHistory>
+        <displayFormat>M-{0000000}</displayFormat>
+        <label>SYS_Matrix Name</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>SYS_IntegrationLogs</pluralLabel>
+    <pluralLabel>SYS_Matrix</pluralLabel>
     <searchLayouts></searchLayouts>
-    <sharingModel>ControlledByParent</sharingModel>
+    <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
