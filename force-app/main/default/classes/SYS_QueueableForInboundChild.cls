@@ -51,7 +51,8 @@ public without sharing class SYS_QueueableForInboundChild implements Queueable {
         /*--*/SYS_debug.log('MS childRecordsToInsert:'+childRecordsToInsert);
         if(!childRecordsToInsert.isEmpty()){
             //appService.doDML(childRecordsToInsert, 'INSERT', '');
-            insert childRecordsToInsert;
+            // insert childRecordsToInsert;
+            SYS_Helper.insertLog(childRecordsToInsert);
         }
 
         /**
