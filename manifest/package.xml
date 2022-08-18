@@ -137,6 +137,7 @@
 	<types>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
+		<members>SYS_Matrix__c</members>
 		<name>CustomTab</name>
 	</types>
 	<types>
