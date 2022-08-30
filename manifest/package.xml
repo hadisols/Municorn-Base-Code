@@ -33,8 +33,11 @@
 		<members>SampleWrapper</members>
 
 		<members>SampleWrapper</members>
-    <members>BatchObjectCleaner</members>
+        <members>BatchObjectCleaner</members>
 		<members>BatchObjectCleanerTest</members>
+		<members>MunicornHealthCheckController</members>
+		<members>MunicornHealthCheckControllerTest</members>
+		<members>MunicornHomeController</members>
 
 		<name>ApexClass</name>
 	</types>
@@ -123,6 +126,7 @@
 		<name>CustomMetadata</name>
 	</types>
 	<types>
+		<members>Integration_Metadata__mdt</members>
 		<members>FieldSetting__mdt</members>
 		<members>HttpHeaders__mdt</members>
 		<members>IntegrationEnablement__mdt</members>
@@ -136,9 +140,34 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+        <members>SYS_Vendor__c</members>
+		<members>SYS_Transfer__c</members>
+		<members>SYS_TimeActivity__c</members>
+		<members>SYS_Term__c</members>
+		<members>QB_Sales_Receipt__c</members>
+		<members>SYS_RefundReceipt__c</members>
+		<members>SYS_Purchase_Order__c</members>
+		<members>SYS_Payments__c</members>
+		<members>QB_Purchase__c</members>
+		<members>SYS_PaymentMethod__c</members>
+		<members>SYS_Journalcode__c</members>
+		<members>QB_Estimate__c</members>
+		<members>SYS_Employee__c</members>
+		<members>QB_Deposits__c</members>
+		<members>SYS_Department__c</members>
+		<members>SYS_Currency__c</members>
+		<members>QB_creditmemo__c</members>
+		<members>SYS_Class__c</members>
+		<members>SYS_Bill__c</members>
+		<members>SYS_Account__c</members>
+		<members>SYS_Product__c</members>
+		<members>SYS_Customer__c</members>
+		<members>QB_Invoice__c</members>
+		<members>QB_Bill_Payment__c</members>
+		<members>QB_TaxAgency__c</members>
+		<members>SYS_Vendor_Credit__c</members>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
-		<members>SYS_Matrix__c</members>
 		<name>CustomTab</name>
 	</types>
 	<types>
@@ -152,6 +181,7 @@
 		<name>Flow</name>
 	</types>
 	<types>
+		<members>Integration_Metadata__mdt-Integration Metadata Layout</members>
 		<members>FieldSetting__mdt-FieldSetting Layout</members>
 		<members>HttpHeaders__mdt-HttpHeader Layout</members>
 		<members>IntegrationEnablement__mdt-IntegrationEnablement Layout</members>
@@ -178,6 +208,7 @@
 	<types>
 		<members>SYS_Municorn_Guest_User_Permission_Set</members>
 		<members>SYS_Municorn_Permission_Set</members>
+		<members>QuickBook_Permission_Set</members>
 		<name>PermissionSet</name> 
 	</types>
 	<types>
@@ -195,6 +226,7 @@
 		<members>SYS_Test_Inbound_Body</members>
 		<members>SYS_Test_Inbound_Body_Large</members>
 		<members>SYS_Test_Outbound_Response_Body</members>
+		<members>Municorn_Resource</members>
 		<name>StaticResource</name>
 	</types>
 	<types>

@@ -1,0 +1,220 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickAction" access="global"
+controller="MunicornHomeController">
+<!-- Attributes Declaration -->
+<aura:attribute name="activateHealthCheckTab" type="Boolean" default="true" />
+<aura:attribute name="activateSetupTab" type="Boolean" default="" />
+<aura:attribute name="activateTroubleshootTab" type="Boolean" default="" />
+<aura:attribute name="activateFAQTab" type="Boolean" default="" />
+<aura:attribute name="activateSupportTab" type="Boolean" default="" />
+<aura:attribute name="flag" type="Boolean" default="true" />
+<aura:attribute name="isAdmin" type="Boolean" default="false" />
+<aura:attribute name="Loading" type="Boolean" default="false" />
+<aura:attribute name="showTable" type="Boolean" default="false" />
+<aura:attribute name="tableMessage" type="String" default="" />
+<aura:attribute name="syslogdata" type="List" default="[]" />
+<aura:attribute name="syslogcolumns" type="List" default="[]" />
+
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+<!-- Content -->
+<aura:if isTrue="{!v.Loading}">
+    <div>
+        <lightning:spinner alternativeText="Loading" size="medium" />
+    </div>
+</aura:if>
+<div class="slds-grid" style="flex-wrap: wrap; height:100%; background:white; border-radius: 0.3rem;" >
+    <div class="slds-p-horizontal_x-small slds-size_1-of-1 slds-medium-size_1-of-6 slds-large-size_2-of-12" style="border-right: 1px solid gray;" >
+        <div class="slds-align_absolute-center slds-m-around_large">
+            <img src="{!$Resource.Municorn_Resource + '/Municorn_Resource/Images/Adisols_Logo.png'}" alt="Adisols Logo" />
+        </div>
+        <hr style="margin: 0.5rem 0;border-top-color: gray;"/>
+
+        <h2 class="slds-text-title_caps slds-p-around_medium" id="admin">ADMIN</h2>
+        <ul>
+            <li class="{! 'slds-nav-vertical__item ' + (v.activateHealthCheckTab ? 'slds-is-active' : '')}" onclick="{!c.handleTabHealthCheck}" aura:id="health-check">
+                <a href="javascript:void(0);"  class="slds-truncate slds-nav-vertical__action slds-text-link_reset"   title="Health Check" >Health Check</a>
+            </li>
+            <li class="{! 'slds-nav-vertical__item ' + (v.activateSetupTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabSetup}" aura:id="setup" >
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset"  title="Setup" >Setup</a>
+            </li>
+            <li class="{! 'slds-nav-vertical__item ' + (v.activateTroubleshootTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabTroubleshoot}" aura:id="troubleshoot"  >
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="Troubleshoot" >Troubleshoot</a>
+            </li>
+        </ul>
+        <h2 class="slds-text-title_caps slds-p-around_medium" id="admin">HELPDESK</h2>
+        <ul>
+            <li class="{! 'slds-nav-vertical__item ' + (v.activateFAQTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabFAQ}" aura:id="faq"  >
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="FAQ" >FAQ</a>
+            </li>
+            <li class="{! 'slds-nav-vertical__item ' + (v.activateSupportTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabSupport}" aura:id="contact-support"  >
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="Contact Support" >Contact Support</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="slds-p-horizontal_x-small slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_10-of-12" style="border-right: 1px solid gray;" >
+        <aura:if isTrue="{!v.activateHealthCheckTab}">
+            <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName='custom:custom58' alternativeText='custom58' size='large' title='custom58'></lightning:icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate"
+                                                    title="Rohde Corp - 80,000 Widgets">Health Check</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <p class="slds-page-header__name-meta">Salesforce • Quickbooks</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aura:if isTrue="{!v.isAdmin}">
+                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small"
+                        title="warning">
+                        <lightning:icon iconName='utility:warning' alternativeText='warning' size='x-small' title='warning'></lightning:icon>
+                    </span>
+                    <h2>You do not have the required permissions to view this page.
+                    </h2>
+                    <div class="slds-notify__close">
+                    </div>
+                </div>
+            </aura:if>
+            
+            <c:MunicornHealthCheck/>
+        </aura:if>
+        <aura:if isTrue="{!v.activateSetupTab}">
+            <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName='custom:custom19' alternativeText='custom19' size='large' title='custom19'></lightning:icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate"
+                                                    title="Rohde Corp - 80,000 Widgets">Setup Remote Site Setting</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <p class="slds-page-header__name-meta">Salesforce Setup</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+        <aura:if isTrue="{!v.activateTroubleshootTab}">
+            <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName='standard:action_list_component' alternativeText='action_list_component' size='large' title='action_list_component'></lightning:icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate"
+                                                    title="Rohde Corp - 80,000 Widgets">Troubleshoot</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <p class="slds-page-header__name-meta">Salesforce Setup</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slds-p-around_medium">
+                <p class="slds-p-vertical_medium">
+                    <lightning:formattedText value="Fetch the recent error messages." />
+                </p>
+                <lightning:button label="Retrive Error Messages" title="Retrive Error Messages"
+                    onclick="{! c.handleFetchErrorMessage }" />
+                <p class="slds-p-top_medium">
+                    <lightning:formattedText value="{!v.tableMessage}" />
+                </p>
+                <aura:if isTrue="{!v.showTable}">
+                    <lightning:datatable keyField="id" data="{! v.syslogdata }" columns="{! v.syslogcolumns }"
+                        hideCheckboxColumn="true" />
+                </aura:if>
+            </div>
+            
+        </aura:if>
+        <aura:if isTrue="{!v.activateFAQTab}">
+            <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName='standard:article' alternativeText='article' size='large' title='article'></lightning:icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate"
+                                                    title="Rohde Corp - 80,000 Widgets">Knowledge Base</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <p class="slds-page-header__name-meta">Salesforce Setup</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+        <aura:if isTrue="{!v.activateSupportTab}">
+            <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName='standard:service_crew' alternativeText='service_crew' size='large' title='service_crew'></lightning:icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate"
+                                                    title="Rohde Corp - 80,000 Widgets">Contact Support</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <p class="slds-page-header__name-meta">Salesforce Setup</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <iframe width="100%" height="100%" style="border: 1px solid" src="https://www.adisols.com" />
+        </aura:if>
+    </div>
+</div>
+
+</aura:component>	
