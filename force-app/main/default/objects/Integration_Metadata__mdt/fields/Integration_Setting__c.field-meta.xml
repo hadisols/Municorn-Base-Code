@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Integration_Setting__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Integration Setting</label>
+    <referenceTo>IntegrationSetting__mdt</referenceTo>
+    <relationshipLabel>Integration Metadata</relationshipLabel>
+    <relationshipName>Integration_Metadata</relationshipName>
+    <required>false</required>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>
