@@ -48,7 +48,7 @@
 	<types>
 		<members>SYS_Aura_ForceSync</members>
 		<members>SYS_Aura_JWTAuthFlow</members>
-		<members>MunicornHome</members>
+		<members>MunicornHome</members> 
 		<members>MunicornHealthCheck</members>
 		<name>AuraDefinitionBundle</name>
 	</types>
