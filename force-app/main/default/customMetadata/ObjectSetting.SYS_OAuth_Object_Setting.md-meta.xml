@@ -19,6 +19,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Created_Source_FieldApiName__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>DELETE_URL_Pattern__c</field>
         <value xsi:nil="true"/>
     </values>
@@ -37,6 +41,10 @@
     <values>
         <field>IntegrationType__c</field>
         <value xsi:type="xsd:string">SYS_OAuth_Integration_Setting</value>
+    </values>
+    <values>
+        <field>Modified_Source_FieldApiName__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>ObjectApiName__c</field>
