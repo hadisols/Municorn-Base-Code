@@ -144,6 +144,7 @@
 	<types>
 		<members>SYS_IntegrationLog__c</members>
 		<members>SYS_OAuthConfig__c</members>
+		<members>Municorn_Home</members>
 		<name>CustomTab</name>
 	</types>
 	<types>
