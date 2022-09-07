@@ -33,6 +33,24 @@ public with sharing class MunicornHomeController {
         return mapUrls;
     }
 
+    @AuraEnabled
+    public static Boolean getCurrentUserDetails(){
+        Boolean result = true;
+        try {
+            Id profileId = userinfo.getProfileId();
+            String profileName = [Select Id,Name from Profile where Id=:profileId]?.Name;
+            Id uerdid = userinfo.getUserId();
+            List<PermissionSetAssignment> psassignment = [SELECT id FROM PermissionSetAssignment WHERE 
+            AssigneeId = :Userinfo.getUserId() AND PermissionSet.Name = 'SYS_Municorn_Permission_Set'];
+            if(psassignment != null && psassignment?.size() > 0 && 'System Administrator'.equalsIgnoreCase(profileName)) {
+                result = false;
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+        return result;
+    }
+
     public class ResponseWrapper {
         @AuraEnabled
         public String Name {get; set;}

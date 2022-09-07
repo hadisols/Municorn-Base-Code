@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Created_Source_FieldApiName__c</fullName>
+    <description>Add the field API name (text field type) for the current object setting. This field will show if the record is created by Salesforce or External System.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Add the field API name (text field type) for the current object setting. This field will show if the record is created by Salesforce or External System.</inlineHelpText>
+    <label>Created Source Field API Name</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

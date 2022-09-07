@@ -42,6 +42,14 @@
             });
             $A.enqueueAction(action);
         };
+
+        component.apiCall('getCurrentUserDetails', '',
+        function(returnVal) {
+			component.set('v.isNotAdmin', returnVal);
+			component.set('v.Loading', false);
+		}, function(error){
+			component.set('v.Loading', false);
+		});
     },
     handleTabHealthCheck : function(component, event, helper) {
         component.inactiveTab();

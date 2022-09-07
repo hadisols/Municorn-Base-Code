@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>admin</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>admin</shortDescription>
+        <value>ADMIN</value>
+    </labels>
+    <labels>
+        <fullName>check_1</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_1</shortDescription>
+        <value>Is Integration Setting enabled?</value>
+    </labels>
+    <labels>
+        <fullName>check_2</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_2</shortDescription>
+        <value>Check if at least one Field Setting with IsExternal field is checked.</value>
+    </labels>
+    <labels>
+        <fullName>check_3</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_3</shortDescription>
+        <value>EscapeChar field in Integration Setting cannot be NULL.</value>
+    </labels>
+    <labels>
+        <fullName>check_4</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_4</shortDescription>
+        <value>If webhook notifications are partial, the Notification Wrapper field in Integration Setting cannot be NULL.</value>
+    </labels>
+    <labels>
+        <fullName>check_5</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_5</shortDescription>
+        <value>The lookup field in Field Setting should have TOWAY as the Direction field.</value>
+    </labels>
+    <labels>
+        <fullName>check_6</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_6</shortDescription>
+        <value>Check if retry flow is enabled.</value>
+    </labels>
+    <labels>
+        <fullName>check_7</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_7</shortDescription>
+        <value>Check if the Notification Wrapper class implements SYS_NotificationInterface.</value>
+    </labels>
+    <labels>
+        <fullName>check_8</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_8</shortDescription>
+        <value>Check if the apex override implements the SYS_ApplicationService.</value>
+    </labels>
+    <labels>
+        <fullName>check_9</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>check_9</shortDescription>
+        <value>Check if the Object API Name and the  Field API name are in lowercase.</value>
+    </labels>
+    <labels>
+        <fullName>contact_support</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>contact_support</shortDescription>
+        <value>Contact Support</value>
+    </labels>
+    <labels>
+        <fullName>faq</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>faq</shortDescription>
+        <value>FAQ</value>
+    </labels>
+    <labels>
+        <fullName>health_check</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>health_check</shortDescription>
+        <value>Health Check</value>
+    </labels>
+    <labels>
+        <fullName>helpdesk</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>helpdesk</shortDescription>
+        <value>HELPDESK</value>
+    </labels>
+    <labels>
+        <fullName>integration_setting_enabled</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>integration_setting_enabled</shortDescription>
+        <value>Is Integration Setting enabled?</value>
+    </labels>
+    <labels>
+        <fullName>knowledge_base</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>knowledge_base</shortDescription>
+        <value>Knowledge Base</value>
+    </labels>
+    <labels>
+        <fullName>not_admin_error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>not_admin_error</shortDescription>
+        <value>You do not have the required permissions to view this page.</value>
+    </labels>
+    <labels>
+        <fullName>setup</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>setup</shortDescription>
+        <value>Setup</value>
+    </labels>
+    <labels>
+        <fullName>troubleshoot</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>troubleshoot</shortDescription>
+        <value>Troubleshoot</value>
+    </labels>
+</CustomLabels>
