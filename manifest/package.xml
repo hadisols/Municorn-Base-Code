@@ -229,7 +229,7 @@
         <members>not_admin_error</members>
         <members>setup</members>
         <members>troubleshoot</members>
-        <name>CustomLabels</name>
+        <name>CustomLabel</name>
     </types>
 	<version>53.0</version>
 </Package>
