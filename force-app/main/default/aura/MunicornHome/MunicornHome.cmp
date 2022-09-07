@@ -7,7 +7,7 @@ controller="MunicornHomeController">
 <aura:attribute name="activateFAQTab" type="Boolean" default="" />
 <aura:attribute name="activateSupportTab" type="Boolean" default="" />
 <aura:attribute name="flag" type="Boolean" default="true" />
-<aura:attribute name="isAdmin" type="Boolean" default="false" />
+<aura:attribute name="isNotAdmin" type="Boolean" default="true" />
 <aura:attribute name="Loading" type="Boolean" default="false" />
 <aura:attribute name="showTable" type="Boolean" default="false" />
 <aura:attribute name="tableMessage" type="String" default="" />
@@ -28,25 +28,25 @@ controller="MunicornHomeController">
         </div>
         <hr style="margin: 0.5rem 0;border-top-color: gray;"/>
 
-        <h2 class="slds-text-title_caps slds-p-around_medium" id="admin">ADMIN</h2>
+        <h2 class="slds-text-title_caps slds-p-around_medium" id="admin">{!$Label.c.admin}</h2>
         <ul>
             <li class="{! 'slds-nav-vertical__item ' + (v.activateHealthCheckTab ? 'slds-is-active' : '')}" onclick="{!c.handleTabHealthCheck}" aura:id="health-check">
-                <a href="javascript:void(0);"  class="slds-truncate slds-nav-vertical__action slds-text-link_reset"   title="Health Check" >Health Check</a>
+                <a href="javascript:void(0);"  class="slds-truncate slds-nav-vertical__action slds-text-link_reset"   title="{!$Label.c.health_check}" >{!$Label.c.health_check}</a>
             </li>
             <li class="{! 'slds-nav-vertical__item ' + (v.activateSetupTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabSetup}" aura:id="setup" >
-                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset"  title="Setup" >Setup</a>
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset"  title="{!$Label.c.setup}" >{!$Label.c.setup}</a>
             </li>
             <li class="{! 'slds-nav-vertical__item ' + (v.activateTroubleshootTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabTroubleshoot}" aura:id="troubleshoot"  >
-                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="Troubleshoot" >Troubleshoot</a>
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="{!$Label.c.troubleshoot}" >{!$Label.c.troubleshoot}</a>
             </li>
         </ul>
-        <h2 class="slds-text-title_caps slds-p-around_medium" id="admin">HELPDESK</h2>
+        <h2 class="slds-text-title_caps slds-p-around_medium" id="helpdesk">{!$Label.c.helpdesk}</h2>
         <ul>
             <li class="{! 'slds-nav-vertical__item ' + (v.activateFAQTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabFAQ}" aura:id="faq"  >
-                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="FAQ" >FAQ</a>
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="{!$Label.c.faq}" >{!$Label.c.faq}</a>
             </li>
             <li class="{! 'slds-nav-vertical__item ' + (v.activateSupportTab  ? 'slds-is-active' : '')}" onclick="{!c.handleTabSupport}" aura:id="contact-support"  >
-                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="Contact Support" >Contact Support</a>
+                <a href="javascript:void(0);" class="slds-truncate slds-nav-vertical__action slds-text-link_reset" title="{!$Label.c.contact_support}" >{!$Label.c.contact_support}</a>
             </li>
         </ul>
     </div>
@@ -66,32 +66,34 @@ controller="MunicornHomeController">
                                         <div class="slds-page-header__name-title">
                                             <h1>
                                                 <span class="slds-page-header__title slds-truncate"
-                                                    title="Rohde Corp - 80,000 Widgets">Health Check</span>
+                                                    title="{!$Label.c.health_check}">{!$Label.c.health_check}</span>
                                             </h1>
                                         </div>
                                     </div>
-                                    <p class="slds-page-header__name-meta">Salesforce • Quickbooks</p>
+                                    <p class="slds-page-header__name-meta">Salesforce Integration</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <aura:if isTrue="{!v.isAdmin}">
+            <aura:if isTrue="{!v.isNotAdmin}">
                 <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
                     <span class="slds-assistive-text">warning</span>
                     <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small"
                         title="warning">
                         <lightning:icon iconName='utility:warning' alternativeText='warning' size='x-small' title='warning'></lightning:icon>
                     </span>
-                    <h2>You do not have the required permissions to view this page.
+                    <h2>{!$Label.c.not_admin_error}
                     </h2>
                     <div class="slds-notify__close">
                     </div>
                 </div>
+                <aura:set attribute="else">
+                    <c:MunicornHealthCheck/>
+                </aura:set>
             </aura:if>
             
-            <c:MunicornHealthCheck/>
         </aura:if>
         <aura:if isTrue="{!v.activateSetupTab}">
             <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">
@@ -107,7 +109,7 @@ controller="MunicornHomeController">
                                         <div class="slds-page-header__name-title">
                                             <h1>
                                                 <span class="slds-page-header__title slds-truncate"
-                                                    title="Rohde Corp - 80,000 Widgets">Setup Remote Site Setting</span>
+                                                    title="">Setup Remote Site Setting</span>
                                             </h1>
                                         </div>
                                     </div>
@@ -133,7 +135,7 @@ controller="MunicornHomeController">
                                         <div class="slds-page-header__name-title">
                                             <h1>
                                                 <span class="slds-page-header__title slds-truncate"
-                                                    title="Rohde Corp - 80,000 Widgets">Troubleshoot</span>
+                                                    title="{!$Label.c.troubleshoot}">{!$Label.c.troubleshoot}</span>
                                             </h1>
                                         </div>
                                     </div>
@@ -159,7 +161,7 @@ controller="MunicornHomeController">
                         hideCheckboxColumn="true" />
                 </aura:if>
             </div>
-            
+
         </aura:if>
         <aura:if isTrue="{!v.activateFAQTab}">
             <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">
@@ -175,7 +177,7 @@ controller="MunicornHomeController">
                                         <div class="slds-page-header__name-title">
                                             <h1>
                                                 <span class="slds-page-header__title slds-truncate"
-                                                    title="Rohde Corp - 80,000 Widgets">Knowledge Base</span>
+                                                    title="{!$Label.c.knowledge_base}">{!$Label.c.knowledge_base}</span>
                                             </h1>
                                         </div>
                                     </div>
@@ -201,7 +203,7 @@ controller="MunicornHomeController">
                                         <div class="slds-page-header__name-title">
                                             <h1>
                                                 <span class="slds-page-header__title slds-truncate"
-                                                    title="Rohde Corp - 80,000 Widgets">Contact Support</span>
+                                                    title="{!$Label.c.contact_support}">{!$Label.c.contact_support}</span>
                                             </h1>
                                         </div>
                                     </div>

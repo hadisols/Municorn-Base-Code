@@ -209,5 +209,27 @@
 		<members>SYS_OAuthConfig__c.Start_Authentication_Flow</members>
 		<name>WebLink</name>
 	</types>
+    <types>
+        <members>admin</members>
+        <members>check_1</members>
+        <members>check_2</members>
+        <members>check_3</members>
+        <members>check_4</members>
+        <members>check_5</members>
+        <members>check_6</members>
+        <members>check_7</members>
+        <members>check_8</members>
+        <members>check_9</members>
+        <members>contact_support</members>
+        <members>faq</members>
+        <members>health_check</members>
+        <members>helpdesk</members>
+        <members>integration_setting_enabled</members>
+        <members>knowledge_base</members>
+        <members>not_admin_error</members>
+        <members>setup</members>
+        <members>troubleshoot</members>
+        <name>CustomLabels</name>
+    </types>
 	<version>53.0</version>
 </Package>
