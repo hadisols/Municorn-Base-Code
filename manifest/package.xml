@@ -39,6 +39,13 @@
 		<members>MunicornHealthCheckControllerTest</members>
 		<members>MunicornHomeController</members>
 
+		<members>SYS_customMetadataDeploy</members>
+		<members>SYS_metadataService</members>
+		<members>SYS_scheduler</members>
+		<members>SYS_syncLicenseOrg</members>
+		<members>RemoteSiteSettingService</members>
+		<members>SYS_syncLicenseOrgAsync</members>
+
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -229,6 +236,7 @@
         <members>knowledge_base</members>
         <members>not_admin_error</members>
         <members>setup</members>
+        <members>salesforce_setup</members>
         <members>troubleshoot</members>
         <name>CustomLabel</name>
     </types>

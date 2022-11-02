@@ -749,5 +749,15 @@ public without sharing class SYS_DataCache {
         }
     }
     */
+
+    public static String endpoint;
+    public static String licenseEndpoint {
+        get {
+            if(endpoint == null) {
+                endpoint = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE)?.License_Org_Endpoint__c;
+            }
+            return endpoint;
+        }
+    }
     
 }

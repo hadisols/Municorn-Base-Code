@@ -109,17 +109,18 @@ controller="MunicornHomeController">
                                         <div class="slds-page-header__name-title">
                                             <h1>
                                                 <span class="slds-page-header__title slds-truncate"
-                                                    title="">Setup Remote Site Setting</span>
+                                                    title="">{!$Label.c.salesforce_setup}</span>
                                             </h1>
                                         </div>
                                     </div>
-                                    <p class="slds-page-header__name-meta">Salesforce Setup</p>
+                                    <p class="slds-page-header__name-meta">{!$Label.c.setup}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <iframe width="100%" height="100%" frameborder="0" src="/apex/IntegrationSetup" />
         </aura:if>
         <aura:if isTrue="{!v.activateTroubleshootTab}">
             <div id="health-check-tab" class="slds-show" aria-labelledby="health-check">

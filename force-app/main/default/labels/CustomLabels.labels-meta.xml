@@ -133,4 +133,11 @@
         <shortDescription>troubleshoot</shortDescription>
         <value>Troubleshoot</value>
     </labels>
+    <labels>
+        <fullName>salesforce_setup</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>salesforce_setup</shortDescription>
+        <value>Salesforce Setup</value>
+    </labels>
 </CustomLabels>
