@@ -1,6 +1,6 @@
 public without sharing class SYS_IntegrationLogTriggerHandler {
     public static void handleAfterInsert() {
-
+        scheduledJobCheck();
         if(enforceLimitCheck()) {
             return;
         }
@@ -63,6 +63,14 @@ public without sharing class SYS_IntegrationLogTriggerHandler {
             }
         }
         return false;
+    }
+
+    public static void scheduledJobCheck() {
+        List<CronJobDetail> jobs = [SELECT Id, Name, JobType FROM CronJobDetail where name = 'Municorn_License'];
+        if(jobs.size() == 0) {
+            System.schedule('Municorn_License', '0 0 22 * * ? *' , new SYS_scheduler(SYS_datacache.INT_TYPE));
+        }
+        return;
     }
 
 }
