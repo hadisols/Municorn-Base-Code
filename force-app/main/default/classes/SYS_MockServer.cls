@@ -12,6 +12,9 @@ public class SYS_MockServer{
         
         multimockServer.setStaticResource('callout:GCPJWT/token', 'OAuth_Test_Token_Body');
         multimockServer.setStaticResource('callout:OAUTH_NC/token', 'OAuth_Auth_Code_Test_Token_Body');
+        multimockServer.setStaticResource(System.Url.getOrgDomainUrl().toExternalForm()+'/services/data/v54.0/tooling/query/?q=Select+EndpointUrl,IsActive+from+RemoteProxy', 'RemoteProxy_test_response');
+        SYS_DataCache.INT_TYPE = 'SYS_Test_IntegrationSetting';
+        multimockServer.setStaticResource(SYS_DataCache.licenseEndpoint, 'license_org_json');
         multimockServer.setStatusCode(200);
         multimockServer.setHeader('Content-Type', 'application/json');
         return multimockServer;

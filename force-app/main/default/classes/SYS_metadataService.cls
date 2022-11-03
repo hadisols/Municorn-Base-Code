@@ -71,7 +71,7 @@ public class SYS_metadataService {
               'SYS_metadataService.createResponse_element'}
             );
             response_x = response_map_x.get('response_x');
-            system.debug('respo' + response_x);
+            system.debug('respo' + response_x.result);
             return response_x.result;
         }
        
@@ -94,6 +94,7 @@ public class SYS_metadataService {
               'SYS_metadataService.checkStatusResponse_element'}
             );
             response_x = response_map_x.get('response_x');
+            System.debug('SP resp'+response_x);
             return response_x.result;
         }
    

@@ -14,18 +14,11 @@ public with sharing class SYS_syncLicenseOrg {
         req.setMethod('POST');
         req.setEndpoint(endpoint);
         req.setHeader('Content-type', 'application/json');
-        requestBody body = new requestBody();
-        body.IntegrationSetting = getIntegrationSetting();
-        body.IntegrationMetadata = getIntegrationMetadata();
-        body.UserInfo = getUserInfo();
-        System.debug('SP json'+JSON.serialize(body));
-        req.setBody(JSON.serialize(body));
+        req.setBody(getIntSettingRequest());
 
         HTTPResponse res = http.send(req);
         if (res.getStatusCode() == 200) {
-            /**
-             * process response
-             */
+            
             Object obj = JSON.deserializeUntyped(res.getBody());
             Map<String, Object> intSettingMap = new Map<String, Object>();
             Map<String, Object> intMetadataMap = new Map<String, Object>();
@@ -41,13 +34,9 @@ public with sharing class SYS_syncLicenseOrg {
 
             for(Object itr : intMetadataList) {
                 intMetadataMap = (Map<String, Object>)itr;
-                
                 apiNameMap.put((String)intMetadataMap.get('developername'), 'Integration_Metadata__mdt');
                 containerMd.put((String)intMetadataMap.get('developername'), (Map<String, Object>)intMetadataMap.get('IntMap'));
-                 
             }
-            System.debug('SP maps '+(apiNameMap));
-            System.debug('SP maps '+(containerMd));
             SYS_customMetadataDeploy.requestDeployment(
                 apiNameMap, containerMd
             );
@@ -102,6 +91,15 @@ public with sharing class SYS_syncLicenseOrg {
      * Request structure is defined in requestBody.
      */
 
+    public static String getIntSettingRequest() {
+        requestBody body = new requestBody();
+        body.IntegrationSetting = getIntegrationSetting();
+        body.IntegrationMetadata = getIntegrationMetadata();
+        body.UserInfo = getUserInfo();
+        
+        return JSON.serialize(body);
+    }
+
     public class requestBody {
         public User UserInfo;
         public IntegrationSetting__mdt IntegrationSetting;
@@ -138,7 +136,7 @@ public with sharing class SYS_syncLicenseOrg {
         SYS_metadataService.AsyncResult[] results = service.create(new List<SYS_metadataService.Metadata> { remoteSiteSettings });
         SYS_metadataService.AsyncResult[] checkResults = service.checkStatus(new List<string> {string.ValueOf(results[0].Id)});
         
-        return checkResults[0].done;
+        return checkResults[0].done != null ? checkResults[0].done : false;
     }
 
     public static SYS_metadataService.MetadataPort createService() {
