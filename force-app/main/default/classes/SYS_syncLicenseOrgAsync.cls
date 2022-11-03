@@ -19,7 +19,7 @@ public class SYS_syncLicenseOrgAsync implements Queueable, Database.AllowsCallou
         } else {
             deployed = true;
         }
-
+        System.debug('SP test '+SYS_DataCache.licenseEndpoint + ' ' + deployed);
         if(SYS_DataCache.licenseEndpoint != null && deployed) {
             
             followup = !(SYS_syncLicenseOrg.sendRequest(SYS_DataCache.licenseEndpoint));

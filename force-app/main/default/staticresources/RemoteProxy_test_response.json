@@ -1,0 +1,57 @@
+{
+    "size" : 7,
+    "totalSize" : 7,
+    "done" : true,
+    "queryLocator" : null,
+    "entityTypeName" : "RemoteProxy",
+    "records" : [ {
+      "attributes" : {
+        "type" : "RemoteProxy",
+        "url" : "/services/data/v54.0/tooling/sobjects/RemoteProxy/0rp5i000000TSHNAA4"
+      },
+      "EndpointUrl" : "https://drchrono.com",
+      "IsActive" : true
+    }, {
+      "attributes" : {
+        "type" : "RemoteProxy",
+        "url" : "/services/data/v54.0/tooling/sobjects/RemoteProxy/0rp5i000000TTnyAAG"
+      },
+      "EndpointUrl" : "https://self-5cb-dev-ed.my.salesforce.com",
+      "IsActive" : true
+    }, {
+      "attributes" : {
+        "type" : "RemoteProxy",
+        "url" : "/services/data/v54.0/tooling/sobjects/RemoteProxy/0rp5i000000TTo3AAG"
+      },
+      "EndpointUrl" : "https://self-5cb-dev-ed.lightning.force.com",
+      "IsActive" : true
+    }, {
+      "attributes" : {
+        "type" : "RemoteProxy",
+        "url" : "/services/data/v54.0/tooling/sobjects/RemoteProxy/0rp5i000000TToDAAW"
+      },
+      "EndpointUrl" : "https://self-5cb-dev-ed--adisolshl7.visualforce.com",
+      "IsActive" : true
+    }, {
+      "attributes" : {
+        "type" : "RemoteProxy",
+        "url" : "/services/data/v54.0/tooling/sobjects/RemoteProxy/0rp5i000000ThUrAAK"
+      },
+      "EndpointUrl" : "https://us-central1-hl7convertersandbox.cloudfunctions.net",
+      "IsActive" : true
+    }, {
+      "attributes" : {
+        "type" : "RemoteProxy",
+        "url" : "/services/data/v54.0/tooling/sobjects/RemoteProxy/0rp5i000000ThUwAAK"
+      },
+      "EndpointUrl" : "https://oauth2.googleapis.com",
+      "IsActive" : true
+    }, {
+      "attributes" : {
+        "type" : "RemoteProxy",
+        "url" : "/services/data/v54.0/tooling/sobjects/RemoteProxy/0rp5i0000016ONWAA2"
+      },
+      "EndpointUrl" : "http://www.apexdevnet.com",
+      "IsActive" : true
+    } ]
+  }

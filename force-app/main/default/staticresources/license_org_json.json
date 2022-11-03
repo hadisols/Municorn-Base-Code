@@ -1,0 +1,28 @@
+{
+  "IntegrationMetadata": [
+    {
+      "developername": "Sample_Metadata",
+      "IntMap": {
+        "Value__c": "Some values",
+        "Integration_Setting__c": "SYS_Test_IntegrationSetting2",
+        "Key__c": "Contact Support"
+      }
+    },
+    {
+      "developername": "Sample_Metadata_1",
+      "IntMap": {
+        "Value__c": "Some values 1",
+        "Integration_Setting__c": "SYS_Test_IntegrationSetting2",
+        "Key__c": "Contact Support 1"
+      }
+    }
+  ],
+  "IntegrationSetting": {
+    "IntMap": {
+      "License_Org_Endpoint__c": "https://adisolsllc8-dev-ed.develop.my.salesforce-sites.com/services/apexrest/municorn/v1/Subscriber_Information?token=9LR99107DF7343549",
+      "Enforce_Limit__c": false,
+      "ApexHandler__c": "SYS_ApplicationService"
+    },
+    "developername": "SYS_Test_IntegrationSetting2"
+  }
+}

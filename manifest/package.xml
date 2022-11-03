@@ -45,6 +45,8 @@
 		<members>SYS_syncLicenseOrg</members>
 		<members>RemoteSiteSettingService</members>
 		<members>SYS_syncLicenseOrgAsync</members>
+		<members>SYS_LicenseOrgTest</members>
+		<members>RemoteSiteSettingServiceTest</members>
 
 		<name>ApexClass</name>
 	</types>
@@ -209,7 +211,9 @@
 		<members>SYS_Test_Inbound_Body</members>
 		<members>SYS_Test_Inbound_Body_Large</members>
 		<members>SYS_Test_Outbound_Response_Body</members>
+		<members>RemoteProxy_test_response</members>
 		<members>Municorn_Resource</members>
+		<members>license_org_json</members>
 		<name>StaticResource</name>
 	</types>
 	<types>
