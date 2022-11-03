@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>SYS Test Integration Setting</label>
+    <label>SYS_Test_IntegrationSetting</label>
     <protected>false</protected>
     <values>
         <field>ApexHandler__c</field>
@@ -56,7 +56,7 @@
     </values>
     <values>
         <field>License_Org_Endpoint__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">https://adisolsllc8-dev-ed.develop.my.salesforce-sites.com/services/apexrest/municorn/v1/Subscriber_Information?token=9LR99107DF7343549</value>
     </values>
     <values>
         <field>NamedCredential__c</field>
