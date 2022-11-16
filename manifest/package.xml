@@ -214,6 +214,7 @@
 		<members>RemoteProxy_test_response</members>
 		<members>Municorn_Resource</members>
 		<members>license_org_json</members>
+		<members>OAuth_Test_Records</members>
 		<name>StaticResource</name>
 	</types>
 	<types>

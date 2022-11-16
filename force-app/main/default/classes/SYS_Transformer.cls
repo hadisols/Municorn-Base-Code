@@ -57,7 +57,7 @@ public virtual class SYS_Transformer {
 
         Map<Id, Map<String, List<sObject>>> parentChildObjMap = new Map<Id, Map<String, List<sObject>>>();
         Map<String, List<FieldSetting__mdt>> childMappingsMap = new Map<String, List<FieldSetting__mdt>>();
-        Map<String, List<String>> childFieldsMap = new Map<String, List<String>>();
+        Map<String, Set<String>> childFieldsMap = new Map<String, Set<String>>();
         Map<String, List<String>> primaryObjFieldsMap = new Map<String, List<String>>();
         
         List<FieldSetting__mdt> parentMappings = new List<FieldSetting__mdt>(); //NOT USED
@@ -93,11 +93,11 @@ public virtual class SYS_Transformer {
                 childMappingsMap.get(mapping.ObjectApiName__c).add(mapping);
                 
                 if(childFieldsMap.get(mapping.ObjectApiName__c) == null) {
-                    childFieldsMap.put(mapping.ObjectApiName__c, new List<String>()); 
+                    childFieldsMap.put(mapping.ObjectApiName__c, new Set<String>()); 
                 }
 
-				if(!childFieldsMap.get(mapping.ObjectApiName__c).contains(mapping.FieldApiName__c))
-                    childFieldsMap.get(mapping.ObjectApiName__c).add(mapping.FieldApiName__c);
+				if(!childFieldsMap.get(mapping.ObjectApiName__c).contains(mapping.FieldApiName__c?.toLowerCase()))
+                    childFieldsMap.get(mapping.ObjectApiName__c).add(mapping.FieldApiName__c?.toLowerCase());
       
             } else {
                 parentMappings.add(mapping);   
@@ -143,7 +143,10 @@ public virtual class SYS_Transformer {
          
         
         for(String objectName : childFieldsMap.keySet()) {
-            String query = 'Select Id, '+ String.join(childFieldsMap.get(objectName), ',') + ',' +childMappingsMap.get(objectName)[0].ParentField__c +' from ' + objectName;
+            childFieldsMap.get(objectName).add(childMappingsMap.get(objectName)[0].ParentField__c?.toLowerCase());
+            String query = 'Select Id, '+ String.join((Iterable<String>)childFieldsMap.get(objectName), ',') 
+            /* +',' +childMappingsMap.get(objectName)[0].ParentField__c  */
+            +' from ' + objectName;
             String whereClause = ' where '+ String.escapeSingleQuotes(childMappingsMap.get(objectName)[0].ParentField__c) +' in :parentIds';
             /*--*/SYS_debug.log('child query=='+query);
             List<sObject> childObjects = Database.query(String.escapeSingleQuotes(query)+whereClause);
