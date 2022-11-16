@@ -75,6 +75,10 @@
         <value xsi:type="xsd:string">clientcredstoken</value>
     </values>
     <values>
+        <field>Skip_Keys__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>TriggerEvents__c</field>
         <value xsi:nil="true"/>
     </values>

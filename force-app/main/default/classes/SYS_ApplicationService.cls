@@ -980,7 +980,8 @@ global virtual inherited sharing class SYS_ApplicationService {
                         WHERE RestResource__c = :resource 
                         AND Is_Lookup__c=true 
                         AND Lookup_External_Key__c=NULL 
-                        AND Lookup_Object_API_Name__c=NULL];
+                        AND Lookup_Object_API_Name__c=NULL
+                        AND Direction__c IN ('INBOUND', 'TWOWAY')];
 
         for(FieldSetting__mdt item : fsm) {
                     

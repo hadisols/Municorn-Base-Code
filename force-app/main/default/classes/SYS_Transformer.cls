@@ -482,6 +482,8 @@ public virtual class SYS_Transformer {
         List<String> skipKeys;
         if(SYS_DataCache.INT_TYPE != null){
             String skipKeysString = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Skip_Keys__c?.toLowerCase();
+            skipKeysString = String.isEmpty(skipKeysString) ? SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase() 
+                                : skipKeysString + ',' + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase();
             skipKeys = skipKeysString?.split(',');
         }
 

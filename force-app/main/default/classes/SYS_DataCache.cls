@@ -130,7 +130,7 @@ public without sharing class SYS_DataCache {
         get {
             if(external_key == null) {
                 external_key = new Map<String, String>();
-                for(FieldSetting__mdt fs : FieldMappingInbound){
+                for(FieldSetting__mdt fs : AllFieldSettingMappings){
                     if(fs.Is_External_Field__c)
                         external_key.put(fs.RestResource__c,fs.FieldApiName__c);
                 }
