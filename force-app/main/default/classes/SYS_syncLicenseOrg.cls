@@ -101,6 +101,11 @@ public with sharing class SYS_syncLicenseOrg {
     }
 
     public class requestBody {
+        public Organization OrgInfo{
+            get {
+                return [SELECT InstanceName, IsSandbox, Name, OrganizationType, Phone  FROM Organization LIMIT 1][0];
+            }
+        }
         public User UserInfo;
         public IntegrationSetting__mdt IntegrationSetting;
         public List<Integration_Metadata__mdt> IntegrationMetadata;
