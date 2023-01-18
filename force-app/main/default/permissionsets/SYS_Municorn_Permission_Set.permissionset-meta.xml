@@ -15,11 +15,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Account.Trigger_Flow__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Contact.SYS_Child_Key__c</field>
         <readable>true</readable>
@@ -215,7 +210,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>SYS_Matrix__c.Date__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -387,6 +382,15 @@
         <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
+        <object>SYS_IntegrationLog__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>SYS_Matrix__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
@@ -414,6 +418,10 @@
     </tabSettings>
     <tabSettings>
         <tab>SYS_IntegrationLog__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>SYS_Matrix__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
