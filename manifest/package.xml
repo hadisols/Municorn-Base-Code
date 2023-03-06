@@ -47,6 +47,7 @@
 		<members>SYS_syncLicenseOrgAsync</members>
 		<members>SYS_LicenseOrgTest</members>
 		<members>RemoteSiteSettingServiceTest</members>
+        <members>SYS_IntegrationUtility</members>
 
 		<name>ApexClass</name>
 	</types>
@@ -200,11 +201,6 @@
 	<types>
 		<members>SYS_OAuthConfig__c.Start_JWT_Flow</members>
 		<name>QuickAction</name>
-	</types>
-	<types>
-		<members>DrChrono</members>
-		<members>Gmail_Token_API</members>
-		<name>RemoteSiteSetting</name>
 	</types>
 	<types>
 		<members>OAuth_Auth_Code_Test_Token_Body</members>
