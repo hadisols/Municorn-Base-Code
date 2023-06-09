@@ -7,6 +7,7 @@
     <columns>DeveloperName</columns>
     <columns>IsChild__c</columns>
     <columns>Key__c</columns>
+    <columns>ObjectSetting__c</columns>
     <columns>Level__c</columns>
     <columns>ParentField__c</columns>
     <columns>FieldApiName__c</columns>

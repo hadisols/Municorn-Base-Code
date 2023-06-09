@@ -15,7 +15,8 @@ public class SYS_OAuthRedirectHandlerTest {
         TimeZoneSidKey='America/Los_Angeles',
         UserName=uniqueUserName);
         insert u;
-        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'SYS_Municorn_Permission_Set'];
+        String namespaceprefix = SYS_datacache.namespacePrefix;
+        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'SYS_Municorn_Permission_Set' AND namespaceprefix =:namespaceprefix ];
         System.debug('user id '+u.id);
         insert new PermissionSetAssignment(AssigneeId = u.id, PermissionSetId = ps.Id);
 

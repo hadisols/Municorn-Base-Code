@@ -16,7 +16,8 @@ public class SYS_OutboundTest {
         TimeZoneSidKey='America/Los_Angeles',
         UserName=uniqueUserName);
         insert u;
-        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'SYS_Municorn_Permission_Set'];
+        String namespaceprefix = SYS_datacache.namespacePrefix;
+        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'SYS_Municorn_Permission_Set' AND namespaceprefix =:namespaceprefix ];
         System.debug('user id '+u.id);
         insert new PermissionSetAssignment(AssigneeId = u.id, PermissionSetId = ps.Id);
 
@@ -35,6 +36,38 @@ public class SYS_OutboundTest {
             //TODO Assert on key fields on log record
             List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c];
             System.assert(log.size()>1);
+        }
+    }
+
+    @IsTest
+    static void testRecordCreateOutbound_multiple(){
+        
+        System.runAs(getUser()) {
+            SYS_TestDataFactory.createTestRecords(50, 1);
+            Test.startTest();
+            Test.setMock(HttpCalloutMock.class, SYS_MockServer.startServer());
+            SYS_TestUtil.invokeMockFlowForInsert();
+            Test.stopTest();
+
+            //TODO Assert on key fields on log record
+            List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c];
+            System.assert(log.size()>1);
+        }
+    }
+
+    @IsTest
+    static void testRecordCreateOutbound_Account(){
+        
+        System.runAs(getUser()) {
+            Test.startTest();
+            Test.setMock(HttpCalloutMock.class, SYS_MockServer.startServer());
+            SYS_TestUtil.invokeMockFlowForInsertAccount();
+            Test.stopTest();
+    
+            //TODO Assert on key fields on log record
+            List<SYS_IntegrationLog__c> log = [SELECT Id,Status__c FROM SYS_IntegrationLog__c];
+            System.assert(log.size()>1);
+            
         }
     }
 

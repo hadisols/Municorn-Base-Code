@@ -56,7 +56,7 @@ global without sharing class SYS_OAuthRedirectHandler extends SYS_ApplicationSer
         return jsonBody;
     }
 
-    public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
+    /* public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
 
         SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
 
@@ -101,7 +101,7 @@ global without sharing class SYS_OAuthRedirectHandler extends SYS_ApplicationSer
         logResp.SYS_RequestId__c = log.Id;
 
         return logResp;
-    }
+    } */
 
 	@HttpGet
     global static void doGet(){

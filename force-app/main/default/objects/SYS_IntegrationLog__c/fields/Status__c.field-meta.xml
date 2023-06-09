@@ -48,10 +48,27 @@
                 <label>ENQUEUED FOR RETRY</label>
             </value>
             <value>
+                <fullName>PENDING_PARTITIONED_LOOKUP</fullName>
+                <default>false</default>
+                <label>PENDING PARTITIONED LOOKUP</label>
+            </value>
+            <value>
+                <fullName>INPROGRESS</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>INPROGRESS</label>
+            </value>
+            <value>
                 <fullName>READY_FOR_PARENT</fullName>
                 <default>false</default>
                 <isActive>false</isActive>
                 <label>READY_FOR_PARENT</label>
+            </value>
+            <value>
+                <fullName>VOID</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>VOID</label>
             </value>
             <value>
                 <fullName>WAITING_FOR_PARENT</fullName>

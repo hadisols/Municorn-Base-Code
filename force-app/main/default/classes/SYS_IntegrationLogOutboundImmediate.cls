@@ -5,6 +5,7 @@ public without sharing class SYS_IntegrationLogOutboundImmediate{
     
     //private List<Id> sysLogIds = new List<Id>();
     List<SYS_IntegrationLog__c> sysLogs;
+    private Boolean followUp = false;
     
     public SYS_IntegrationLogOutboundImmediate(List<SYS_IntegrationLog__c> uncommittedLogs){
         this.sysLogs = uncommittedLogs;
@@ -38,9 +39,15 @@ public without sharing class SYS_IntegrationLogOutboundImmediate{
             
             try{
                 SYS_DataCache.log = log;
-                if(Limits.getCallouts() < Limits.getLimitCallouts() - 1){
-                    SYS_DataCache.INT_TYPE = log.Integration_Setting__c;
-                    SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
+                if(Limits.getCallouts() < Limits.getLimitCallouts() - 1 && !this.followUp){
+                    SYS_DataCacheFactory init = new SYS_DataCacheFactory(log.Account_Id__c,
+                    log.Integration_Type__c,
+                    log.Integration_Setting__c,
+                    log.ObjectSettingId__c);
+                    
+                    
+                    // SYS_DataCache.INT_TYPE = log.Integration_Setting__c;
+                    // SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
                     SYS_ApplicationService appService;
                     
                     /*--*/SYS_debug.log('appService Handler:'+log.How_to_process__c+'::'+log.Custom_Apex_Handler__c);
@@ -56,20 +63,19 @@ public without sharing class SYS_IntegrationLogOutboundImmediate{
                         appService = (SYS_ApplicationService)Type.forName('SYS_ApplicationService').newInstance();
                         //EX continue;
                     }
+                    SYS_debug.log('SP parentLog id in immediate: '+log.Id);
                     HttpResponse outboundResponse = appService.doOutbound(log);
-                    outboundResultLogs.add(appService.generatelogForOutboundResult(outboundResponse,log));
+                    outboundResultLogs.addAll(appService.generatelogForOutboundResultNew(outboundResponse,log));
+                    if(outboundResponse.getBody() != NULL && outboundResponse.getBody().length() > SYS_Constants.TEXT_AREA_MAX_SIZE*10) {
+                        this.followUp = true;
+                    }
+                    // outboundResultLogs.add(appService.generatelogForOutboundResult(outboundResponse,log));
                 }
                 else{
                     pendingProcessLogs.add(log.Id);
                 }
 
-                /**
-                 * If there are still some logs pending for process after exhausting the callout limits 
-                 * then chain the queueable
-                 **/ 
-                if(pendingProcessLogs.size()>0){
-                    System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
-                }
+                
             }catch(Exception e){
                 SYS_DataCache.log.retry__c = true;
                 SYS_Helper.logException(log, e.getStackTraceString()+'\n'+e.getMessage());
@@ -82,7 +88,37 @@ public without sharing class SYS_IntegrationLogOutboundImmediate{
             //new SYS_ApplicationService().doDML(outboundResultLogs, 'UPSERT','');
             // upsert outboundResultLogs;
             SYS_Helper.upsertLog(outboundResultLogs);
+            Map<String, String> uuidMap = new Map<String, String>();
+            for(sObject log : outboundResultLogs) {
+                if(((SYS_IntegrationLog__c)log).UUID__c != NULL) {
+                    uuidMap.put(((SYS_IntegrationLog__c)log).UUID__c, ((SYS_IntegrationLog__c)log).Id);
+                }
+            }
+            SYS_debug.log('SP requestId map : '+ JSON.serializePretty(uuidMap));
+            //Update the requestId field
+            List<SYS_IntegrationLog__c> logLookUpUpdate = new List<SYS_IntegrationLog__c>();
+            for(sObject log : outboundResultLogs) {
+                
+                if(((SYS_IntegrationLog__c)log).Parent_UUID__c != NULL) {
+                    // ((SYS_IntegrationLog__c)log).SYS_RequestId__c = uuidMap.get(((SYS_IntegrationLog__c)log).Parent_UUID__c);
+                    SYS_IntegrationLog__c newLog = new SYS_IntegrationLog__c();
+                    newLog.Id = ((SYS_IntegrationLog__c)log).Id;
+                    newLog.SYS_RequestId__c = uuidMap.get(((SYS_IntegrationLog__c)log).Parent_UUID__c);
+                    logLookUpUpdate.add(newLog);
+                }
+                SYS_debug.log('SP requestId update: '+((SYS_IntegrationLog__c)log).SYS_RequestId__c + ' : ' +((SYS_IntegrationLog__c)log).Parent_UUID__c);
+            }
+
+            SYS_Helper.upsertLog(logLookUpUpdate);
         } 
+
+        /**
+         * If there are still some logs pending for process after exhausting the callout limits 
+         * then chain the queueable
+         **/ 
+        if(pendingProcessLogs.size()>0){
+            System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
+        }
         
     }
     

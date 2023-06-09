@@ -5,6 +5,6 @@ global with sharing class SYS_scheduler implements Schedulable {
     }
 
     global void execute(SchedulableContext SC) {
-        System.enqueueJob(new SYS_syncLicenseOrgAsync(this.int_type, 2));
+        // System.enqueueJob(new SYS_syncLicenseOrgAsync(this.int_type, 2));
     }
 }

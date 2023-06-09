@@ -44,53 +44,53 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
         return 'POST';
     }
 
-    public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
+    // public override SYS_IntegrationLog__c generatelogForOutboundResult(HttpResponse resp,SYS_IntegrationLog__c log){
 
-        SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
+    //     SYS_IntegrationLog__c logResp = SYS_Helper.getLogsToInsert(resp.getBody());
 
-        String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
-        if(algo!=NULL && algo!='')
-            logResp.Request_Digest__c = generateHash(resp.getBody(),algo);
+    //     String algo = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Hashing_Algo__c;
+    //     if(algo!=NULL && algo!='')
+    //         logResp.Request_Digest__c = generateHash(resp.getBody(),algo);
 
-        if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
+    //     if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
 
-            log.Status__c = 'FAIL';
+    //         log.Status__c = 'FAIL';
 
-            logResp.Status__c = 'ERROR';
+    //         logResp.Status__c = 'ERROR';
             
-            logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
-            logResp.WhatId__c = log.WhatId__c;
-            logResp.Type__c = 'RESPONSE';
-            logResp.How_To_Process__c = 'ignore_log';
-            logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+    //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
+    //         logResp.WhatId__c = log.WhatId__c;
+    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.How_To_Process__c = 'ignore_log';
+    //         logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
             
-        }
-        else{
-            log.Status__c = 'DONE';
+    //     }
+    //     else{
+    //         log.Status__c = 'DONE';
 
-            logResp.Status__c = 'NEW';
-            logResp.SYS_Operation_Type__c = 'UPDATE';
+    //         logResp.Status__c = 'NEW';
+    //         logResp.SYS_Operation_Type__c = 'UPDATE';
 
-            logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
-            logResp.How_To_Process__c = 'use_custom_apex_handler';
-            logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
+    //         logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
+    //         logResp.How_To_Process__c = 'use_custom_apex_handler';
+    //         logResp.Custom_Apex_Handler__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c;
             
-            logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
-            logResp.WhatId__c = log.WhatId__c;
-            logResp.Type__c = 'RESPONSE';
-            logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
-            logResp.ObjectSettingId__c = log.ObjectSettingId__c;
+    //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
+    //         logResp.WhatId__c = log.WhatId__c;
+    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
+    //         logResp.ObjectSettingId__c = log.ObjectSettingId__c;
 
-            logResp.retry__c = false; 
+    //         logResp.retry__c = false; 
             
-        }
+    //     }
 
-        //doDML(new List<SYS_IntegrationLog__c>{log}, 'UPSERT', '') ;
-        SYS_Helper.upsertLog(log);
-        logResp.SYS_RequestId__c = log.Id;
+    //     //doDML(new List<SYS_IntegrationLog__c>{log}, 'UPSERT', '') ;
+    //     SYS_Helper.upsertLog(log);
+    //     logResp.SYS_RequestId__c = log.Id;
 
-        return logResp;
-    }
+    //     return logResp;
+    // }
 
     public override String getHttpRequestEndpoint(HttpRequest req,SYS_IntegrationLog__c log, String externalId){
         String baseEndpoint = SYS_DataCache.integrationSetting.get(SYS_Datacache.INT_TYPE).BaseAPIEndPoint__c;

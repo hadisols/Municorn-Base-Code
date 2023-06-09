@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Integration_Type__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Integration Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>SYS_Auth_Integration_Setting</fullName>
+                <default>true</default>
+                <label>SYS_Auth_Integration_Setting</label>
+            </value>
+            <value>
+                <fullName>SYS_OAuth_CC_IS</fullName>
+                <default>false</default>
+                <label>SYS_OAuth_CC_IS</label>
+            </value>
+            <value>
+                <fullName>SYS_OAuth_Integration_Setting</fullName>
+                <default>false</default>
+                <label>SYS_OAuth_Integration_Setting</label>
+            </value>
+            <value>
+                <fullName>SYS_OAuth_Pwd_IS</fullName>
+                <default>false</default>
+                <label>SYS_OAuth_Pwd_IS</label>
+            </value>
+            <value>
+                <fullName>SYS_Test_IntegrationSetting</fullName>
+                <default>false</default>
+                <label>SYS_Test_IntegrationSetting</label>
+            </value>
+            <value>
+                <fullName>SYS_Test_IntegrationSetting_Fail</fullName>
+                <default>false</default>
+                <label>SYS_Test_IntegrationSetting_Fail</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
