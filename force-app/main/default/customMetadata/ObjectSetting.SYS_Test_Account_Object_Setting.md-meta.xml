@@ -32,7 +32,7 @@
     </values>
     <values>
         <field>ExternalFieldApi__c</field>
-        <value xsi:type="xsd:string">#SYS_Key__c</value>
+        <value xsi:type="xsd:string">#SYS_Key_Municorn__c</value>
     </values>
     <values>
         <field>GET_URL_Pattern__c</field>
@@ -49,6 +49,10 @@
     <values>
         <field>ObjectApiName__c</field>
         <value xsi:type="xsd:string">Account</value>
+    </values>
+    <values>
+        <field>Object__c</field>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>PATCH_URL_Pattern__c</field>
