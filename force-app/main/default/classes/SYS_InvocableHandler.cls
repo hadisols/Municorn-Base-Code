@@ -21,6 +21,9 @@ global without sharing class SYS_InvocableHandler {
 
         @InvocableVariable(label= 'Callout Method' required = false)
         global String httpMethod;
+
+        @InvocableVariable(label= 'Additional Parameter' required = false)
+        global String param;
     }
     
     
@@ -29,6 +32,7 @@ global without sharing class SYS_InvocableHandler {
         
         List<sObject> newList = new List<sObject>();
         Map<Id,sObject> newMap = new Map<Id,sObject>();
+        List<String> paramList = new List<String>();
 
         List<sObject> oldList = new List<sObject>();
         
@@ -38,56 +42,29 @@ global without sharing class SYS_InvocableHandler {
         String httpMethod = myInvocableVariableList.size() > 0 ? myInvocableVariableList[0]?.httpMethod?.toUppercase() : '';
 
         
-        SYS_DataCache.INT_TYPE = myInvocableVariableList[0].integrationSetting;
-        SYS_DataCache.OBJ_TYPE = myInvocableVariableList[0].objectSetting;
+        if(myInvocableVariableList.size() > 0) {
+            SYS_DataCacheFactory init = new SYS_DataCacheFactory(
+                myInvocableVariableList[0].integrationSetting,
+                myInvocableVariableList[0].objectSetting
+            );
+        } else {
+            return ;
+        }
+        
+
+        // SYS_DataCache.INT_TYPE = myInvocableVariableList[0].integrationSetting;
+        // SYS_DataCache.OBJ_TYPE = myInvocableVariableList[0].objectSetting;
 
         for(MyInvocableVariable itr:myInvocableVariableList){
             newList.add(itr.newVal);
             newMap.put(itr.recId,itr.newVal);   
             oldList.add(itr.oldVal);   
+            paramList.add(itr.param);
         }
+        // System.debug('SP '+myInvocableVariableList[0].accountId + ' ' + myInvocableVariableList[0].integrationType);
+        // System.debug('SP static '+SYS_DataCache.INT_TYPE+' '+SYS_DataCache.OBJ_TYPE);
 
-        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).ApexHandler__c).newInstance();
-        
-        Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(newList);
-        
-       
-        if(jsonListForOutbound.values().size() > 0){
-            for(Id jsonRecordId:jsonListForOutbound.keyset()){ 
-                /*--*/SYS_debug.log('Id:'+jsonRecordId);
-                String finalJsonForOutbound;
-                
-
-                /*
-                Pre-processing each transformed JSON record. Default is to remove newlines.
-                For Custom pre-processing override sanitizeJSONForOutbound() method in SYS_ApplicationService
-                by creating an extension class. Configure the new extended class in ObjectSettings metadata
-                */
-
-                finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
-                /*--*/SYS_debug.log('cleanJSON'+finalJsonForOutbound); 
-
-                SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
-
-                
-                newSysLog.Callout_URL__c = SYS_Helper.urlFromPattern(httpMethod,newMap.get(jsonRecordId));
-
-                newSysLog.Status__c = 'NEW';
-                newSysLog.Type__c = 'OUTBOUND';
-                newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
-                newSysLog.SYS_Operation_Type__c = operationType;
-                newSysLog.How_to_process__c = 'use_object_setting';
-                newSysLog.whatid__c = jsonRecordId;
-                newSysLog.HTTP_Method__c = httpMethod;
-                newSysLog.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
-                insertSysLog.add(newSysLog);
-            }
-            if(!insertSysLog.isEmpty() && SYS_DataCache.enableCheck.get(SYS_DataCache.INT_TYPE.toUpperCase())){ 
-                SYS_Helper.insertLog(insertSysLog);
-                /*--*/SYS_debug.log('insertSysLog=='+insertSysLog);
-            }
-            
-        }
+        SYS_Helper.processOutboundRequest(newList, operationType, httpMethod, newMap, paramList);
     }
 
 }

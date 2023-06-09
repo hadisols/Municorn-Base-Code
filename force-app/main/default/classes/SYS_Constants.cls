@@ -21,11 +21,11 @@ public without sharing class SYS_Constants {
      * INT_NAME is used to set the default integration name.
      * used @MunicornHome component while enabling the integration.
      */
-    public static String INT_NAME {
-        get{
-            return 'SYS_Test_IntegrationSetting';
-        }
-    }
+    // public static String INT_NAME {
+    //     get{
+    //         return 'SYS_Test_IntegrationSetting';
+    //     }
+    // }
     
     
 }

@@ -46,6 +46,11 @@
                 <default>false</default>
                 <label>YYYYMMDDThhmmZ</label>
             </value>
+            <value>
+                <fullName>EPOCHmm</fullName>
+                <default>false</default>
+                <label>Epoch with milliseconds</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

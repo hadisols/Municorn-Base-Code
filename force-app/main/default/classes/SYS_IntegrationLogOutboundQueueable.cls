@@ -1,6 +1,7 @@
 public without sharing class SYS_IntegrationLogOutboundQueueable implements Queueable, Database.AllowsCallouts{ 
     
     private List<Id> sysLogIds = new List<Id>();
+    private Boolean followUp = false;
     
     public SYS_IntegrationLogOutboundQueueable(List<Id> idList){
         this.sysLogIds = idList;
@@ -34,14 +35,86 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
                                             */
         
         List<Id> pendingProcessLogs = new List<Id>();
+        System.debug('Chunk Size '+this.sysLogIds.size());
+
+        Map<String, String> logIdvsWhatIdMap = new Map<String, String>();
+        List<sObject> records = new List<sObject>();
+        String objectSettingName, objectApiName, objectQuery;
+        Integer maxRecordCount = 50, i = 0; // This value will come from objest setting, and default value is 50
+
         for(SYS_IntegrationLog__c log:sysLogs) {
+            try {
+                if (log.ObjectSettingId__c == NULL) continue;
+                if (objectSettingName == NULL && log.ObjectSettingId__c != NULL) {
+                    objectSettingName = log.ObjectSettingId__c;
+                    
+                    SYS_DataCacheFactory init = new SYS_DataCacheFactory(log.Account_Id__c,
+                    log.Integration_Type__c,
+                    log.Integration_Setting__c,
+                    log.ObjectSettingId__c);
+    
+                    objectApiName = SYS_DataCacheFactory.objectSettingMap?.get(SYS_DataCacheFactory.OBJ_TYPE)?.ObjectApiName__c;
+    
+                }
+                
+                if (log.whatid__c != NULL && objectSettingName == log.ObjectSettingId__c && i < maxRecordCount) {
+                    logIdvsWhatIdMap.put(log.Id, log.whatid__c);
+                    i++;
+                }
+                else {
+                    pendingProcessLogs.add(log.Id);
+                }
+            } catch (Exception e) {
+                SYS_Helper.logException(log,e.getStackTraceString()+'\n'+e.getMessage());
+            }
+        }
+
+        SYS_ApplicationService appService;
+        
+        if(objectApiName != NULL || logIdvsWhatIdMap.values()?.size() > 0) {
+            objectQuery = 'SELECT Id FROM ' +objectApiName +' WHERE Id in (' + '\'' + String.join(logIdvsWhatIdMap.values(),'\',\'') + '\')';
+            records = Database.query(objectQuery);
             
+            appService = (SYS_ApplicationService)Type.forName(SYS_DataCacheFactory.objectSettingMap.get(SYS_DataCacheFactory.OBJ_TYPE).ApexHandler__c).newInstance();
+            Map<Id, String> jsonListForOutbound = appService.transformSObjectToJson(records);
+
+            for(SYS_IntegrationLog__c log:sysLogs) {
+                if(!logIdvsWhatIdMap?.containsKey(log.Id) || log.Status__c == 'FAIL' ) {
+                    continue;
+                }
+                try {
+                    String finalJsonForOutbound;
+                    finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound?.get(log.whatid__c));
+                    
+                    if(log.Additional_Param__c != NULL ) {
+                        finalJsonForOutbound = appService.sanitizeJSONForOutbound(finalJsonForOutbound, log.Additional_Param__c);
+                    }
+                    SYS_Helper.generateRequestBody(log, finalJsonForOutbound);
+    
+                } catch(Exception e) {
+                    SYS_Helper.logException(log,e.getStackTraceString()+'\n'+e.getMessage());
+                }
+            }
+        }
+        
+
+        
+
+        for(SYS_IntegrationLog__c log:sysLogs) {
+            if(pendingProcessLogs.contains(log.Id) || log.Status__c == 'FAIL' ) {
+                continue;
+            }
             try{
                 SYS_DataCache.log = log;
-                if(Limits.getCallouts() < Limits.getLimitCallouts() - 1){
-                    SYS_DataCache.INT_TYPE = log.Integration_Setting__c;
-                    SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
-                    SYS_ApplicationService appService;
+                if(Limits.getCallouts() < Limits.getLimitCallouts() - 1 && !this.followUp){
+                    SYS_DataCacheFactory init = new SYS_DataCacheFactory(log.Account_Id__c,
+                    log.Integration_Type__c,
+                    log.Integration_Setting__c,
+                    log.ObjectSettingId__c);
+                    
+                    // SYS_DataCache.INT_TYPE = log.Integration_Setting__c;
+                    // SYS_DataCache.OBJ_TYPE = log.ObjectSettingId__c;
+                    // SYS_ApplicationService appService;
                     
 
                     if(log.How_to_process__c == 'use_object_setting')
@@ -55,24 +128,27 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
                         //Log Message
                         continue;
                     }
-                    HttpResponse outboundResponse = appService.doOutbound(log);
-                    outboundResultLogs.add(appService.generatelogForOutboundResult(outboundResponse,log));
+                    SYS_debug.log('SP parentLog id in queueable: '+log.Id);
+                    HttpResponse outboundResponse = appService.doOutbound(log); //no dml here
+                    outboundResultLogs.addAll(appService.generatelogForOutboundResultNew(outboundResponse,log));
+                    if(outboundResponse.getBody() != NULL && outboundResponse.getBody().length() > SYS_Constants.TEXT_AREA_MAX_SIZE*10) {
+                        this.followUp = true;
+                    }
+                    // outboundResultLogs.add(appService.generatelogForOutboundResult(outboundResponse,log));
                 }
                 else{
                     pendingProcessLogs.add(log.Id);
-                }
+                } 
 
-                /**
-                 * If there are still some logs pending for process after exhausting the callout limits 
-                 * then chain the queueable
-                 **/ 
-                if(pendingProcessLogs.size()>0){
-                    System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
-                }
-            }catch(Exception e){
-
+                // /**
+                //  * If there are still some logs pending for process after exhausting the callout limits 
+                //  * then chain the queueable
+                //  **/ 
+                // if(pendingProcessLogs.size()>0){
+                //     System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
+                // }
+            } catch(Exception e) {
                 SYS_Helper.logException(log,e.getStackTraceString()+'\n'+e.getMessage());
-    
             }
             
         }//For Loop Ends
@@ -80,9 +156,27 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
         if(outboundResultLogs.size() > 0){
 
             //new SYS_ApplicationService().doDML(outboundResultLogs, 'UPSERT','');
-            SYS_Helper.upsertLog(outboundResultLogs);
+            SYS_Helper.upsertLog(outboundResultLogs); 
             // upsert outboundResultLogs;
-        } 
+        } else if(sysLogs.size() > 0) {
+            SYS_Helper.upsertLog(sysLogs);
+        }
+        System.debug('SP Limits :: dml '+Limits.getDMLStatements()+' queries '+Limits.getQueries() +' heap '+Limits.getHeapSize());
+        /**
+         * If there are still some logs pending for process after exhausting the callout limits 
+         * then chain the queueable
+         **/ 
+        if(pendingProcessLogs.size()>0 && (Limits.getQueueableJobs() < Limits.getLimitQueueableJobs() - 1)){
+            System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
+        } else if (pendingProcessLogs.size()>0) {
+
+            List<SYS_IntegrationLog__c> syslogPending = new List<SYS_IntegrationLog__c>();
+            for(Id logId:pendingProcessLogs) {
+                SYS_IntegrationLog__c log = new SYS_IntegrationLog__c(Id = logId, retry__c = true);
+                syslogPending.add(log);
+            }
+            SYS_Helper.upsertLog(syslogPending);
+        }
         
     }
     

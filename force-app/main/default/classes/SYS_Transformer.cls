@@ -28,23 +28,157 @@ public virtual class SYS_Transformer {
     public static Map<Id, String> getRequestJson(List<sObject> objsList) {
 
         Map<Id,String> jsonMap = new Map<Id, String>();
-        
-        for(sObject obj : objsList){
-
+        // for(sObject obj : objsList){
+        //     String objId = (String)obj.get('Id');
+        //     Map<String, Object> jsonMapObject = getRequestJsonRecurse(obj,'0');
+        //     jsonMap.put(objId, JSON.serialize(jsonMapObject));
+            
+        // }
+        Map<String, Map<String, List<sObject>>> levelVsRecordsMap = getAllRecords(objsList);
+        Map<String, List<sObject>> objectApinameVsRecords = levelVsRecordsMap.get('0');
+        List<sObject> records = new List<sObject>();
+        for(String objectApiName : objectApinameVsRecords.keySet()) {
+            records = objectApinameVsRecords.get(objectApiName);
+        }
+        for(sObject obj : records){
+            System.debug('SP new function call');
             String objId = (String)obj.get('Id');
-            Map<String, Object> jsonMapObject = getRequestJsonRecurse(obj,'0');
+            Map<String, Object> jsonMapObject = getRequestJsonRecurseNew(obj, '0', levelVsRecordsMap);
             jsonMap.put(objId, JSON.serialize(jsonMapObject));
             
         }
+        System.debug('LIMITS queries : '+Limits.getQueries() + ' getLimitQueries() : '+ Limits.getLimitQueries());
         return jsonMap;
     }
 
-    /* *************************************************************************************************************************** */
+    //use the levels to store the child records and use it to 
+    //level as index of array
+    public static Map<String, Map<String, List<sObject>>> getAllRecords(List<sObject> sObjects) {
+        // Map<String, List<String>> primaryObjFieldsMap = new Map<String, List<String>>();
+        Map<String, Map<String, List<String>>> levelVsQueryMap = new Map<String, Map<String, List<String>>>();
+        Map<String, Map<String, List<sObject>>> levelVsRecordsMap = new Map<String, Map<String, List<sObject>>>();
+        Map<String, String> parentFieldMap = new Map<String, String>();
+        List<Id> parentIds = new List<Id>();
+        
+        for(sObject record : sObjects) {
+            parentIds.add((Id)record.get('id'));
+        }
+        
+        for(FieldSetting__mdt mapping : SYS_DataCacheFactory.FieldMappingOutbound) { 
+
+            //TODO check if below if condition is really required
+            if(mapping.FieldApiName__c != NULL) {
+                if(mapping.Level__c != NULL && levelVsQueryMap.containsKey(mapping.Level__c) && !String.isBlank(mapping.FieldApiName__c)) {
+                    Map<String, List<String>> fieldsMap = levelVsQueryMap.get(mapping.Level__c);
+                    Map<String, List<sObject>> recordMap = levelVsRecordsMap.get(mapping.Level__c);
+                    
+                    if(fieldsMap.containsKey(mapping.ObjectApiName__c.toLowerCase())) {
+                        fieldsMap.get(mapping.ObjectApiName__c.toLowerCase())?.add(mapping.FieldApiName__c?.toLowerCase());
+                    } else {
+                        fieldsMap.put(mapping.ObjectApiName__c.toLowerCase(), new List<String>{mapping.FieldApiName__c?.toLowerCase()});
+                    }
+                    if(! recordMap.containsKey(mapping.ObjectApiName__c.toLowerCase())) {
+                        recordMap.put(mapping.ObjectApiName__c.toLowerCase(), new List<sObject>());
+                    }
     
-    public static Map<String, Object> getRequestJsonRecurse(sObject singleObj,String level) {
+                } else {
+                    levelVsQueryMap.put(mapping.Level__c, new Map<String, List<String>>{
+                        mapping.ObjectApiName__c.toLowerCase()=> new List<String>{mapping.FieldApiName__c?.toLowerCase()}});
+                    
+                    levelVsRecordsMap.put(mapping.Level__c, new Map<String, List<sObject>>{
+                        mapping.ObjectApiName__c.toLowerCase()=> new List<sObject>()});
+                }
+            }
+            
+            parentFieldMap.put(mapping.Level__c+'-'+mapping.ObjectApiName__c.toLowerCase(), mapping.ParentField__c);
+        }
+        for(integer i = 0 ; ( levelVsQueryMap.keySet() != NULL && i < levelVsQueryMap.keySet().size()) ; i++) {
+            String level = i+'';
+            Map<String, List<String>> fieldsMap = levelVsQueryMap.get(level);
+
+            if(fieldsMap.keySet() != NULL && fieldsMap.keySet().size() > 0) {
+                for(String objectApiName : fieldsMap.keySet()) {
+                    String query = 'SELECT ';
+                    String finalSubQuery = '';
+                    String whereClause = '';
+                    
+                    String parentFieldApi = parentFieldMap.get(i +'-'+ objectApiName);
+                    if(level.equals('0')) {
+                        parentFieldApi = 'id';
+                    }
+                    
+                    if(parentIds?.size() > 0 && !String.isBlank(parentFieldApi)) {
+                        whereClause = ' WHERE '+parentFieldApi+' in :parentIds';
+                    }
+
+                    // if(parentFieldApi != NULL && !fieldsMap.get(objectApiName).contains(parentFieldApi.toLowerCase()) && !parentFieldApi.equalsIgnoreCase('id'))
+                    //     finalSubQuery += parentFieldApi +',';
+                    // if(! fieldsMap.get(objectApiName).contains('id') && !parentFieldApi.equalsIgnoreCase('id')) 
+                    //     finalSubQuery += 'id,';
+                    
+                    String externalFieldApi = SYS_DataCacheFactory.externalKeyByObject.get(objectApiName.toLowerCase());
+                    System.debug('SP obj '+objectApiName.toLowerCase() + externalFieldApi + ' OBJtype '+SYS_datacache.OBJ_TYPE);
+                    Set<String> allFields = new Set<String>();
+                    allFields.addAll(fieldsMap.get(objectApiName));
+                    if(externalFieldApi != NULL)
+                        allFields.add(externalFieldApi.toLowerCase());
+                    if(parentFieldApi != NULL)
+                        allFields.add(parentFieldApi.toLowerCase());
+                    allFields.add('id');
+                    // if(externalFieldApi != NULL && !fieldsMap.get(objectApiName).contains(externalFieldApi)) {
+                    //     finalSubQuery += externalFieldApi + ',';
+                    // }
+                    
+                    // System.debug('final subquery '+String.join((Iterable<String>)allFields, ','));
+                    query += /* finalSubQuery+ */String.join((Iterable<String>)allFields, ',')+' FROM '+objectApiName + whereClause;
+                    System.debug('query '+query);
+
+                    // List<sObject> records = Database.query(query);
+
+                    String apexHandler = SYS_DataCacheFactory.integrationSetting?.ApexHandler__c != NULL ? 
+                    SYS_DataCacheFactory.integrationSetting.ApexHandler__c : 'SYS_ApplicationService';
+                    
+                    SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(apexHandler).newInstance();
+                    List<sObject> records = appService.fetchSobject(query, parentIds);
+
+                    for(sObject item:records) {
+                        parentIds.add((Id)item.get('Id'));
+                    }
+                    levelVsRecordsMap.get(level)?.get(objectApiName).addAll(records);
+                }
+            }
+
+        }
+        System.debug(JSON.serializePretty(levelVsQueryMap));
+        System.debug(JSON.serializePretty(levelVsRecordsMap));
+        return levelVsRecordsMap;
+    }
+
+    //getChildRecords(parentId, childlevel, parentFieldApiName, childObjectApiName, levelVsRecordsMap);
+    public static List<sObject> getChildRecords(String parentId, String childlevel, String parentFieldApiName, String childObjectApiName,  Map<String, Map<String, List<sObject>>> levelVsRecordsMap) {
+        List<sObject> ChildRecords = new List<sObject>(); 
+        Map<String, List<sObject>> recordsInChildLevel = levelVsRecordsMap.get(childlevel);
+        Map<String, List<sObject>> childRecordsOfParent = new Map<String, List<sObject>>();
+        for(String objectApiName: recordsInChildLevel.keySet()) {
+            if( childObjectApiName.equalsIgnoreCase(objectApiName)) {
+                for(sObject record : recordsInChildLevel.get(objectApiName)) {
+                    if(parentId?.equalsIgnoreCase((String)record.get(parentFieldApiName))) {
+                        objectApiName = objectApiName?.toLowerCase();
+                        
+                        ChildRecords.add(record);
+                    }
+                }
+                break;
+            }
+        }
+
+        return ChildRecords;
+    }
+
+    public static Map<String, Object> getRequestJsonRecurseNew(sObject singleObj,String level, Map<String, Map<String, List<sObject>>> levelVsRecordsMap) {
 
         String parentLevel = Integer.valueOf(level)+'';
-        String childLevel = (Integer.valueOf(level) + 1) +'';
+        String childLevel = (Integer.valueOf(level) + 1) +''; 
 
         /*--*/SYS_debug.log('MS parentLevel '+ parentLevel);
         /*--*/SYS_debug.log('MS childLevel '+ childLevel);
@@ -65,7 +199,7 @@ public virtual class SYS_Transformer {
 		
         
         
-        for(FieldSetting__mdt mapping : SYS_DataCache.FieldMappingOutbound) {
+        for(FieldSetting__mdt mapping : SYS_DataCacheFactory.FieldMappingOutbound) {
 
             //TODO check if below if condition is really required
             if(mapping.FieldApiName__c == NULL) {
@@ -75,15 +209,7 @@ public virtual class SYS_Transformer {
                     }
                     childMappingsMap.get(mapping.ObjectApiName__c).add(mapping);
                 }
-                continue;
-            }
-            
-            if(/*mapping.ObjectApiName__c == primaryObj &&*/ mapping.Level__c == parentLevel){
-                if(primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()) == null) {
-                    primaryObjFieldsMap.put(mapping.ObjectApiName__c.toLowerCase(), new List<String>()); 
-                }
-                if(!primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()).contains(mapping.FieldApiName__c))
-				    primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()).add(mapping.FieldApiName__c);
+                continue; 
             }
             
             if(/*mapping.ParentField__c != null &&*/ mapping.Level__c == childLevel) {
@@ -99,15 +225,11 @@ public virtual class SYS_Transformer {
 				if(!childFieldsMap.get(mapping.ObjectApiName__c).contains(mapping.FieldApiName__c?.toLowerCase()))
                     childFieldsMap.get(mapping.ObjectApiName__c).add(mapping.FieldApiName__c?.toLowerCase());
       
-            } else {
-                parentMappings.add(mapping);   
-            }
+            } 
         }
 		
-        /*--*/SYS_debug.log('hbdebug parentMappings '+ JSON.serialize(parentMappings));
         /*--*/SYS_debug.log('hbdebug childMappingsMap '+ JSON.serialize(childMappingsMap));
         /*--*/SYS_debug.log('hbdebug childFieldsMap '+ JSON.serialize(childFieldsMap));
-        /*--*/SYS_debug.log('hbdebug primaryObjFieldsMap '+ JSON.serialize(primaryObjFieldsMap));
         
         List<String> parentIds = new List<String>();
         //for(sObject obj : objsList) {
@@ -118,48 +240,23 @@ public virtual class SYS_Transformer {
         //Dynamically fetch all metadata fields for the primary object
         List<sObject> objs = new List<sObject>();
         /*--*/SYS_debug.log('=============== external key by obj api name: '+ SYS_DataCache.externalKeyByObject);
-        if(primaryObjFieldsMap.size()>0){
-            /*--*/SYS_debug.log('MS check 101 2:'+primaryObj+' ');
-            String externalIdField = SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase());//!=NULL ? (SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())):',';
-            String finalSubQuery = '';
-            if(externalIdField != NULL ){
-                if(!primaryObjFieldsMap.get(primaryObj.toLowerCase()).contains(externalIdField.toLowerCase()))
-                finalSubQuery = externalIdField +',';
-            }
-            
-            
-            
-            String qry = 'Select Id,'+ finalSubQuery +
-                     String.join(primaryObjFieldsMap.get(primaryObj.toLowerCase()), ',') +
-                     ' from ' + 
-                     primaryObj + 
-                     ' where Id in :parentIds';
-            
-            /*--*/SYS_debug.log('query res@@=='+qry);
-       
-        	objs = Database.query(String.escapeSingleQuotes(qry));
-        }
+        
+        objs = new List<sObject>{singleObj};
         // /*--*/SYS_debug.log('query res@@=='+objs[0].getSObject('Account').get('SYS_Key__c'));
          
-        
+        // parentChildObjMap = getParentChildObjMap(parentIds[0], childlevel, parentFieldApiName, childObjectApiName, levelVsRecordsMap);
         for(String objectName : childFieldsMap.keySet()) {
-            childFieldsMap.get(objectName).add(childMappingsMap.get(objectName)[0].ParentField__c?.toLowerCase());
-            String query = 'Select Id, '+ String.join((Iterable<String>)childFieldsMap.get(objectName), ',') 
-            /* +',' +childMappingsMap.get(objectName)[0].ParentField__c  */
-            +' from ' + objectName;
-            String whereClause = ' where '+ String.escapeSingleQuotes(childMappingsMap.get(objectName)[0].ParentField__c) +' in :parentIds';
-            /*--*/SYS_debug.log('child query=='+query);
-            List<sObject> childObjects = Database.query(String.escapeSingleQuotes(query)+whereClause);
+            
+            String parentFieldApiName = childMappingsMap.get(objectName)[0].ParentField__c?.toLowerCase();
 
-            for(sObject obj : childObjects) {
-                if(parentChildObjMap.get((String)obj.get(childMappingsMap.get(objectName)[0].ParentField__c)) == null) {
-                    parentChildObjMap.put((String)obj.get(childMappingsMap.get(objectName)[0].ParentField__c), new Map<String, List<sObject>>());
-                }
-                if(parentChildObjMap.get((String)obj.get((String)childMappingsMap.get(objectName)[0].ParentField__c)).get(objectName) == null) {
-                	parentChildObjMap.get((String)obj.get((String)childMappingsMap.get(objectName)[0].ParentField__c)).put(objectName, new List<sObject>());	       
-                }
-            	parentChildObjMap.get((String)obj.get((String)childMappingsMap.get(objectName)[0].ParentField__c)).get(objectName).add(obj);
+            if(parentChildObjMap.get((String)parentIds[0]) == NULL) {
+                parentChildObjMap.put((String)parentIds[0] , new Map<String, List<sObject>>());
             }
+            if(parentChildObjMap.get((String)parentIds[0]).get(objectName) == null) {
+                parentChildObjMap.get((String)parentIds[0]).put(objectName, new List<sObject>());	       
+            }
+            parentChildObjMap.get((String)parentIds[0]).get(objectName).addAll(getChildRecords(parentIds[0], childlevel, parentFieldApiName, objectName, levelVsRecordsMap));
+
         } 
 		
         /*--*/SYS_debug.log('hbdebug parentChildObjMap '+ JSON.serialize(parentChildObjMap));
@@ -167,7 +264,8 @@ public virtual class SYS_Transformer {
 
         //objs will have only record
         for(sObject obj : objs) {
-            jsonMapObject = getRequestJsonSingle(parentLevel,obj,SYS_DataCache.FieldMappingOutbound, parentChildObjMap);
+            System.debug('object '+obj);
+            jsonMapObject = getRequestJsonSingle(parentLevel,obj,SYS_DataCacheFactory.FieldMappingOutbound, parentChildObjMap);
            
             String objId = (String)obj.get('Id');
             
@@ -185,8 +283,10 @@ public virtual class SYS_Transformer {
                             //((List<Map<String, Object>>)jsonMapObject.get((String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c)).add(getRequestJsonSingle(childLevel,childObj, childMappingsMap.get(childObjectName), parentChildObjMap)); 
                             Integer nextLevel = Integer.valueOf(childLevel); 
                             
-                            if(nextLevel <= SYS_Constants.MAX_CHILD_NESTING_DEPTH)
-                            ((List<Map<String, Object>>)jsonMapObject.get((String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c)).add(getRequestJsonRecurse(childObj,String.valueOf(nextLevel))); 
+                            if(nextLevel <= SYS_Constants.MAX_CHILD_NESTING_DEPTH) {
+
+                                ((List<Map<String, Object>>)jsonMapObject.get((String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c)).add(getRequestJsonRecurseNew(childObj, String.valueOf(nextLevel), levelVsRecordsMap)); 
+                            }
                             
                         }
                     }
@@ -201,6 +301,166 @@ public virtual class SYS_Transformer {
 
     /* *************************************************************************************************************************** */
     
+    // public static Map<String, Object> getRequestJsonRecurse(sObject singleObj,String level) {
+
+    //     String parentLevel = Integer.valueOf(level)+'';
+    //     String childLevel = (Integer.valueOf(level) + 1) +'';
+
+    //     /*--*/SYS_debug.log('MS parentLevel '+ parentLevel);
+    //     /*--*/SYS_debug.log('MS childLevel '+ childLevel);
+
+    //     SObjectType objectType = singleObj.getSObjectType();
+    //     String primaryObj = JSON.serialize(objectType.getDescribe().getName()).replace('\"','');
+        
+    //     /*--*/SYS_debug.log('hbdebug objectType.getDescribe().getName() '+ primaryObj);
+    //     /*--*/SYS_debug.log('hbdebug mappings '+ JSON.serialize(SYS_DataCache.FieldMappingOutbound));
+
+    //     Map<Id, Map<String, List<sObject>>> parentChildObjMap = new Map<Id, Map<String, List<sObject>>>();
+    //     Map<String, List<FieldSetting__mdt>> childMappingsMap = new Map<String, List<FieldSetting__mdt>>();
+    //     Map<String, Set<String>> childFieldsMap = new Map<String, Set<String>>();
+    //     Map<String, List<String>> primaryObjFieldsMap = new Map<String, List<String>>();
+        
+    //     List<FieldSetting__mdt> parentMappings = new List<FieldSetting__mdt>(); //NOT USED
+    //     Map<String, String> parentObjectFieldMap = new Map<String, String>();//NOT USED anywhere
+		
+        
+        
+    //     for(FieldSetting__mdt mapping : SYS_DataCache.FieldMappingOutbound) {
+
+    //         //TODO check if below if condition is really required
+    //         if(mapping.FieldApiName__c == NULL) {
+    //             if(mapping.ParentField__c != null && mapping.Level__c == childLevel){
+    //                 if(childMappingsMap.get(mapping.ObjectApiName__c) == null) {
+    //                     childMappingsMap.put(mapping.ObjectApiName__c, new List<FieldSetting__mdt>()); 
+    //                 }
+    //                 childMappingsMap.get(mapping.ObjectApiName__c).add(mapping);
+    //             }
+    //             continue;
+    //         }
+            
+    //         if(/*mapping.ObjectApiName__c == primaryObj &&*/ mapping.Level__c == parentLevel){
+    //             if(primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()) == null) {
+    //                 primaryObjFieldsMap.put(mapping.ObjectApiName__c.toLowerCase(), new List<String>()); 
+    //             }
+    //             if(!primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()).contains(mapping.FieldApiName__c))
+	// 			    primaryObjFieldsMap.get(mapping.ObjectApiName__c.toLowerCase()).add(mapping.FieldApiName__c);
+    //         }
+            
+    //         if(/*mapping.ParentField__c != null &&*/ mapping.Level__c == childLevel) {
+    //             if(childMappingsMap.get(mapping.ObjectApiName__c) == null) {
+    //                 childMappingsMap.put(mapping.ObjectApiName__c, new List<FieldSetting__mdt>()); 
+    //             }
+    //             childMappingsMap.get(mapping.ObjectApiName__c).add(mapping);
+                
+    //             if(childFieldsMap.get(mapping.ObjectApiName__c) == null) {
+    //                 childFieldsMap.put(mapping.ObjectApiName__c, new Set<String>()); 
+    //             }
+
+	// 			if(!childFieldsMap.get(mapping.ObjectApiName__c).contains(mapping.FieldApiName__c?.toLowerCase()))
+    //                 childFieldsMap.get(mapping.ObjectApiName__c).add(mapping.FieldApiName__c?.toLowerCase());
+      
+    //         } else {
+    //             parentMappings.add(mapping);   
+    //         }
+    //     }
+		
+    //     /*--*/SYS_debug.log('hbdebug parentMappings '+ JSON.serialize(parentMappings));
+    //     /*--*/SYS_debug.log('hbdebug childMappingsMap '+ JSON.serialize(childMappingsMap));
+    //     /*--*/SYS_debug.log('hbdebug childFieldsMap '+ JSON.serialize(childFieldsMap));
+    //     /*--*/SYS_debug.log('hbdebug primaryObjFieldsMap '+ JSON.serialize(primaryObjFieldsMap));
+        
+    //     List<String> parentIds = new List<String>();
+    //     //for(sObject obj : objsList) {
+    //     	parentIds.add((String)singleObj.get('Id'));
+    //     //}
+		
+    //     /*--*/SYS_debug.log('MS check 101:'+parentIds);
+    //     //Dynamically fetch all metadata fields for the primary object
+    //     List<sObject> objs = new List<sObject>();
+    //     /*--*/SYS_debug.log('=============== external key by obj api name: '+ SYS_DataCache.externalKeyByObject);
+    //     if(primaryObjFieldsMap.size()>0){
+    //         /*--*/SYS_debug.log('MS check 101 2:'+primaryObj+' ');
+    //         String externalIdField = SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase());//!=NULL ? (SYS_DataCache.externalKeyByObject.get(primaryObj.toLowerCase())):',';
+    //         String finalSubQuery = '';
+    //         if(externalIdField != NULL ){
+    //             if(!primaryObjFieldsMap.get(primaryObj.toLowerCase()).contains(externalIdField.toLowerCase()))
+    //             finalSubQuery = externalIdField +',';
+    //         }
+            
+            
+            
+    //         String qry = 'Select Id,'+ finalSubQuery +
+    //                  String.join(primaryObjFieldsMap.get(primaryObj.toLowerCase()), ',') +
+    //                  ' from ' + 
+    //                  primaryObj + 
+    //                  ' where Id in :parentIds';
+            
+    //         /*--*/SYS_debug.log('query res@@=='+qry);
+       
+    //     	objs = Database.query(String.escapeSingleQuotes(qry));
+    //     }
+    //     // /*--*/SYS_debug.log('query res@@=='+objs[0].getSObject('Account').get('SYS_Key__c'));
+         
+        
+    //     for(String objectName : childFieldsMap.keySet()) {
+    //         childFieldsMap.get(objectName).add(childMappingsMap.get(objectName)[0].ParentField__c?.toLowerCase());
+    //         String query = 'Select Id, '+ String.join((Iterable<String>)childFieldsMap.get(objectName), ',') 
+    //         /* +',' +childMappingsMap.get(objectName)[0].ParentField__c  */
+    //         +' from ' + objectName;
+    //         String whereClause = ' where '+ String.escapeSingleQuotes(childMappingsMap.get(objectName)[0].ParentField__c) +' in :parentIds';
+    //         /*--*/SYS_debug.log('child query=='+query);
+    //         List<sObject> childObjects = Database.query(String.escapeSingleQuotes(query)+whereClause);
+
+    //         for(sObject obj : childObjects) {
+    //             if(parentChildObjMap.get((String)obj.get(childMappingsMap.get(objectName)[0].ParentField__c)) == null) {
+    //                 parentChildObjMap.put((String)obj.get(childMappingsMap.get(objectName)[0].ParentField__c), new Map<String, List<sObject>>());
+    //             }
+    //             if(parentChildObjMap.get((String)obj.get((String)childMappingsMap.get(objectName)[0].ParentField__c)).get(objectName) == null) {
+    //             	parentChildObjMap.get((String)obj.get((String)childMappingsMap.get(objectName)[0].ParentField__c)).put(objectName, new List<sObject>());	       
+    //             }
+    //         	parentChildObjMap.get((String)obj.get((String)childMappingsMap.get(objectName)[0].ParentField__c)).get(objectName).add(obj);
+    //         }
+    //     } 
+		
+    //     /*--*/SYS_debug.log('hbdebug parentChildObjMap '+ JSON.serialize(parentChildObjMap));
+    //     Map<String, Object> jsonMapObject = new Map<String, Object>();
+
+    //     //objs will have only record
+    //     for(sObject obj : objs) {
+    //         jsonMapObject = getRequestJsonSingle(parentLevel,obj,SYS_DataCache.FieldMappingOutbound, parentChildObjMap);
+           
+    //         String objId = (String)obj.get('Id');
+            
+    //         if(parentChildObjMap.get(objId) != null ) {
+    //              for(String childObjectName : parentChildObjMap.get(objId).keySet()) {
+    //                 if(childMappingsMap.get(childObjectName)[0].ChildRootElement__c != null){
+
+    //                     if(jsonMapObject.get(childMappingsMap.get(childObjectName)[0].ChildRootElement__c) == null) {
+    //                         jsonMapObject.put(childMappingsMap.get(childObjectName)[0].ChildRootElement__c, new List<Map<String, Object>>()); 
+    //                     } 
+    //                     /*--*/SYS_debug.log('hbdebug getRequestJsonSingle child - '+ childObjectName);
+                    
+    //                     for(sObject childObj : parentChildObjMap.get(objId).get(childObjectName)) {
+                            
+    //                         //((List<Map<String, Object>>)jsonMapObject.get((String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c)).add(getRequestJsonSingle(childLevel,childObj, childMappingsMap.get(childObjectName), parentChildObjMap)); 
+    //                         Integer nextLevel = Integer.valueOf(childLevel); 
+                            
+    //                         if(nextLevel <= SYS_Constants.MAX_CHILD_NESTING_DEPTH)
+    //                         ((List<Map<String, Object>>)jsonMapObject.get((String)childMappingsMap.get(childObjectName)[0].ChildRootElement__c)).add(getRequestJsonRecurse(childObj,String.valueOf(nextLevel))); 
+                            
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         /*--*/SYS_debug.log('Obj jsonMapObject==' + jsonMapObject);
+    //         //jsonMap.put(objId, JSON.serialize(jsonMapObject));
+            
+    //     }
+    //     return jsonMapObject;//jsonMap;
+    // }
+
+    /* *************************************************************************************************************************** */
+    
     public static Map<String, Object> getRequestJsonSingle(String level,sObject obj , List<FieldSetting__mdt> mappings, Map<Id, Map<String, List<sObject>>> mapVal) {
         Map<String, Object> jsonMapObject = new Map<String, Object>();
         /*--*/SYS_debug.log('hbdebug getRequestJsonSingle obj'+ JSON.serialize(obj));
@@ -208,11 +468,15 @@ public virtual class SYS_Transformer {
                 
         for(FieldSetting__mdt mapping : mappings) {
 
-            if(fieldSettingIsToBeSkipped(obj,mapping))
-                continue;
+            // if(fieldSettingIsToBeSkipped(obj,mapping))
+            //     continue;
 
             String fsLevel = (mapping.Level__c == NULL)?'0':mapping.Level__c;
             if(fsLevel == level){
+                // SP Skip method is moved here cause fslist contains list of all fs of all levels.
+                if(fieldSettingIsToBeSkipped(obj,mapping))
+                    continue;
+
                 //TODO handle .'s and nested
                 /*--*/SYS_debug.log('*** hbdebug getRequestJsonSingle mapping.Key__c'+ JSON.serialize(mapping.Key__c));
                 List<String> nodeList = new List<String>();
@@ -230,12 +494,14 @@ public virtual class SYS_Transformer {
                     /*--*/SYS_debug.log('hbdebug getRequestJsonSingle mapping.FieldApiName__c'+ JSON.serialize(mapping.FieldApiName__c));
                     
                     //TODO mapping.FieldApiName__c can be parent queries on standard/custom
-                    if(mapping.FieldApiName__c==NULL){
+                    // Ability to override static value in FS
+                    // if(mapping.FieldApiName__c==NULL){
 
-                        /*--*/SYS_debug.log('MS PBE If 1');
-                        jsonMapObject.put(nodeList[0], mapping.StaticValue__c);
+                    //     /*--*/SYS_debug.log('MS PBE If 1');
+                    //     jsonMapObject.put(nodeList[0], mapping.StaticValue__c);
 
-                    }
+                    // }
+
                     /*
                     else if (mapping.ObjectApiName__c != mapping.ObjectSetting__r.ObjectApiName__c && mapping.Level__c =='0' ) {
                         
@@ -245,17 +511,17 @@ public virtual class SYS_Transformer {
 
                         jsonMapObject.put(nodeList[0], mapVal.get(obj.Id).get(mapping.ObjectApiName__c)[0].get(mapping.FieldApiName__c));
                     }*/
-                    else{
-                        /*--*/SYS_debug.log('MS PBE If 3');
-                        //-- SP jsonMapObject.put(nodeList[0], obj.get(mapping.FieldApiName__c));
-                        String fieldMappingHandler = 'SYS_ApplicationService';
-                        if(mapping.Field_Mapping_Handler__c != '' && mapping.Field_Mapping_Handler__c != NULL){
-                            fieldMappingHandler = mapping.Field_Mapping_Handler__c;
-                        }
-                        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(fieldMappingHandler).newInstance();
-                        
-                        jsonMapObject.put(nodeList[0], appService.getFieldValues(obj, mapping, mapping.FieldApiName__c));
+                    
+                    /*--*/SYS_debug.log('MS PBE If 3');
+                    //-- SP jsonMapObject.put(nodeList[0], obj.get(mapping.FieldApiName__c));
+                    String fieldMappingHandler = 'SYS_ApplicationService';
+                    if(mapping.Field_Mapping_Handler__c != '' && mapping.Field_Mapping_Handler__c != NULL){
+                        fieldMappingHandler = mapping.Field_Mapping_Handler__c;
                     }
+                    SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(fieldMappingHandler).newInstance();
+                    
+                    jsonMapObject.put(nodeList[0], appService.getFieldValues(obj, mapping, mapping.FieldApiName__c));
+                
                     
                 }
                 else {
@@ -346,7 +612,7 @@ public virtual class SYS_Transformer {
         /*--*/SYS_debug.log('resource=='+resource); 
         /*--*/SYS_debug.log('jsonList=='+jsonList); 
         
-        for(FieldSetting__mdt item : SYS_DataCache.FieldMappingInbound) { 
+        for(FieldSetting__mdt item : SYS_DataCacheFactory.FieldMappingInbound) { 
             if(resource.equals(item.RestResource__c.toLowerCase()) /*&& item.ChildRootElement__c == null*/) {
                 mappings.add(item);
                 String newKey = (isNotification && item.Key_For_Events__c!=NULL)?item.Key_For_Events__c:item.Key__c;//--M .replace( SYS_DataCache.ESCAPE_CHAR, '.'); 
@@ -364,13 +630,14 @@ public virtual class SYS_Transformer {
             // sObjectApiName = mappings[0].ObjectSetting__r.Object__r.QualifiedAPIName;
             sObjectApiName = mappings[0].ObjectApiName__c;
             SYS_DataCache.sObjectApiName = sObjectApiName; // NOT USED
-            SYS_DataCache.OBJ_TYPE = mappings[0].ObjectSetting__r.DeveloperName;
+            SYS_DataCacheFactory.OBJ_TYPE = mappings[0].ObjectSetting__r.DeveloperName;
             
         }
 
         /*--*/SYS_debug.log('-- MS SYS_DataCache.sObjectApiName in SYS_Transformer:'+SYS_DataCache.sObjectApiName);
         //--M String sObjectApiName = null;
-        SYS_DataCache.load();
+        //load is removed now
+        // SYS_DataCache.load();
         //TODO - To automate selection of integration setting
         String integrationSetting = '';  //IMS_SIU Middleware_hl7
         
@@ -483,14 +750,14 @@ public virtual class SYS_Transformer {
         /*--*/SYS_debug.log('MS Double check. jsonObject:'+jsonObject);
         
         List<String> skipKeys;
-        if(SYS_DataCache.INT_TYPE != null){
-            String skipKeysString = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Skip_Keys__c?.toLowerCase();
-            skipKeysString = String.isEmpty(skipKeysString) ? SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase() 
-                                : skipKeysString + ',' + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase();
+        if(SYS_DataCacheFactory.INT_TYPE != null){
+            String skipKeysString = SYS_DataCacheFactory.SKIP_KEYS;
+            // skipKeysString = String.isEmpty(skipKeysString) ? SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase() 
+            //                     : skipKeysString + ',' + SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase();
             skipKeys = skipKeysString?.split(',');
         }
 
-        for(String key : jsonObject.keySet()) {
+        for(String key : jsonObject.keySet()) { 
 
             /*--*/SYS_debug.log('MS ****** key:'+key);
             /*--*/SYS_debug.log('MS ****** skipKeys:'+skipKeys);
@@ -514,26 +781,26 @@ public virtual class SYS_Transformer {
                 String parentKey = '';
                 /*--*/SYS_debug.log('params=='+key+' =='+parents.size()+' res=='+result);
                 if(parents.size() > 0) {
-                    parentKey = String.join(parents, SYS_DataCache.FLAT_KEY_SEPERATOR);
+                    parentKey = String.join(parents, SYS_DataCacheFactory.FLAT_KEY_SEPERATOR);
                 } 
                 /*--*/SYS_debug.log('parentkey=='+parentKey + ' @@custom obj is==' +currentObj);
                 if (currentObj instanceof Decimal) {
                     //Add
-                	result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, (Decimal) currentObj);
+                	result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCacheFactory.FLAT_KEY_SEPERATOR+ key, (Decimal) currentObj);
                 } else if (currentObj instanceof Integer) {
                     //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, (Integer) currentObj);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCacheFactory.FLAT_KEY_SEPERATOR+ key, (Integer) currentObj);
                 }
                 else if (currentObj instanceof String) {
                     //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key,  currentObj);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCacheFactory.FLAT_KEY_SEPERATOR+ key,  currentObj);
                 } else if (currentObj instanceof Boolean) {
                     //Add
-                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, (Boolean) currentObj);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCacheFactory.FLAT_KEY_SEPERATOR+ key, (Boolean) currentObj);
                 } 
                 else if (currentObj == null) {
                     //TODO - Verify accuracy on what needs to be done
-                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCache.FLAT_KEY_SEPERATOR+ key, null);
+                    result.put(String.isBlank(parentKey) ? key : parentkey+SYS_DataCacheFactory.FLAT_KEY_SEPERATOR+ key, null);
                 }
                 else if (currentObj instanceof List<Object> /*&& SYS_Transformer.isChild && key == childRootElement*/) {
                 	List<String> childRecList = new List<String>();
@@ -554,16 +821,18 @@ public virtual class SYS_Transformer {
                         }
                         /*--*/SYS_debug.log('in else=='+result);
                         /*--*/SYS_debug.log('MS Child Objects to be processed:'+childRecList);
-                        /*--*/SYS_debug.log('MS condition for Key: '+key+' = '+(SYS_DataCache.externalKeyByResourceMap.containsKey(key.toLowerCase())));
+                        /*--*/SYS_debug.log('MS condition for Key: '+key+' = '+(SYS_DataCacheFactory.externalKeyByResourceMap.containsKey(key.toLowerCase())));
 
-                        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).ApexHandler__c).newInstance();
+                        String apexHandler = 'SYS_ApplicationService';
+                        apexHandler = SYS_DataCacheFactory.integrationSetting != NULL && SYS_DataCacheFactory.integrationSetting.ApexHandler__c != NULL ? SYS_DataCacheFactory.integrationSetting.ApexHandler__c : apexHandler;
+                        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(apexHandler).newInstance();
 
 
-                        SYS_DataCache.log.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;
+                        SYS_DataCache.log.ObjectSettingId__c = SYS_DataCacheFactory.OBJ_TYPE;
                         //AP-106
                         if(Limits.getQueueableJobs() + 1 < Limits.getLimitQueueableJobs())
                         {
-                            ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCache.INT_TYPE));
+                            ID jobID = System.enqueueJob(new SYS_QueueableForInboundChild(SYS_DataCache.log,childRecList,key,SYS_DataCacheFactory.INT_TYPE));
                         }
                         else{
 
@@ -571,7 +840,7 @@ public virtual class SYS_Transformer {
         
                             for(String singleChildJSON : childRecList){
                                 if(Limits.getDmlStatements() < Limits.getLimitDmlStatements() - 1){
-                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log,key,singleChildJSON,SYS_DataCache.INT_TYPE);
+                                    SYS_IntegrationLog__c newlog = appService.generateLogForChildRecords(SYS_DataCache.log,key,singleChildJSON,SYS_DataCacheFactory.INT_TYPE);
                                     newLog.Status__c = 'ENQUEUED_FOR_RETRY';
                                     newlog.Message__c = 'Out of Queue Limits. Enqueued for retry';
                                     newlog.retry__c = true;
@@ -583,7 +852,8 @@ public virtual class SYS_Transformer {
                             }
                             if(!childRecordsToInsert.isEmpty()){
                                 //appService.doDML(childRecordsToInsert, 'INSERT', '');
-                                SYS_Helper.insertLog(childRecordsToInsert);
+                                // SYS_Helper.insertLog(childRecordsToInsert);
+                                SYS_DataCacheFactory.childRecordsToInsert.addAll(childRecordsToInsert);
                             }
                             
 
@@ -613,11 +883,29 @@ public virtual class SYS_Transformer {
 
     public static Boolean fieldSettingIsToBeSkipped(sObject sobj, FieldSetting__mdt mapping){
 
-        /*--*/SYS_debug.log('MS fieldSettingIsToBeSkipped Mapping: '+mapping+', sobj:'+sobj);
+        /*--*/SYS_debug.log('MS fieldSettingIsToBeSkipped Mapping: '+mapping.FieldApiName__c+ ':'+mapping.Direction__c +', sobj:'+sobj);
         Boolean skip = false;
 
+        String fieldMappingHandler = 'SYS_ApplicationService';
+        if(mapping.Field_Mapping_Handler__c != '' && mapping.Field_Mapping_Handler__c != NULL){
+            fieldMappingHandler = mapping.Field_Mapping_Handler__c;
+        }
+
+        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(fieldMappingHandler).newInstance();
+        
+        try {
+            if(String.isBlank(String.valueOf(appService.getFieldValues(sobj, mapping, mapping.FieldApiName__c))) && 
+            mapping?.Skip_Field_Setting__c != NULL && mapping?.Skip_Field_Setting__c ) {
+                System.debug('SP skipped '+mapping.FieldApiName__c);
+                return true;
+            }
+        } catch(Exception e) {
+            return true;
+        }
+        //try catch is add to resolve the conflict happens when there is child element and getFieldValues() returns exception.
+        
         String objApiName = mapping.ObjectApiName__c;
-        objApiName = objApiName != null ? objApiName.replace(SYS_DataCache.namespacePrefix,SYS_DataCache.ESCAPE_CHAR) : objApiName;
+        // objApiName = objApiName != null ? objApiName.replace(SYS_DataCache.namespacePrefix,SYS_DataCacheFactory.integrationSetting?.EscapeCharacter__c) : objApiName;
 
 
         List<FieldSetting__mdt> extIdMapping = [SELECT FieldApiName__c 
@@ -627,12 +915,12 @@ public virtual class SYS_Transformer {
                                                     AND Is_External_Field__c = true
                                                     AND ObjectApiName__c =:objApiName
                                                     ];
-        /*--*/SYS_debug.log('MS fieldSettingIsToBeSkipped Mapping========: '+extIdMapping+' '+mapping.ObjectSetting__c );
+        /*--*/SYS_debug.log('MS fieldSettingIsToBeSkipped Mapping========: '+extIdMapping+' '+mapping.ObjectSetting__c +' '+objApiName);
         if(extIdMapping.size()>0){
             String externalIdField = extIdMapping[0].FieldApiName__c;
             String mappingIsAllowedFor = mapping.Mapping_is_for__c;
 
-            externalIdField = externalIdField != null ? externalIdField.replace(SYS_DataCache.ESCAPE_CHAR, SYS_DataCache.namespacePrefix) : externalIdField;
+            externalIdField = externalIdField != null ? externalIdField.replace(SYS_DataCacheFactory.integrationSetting?.EscapeCharacter__c, SYS_DataCache.namespacePrefix) : externalIdField;
 
             
             if(mappingIsAllowedFor == NULL || mappingIsAllowedFor == 'All Records'){

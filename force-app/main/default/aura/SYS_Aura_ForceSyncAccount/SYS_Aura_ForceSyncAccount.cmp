@@ -1,0 +1,47 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction"
+                controller="SYS_ForceSync_Controller" 
+                access="global">
+
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="message" type="String" default="Use these buttons to override the changes in Salesforce or External System"/>
+    <aura:attribute name="messageType" type="string" default="slds-text-body_small"/>
+
+    <!--Design Attribute-->
+    <aura:attribute name="objectSetting" type="String" access="global"/>
+    <aura:attribute name="objectSettingOut" type="String" access="global"/>
+    <aura:attribute name="apexHandler" type="String" default="SYS_ForceSync_Controller" access="global"/>
+    <aura:attribute name="syncIn" type="Boolean" default="true" access="global"/>
+    <aura:attribute name="apexHandlerOut" type="String" default="SYS_ForceSync_Controller" access="global"/>
+    <aura:attribute name="syncOut" type="Boolean" default="true" access="global"/>
+
+    <aura:attribute name="syncOutLabel" type="String" default="Sync Out" access="global"/>
+    <aura:attribute name="syncInLabel" type="String" default="Sync In" access="global"/>
+
+    <aura:attribute name="accountMergeField" type="String" default="" access="global"/>
+    <aura:attribute name="integrationType" type="String" default="" access="global"/>
+
+
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
+    <article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner">
+            <aura:if isTrue="{!v.syncIn}">
+                <button class="slds-button slds-button_brand" data-objsetting="{!v.objectSetting}" data-handler="{!v.apexHandler}" data-direction="IN" onclick="{!c.invokeFlowJS}">{!v.syncInLabel}</button>
+            </aura:if>
+
+            <aura:if isTrue="{!v.syncOut}">
+                <button class="slds-button slds-button_brand" data-objsetting="{!v.objectSettingOut}" data-handler="{!v.apexHandlerOut}" data-direction="OUT" onclick="{!c.invokeFlowJS}">{!v.syncOutLabel}</button>
+            </aura:if>
+        </div>
+        
+        <footer class="slds-card__footer">
+            <div class="{!v.messageType}">
+                {!v.message}
+            </div>
+            
+        </footer>
+    </article>
+
+
+</aura:component>

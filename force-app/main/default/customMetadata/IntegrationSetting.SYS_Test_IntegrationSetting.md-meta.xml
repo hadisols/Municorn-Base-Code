@@ -55,6 +55,10 @@
         <value xsi:type="xsd:string">SHA1</value>
     </values>
     <values>
+        <field>Integration_Type__c</field>
+        <value xsi:type="xsd:string">SYS_Test_IntegrationSetting</value>
+    </values>
+    <values>
         <field>License_Org_Endpoint__c</field>
         <value xsi:type="xsd:string">https://adisolsllc8-dev-ed.develop.my.salesforce-sites.com/services/apexrest/municorn/v1/Subscriber_Information?token=9LR99107DF7343549</value>
     </values>

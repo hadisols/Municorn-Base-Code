@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Stripe_SYS_Logs</fullName>
+    <columns>NAME</columns>
+    <columns>Force_Sync__c</columns>
+    <columns>Parent__c</columns>
+    <columns>SYS_Operation_Type__c</columns>
+    <columns>Type__c</columns>
+    <columns>SYS_RequestId__c</columns>
+    <columns>Status__c</columns>
+    <columns>WhatId__c</columns>
+    <columns>Retry_Count__c</columns>
+    <columns>retry__c</columns>
+    <columns>HTTP_Method__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>ObjectSettingId__c</columns>
+    <columns>Integration_Setting__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Integration_Setting__c</field>
+        <operation>equals</operation>
+        <value>Stripe</value>
+    </filters>
+    <label>All Stripe SYS Logs</label>
+</ListView>

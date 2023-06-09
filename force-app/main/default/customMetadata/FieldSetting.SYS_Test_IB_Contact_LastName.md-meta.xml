@@ -95,6 +95,10 @@
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
+        <field>Skip_Field_Setting__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>StaticValue__c</field>
         <value xsi:type="xsd:string">Contact</value>
     </values>

@@ -55,6 +55,10 @@
         <value xsi:nil="true"/>
     </values>
     <values>
+        <field>Integration_Type__c</field>
+        <value xsi:type="xsd:string">SYS_OAuth_Integration_Setting</value>
+    </values>
+    <values>
         <field>License_Org_Endpoint__c</field>
         <value xsi:nil="true"/>
     </values>

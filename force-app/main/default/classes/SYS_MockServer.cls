@@ -6,6 +6,7 @@ public class SYS_MockServer{
     public static MultiStaticResourceCalloutMock startServer(){
         MultiStaticResourceCalloutMock multimockServer = new MultiStaticResourceCalloutMock();
         multimockServer.setStaticResource('https://get_large_mock_body.inbound', 'SYS_Test_Inbound_Body_Large');
+        multimockServer.setStaticResource('https://get_very_large_mock_body.inbound', 'SYS_Test_Inbound_Body_Very_Large');
         multimockServer.setStaticResource('https://get_mock_body.inbound', 'SYS_Test_Inbound_Body');
         multimockServer.setStaticResource('callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account', 'SYS_Test_Outbound_Response_Body');
         multimockServer.setStaticResource('callout:Municorn_Destination_NC/services/data/v53.0/sobjects/Account/0015f00000IayMkAAJ', 'SYS_Test_Outbound_Response_Body');

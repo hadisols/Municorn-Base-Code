@@ -1,0 +1,15 @@
+<design:component label="Force Sync Component (Account)">
+    
+    <design:attribute name="accountMergeField" required="true" label="Merge Field api name to fetch Account Id"/>
+    <!-- <design:attribute name="integrationType" required="true" datasource="apex://SYS_DesignAttributePicklist"/> -->
+
+    <design:attribute name="syncIn" label="Enable Sync In"/>
+    <design:attribute name="syncInLabel" label="Label for Sync In Button"/>
+    <design:attribute name="apexHandler" label="Apex Handler for Sync In" />
+    <design:attribute name="objectSetting" label="Object Setting Developer Name for Sync In"/>
+
+    <design:attribute name="syncOut" label="Enable Sync Out"/>
+    <design:attribute name="syncOutLabel" label="Label for Sync Out Button"/>
+    <design:attribute name="apexHandlerOut" label="Apex Handler for Sync Out" />
+    <design:attribute name="objectSettingOut" label="Object Setting Developer Name for Sync Out"/>
+</design:component>

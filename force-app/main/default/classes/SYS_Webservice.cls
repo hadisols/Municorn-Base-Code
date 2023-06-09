@@ -4,8 +4,13 @@ global without sharing class SYS_Webservice{
     
     @HttpPost
     global static void postRequest(){
-
-        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.getExtension).newInstance();
+        SYS_ApplicationService appService;
+        try {
+            appService = (SYS_ApplicationService)Type.forName(SYS_DataCacheFactory.getHandler).newInstance();
+        } catch(Exception e) {
+            RestContext.response.responseBody = Blob.valueOf(e.getMessage());
+            return ;
+        }
         if(appService.doWebhookSignatureCheck()){
             appService.doPost();
         }  
@@ -18,7 +23,13 @@ global without sharing class SYS_Webservice{
     
     @HttpPut
     global static void putRequest(){
-        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.getExtension).newInstance();
+        SYS_ApplicationService appService;
+        try {
+            appService = (SYS_ApplicationService)Type.forName(SYS_DataCacheFactory.getHandler).newInstance();
+        } catch(Exception e) {
+            RestContext.response.responseBody = Blob.valueOf(e.getMessage());
+            return ;
+        }
         if(appService.doWebhookSignatureCheck()){
             appService.doPut();
         }  
@@ -34,7 +45,13 @@ global without sharing class SYS_Webservice{
     global static void getRequest(){
 
        
-        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.getExtension).newInstance();
+        SYS_ApplicationService appService;
+        try {
+            appService = (SYS_ApplicationService)Type.forName(SYS_DataCacheFactory.getHandler).newInstance();
+        } catch(Exception e) {
+            RestContext.response.responseBody = Blob.valueOf(e.getMessage());
+            return ;
+        }
         if(appService.doWebhookSignatureCheck()){
             appService.doGet();
         }  
@@ -49,7 +66,13 @@ global without sharing class SYS_Webservice{
     @HttpDelete
     global static void deleteRequest(){
         
-        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.getExtension).newInstance();
+        SYS_ApplicationService appService;
+        try {
+            appService = (SYS_ApplicationService)Type.forName(SYS_DataCacheFactory.getHandler).newInstance();
+        } catch(Exception e) {
+            RestContext.response.responseBody = Blob.valueOf(e.getMessage());
+            return ;
+        }
         if(appService.doWebhookSignatureCheck()){
             appService.doDelete();
         }  
@@ -63,7 +86,13 @@ global without sharing class SYS_Webservice{
     @HttpPatch
     global static void patchRequest(){
         
-        SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCache.getExtension).newInstance();
+        SYS_ApplicationService appService;
+        try {
+            appService = (SYS_ApplicationService)Type.forName(SYS_DataCacheFactory.getHandler).newInstance();
+        } catch(Exception e) {
+            RestContext.response.responseBody = Blob.valueOf(e.getMessage());
+            return ;
+        }
         if(appService.doWebhookSignatureCheck()){
             appService.doPatch();
         }  
