@@ -1,0 +1,97 @@
+<template>
+    <lightning-card class="">
+        <div class="">
+            <template if:false={rootObject} >
+                <div class="slds-m-horizontal_x-small slds-grid slds-gutters">
+                    <div class="slds-col">
+                        Primary Object
+                    </div>
+                    <div class="slds-col">
+                        <c-lookup
+                        label=""
+                        onlookupupdate={lookupRecord}
+                        placeholder="search object name..."
+                        is-object-lookup
+                        ></c-lookup>
+                    </div>
+                    <div class="slds-col">
+                        <c-lookup
+                        label=""
+                        onlookupupdate={lookupRecord}
+                        placeholder="select external key..." 
+                        s-object-api-name={primarysObjectName}
+                        ></c-lookup>
+                    </div>
+                </div>
+            </template>
+            
+            <template for:each={treejsonR} for:item="obj">
+                <div key={obj.uuid} class="slds-var-p-around_x-small">
+                    <div class="row">
+                        <div class="slds-grid slds-gutters slds-m-horizontal_x-small">
+                            <div class="slds-col">
+                                <!-- <template if:true={_left}>
+                                    <span class="node"></span>
+                                    <lightning-icon class="slds-m-horizontal_x-small" icon-name='utility:arrow_right' alternative-text='arrow_right' size='small' title='arrow_right'></lightning-icon>
+                                </template> -->
+                                <span class="text-bold">{obj.key} :</span>
+                                <span>{obj.value}</span>
+                                <span>
+                                    <!-- <span class="node"></span> -->
+                                    <lightning-icon class="slds-m-horizontal_x-small" icon-name='utility:arrow_right' alternative-text='arrow_right' size='small' title='arrow_right'></lightning-icon>
+                                </span>
+                            </div>
+                            
+                            <div class="slds-col">
+                                <template if:true={obj.haschild}>
+                                    <c-lookup
+                                    label=""
+                                    onlookupupdate={lookupRecord}
+                                    placeholder="search child object..."
+                                    is-object-lookup
+                                    disabled={obj.disable}
+                                    s-object-api-name={obj.sobject}
+                                    treeuuid={obj.uuid}
+                                    rootkey={obj.rootkey}
+                                    flatkey={obj.key}
+                                    ></c-lookup>
+                                </template>
+                                <template if:false={obj.haschild}>
+                                    <div class="slds-grid slds-gutters">
+                                        <div class="slds-col">
+                                            <c-lookup
+                                            label=""
+                                            onlookupupdate={lookupRecord}
+                                            placeholder="search field..."
+                                            disabled={obj.disable}
+                                            s-object-api-name={obj.sobject}
+                                            treeuuid={obj.uuid}
+                                            rootkey={obj.rootkey}
+                                            flatkey={obj.key}
+                                            ></c-lookup>
+                                        </div>
+                                        <div class="slds-col">
+                                            <lightning-button variant="Neutral" label="More" 
+                                            data-id={obj.uuid}
+                                            title="Update Field Settings" onclick={handleModalOpen} 
+                                            class="slds-m-left_x-small">
+                                            </lightning-button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <template if:true={obj.expand}>
+                        <div class="slds-var-m-left_large">
+                            <c-form-j-s-o-n-tree treejson={obj.item} nodealign={nodealign} root-object></c-form-j-s-o-n-tree>
+                        </div>
+                    </template>
+                </div>
+                
+            </template>
+        </div>
+    </lightning-card>
+    
+</template>

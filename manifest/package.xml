@@ -65,6 +65,20 @@
 		<members>MunicornHealthCheck</members-->
 		<name>AuraDefinitionBundle</name>
 	</types>
+
+    <types>
+		<members>fieldLayout</members>
+		<members>formJSONTree</members>
+		<members>formMapper</members>
+		<members>jsonViewer</members>
+		<members>lookup</members>
+		<name>LightningComponentBundle</name>
+	</types>
+        <types>
+		<members>SYS_FieldMapperController</members>
+		<name>ApexClass</name>
+	</types>
+
 	<types>
 		<members>Account.SYS_Key_Municorn__c</members>
         <members>Account.UUID__c</members>

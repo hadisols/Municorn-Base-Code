@@ -1,0 +1,11 @@
+<template>
+    <lightning-card title="JSON Viewer" class="slds-m-left_x-small slds-align_absolute-center"></lightning-card>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-m-left_x-small">
+            <textarea class="json-input" placeholder="Paste JSON here" onchange={handleInputChange} rows="5" cols="40"></textarea>
+        </div>
+        <div class="slds-col slds-m-left_x-small">
+            <pre class="json-output">{formattedJson}</pre>
+        </div>
+    </div>
+</template>
