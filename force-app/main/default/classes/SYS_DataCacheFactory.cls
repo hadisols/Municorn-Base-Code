@@ -41,6 +41,8 @@
         }
     }
 
+    public static List<SYS_IntegrationLog__c> childRecordsToInsert = new List<SYS_IntegrationLog__c>();
+
     public static String FLAT_KEY_SEPERATOR {
         get {
             return SYS_DataCache.datacache != NULL ? SYS_DataCache.datacache.flatKeySeparator : SYS_DataCache.FLAT_KEY_SEPERATOR;
@@ -101,6 +103,27 @@
             return SYS_DataCache.datacache != NULL ? 
             SYS_DataCache.datacache.integrationSetting?.EscapeCharacter__c : 
             SYS_DataCache.ESCAPE_CHAR;
+        }
+    }
+
+    public static String SKIP_KEYS {
+        get {
+            String skipKeysInIntegrationSetting = '', skipKeysInObjectSetting = '';
+
+            skipKeysInIntegrationSetting = SYS_DataCache.datacache != NULL ? 
+            SYS_DataCache.datacache.integrationSetting?.Skip_Keys__c?.toLowerCase() :
+            (SYS_DataCacheFactory.INT_TYPE != NULL ? 
+            SYS_DataCache.integrationSetting.get(SYS_DataCacheFactory.INT_TYPE).Skip_Keys__c?.toLowerCase() :
+            '');
+
+            skipKeysInObjectSetting = SYS_DataCache.datacache != NULL && SYS_DataCacheFactory.OBJ_TYPE != NULL ?
+            SYS_DataCache.datacache.objectSettingMap.get(SYS_DataCacheFactory.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase() :
+            (SYS_DataCacheFactory.OBJ_TYPE != NULL ?
+            SYS_DataCache.objectSettingMap.get(SYS_DataCacheFactory.OBJ_TYPE)?.Skip_Keys__c?.toLowerCase() : 
+            '');
+
+            return skipKeysInIntegrationSetting + ',' + skipKeysInObjectSetting;
+
         }
     }
 
