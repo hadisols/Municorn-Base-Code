@@ -97,12 +97,13 @@ global without sharing class SYS_Helper {
             String sObjectApiName = String.valueOf(recId.getsobjecttype());
             Boolean isObjDeletable = Schema.getGlobalDescribe().get(sObjectApiName).getDescribe().isDeletable();
             System.debug('delete permission '+isObjDeletable);
-            if(isObjDeletable){
+            //TODO remove delete 
+            // if(isObjDeletable){
+            //     results = Database.delete(sObjects,false);
+            // }
+            // else {
                 results = Database.delete(sObjects,false);
-            }
-            else {
-                results = Database.delete(sObjects,false);
-            }
+            // }
         }
         return results;
         
@@ -844,11 +845,22 @@ global without sharing class SYS_Helper {
                 
                 insertSysLog.add(newSysLog);
             }
-            if(!insertSysLog.isEmpty() && SYS_DataCacheFactory.enableCheck){ 
+            if(!insertSysLog.isEmpty() && SYS_DataCacheFactory.enableCheck) { 
                 SYS_Helper.insertLog(insertSysLog);
                 /*--*/SYS_debug.log('insertSysLog=='+insertSysLog);
+            } 
+            else if (!insertSysLog.isEmpty() && !SYS_DataCacheFactory.enableCheck) {
+                updateIntegrationSettingDisableMessage(insertSysLog);
+                SYS_Helper.upsertLog(insertSysLog);
             }
             
+        }
+    }
+
+    public static void updateIntegrationSettingDisableMessage(List<SYS_IntegrationLog__c> logs) {
+        for(SYS_IntegrationLog__c log: logs) {
+            log.Message__c = Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE;
+            log.Status__c = 'FAIL';
         }
     }
 

@@ -558,7 +558,7 @@ public virtual class SYS_Transformer {
             SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(fieldMappingHandler).newInstance();
 
             ((Map<String, Object>)jsonObj.get(nodeList[0])).put(nodeList[1], appService.getFieldValues(obj, mapping, mapping.FieldApiName__c));
-            return jsonObj;
+            // return jsonObj;
         }
         else if(nodeList.size() > 0) {
             if(jsonObj.get(nodeList[0]) == null) {
@@ -581,14 +581,14 @@ public virtual class SYS_Transformer {
             
             }
             
-            return jsonObj;  
+            // return jsonObj;  
         }
-        else {
+        // else {
            
-            return jsonObj; 
-        }
+        //     return jsonObj; 
+        // }
 		
-        //return jsonObj;
+        return jsonObj;
     }
     
     /* *************************************************************************************************************************** */

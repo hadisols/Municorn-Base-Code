@@ -40,12 +40,12 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
         Map<String, String> logIdvsWhatIdMap = new Map<String, String>();
         List<sObject> records = new List<sObject>();
         String objectSettingName, objectApiName, objectQuery;
-        Integer maxRecordCount = 50, i = 0; // This value will come from objest setting, and default value is 50
+        Integer maxRecordCount = 50, i = 0; // TODO This value will come from objest setting, and default value is 50
 
         for(SYS_IntegrationLog__c log:sysLogs) {
             try {
                 if (log.ObjectSettingId__c == NULL) continue;
-                if (objectSettingName == NULL && log.ObjectSettingId__c != NULL) {
+                if (objectSettingName == NULL ) {
                     objectSettingName = log.ObjectSettingId__c;
                     
                     SYS_DataCacheFactory init = new SYS_DataCacheFactory(log.Account_Id__c,

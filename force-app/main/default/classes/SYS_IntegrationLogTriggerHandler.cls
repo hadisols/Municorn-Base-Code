@@ -73,7 +73,7 @@ public without sharing class SYS_IntegrationLogTriggerHandler {
         
     }
 
-    public static Boolean enforceLimitCheck() {
+    public static Boolean enforceLimitCheck() { //TODO aggregate query
 
         if(SYS_DataCache.enforce_limit) {
             List<SYS_IntegrationLog__c> logs = [select id from SYS_IntegrationLog__c LIMIT 10];

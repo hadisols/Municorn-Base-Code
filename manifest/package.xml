@@ -272,6 +272,7 @@
         <members>setup</members>
         <members>salesforce_setup</members>
         <members>troubleshoot</members>
+        <members>IS_disabled</members>
         <name>CustomLabel</name>
     </types>
     <types>

@@ -173,9 +173,10 @@
     //datatype change
     public static Boolean enableCheck {
         get {
-            return SYS_DataCache.datacache != NULL ? 
+            Boolean enableFlag = SYS_DataCache.datacache != NULL ? 
             SYS_DataCache.datacache.isEnabled : 
             SYS_DataCache.enableCheck.get(SYS_DataCacheFactory.INT_TYPE?.toUpperCase());
+            return enableFlag != NULL ? enableFlag : false;
         }
     }
 

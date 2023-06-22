@@ -101,6 +101,11 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                     if(insertSysLog.size()>0 && SYS_DataCacheFactory.enableCheck){
                         new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
                     }
+                    else if(insertSysLog.size()>0 && !SYS_DataCacheFactory.enableCheck) {
+                        // SYS_Helper.updateIntegrationSettingDisableMessage(insertSysLog);
+                        // SYS_Helper.upsertLog(insertSysLog);
+                        throw new AuraHandledException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
+                    }
                 }
 
             }else if(direction == 'IN'){
@@ -124,6 +129,11 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                 insertSysLog.add(newSysLog);
                 if(insertSysLog.size()>0 && SYS_DataCacheFactory.enableCheck){
                     new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
+                } 
+                else if(insertSysLog.size()>0 && !SYS_DataCacheFactory.enableCheck) {
+                    // SYS_Helper.updateIntegrationSettingDisableMessage(insertSysLog);
+                    // SYS_Helper.upsertLog(insertSysLog);
+                    throw new AuraHandledException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
                 }
 
             }else{
