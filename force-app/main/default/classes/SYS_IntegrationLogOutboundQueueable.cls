@@ -40,7 +40,7 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
         Map<String, String> logIdvsWhatIdMap = new Map<String, String>();
         List<sObject> records = new List<sObject>();
         String objectSettingName, objectApiName, objectQuery;
-        Integer maxRecordCount = 50, i = 0; // TODO This value will come from objest setting, and default value is 50
+        Integer maxRecordCount = SYS_DataCacheFactory.MAX_CALLOUT_COUNT, i = 0; // TODO This value will come from objest setting, and default value is 50
 
         for(SYS_IntegrationLog__c log:sysLogs) {
             try {
@@ -54,6 +54,7 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
                     log.ObjectSettingId__c);
     
                     objectApiName = SYS_DataCacheFactory.objectSettingMap?.get(SYS_DataCacheFactory.OBJ_TYPE)?.ObjectApiName__c;
+                    maxRecordCount = SYS_DataCacheFactory.MAX_CALLOUT_COUNT;
     
                 }
                 

@@ -1330,7 +1330,7 @@ global virtual inherited sharing class SYS_ApplicationService {
 
         logResp.Force_Sync__c = log.Force_Sync__c;
 
-        if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200){
+        if(resp.getStatusCode() != 201 && resp.getStatusCode() != 200 && resp.getStatusCode() != 204){
 
             SYS_debug.log('#### resp status: '+resp.getStatus());
             SYS_debug.log('#### resp code: '+resp.getStatusCode()); 

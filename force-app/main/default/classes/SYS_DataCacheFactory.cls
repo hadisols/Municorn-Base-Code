@@ -144,6 +144,17 @@
         }
     }
 
+    private static integer MAX_CALLOUT;
+    public static integer MAX_CALLOUT_COUNT {
+        get {
+            if(MAX_CALLOUT == NULL) {
+                Decimal count = objectSettingMap.get(SYS_DataCacheFactory.OBJ_TYPE)?.Maximum_Callout_Limit__c;
+                MAX_CALLOUT = Integer.valueof(count != NULL ? count : 50);
+            }
+            return MAX_CALLOUT;
+        }
+    }
+
     public static boolean DEBUG_CHECK {
         get {
             if(SYS_DataCache.datacache != NULL && SYS_DataCache.datacache?.metadata?.get('int-set') != NULL) {
