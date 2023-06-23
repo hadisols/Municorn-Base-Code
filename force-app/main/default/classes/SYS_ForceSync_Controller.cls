@@ -5,6 +5,8 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
     private static List<sObject> recList = new List<sObject>();
     private static SYS_DataCacheFactory init;
 
+    private class SYS_ForceSync_ControllerException extends Exception {}
+
     @AuraEnabled
     public static String invokeAccountFlow(Id recId,String objSetting,String apexHandler, String direction, 
     String accountMergeField) {
@@ -104,7 +106,7 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                     else if(insertSysLog.size()>0 && !SYS_DataCacheFactory.enableCheck) {
                         // SYS_Helper.updateIntegrationSettingDisableMessage(insertSysLog);
                         // SYS_Helper.upsertLog(insertSysLog);
-                        throw new AuraHandledException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
+                        throw new SYS_ForceSync_ControllerException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
                     }
                 }
 
@@ -133,11 +135,11 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                 else if(insertSysLog.size()>0 && !SYS_DataCacheFactory.enableCheck) {
                     // SYS_Helper.updateIntegrationSettingDisableMessage(insertSysLog);
                     // SYS_Helper.upsertLog(insertSysLog);
-                    throw new AuraHandledException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
+                    throw new SYS_ForceSync_ControllerException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
                 }
 
             }else{
-                throw new AuraHandledException('Invalid Direction specified');
+                throw new SYS_ForceSync_ControllerException('Invalid Direction specified');
             }
             
         }catch(Exception e) {
