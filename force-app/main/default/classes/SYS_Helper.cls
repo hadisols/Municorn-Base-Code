@@ -91,13 +91,12 @@ global without sharing class SYS_Helper {
             String sObjectApiName = String.valueOf(recId.getsobjecttype());
             Boolean isObjDeletable = Schema.getGlobalDescribe().get(sObjectApiName).getDescribe().isDeletable();
             System.debug('delete permission '+isObjDeletable);
-            //TODO remove delete 
+            //removed the deletable permisssion check
             // if(isObjDeletable){
             //     results = Database.delete(sObjects,false);
             // }
-            // else {
-                results = Database.delete(sObjects,false);
-            // }
+            results = Database.delete(sObjects,false);
+            
         }
         return results;
         
