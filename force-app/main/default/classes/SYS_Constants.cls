@@ -17,6 +17,42 @@ public without sharing class SYS_Constants {
         }
     }
 
+    public static String OUTBOUND {
+        get {
+            return 'OUTBOUND';
+        }
+    }
+
+    public static String NEW_STATUS {
+        get {
+            return 'NEW';
+        }
+    }
+
+    public static String INBOUND {
+        get {
+            return 'INBOUND';
+        }
+    }
+
+    public static String RESPONSE {
+        get {
+            return 'RESPONSE';
+        }
+    }
+
+    public static String PENDING_PARTITIONED_LOOKUP {
+        get {
+            return 'PENDING_PARTITIONED_LOOKUP';
+        }
+    }
+
+    public static String READY_FOR_PROCESSING {
+        get {
+            return 'READY_FOR_PROCESSING';
+        }
+    }
+
     /**
      * INT_NAME is used to set the default integration name.
      * used @MunicornHome component while enabling the integration.

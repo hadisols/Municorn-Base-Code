@@ -485,11 +485,11 @@ global virtual inherited sharing class SYS_ApplicationService {
         if(SYS_DataCacheFactory.integrationSetting.Notifications_are_partial__c)
             log.Is_Notification_Only__c = true;
 
-        log.Type__c = 'INBOUND';
+        log.Type__c = SYS_Constants.INBOUND;
         log.SYS_Operation_Type__c = getOperationTypeFor(method);
         log.Flat_Key_for_Resource__c = SYS_DataCacheFactory.integrationSetting.Flat_Key_for_Resource__c;
         log.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
-        log.Status__c = 'NEW';
+        log.Status__c = SYS_Constants.NEW_STATUS;
         log.How_to_process__c = 'use_custom_apex_handler';
         log.Custom_Apex_Handler__c = SYS_DataCacheFactory.integrationSetting.ApexHandler__c;
 
@@ -499,7 +499,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         List<SYS_IntegrationLog__c> returnVal = new List<SYS_IntegrationLog__c>();
         returnVal.add(log);
         if(logAfterPartition != NULL && logAfterPartition.size() > 0) {
-            log.Status__c = 'PENDING_PARTITIONED_LOOKUP';
+            log.Status__c = SYS_Constants.PENDING_PARTITIONED_LOOKUP;
             for(integer i = 1 ; i < logAfterPartition.size() ; i++) {
                 returnVal.add(logAfterPartition[i]);
             }
@@ -523,7 +523,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         if(algo!=NULL && algo!='')
         log.Request_Digest__c = generateHash(requestBody,algo);
 
-        log.Type__c = 'INBOUND';
+        log.Type__c = SYS_Constants.INBOUND;
         log.SYS_Operation_Type__c = getOperationTypeFor(method);
         log.Flat_Key_for_Resource__c = SYS_DataCacheFactory.integrationSetting.Flat_Key_for_Resource__c;
         log.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
@@ -569,7 +569,7 @@ global virtual inherited sharing class SYS_ApplicationService {
 
         SYS_debug.log('MS SYS_DataCache.log in generate child log:'+SYS_DataCache.log.Id);
         log.Parent__c = parentLog.Id;       
-        log.Type__c = 'INBOUND';
+        log.Type__c = SYS_Constants.INBOUND;
  
         /**
          * If there the Parent Resource Map is defined on IS the use it to derive the resource for child records else
@@ -588,7 +588,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             log.Flat_Key_for_Resource__c = '';
         }
         log.Integration_Setting__c = integrationSetting;
-        log.Status__c = 'NEW';
+        log.Status__c = SYS_Constants.NEW_STATUS;
         /**
          * Applies when the child records require parenting after creation
          */
@@ -607,7 +607,7 @@ global virtual inherited sharing class SYS_ApplicationService {
 
     // For Outbound. Called from doInbound() in ApplicationService
     global virtual List<sObject> transformJsonToSObject(String jsonBody,String resource,SYS_IntegrationLog__c log) {
-        return SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource,(log.Type__c=='INBOUND'));
+        return SYS_Transformer.getSObjectsToUpsert(new List<String>{jsonBody},resource,(log.Type__c==SYS_Constants.INBOUND));
     }
 
     // For Outbound. Called from Invocable Handler
@@ -733,10 +733,10 @@ global virtual inherited sharing class SYS_ApplicationService {
     //             }
     //             /*--*/SYS_debug.log('=============== '+ getURL);
 
-    //             newSysLog.Status__c = 'NEW';
+    //             newSysLog.Status__c = SYS_Constants.NEW_STATUS;
     //             newSysLog.HTTP_Method__c = 'GET';
     //             newSysLog.Callout_URL__c = getURL;
-    //             newSysLog.Type__c = 'OUTBOUND';
+    //             newSysLog.Type__c = SYS_Constants.OUTBOUND;
     //             newSysLog.WhatId__c = log.Id;
     //             newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
     //             newSysLog.SYS_Operation_Type__c = 'UPSERT';
@@ -979,7 +979,7 @@ global virtual inherited sharing class SYS_ApplicationService {
              * and set the Status accordingly.
              */
             if(log.Requires_process_on_complete__c 
-                && (SYS_QueueableForInboundChild.totalChildRecords==0 || log.Status__c=='READY_FOR_PROCESSING'))
+                && (SYS_QueueableForInboundChild.totalChildRecords==0 || log.Status__c==SYS_Constants.READY_FOR_PROCESSING))
             {
                 /*--*/SYS_debug.log('MS Queueable Jobs in queue:'+Limits.getQueueableJobs());
                 /*--*/SYS_debug.log('MS Queueable Allowed:'+Limits.getLimitQueueableJobs());
@@ -1150,7 +1150,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             
     //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
     //         logResp.WhatId__c = log.WhatId__c;
-    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.Type__c = SYS_Constants.RESPONSE;
     //         logResp.How_To_Process__c = 'ignore_log';
     //         logResp.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
             
@@ -1159,7 +1159,7 @@ global virtual inherited sharing class SYS_ApplicationService {
     //         log.Status__c = 'DONE';
 
     //         if(log.SYS_Operation_Type__c == 'INSERT' || log.Force_Sync__c){
-    //             logResp.Status__c = 'NEW';
+    //             logResp.Status__c = SYS_Constants.NEW_STATUS;
     //             logResp.SYS_Operation_Type__c = 'UPDATE';
     //             logResp.Flat_Key_for_Resource__c = SYS_DataCacheFactory.integrationSetting.Flat_Key_for_Resource_Response__c;
 
@@ -1189,7 +1189,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         
     //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
     //         logResp.WhatId__c = log.WhatId__c;
-    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.Type__c = SYS_Constants.RESPONSE;
     //         logResp.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
     //         logResp.ObjectSettingId__c = log.ObjectSettingId__c;
             
@@ -1254,10 +1254,10 @@ global virtual inherited sharing class SYS_ApplicationService {
                 }
                 /*--*/SYS_debug.log('=============== '+ getURL);
 
-                newSysLog.Status__c = 'NEW';
+                newSysLog.Status__c = SYS_Constants.NEW_STATUS;
                 newSysLog.HTTP_Method__c = 'GET';
                 newSysLog.Callout_URL__c = getURL;
-                newSysLog.Type__c = 'OUTBOUND';
+                newSysLog.Type__c = SYS_Constants.OUTBOUND;
                 newSysLog.WhatId__c = log.WhatId__c;
                 newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = 'UPSERT';
@@ -1344,7 +1344,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
             logResp.WhatId__c = log.WhatId__c;
-            logResp.Type__c = 'RESPONSE';
+            logResp.Type__c = SYS_Constants.RESPONSE;
             logResp.How_To_Process__c = 'ignore_log';
             logResp.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
             
@@ -1353,7 +1353,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             log.Status__c = 'DONE';
 
             if(log.SYS_Operation_Type__c == 'INSERT' || log.Force_Sync__c){
-                logResp.Status__c = 'NEW';
+                logResp.Status__c = SYS_Constants.NEW_STATUS;
                 logResp.SYS_Operation_Type__c = 'UPDATE';
                 // logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Response__c;
 
@@ -1386,7 +1386,7 @@ global virtual inherited sharing class SYS_ApplicationService {
             logResp.Flat_Key_for_Resource__c = SYS_DataCacheFactory.integrationSetting.Flat_Key_for_Resource_Response__c;
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
             logResp.WhatId__c = log.WhatId__c;
-            logResp.Type__c = 'RESPONSE';
+            logResp.Type__c = SYS_Constants.RESPONSE;
             logResp.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
             logResp.ObjectSettingId__c = log.ObjectSettingId__c;
             
@@ -1405,7 +1405,7 @@ global virtual inherited sharing class SYS_ApplicationService {
         returnVal.add(log);
         returnVal.add(logResp);
         if(logAfterPartition != NULL && logAfterPartition.size() > 0) {
-            logResp.Status__c = 'PENDING_PARTITIONED_LOOKUP';
+            logResp.Status__c = SYS_Constants.PENDING_PARTITIONED_LOOKUP;
             for(integer i = 1 ; i < logAfterPartition.size() ; i++) {
                 returnVal.add(logAfterPartition[i]);
             }

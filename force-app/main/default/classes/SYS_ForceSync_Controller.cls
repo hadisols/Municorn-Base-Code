@@ -83,9 +83,9 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                         finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
 
                         newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
-                        newSysLog.Status__c = 'NEW';
+                        newSysLog.Status__c = SYS_Constants.NEW_STATUS;
                         //newSysLog.HTTP_Method__c = 'POST';
-                        newSysLog.Type__c = 'OUTBOUND';
+                        newSysLog.Type__c = SYS_Constants.OUTBOUND;
                         newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
                         newSysLog.SYS_Operation_Type__c = 'UPSERT';
                         newSysLog.WhatId__c = jsonRecordId;
@@ -113,9 +113,9 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
             }else if(direction == 'IN'){
                 
                 newSysLog.Callout_URL__c = SYS_Helper.urlFromPattern('GET',recList[0]);
-                newSysLog.Status__c = 'NEW';
+                newSysLog.Status__c = SYS_Constants.NEW_STATUS;
                 newSysLog.HTTP_Method__c = 'GET';
-                newSysLog.Type__c = 'OUTBOUND';
+                newSysLog.Type__c = SYS_Constants.OUTBOUND;
                 newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = 'UPSERT';
                 newSysLog.WhatId__c = recId;

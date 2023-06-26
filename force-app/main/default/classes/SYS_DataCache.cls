@@ -197,7 +197,7 @@ public without sharing class SYS_DataCache {
                         SYS_Helper.setNamespacePrefix(fs);
                         if(type == fs?.ObjectSetting__r?.IntegrationType__r?.Integration_Type__c) {
                             datacache.AllFieldSettings.add(fs);
-                            if(fs?.Direction__c != 'INBOUND') {
+                            if(fs?.Direction__c != SYS_Constants.INBOUND) {
                                 datacache.AllFieldSettings_out.add(fs);
     
                                 if(!datacache.ObjectSettingFieldSettingMap_out.containsKey(fs?.ObjectSetting__r.developername)) {
@@ -205,7 +205,7 @@ public without sharing class SYS_DataCache {
                                 }
                                 datacache.ObjectSettingFieldSettingMap_out.get(fs?.ObjectSetting__r.developername).add(fs);
                             }
-                            if(fs?.Direction__c != 'OUTBOUND') {
+                            if(fs?.Direction__c != SYS_Constants.OUTBOUND) {
                                 datacache.AllFieldSettings_in.add(fs);
     
                                 if(!datacache.ObjectSettingFieldSettingMap_in.containsKey(fs?.ObjectSetting__r.developername)) {
@@ -627,7 +627,7 @@ public without sharing class SYS_DataCache {
                             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c, ObjectSetting__r.IntegrationType__r.DeveloperName , Skip_Field_Setting__c,
                             ObjectSetting__r.IntegrationType__r.EscapeCharacter__c
                             from FieldSetting__mdt WHERE Is_Active__c=true  
-                           /* AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != 'INBOUND'*/];
+                           /* AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != SYS_Constants.INBOUND*/];
                 
                 for(FieldSetting__mdt item : AllFieldSettingsList) {
                     
@@ -648,7 +648,7 @@ public without sharing class SYS_DataCache {
             if(ObjectSettingToFieldSettingsMap_IB == null) {
                 ObjectSettingToFieldSettingsMap_IB = new Map<String, List<FieldSetting__mdt>>();
                 for(FieldSetting__mdt fs : SYS_DataCache.AllFieldSettingMappings){
-                    if(fs.Direction__c != 'OUTBOUND'){
+                    if(fs.Direction__c != SYS_Constants.OUTBOUND){
                         fs.Key__c = fs.Key__c?.replace(SYS_DataCache.ESCAPE_CHAR, '.')?.toLowerCase();
                         if(ObjectSettingToFieldSettingsMap_IB.containsKey(fs.ObjectSetting__r.DeveloperName)){
                             ObjectSettingToFieldSettingsMap_IB.get(fs.ObjectSetting__r.DeveloperName).add(fs);
@@ -774,7 +774,7 @@ public without sharing class SYS_DataCache {
             if(ObjectSettingToFieldSettingsMap_OB == null) {
                 ObjectSettingToFieldSettingsMap_OB = new Map<String, List<FieldSetting__mdt>>();
                 for(FieldSetting__mdt fs : SYS_DataCache.AllFieldSettingMappings){
-                    if(fs.Direction__c != 'INBOUND' ){
+                    if(fs.Direction__c != SYS_Constants.INBOUND ){
                         if(ObjectSettingToFieldSettingsMap_OB.containsKey(fs.ObjectSetting__r.DeveloperName)){
                             ObjectSettingToFieldSettingsMap_OB.get(fs.ObjectSetting__r.DeveloperName).add(fs);
                         }

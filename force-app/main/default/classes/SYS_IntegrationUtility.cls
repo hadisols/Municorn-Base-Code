@@ -213,7 +213,7 @@ public inherited sharing class SYS_IntegrationUtility extends SYS_ApplicationSer
     //          * and set the Status accordingly.
     //          */
     //         if(log.Requires_process_on_complete__c 
-    //             && (SYS_QueueableForInboundChild.totalChildRecords==0 || log.Status__c=='READY_FOR_PROCESSING'))
+    //             && (SYS_QueueableForInboundChild.totalChildRecords==0 || log.Status__c==SYS_Constants.READY_FOR_PROCESSING))
     //         {
     //             /*--*/SYS_debug.log('MS Queueable Jobs in queue:'+Limits.getQueueableJobs());
     //             /*--*/SYS_debug.log('MS Queueable Allowed:'+Limits.getLimitQueueableJobs());
@@ -273,10 +273,10 @@ public inherited sharing class SYS_IntegrationUtility extends SYS_ApplicationSer
     //             }
     //             /*--*/SYS_debug.log('=============== '+ getURL);
 
-    //             newSysLog.Status__c = 'NEW';
+    //             newSysLog.Status__c = SYS_Constants.NEW_STATUS;
     //             newSysLog.HTTP_Method__c = 'GET';
     //             newSysLog.Callout_URL__c = getURL;
-    //             newSysLog.Type__c = 'OUTBOUND';
+    //             newSysLog.Type__c = SYS_Constants.OUTBOUND;
     //             newSysLog.WhatId__c = log.Id;
     //             newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
     //             newSysLog.SYS_Operation_Type__c = 'UPSERT';
@@ -348,7 +348,7 @@ public inherited sharing class SYS_IntegrationUtility extends SYS_ApplicationSer
             
     //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
     //         logResp.WhatId__c = log.WhatId__c;
-    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.Type__c = SYS_Constants.RESPONSE;
     //         logResp.How_To_Process__c = 'ignore_log';
     //         logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
             
@@ -357,7 +357,7 @@ public inherited sharing class SYS_IntegrationUtility extends SYS_ApplicationSer
     //         log.Status__c = 'DONE';
 
     //         if(log.SYS_Operation_Type__c == 'INSERT' || log.Force_Sync__c){
-    //             logResp.Status__c = 'NEW';
+    //             logResp.Status__c = SYS_Constants.NEW_STATUS;
     //             logResp.SYS_Operation_Type__c = 'UPDATE';
     //             logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Response__c;
 
@@ -387,7 +387,7 @@ public inherited sharing class SYS_IntegrationUtility extends SYS_ApplicationSer
         
     //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
     //         logResp.WhatId__c = log.WhatId__c;
-    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.Type__c = SYS_Constants.RESPONSE;
     //         logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
     //         logResp.ObjectSettingId__c = log.ObjectSettingId__c;
             

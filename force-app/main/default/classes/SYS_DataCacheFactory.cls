@@ -144,14 +144,10 @@
         }
     }
 
-    private static integer MAX_CALLOUT;
     public static integer MAX_CALLOUT_COUNT {
         get {
-            if(MAX_CALLOUT == NULL) {
-                Decimal count = objectSettingMap.get(SYS_DataCacheFactory.OBJ_TYPE)?.Maximum_Callout_Limit__c;
-                MAX_CALLOUT = Integer.valueof(count != NULL ? count : 50);
-            }
-            return MAX_CALLOUT;
+            Decimal count = objectSettingMap.get(OBJ_TYPE)?.Maximum_Callout_Limit__c;
+            return Integer.valueof(count != NULL ? count : 50);
         }
     }
 
@@ -291,7 +287,37 @@
         }
     }
 
-
+    private static Id MATRIX_REC_ID;
+    public static Id MATRIX_ID {
+        get {
+            if(MATRIX_REC_ID == NULL) {
+                List<SYS_Matrix__c> matrix;
+                try {
+                    matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1 FOR UPDATE];
+                } catch (Exception e) {
+                    SYS_Matrix__c matrixRec = new SYS_Matrix__c(
+                        Date__c = Date.today()
+                    );
+                    Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_Matrix__c.fields.getMap();
+                    Map<String, Object> fieldsToValue = matrixRec.getPopulatedFieldsAsMap();
+                    for(String fieldKey : fieldsToValue.keySet()) {
+                        if(!fieldMap.get(fieldKey).getDescribe().isCreateable() ) {
+                            throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
+                        }
+                    }
+                    Database.SaveResult result = Database.insert(matrixRec, false);
+                    if (result.isSuccess()) {
+                        MATRIX_REC_ID = matrixRec.Id;
+                    }
+                }
+                
+                if (matrix != NULL && matrix.size() > 0) {
+                    MATRIX_REC_ID = matrix[0].Id;
+                }
+            }
+            return MATRIX_REC_ID;
+        }
+    }
 
     public class SYS_DataCacheFactoryException extends Exception{}
 }

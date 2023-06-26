@@ -685,7 +685,7 @@ public virtual class SYS_Transformer {
             
             for(String s:flatKeyMap.keySet()){
                 if(mapOfPaths.get(s)!=null){
-                    if(mapOfPaths.get(s).Direction__c!='OUTBOUND'){
+                    if(mapOfPaths.get(s).Direction__c!=SYS_Constants.OUTBOUND){
                         sObjectApiName =  mapOfPaths.get(s).ObjectApiName__c;            
                     }
                 }

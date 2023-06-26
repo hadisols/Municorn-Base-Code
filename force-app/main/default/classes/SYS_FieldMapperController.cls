@@ -36,7 +36,7 @@ public with sharing class SYS_FieldMapperController {
                 objectSettingname = 'ObjectSetting_'+fslist[0]?.sObjectApiName;
 
                 fieldWithValuesMap.put('ApexHandler__c', 'SYS_ApplicationService');
-                fieldWithValuesMap.put('Direction__c', 'INBOUND');
+                fieldWithValuesMap.put('Direction__c', SYS_Constants.INBOUND);
                 fieldWithValuesMap.put('IntegrationType__c', 'Form');
                 fieldWithValuesMap.put('ObjectApiName__c', objectSettingname);
                 fieldWithValuesMap.put('Skip_Keys__c', '');
@@ -60,7 +60,7 @@ public with sharing class SYS_FieldMapperController {
             for(SYS_FieldMapperController.FieldWrapper item:fslist) {
                 Map<String, Object> fieldWithValuesMap = new Map<String, Object>();
 
-                fieldWithValuesMap.put('Direction__c', 'INBOUND');
+                fieldWithValuesMap.put('Direction__c', SYS_Constants.INBOUND);
                 fieldWithValuesMap.put('FieldApiName__c', item.fieldApiName);
                 fieldWithValuesMap.put('Field_Mapping_Handler__c', 'SYS_ApplicationService');
                 fieldWithValuesMap.put('Is_Active__c', true);

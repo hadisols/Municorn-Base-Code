@@ -11,15 +11,15 @@ public without sharing class SYS_IntegrationLogTriggerHandler {
         Set<String> parentUuids = new Set<String>();
         Set<String> childIds = new Set<String>();
         for(SYS_IntegrationLog__c log : ((List<SYS_IntegrationLog__c>)Trigger.new)){
-            if(log.Type__c == 'OUTBOUND' && log.Status__c == 'NEW'){
+            if(log.Type__c == SYS_Constants.OUTBOUND && log.Status__c == SYS_Constants.NEW_STATUS){
                 newOutboundLogIds.add(log.Id);
             }
 
-            if((log.Type__c == 'INBOUND' || log.Type__c == 'RESPONSE') && log.Status__c == 'NEW'){
+            if((log.Type__c == SYS_Constants.INBOUND || log.Type__c == SYS_Constants.RESPONSE) && log.Status__c == SYS_Constants.NEW_STATUS){
                 newInboundLogIds.add(log.Id);
             }
 
-            if(log.Parent_UUID__c != NULL && log.Root_Log__c == NULL && log.Order__c != NULL && log.Status__c == 'PENDING_PARTITIONED_LOOKUP') {
+            if(log.Parent_UUID__c != NULL && log.Root_Log__c == NULL && log.Order__c != NULL && log.Status__c == SYS_Constants.PENDING_PARTITIONED_LOOKUP) {
                 parentUuids.add(log.Parent_UUID__c);
                 childIds.add(log.Id);
             }
@@ -47,15 +47,15 @@ public without sharing class SYS_IntegrationLogTriggerHandler {
         Set<String> parentUuids = new Set<String>();
         Set<String> childIds = new Set<String>();
         for(SYS_IntegrationLog__c log : ((List<SYS_IntegrationLog__c>)Trigger.new)){
-            if(log.Type__c == 'OUTBOUND' && (log.Status__c == 'READY_FOR_PROCESSING')){
+            if(log.Type__c == SYS_Constants.OUTBOUND && (log.Status__c == SYS_Constants.READY_FOR_PROCESSING)){
                 newOutboundLogIds.add(log.Id);
             }
 
-            if((log.Type__c == 'INBOUND' || log.Type__c == 'RESPONSE') && log.Status__c == 'READY_FOR_PROCESSING'){
+            if((log.Type__c == SYS_Constants.INBOUND || log.Type__c == SYS_Constants.RESPONSE) && log.Status__c == SYS_Constants.READY_FOR_PROCESSING){
                 newInboundLogIds.add(log.Id);
             }
 
-            if(log.Parent_UUID__c != NULL && log.Root_Log__c == NULL && log.Order__c != NULL && log.Status__c == 'PENDING_PARTITIONED_LOOKUP') {
+            if(log.Parent_UUID__c != NULL && log.Root_Log__c == NULL && log.Order__c != NULL && log.Status__c == SYS_Constants.PENDING_PARTITIONED_LOOKUP) {
                 parentUuids.add(log.Parent_UUID__c);
                 childIds.add(log.Id);
             }
