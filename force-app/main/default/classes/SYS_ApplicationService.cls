@@ -1352,7 +1352,13 @@ global virtual inherited sharing class SYS_ApplicationService {
         else{
             log.Status__c = 'DONE';
 
-            if(log.SYS_Operation_Type__c == 'INSERT' || log.Force_Sync__c){
+            if (String.isEmpty(resp.getBody())) {
+                logResp.How_To_Process__c = 'ignore_log';
+                logResp.Status__c = 'DONE';
+                logResp.How_To_Process__c = 'use_custom_apex_handler';
+                logResp.Custom_Apex_Handler__c = SYS_DataCacheFactory.integrationSetting.ApexHandler__c;
+            }
+            else if(log.SYS_Operation_Type__c == 'INSERT' || log.Force_Sync__c){
                 logResp.Status__c = SYS_Constants.NEW_STATUS;
                 logResp.SYS_Operation_Type__c = 'UPDATE';
                 // logResp.Flat_Key_for_Resource__c = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE).Flat_Key_for_Resource_Response__c;

@@ -287,30 +287,16 @@
         }
     }
 
+    /**
+     * SYSlog has lookUp relationship with SYS_Matrix
+     * if it is converted to master-detail, we will get Record row locked error
+     * when bulk operations are performed concurrently
+     */
     private static Id MATRIX_REC_ID;
     public static Id MATRIX_ID {
         get {
             if(MATRIX_REC_ID == NULL) {
-                List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1 FOR UPDATE];
-                // try {
-                //     matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1 FOR UPDATE];
-                // } catch (Exception e) {
-                //     SYS_Matrix__c matrixRec = new SYS_Matrix__c(
-                //         Date__c = Date.today()
-                //     );
-                //     Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_Matrix__c.fields.getMap();
-                //     Map<String, Object> fieldsToValue = matrixRec.getPopulatedFieldsAsMap();
-                //     for(String fieldKey : fieldsToValue.keySet()) {
-                //         if(!fieldMap.get(fieldKey).getDescribe().isCreateable() ) {
-                //             throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
-                //         }
-                //     }
-                //     Database.SaveResult result = Database.insert(matrixRec, false);
-                //     if (result.isSuccess()) {
-                //         MATRIX_REC_ID = matrixRec.Id;
-                //     }
-                // }
-                
+                List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
                 if (matrix != NULL && matrix.size() > 0) {
                     MATRIX_REC_ID = matrix[0].Id;
                 }

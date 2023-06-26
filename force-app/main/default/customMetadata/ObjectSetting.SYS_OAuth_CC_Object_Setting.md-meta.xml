@@ -43,6 +43,10 @@
         <value xsi:type="xsd:string">SYS_OAuth_CC_IS</value>
     </values>
     <values>
+        <field>Maximum_Callout_Limit__c</field>
+        <value xsi:type="xsd:double">100.0</value>
+    </values>
+    <values>
         <field>Modified_Source_FieldApiName__c</field>
         <value xsi:nil="true"/>
     </values>

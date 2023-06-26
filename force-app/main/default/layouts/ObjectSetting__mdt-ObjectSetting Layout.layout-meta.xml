@@ -46,6 +46,10 @@
                 <behavior>Edit</behavior>
                 <field>Modified_Source_FieldApiName__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Maximum_Callout_Limit__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
