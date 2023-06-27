@@ -182,6 +182,7 @@
 		<!--members>Municorn_Home</members-->
         <members>SYS_Matrix__c</members>
         <members>SYS_Integration_Metadata__c</members>
+        <members>Field_Mapper</members>
 		<name>CustomTab</name>
 	</types>
 	<types>
