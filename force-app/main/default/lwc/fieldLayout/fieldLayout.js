@@ -91,6 +91,7 @@ export default class FieldLayout extends LightningModal {
             this.FieldApiName = this.objectWrapper.FieldApiName;
             this.Field_Mapping_Handler = this.objectWrapper.Field_Mapping_Handler;
             this.Is_Active = this.objectWrapper.Is_Active;
+            console.log('Is_Active ',this.Is_Active);
             this.Key = this.objectWrapper.Key;
             this.ObjectApiName = this.objectWrapper.ObjectApiName;
             this.ObjectSetting = this.objectWrapper.ObjectSetting;
@@ -138,7 +139,7 @@ export default class FieldLayout extends LightningModal {
     }
 
     handleActiveChange(event) {
-        this.Is_Active = event.detail.value;
+        this.Is_Active = event.detail.checked;
         this.objectWrapper = {...this.objectWrapper, Is_Active : this.Is_Active};
     }
 
@@ -148,7 +149,7 @@ export default class FieldLayout extends LightningModal {
     }
 
     handleSkipFSChange(event) {
-        this.Skip_Field_Setting = event.detail.value;
+        this.Skip_Field_Setting = event.detail.checked;
         this.objectWrapper = {...this.objectWrapper, Skip_Field_Setting : this.Skip_Field_Setting};
     }
 
@@ -183,12 +184,12 @@ export default class FieldLayout extends LightningModal {
     }
 
     handleIsExtFieldChange(event) {
-        this.Is_External_Field = event.detail.value;
+        this.Is_External_Field = event.detail.checked;
         this.objectWrapper = {...this.objectWrapper, Is_External_Field : this.Is_External_Field};
     }
 
     handleIsLookUpChange(event) {
-        this.Is_Lookup = event.detail.value;
+        this.Is_Lookup = event.detail.checked;
         this.objectWrapper = {...this.objectWrapper, Is_Lookup : this.Is_Lookup};
     }
 
@@ -203,7 +204,7 @@ export default class FieldLayout extends LightningModal {
     }
 
     handleFromLogChange(event) {
-        this.Get_value_from_Log = event.detail.value;
+        this.Get_value_from_Log = event.detail.checked;
         this.objectWrapper = {...this.objectWrapper, Get_value_from_Log : this.Get_value_from_Log};
     }
 
@@ -228,7 +229,7 @@ export default class FieldLayout extends LightningModal {
     }
 
     handleIsEmptyChange(event) {
-        this.Send_Blanks_as_Empty_String = event.detail.value;
+        this.Send_Blanks_as_Empty_String = event.detail.checked;
         this.objectWrapper = {...this.objectWrapper, Send_Blanks_as_Empty_String : this.Send_Blanks_as_Empty_String};   
     }
 

@@ -18,7 +18,7 @@ public with sharing class SYS_FieldMapperController {
     }
 
     @AuraEnabled
-    public static void deploy(String request, String recordId) {
+    public static void deploy(String request) {
         try{
             System.debug('body '+ request);
             List<SYS_FieldMapperController.FieldWrapper> fslist = 
@@ -33,12 +33,12 @@ public with sharing class SYS_FieldMapperController {
             
             if(fslist.size() > 0) {
                 Map<String, Object> fieldWithValuesMap = new Map<String, Object>();
-                objectSettingname = 'ObjectSetting_'+fslist[0]?.sObjectApiName;
+                objectSettingname = 'ObjectSetting_'+fslist[0]?.primarySObjectApiName;
 
                 fieldWithValuesMap.put('ApexHandler__c', 'SYS_ApplicationService');
                 fieldWithValuesMap.put('Direction__c', SYS_Constants.INBOUND);
                 fieldWithValuesMap.put('IntegrationType__c', 'Form');
-                fieldWithValuesMap.put('ObjectApiName__c', objectSettingname);
+                fieldWithValuesMap.put('ObjectApiName__c', fslist[0]?.primarySObjectApiName);
                 fieldWithValuesMap.put('Skip_Keys__c', '');
                 fieldWithValuesMap.put('Trigger_Condition__c', '');
                 fieldWithValuesMap.put('TriggerEvents__c', '');
@@ -47,26 +47,53 @@ public with sharing class SYS_FieldMapperController {
                 apiNameMap.put(objectSettingname, 'ObjectSetting__mdt');
                 containerMd.put(objectSettingname, fieldWithValuesMap);
             }
-            if(recordId != NULL) {
+            // if(recordId != NULL) {
                 // Custom_Form__c form = new Custom_Form__c(
                 //     Id = recordId,
                 //     Object_Setting__c = objectSettingname
                 // );
                 // update form;
-            }
+            // }
 
             //container for field settings
             integer count = 1;
             for(SYS_FieldMapperController.FieldWrapper item:fslist) {
                 Map<String, Object> fieldWithValuesMap = new Map<String, Object>();
 
-                fieldWithValuesMap.put('Direction__c', SYS_Constants.INBOUND);
-                fieldWithValuesMap.put('FieldApiName__c', item.fieldApiName);
-                fieldWithValuesMap.put('Field_Mapping_Handler__c', 'SYS_ApplicationService');
-                fieldWithValuesMap.put('Is_Active__c', true);
-                fieldWithValuesMap.put('Key__c', item.flatkey);
-                fieldWithValuesMap.put('Level__c','0');
-                fieldWithValuesMap.put('ObjectApiName__c', item.sObjectApiName);
+                // fieldWithValuesMap.put('Direction__c', SYS_Constants.INBOUND);
+                // fieldWithValuesMap.put('FieldApiName__c', item.fieldApiName);
+                // fieldWithValuesMap.put('Field_Mapping_Handler__c', 'SYS_ApplicationService');
+                // fieldWithValuesMap.put('Is_Active__c', true);
+                // fieldWithValuesMap.put('Key__c', item.flatkey);
+                // fieldWithValuesMap.put('Level__c','0');
+                // fieldWithValuesMap.put('ObjectApiName__c', item.sObjectApiName);
+
+                
+                fieldWithValuesMap.put('Direction__c', item.Direction);
+                fieldWithValuesMap.put('FieldApiName__c', item.FieldApiName);
+                fieldWithValuesMap.put('Field_Mapping_Handler__c', item.Field_Mapping_Handler);
+                fieldWithValuesMap.put('Is_Active __c', item.Is_Active );
+                fieldWithValuesMap.put('Key__c', item.Key);
+                fieldWithValuesMap.put('ObjectApiName__c', item.ObjectApiName);
+                fieldWithValuesMap.put('ObjectSetting__c', item.ObjectSetting);
+                fieldWithValuesMap.put('Skip_Field_Setting__c', item.Skip_Field_Setting);
+                fieldWithValuesMap.put('StaticValue__c', item.StaticValue);
+                fieldWithValuesMap.put('Key_For_Events__c', item.Key_For_Events);
+                fieldWithValuesMap.put('RestResource__c', item.RestResource);
+                fieldWithValuesMap.put('Is_External_Field__c', item.Is_External_Field);
+                fieldWithValuesMap.put('Is_Lookup__c', item.Is_Lookup);
+                fieldWithValuesMap.put('Lookup_Object_API_Name__c', item.Lookup_Object_API_Name);
+                fieldWithValuesMap.put('Datetime_Conversion_Format__c', item.Datetime_Conversion_Format);
+                fieldWithValuesMap.put('Get_value_from_Log__c', item.Get_value_from_Log);
+                fieldWithValuesMap.put('Log_API_for_field_mapping__c', item.Log_API_for_field_mapping);
+                fieldWithValuesMap.put('Lookup_External_Key__c', item.Lookup_External_Key);
+                fieldWithValuesMap.put('Mapping_is_for__c', item.Mapping_is_for);
+                fieldWithValuesMap.put('Level__c', item.Level);
+                fieldWithValuesMap.put('Send_Blanks_as_Empty_String__c', item.Send_Blanks_as_Empty_String);
+                fieldWithValuesMap.put('ChildRootElement__c', item.ChildRootElement);
+                fieldWithValuesMap.put('ParentField__c', item.ParentField);
+
+
                 //TODO- create object setting after selecting primary object.
                 fieldWithValuesMap.put('ObjectSetting__c', objectSettingname);
                 
@@ -395,16 +422,16 @@ public with sharing class SYS_FieldMapperController {
 
     
     public class FieldWrapper {
-        @AuraEnabled
-        public String key { get; set; }
+        // @AuraEnabled
+        // public String key { get; set; }
         @AuraEnabled
         public String value { get; set; }
         @AuraEnabled
         public String uuid { get; set; }
         @AuraEnabled
         public String apiname { get; set; }
-        @AuraEnabled
-        public String label { get; set; }
+        // @AuraEnabled
+        // public String label { get; set; }
         @AuraEnabled
         public List<FieldWrapper> item { get; set; }
         @AuraEnabled
@@ -413,8 +440,8 @@ public with sharing class SYS_FieldMapperController {
         public String sObjectApiName { get; set; }
         @AuraEnabled
         public String sObjectLabel { get; set; }
-        @AuraEnabled
-        public String fieldApiName { get; set; }
+        // @AuraEnabled
+        // public String fieldApiName { get; set; }
         @AuraEnabled
         public String fieldLabel { get; set; }
         @AuraEnabled
@@ -427,6 +454,63 @@ public with sharing class SYS_FieldMapperController {
         public String parentSObject { get; set; }
         @AuraEnabled
         public FieldSetting fieldSetting { get; set; }
+        @AuraEnabled
+        public String primarySObjectApiName { get; set; }
+
+        @AuraEnabled
+        public String developername;
+        @AuraEnabled
+        public String label;
+        
+        
+        @AuraEnabled
+        public String Direction;
+        @AuraEnabled
+        public String FieldApiName;
+        @AuraEnabled
+        public String Field_Mapping_Handler;
+        @AuraEnabled
+        public Boolean Is_Active;
+        @AuraEnabled
+        public String Key;
+        @AuraEnabled
+        public String ObjectApiName;
+        @AuraEnabled
+        public String ObjectSetting;
+        @AuraEnabled
+        public Boolean Skip_Field_Setting;
+        @AuraEnabled
+        public String StaticValue;
+
+        @AuraEnabled
+        public String Key_For_Events;
+        @AuraEnabled
+        public String RestResource;
+        @AuraEnabled
+        public Boolean Is_External_Field;
+        @AuraEnabled
+        public Boolean Is_Lookup;
+        @AuraEnabled
+        public String Lookup_Object_API_Name;
+        @AuraEnabled
+        public String Datetime_Conversion_Format;
+        @AuraEnabled
+        public Boolean Get_value_from_Log;
+        @AuraEnabled
+        public String Log_API_for_field_mapping;
+        @AuraEnabled
+        public String Lookup_External_Key;
+
+        @AuraEnabled
+        public String Mapping_is_for;
+        @AuraEnabled
+        public String Level;
+        @AuraEnabled
+        public Boolean Send_Blanks_as_Empty_String;
+        @AuraEnabled
+        public String ChildRootElement;
+        @AuraEnabled
+        public String ParentField;
     }
 
     public class FieldSetting {

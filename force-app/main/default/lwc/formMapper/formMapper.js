@@ -24,6 +24,7 @@ export default class FormMapper extends LightningElement {
             }
         ]
     };
+    @track mergedKeyTypes = [];
 
     @track
     selectedConfig = [];
@@ -115,18 +116,20 @@ export default class FormMapper extends LightningElement {
     renderedCallback() {
         console.log('Rendered');
         if(this.template.querySelector(".tree-form") && this.treeJSON)
-            this.template.querySelector(".tree-form").showTreeForm(this.treeJSON); 
+            this.template.querySelector(".tree-form").showTreeForm(this.treeJSON, this.mergedKeyTypes); 
     }
 
     handlePasteEvent(event) {
-        let selected = event.detail;
+        let selected = event.detail.formattedJson;
+        let mergedKeyTypes = event.detail.mergedKeyTypes;
         console.log('parent selected ',JSON.stringify(selected, null, 2));
         if(selected) {
             this.treeJSON = JSON.parse(selected);
+            this.mergedKeyTypes = mergedKeyTypes;
             this.currentStep = "2";
 
             if(this.template.querySelector(".tree-form"))
-                this.template.querySelector(".tree-form").showTreeForm(this.treeJSON); 
+                this.template.querySelector(".tree-form").showTreeForm(this.treeJSON, this.mergedKeyTypes); 
             // this.template.querySelector(".tree-form").showTreeForm(this.treeJSON);
         }
     }
@@ -170,7 +173,7 @@ export default class FormMapper extends LightningElement {
 
             // this.modifiedJSON = this.traverse(this.treeJSON);
 
-            this.template.querySelector(".tree-form").showTreeForm(this.treeJSON);
+            this.template.querySelector(".tree-form").showTreeForm(this.treeJSON, this.mergedKeyTypes);
             
             // getObjectDetails({ objectApiName : 'Survey__c'})
             // .then((result) => {

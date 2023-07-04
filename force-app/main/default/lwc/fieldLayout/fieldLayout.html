@@ -16,9 +16,9 @@
                                 options={directionOptions}
                                 placeholder={Direction}
                                 onchange={handleDirectionChange}></lightning-combobox>
-                            <lightning-input type="checkbox" label="Is Active" onchange={handleActiveChange} value={Is_Active}></lightning-input>
+                            <lightning-input type="checkbox" label="Is Active" onchange={handleActiveChange} checked={Is_Active}></lightning-input>
                             <lightning-input type="text" label="Field Mapping Handler" onchange={handleApexHandlerChange} value={Field_Mapping_Handler}></lightning-input>
-                            <lightning-input type="checkbox" label="Skip Field Setting" onchange={handleSkipFSChange} value={Skip_Field_Setting}></lightning-input>
+                            <lightning-input type="checkbox" label="Skip Field Setting" onchange={handleSkipFSChange} checked={Skip_Field_Setting}></lightning-input>
                         </lightning-layout-item>
                     </div>
                     <div class="slds-col">
@@ -37,8 +37,8 @@
                         <lightning-layout-item padding="around-small">
                             <lightning-input type="text" label="JSON Key (For Events)" onchange={handleKeyForEventChange} value={Key_For_Events}></lightning-input>
                             <lightning-input type="text" label="Rest Resource" onchange={handleRestResourceChange} value={RestResource}></lightning-input>
-                            <lightning-input type="checkbox" label="Is External Field?" onchange={handleIsExtFieldChange} value={Is_External_Field}></lightning-input>
-                            <lightning-input type="checkbox" label="Is Lookup?" onchange={handleIsLookUpChange} value={Is_Lookup}></lightning-input>
+                            <lightning-input type="checkbox" label="Is External Field?" onchange={handleIsExtFieldChange} checked={Is_External_Field}></lightning-input>
+                            <lightning-input type="checkbox" label="Is Lookup?" onchange={handleIsLookUpChange} checked={Is_Lookup}></lightning-input>
                             <lightning-input type="text" label="Lookup Object (API Name)" onchange={handleLookUpApiNameChange} value={Lookup_Object_API_Name}></lightning-input>
                             
                             <lightning-combobox name="Datetime Conversion Format" 
@@ -51,7 +51,7 @@
                     </div>
                     <div class="slds-col">
                         <lightning-layout-item padding="around-small">
-                            <lightning-input type="checkbox" label="Get value from Log" onchange={handleFromLogChange} value={Get_value_from_Log}></lightning-input>
+                            <lightning-input type="checkbox" label="Get value from Log" onchange={handleFromLogChange} checked={Get_value_from_Log}></lightning-input>
                             <lightning-input type="text" label="Log API for field mapping" onchange={handleLgApiNameChange} value={Log_API_for_field_mapping}></lightning-input>
                             <lightning-input type="text" label="Lookup External Key" onchange={handleLookUpExtKeyChange} value={Lookup_External_Key}></lightning-input>
                         </lightning-layout-item>
@@ -68,7 +68,7 @@
                                 options={levelOptions}
                                 placeholder={Level}
                                 onchange={handleLevelChange}></lightning-combobox>
-                            <lightning-input type="checkbox" label="Send Blanks as Empty String" onchange={handleIsEmptyChange} value={Send_Blanks_as_Empty_String}></lightning-input>
+                            <lightning-input type="checkbox" label="Send Blanks as Empty String" onchange={handleIsEmptyChange} checked={Send_Blanks_as_Empty_String}></lightning-input>
                         </lightning-layout-item>
                     </div>
                     <div class="slds-col">

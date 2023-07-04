@@ -14,6 +14,9 @@ export default class FormJSONTree extends LightningElement {
     @api
     rootObject=false;
 
+    @track
+    mergedKeyTypes = {};
+
     @api 
     set treejson(value) {
         this.treejsonR = value;
@@ -45,11 +48,11 @@ export default class FormJSONTree extends LightningElement {
     }
 
     @api
-    showTreeForm(obj) {
+    showTreeForm(obj, mergedKeyTypes) {
         console.log('tree called ',JSON.stringify(obj, null, 2));
-        
+        this.mergedKeyTypes = mergedKeyTypes;
         this.treejson = this.traverse(obj,'',[],'');
-        console.log('objects ', JSON.stringify('tree array ',this.treejson, null, 2)); 
+        console.log('objects ', JSON.stringify(this.treejson, null, 2)); 
     }
 
 
@@ -83,6 +86,7 @@ export default class FormJSONTree extends LightningElement {
             } else {
                 console.log('dispatched event');
 
+                selected.primarySObjectApiName = this.primarysObjectName;
                 this.dispatchEvent(new CustomEvent('select', {
                     bubbles: true, 
                     composed: true,
@@ -154,7 +158,8 @@ export default class FormJSONTree extends LightningElement {
                     sobject:'',
                     flatkey:'',
                     rootkey:rootkey,
-                    uuid: this.uuidv4()
+                    uuid: this.uuidv4(),
+                    direction : this.mergedKeyTypes[key+i] ? this.mergedKeyTypes[key+i] : 'INBOUND'
                 };
             // console.log(i, o[i]); 
             if (o[i] !== null && typeof(o[i])=="object" 
@@ -190,11 +195,6 @@ export default class FormJSONTree extends LightningElement {
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
       }
-
-
-    handleClick() {
-        
-    }
 
     handleModalOpen(e) {
         

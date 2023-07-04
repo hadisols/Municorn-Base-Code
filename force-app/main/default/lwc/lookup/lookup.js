@@ -16,6 +16,7 @@ export default class CustomLookupLwc extends LightningElement {
     @api treeuuid;
     @api rootkey;
     @api flatkey;
+    @api direction;
 
     //sObject api name for merge fields
     sObjectOne = '';
@@ -150,6 +151,7 @@ export default class CustomLookupLwc extends LightningElement {
         //set primary sObject and send it to parent component
         let info = {};
         let fsObject = {};
+        console.log('handelSelectedRecord ');
         if(this.sObjectApiName === "" && this.isObjectLookup) { 
             info = {
                 isDelete: false,
@@ -179,11 +181,13 @@ export default class CustomLookupLwc extends LightningElement {
             }
         }
         
+        const suffix = this.direction ? '_'+this.direction.substring(0, 3) : '';
+
         fsObject = {
             developername : this.treeuuid,
-            label : 'FS_'+this.selectedRecord.apiname+'_IN',
+            label : 'FS_'+this.selectedRecord.apiname+ suffix ,
     
-            Direction : 'INBOUND',
+            Direction : this.direction,
             FieldApiName : this.selectedRecord.fieldApiName,
             Field_Mapping_Handler : 'SYS_ApplicationService',
             Is_Active : true,
@@ -232,6 +236,7 @@ export default class CustomLookupLwc extends LightningElement {
 
     /*COMMON HELPER METHOD STARTED*/
     handelSelectRecordHelper(){
+        console.log('handelSelectRecordHelper init');
         this.template.querySelector('.lookupInputContainer').classList.remove('slds-is-open');
         const searchBoxWrapper = this.template.querySelector('.searchBoxWrapper');
         searchBoxWrapper.classList.remove('slds-show');
