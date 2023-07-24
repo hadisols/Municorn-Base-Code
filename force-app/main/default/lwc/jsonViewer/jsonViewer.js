@@ -27,11 +27,8 @@ export default class JsonViewer extends LightningElement {
         try {
             const parsedJson = JSON.parse(inputJson);
             this.jsonIn = parsedJson;
-            if(this.jsonOut) {
-                this.merge(this.jsonIn, this.jsonOut);
-            }
-            else
-                this.formattedJson = JSON.stringify(parsedJson, null, 2);
+            
+            this.merge(this.jsonIn, this.jsonOut ? this.jsonOut : {});
             this.error = '';
             //this.formattedJson = JSON.stringify(parsedJson, null, 2);
             // this.dispatchEvent(new CustomEvent('paste', {
@@ -50,11 +47,8 @@ export default class JsonViewer extends LightningElement {
         try {
             const parsedJson = JSON.parse(inputJson);
             this.jsonOut = parsedJson;
-            if(this.jsonIn) {
-                this.merge(this.jsonIn, this.jsonOut);
-            }
-            else
-                this.formattedJson = JSON.stringify(parsedJson, null, 2);
+            
+            this.merge(this.jsonIn ? this.jsonIn : {}, this.jsonOut );
             this.error = '';
             // this.dispatchEvent(new CustomEvent('paste', {
             //     bubbles: true, 
@@ -76,8 +70,8 @@ export default class JsonViewer extends LightningElement {
         console.log('jsonOut ',JSON.stringify(jsonOut, null, 2));
 
         const inboundKeys = this.getFlatKeys(jsonIn);
-        const outboundKeys = this.getFlatKeys(jsonOut);
         console.log('inboundKeys ',JSON.stringify(inboundKeys, null, 2));
+        const outboundKeys = this.getFlatKeys(jsonOut);
         console.log('outboundKeys ',JSON.stringify(outboundKeys, null, 2));
 
         const combinedList = [ ...inboundKeys, ...outboundKeys ];
@@ -116,6 +110,18 @@ export default class JsonViewer extends LightningElement {
 
         console.log('this.mergedKeyTypes ', JSON.stringify(this.mergedKeyTypes, null, 2));
     }
+    //@brief this method is added to test some features.
+    // handleMergeClick() {
+    //     this.reset();
+    //     let source = JSON.parse('{}');
+    //     let target = JSON.parse('{"address":{"text4":"IL","text2":"Chicago","text5":"United States","text1":"10000 West O\' Hare Avenue","text3":"60666"},"firstname":"karthik kakumani","sfid":"a0CDn000003BZZrMAO"}');
+    //     console.log('merge');
+    //     const arr = this.getFlatKeys(target);
+    //     console.log('has key ',source.hasOwnProperty('address'),  arr);
+    //     const mergedJson = this.mergeObjects(target, source);
+    //     console.log('mergedJson ', JSON.stringify(mergedJson , null, 2));
+    //     this.formattedJson = JSON.stringify(mergedJson , null, 2);
+    // }
 
     removeDuplicates(arr) {
         // return arr.filter((item,
@@ -129,13 +135,14 @@ export default class JsonViewer extends LightningElement {
 
     getFlatKeys(obj, prefix = '') {
         let keys = [];
-      
+        console.log('prefix ',prefix );
         for (let key in obj) {
             if (obj.hasOwnProperty(key)) {
                 const prefixedKey = prefix ? `${prefix}.${key}` : key;
-            
+                console.log('prefixedKey ',prefixedKey );
                 if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-                    const nestedKeys = getFlatKeys(obj[key], prefixedKey);
+                    const nestedKeys = this.getFlatKeys(obj[key], prefixedKey);
+                    console.log('nestedKeys ',nestedKeys);
                     keys = [...keys, ...nestedKeys];
                 } else {
                     keys.push(prefixedKey);
@@ -146,17 +153,32 @@ export default class JsonViewer extends LightningElement {
         return keys;
     }
 
-    mergeObjects(obj1, obj2) {
-        for (let key in obj2) {
-            if (obj2.hasOwnProperty(key)) {
-                if (obj1.hasOwnProperty(key) && typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-                    mergeObjects(obj1[key], obj2[key]); // Recursively merge nested objects
+    
+
+    mergeObjects(target, source) {
+        // for (let key in obj2) {
+        //     if (obj2.hasOwnProperty(key)) {
+        //         if (obj1.hasOwnProperty(key) && typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+        //             mergeObjects(obj1[key], obj2[key]); // Recursively merge nested objects
+        //         } else {
+        //             obj1[key] = obj2[key]; // Merge non-nested properties
+        //         }
+        //     }
+        // }
+        // return obj1;
+        for (let key in source) {
+            if (source.hasOwnProperty(key)) {
+                if (typeof source[key] === 'object' && source[key] !== null) {
+                    if (!target.hasOwnProperty(key) || typeof target[key] !== 'object' || target[key] === null) {
+                        target[key] = {};
+                    }
+                    this.mergeObjects(target[key], source[key]);
                 } else {
-                    obj1[key] = obj2[key]; // Merge non-nested properties
+                    target[key] = source[key];
                 }
             }
         }
-        return obj1;
+        return target;
     }
             
 

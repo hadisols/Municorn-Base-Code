@@ -15,6 +15,10 @@
         <value xsi:type="xsd:string">SYS_ApplicationService</value>
     </values>
     <values>
+        <field>BypassOrder__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
         <field>BypassTrigger__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
@@ -96,6 +100,10 @@
     </values>
     <values>
         <field>isInboundList__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>new__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>

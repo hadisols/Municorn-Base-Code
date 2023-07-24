@@ -98,7 +98,8 @@ public with sharing class SYS_customMetadataDeploy implements Metadata.DeployCal
     public static String requestDeployment(Map<String, String> apiNameMap, Map<String, Map<String, Object>> containerMd) {
         Id jobId;
         
-        if(apiNameMap.isEmpty()) {
+        if(apiNameMap.isEmpty()) { //TODO - deployment success message
+
             return jobId;
         }
         String label = apiNameMap.keySet().iterator().next();

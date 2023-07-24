@@ -9,6 +9,7 @@
             <label for="story">Outbound:</label>
             <textarea class="json-input" placeholder="Paste JSON here" onchange={handleInputChangeOut} rows="5" cols="40"></textarea>
         </div>
+        
         <div class="slds-col slds-m-left_x-small">
             <div if:true={showJson}>
                 <pre class="json-output">{formattedJson}</pre>

@@ -1,5 +1,6 @@
 public with sharing class SYS_FieldMapperController {
     public static integer MAX = 120;
+    public static string int_setting = 'Form';
 
     public SYS_FieldMapperController() {
         List<SYS_FieldMapperController.FieldWrapper> reqFields = new List<SYS_FieldMapperController.FieldWrapper>();
@@ -36,8 +37,7 @@ public with sharing class SYS_FieldMapperController {
                 objectSettingname = 'ObjectSetting_'+fslist[0]?.primarySObjectApiName;
 
                 fieldWithValuesMap.put('ApexHandler__c', 'SYS_ApplicationService');
-                fieldWithValuesMap.put('Direction__c', SYS_Constants.INBOUND);
-                fieldWithValuesMap.put('IntegrationType__c', 'Form');
+                fieldWithValuesMap.put('IntegrationType__c', int_setting);
                 fieldWithValuesMap.put('ObjectApiName__c', fslist[0]?.primarySObjectApiName);
                 fieldWithValuesMap.put('Skip_Keys__c', '');
                 fieldWithValuesMap.put('Trigger_Condition__c', '');
@@ -47,6 +47,8 @@ public with sharing class SYS_FieldMapperController {
                 apiNameMap.put(objectSettingname, 'ObjectSetting__mdt');
                 containerMd.put(objectSettingname, fieldWithValuesMap);
             }
+
+            getFSToDeactivate(objectSettingname, apiNameMap, containerMd);
             // if(recordId != NULL) {
                 // Custom_Form__c form = new Custom_Form__c(
                 //     Id = recordId,
@@ -72,7 +74,7 @@ public with sharing class SYS_FieldMapperController {
                 fieldWithValuesMap.put('Direction__c', item.Direction);
                 fieldWithValuesMap.put('FieldApiName__c', item.FieldApiName);
                 fieldWithValuesMap.put('Field_Mapping_Handler__c', item.Field_Mapping_Handler);
-                fieldWithValuesMap.put('Is_Active __c', item.Is_Active );
+                fieldWithValuesMap.put('Is_Active__c', item.Is_Active );
                 fieldWithValuesMap.put('Key__c', item.Key);
                 fieldWithValuesMap.put('ObjectApiName__c', item.ObjectApiName);
                 fieldWithValuesMap.put('ObjectSetting__c', item.ObjectSetting);
@@ -98,8 +100,12 @@ public with sharing class SYS_FieldMapperController {
                 fieldWithValuesMap.put('ObjectSetting__c', objectSettingname);
                 
 
-                apiNameMap.put('FS_' + item.fieldApiName + count, 'FieldSetting__mdt');
-                containerMd.put('FS_' + item.fieldApiName + count, fieldWithValuesMap);
+                // apiNameMap.put('FS_' + item.FieldApiName + count, 'FieldSetting__mdt');
+                // containerMd.put('FS_' + item.FieldApiName + count, fieldWithValuesMap);
+
+                String developername = 'a'+item.developername.replaceAll('-','_');
+                apiNameMap.put(developername, 'FieldSetting__mdt');
+                containerMd.put(developername, fieldWithValuesMap);
                 count++;
             }
 
@@ -116,6 +122,16 @@ public with sharing class SYS_FieldMapperController {
         }
     }
 
+    public static void getFSToDeactivate(String objectSettingname, Map<String, String> apiNameMap, Map<String, Map<String, Object>> containerMd) {
+        List<FieldSetting__mdt> fieldSetting = [SELECT developername FROM FieldSetting__mdt WHERE ObjectSetting__r.developerName =:objectSettingname and Is_Active__c=true];
+        for(FieldSetting__mdt fs:fieldSetting) {
+            Map<String, Object> fieldWithValuesMap = new Map<String, Object>();
+            fieldWithValuesMap.put('Is_Active__c', false );
+            apiNameMap.put(fs.developername, 'FieldSetting__mdt');
+            containerMd.put(fs.developername, fieldWithValuesMap);
+        }
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<SYS_FieldMapperController.FieldWrapper> getSearchResult(String sObjectApiName, 
         String searchKey, Boolean isObjectLookup, SYS_FieldMapperController.FieldWrapper selected) {
@@ -125,10 +141,10 @@ public with sharing class SYS_FieldMapperController {
         try {
             integer size = 0;
             System.debug('bool SP'+isObjectLookup+' : '+sObjectApiName);
-            if(isObjectLookup && !String.isBlank(sObjectApiName)) {
+            if (isObjectLookup && !String.isBlank(sObjectApiName)) {
                 reqFields = getObjectDetails(sObjectApiName, searchkey);
             }
-            else if(isObjectLookup) {
+            else if (isObjectLookup) {
                 reqFields = getAllObjects(searchKey);
             } else {
                 String referenceFieldPrefix = '';
@@ -145,7 +161,7 @@ public with sharing class SYS_FieldMapperController {
                     else if(item.apiname.containsIgnorecase(searchkey) || 
                                 item.label.containsIgnorecase(searchkey) ){
                         item.apiname = referenceFieldPrefix + item.apiname;
-                        item.fieldApiName = referenceFieldPrefix + item.fieldApiName; 
+                        item.FieldApiName = referenceFieldPrefix + item.FieldApiName; 
                         reqFields.add(item);
                         size++;
                     }
@@ -208,7 +224,7 @@ public with sharing class SYS_FieldMapperController {
                 fieldObj.type = String.valueOf(F.getType());
                 fieldObj.sObjectApiName = objectApiName;
                 fieldObj.sObjectLabel = r.getLabel();
-                fieldObj.fieldApiName = F.getName();
+                fieldObj.FieldApiName = F.getName();
                 fieldObj.fieldLabel = F.getLabel(); 
                 System.debug('SP '+field+' : '+F.getType()+' : '+F.getReferenceTo()+' : '+F.isNamePointing());
                 reqFields.add(fieldObj);
@@ -335,7 +351,7 @@ public with sharing class SYS_FieldMapperController {
                 fieldObj.type = String.valueOf(F.getType());
                 fieldObj.sObjectApiName = objectApiName;
                 fieldObj.sObjectLabel = r.getLabel();
-                fieldObj.fieldApiName = F.getName();
+                fieldObj.FieldApiName = F.getName();
                 fieldObj.fieldLabel = F.getLabel(); 
                 System.debug('SP '+field+' : '+F.getType()+' : '+F.getReferenceTo()+' : '+F.isNamePointing());
                 reqFields.add(fieldObj);
@@ -361,7 +377,7 @@ public with sharing class SYS_FieldMapperController {
                     fieldObj.type = String.valueOf(F.getType());
                     fieldObj.sObjectApiName = objectApiName;
                     fieldObj.sObjectLabel = r.getLabel();
-                    fieldObj.fieldApiName = apiname;
+                    fieldObj.FieldApiName = apiname;
                     fieldObj.fieldLabel = F.getLabel();
                     fieldObj.parentSObject = referencedObjectApiName;
                     System.debug('SP '+field+' : '+F.getType()+' : '+F.getReferenceTo()+' : '+F.isNamePointing());
@@ -386,7 +402,7 @@ public with sharing class SYS_FieldMapperController {
                     fieldObj.type = String.valueOf(F.getType());
                     fieldObj.sObjectApiName = objectApiName;
                     fieldObj.sObjectLabel = r.getLabel();
-                    fieldObj.fieldApiName = apiname;
+                    fieldObj.FieldApiName = apiname;
                     fieldObj.fieldLabel = F.getLabel(); 
                     fieldObj.parentSObject = referencedObjectApiName;
                     System.debug('SP '+field+' : '+F.getType()+' : '+F.getReferenceTo()+' : '+F.isNamePointing());

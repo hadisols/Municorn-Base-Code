@@ -68,6 +68,7 @@ export default class CustomLookupLwc extends LightningElement {
         if (data) {
              this.hasRecords = data.length == 0 ? false : true; 
              this.lstResult = JSON.parse(JSON.stringify(data)); 
+             console.log('results data',JSON.stringify(data, null, 2));
          }
         else if (error) {
             console.log('(error---> ' + JSON.stringify(error));
@@ -140,13 +141,16 @@ export default class CustomLookupLwc extends LightningElement {
     handelSelectedRecord(event){   
         var objId = event.target.getAttribute('data-recid'); // get selected record Id 
         this.selectedRecord = this.lstResult.find(data => data.uuid === objId); // find selected record from list 
-        this.fieldApiName = this.selectedRecord.fieldApiName;
-        // if(!this.isObjectLookup) {
-        //     this.searchKey = this.selectedRecord.fieldApiName;
-        //     const inputField = this.template.querySelector('.lookup-field-main');
-        //     if(inputField)
-        //         inputField.focus();
-        // }
+        this.fieldApiName = this.selectedRecord.FieldApiName;
+        if(!this.isObjectLookup) {
+            this.searchKey = this.selectedRecord.FieldApiName;
+            const inputField = this.template.querySelector('.lookup-field-main');
+            if(inputField && this.searchKey && this.searchKey.endsWith(".")) {
+                inputField.focus();
+                return;
+            }
+                
+        }
 
         //set primary sObject and send it to parent component
         let info = {};
@@ -188,7 +192,7 @@ export default class CustomLookupLwc extends LightningElement {
             label : 'FS_'+this.selectedRecord.apiname+ suffix ,
     
             Direction : this.direction,
-            FieldApiName : this.selectedRecord.fieldApiName,
+            FieldApiName : this.selectedRecord.FieldApiName,
             Field_Mapping_Handler : 'SYS_ApplicationService',
             Is_Active : true,
             Key : this.flatkey, 
@@ -214,7 +218,7 @@ export default class CustomLookupLwc extends LightningElement {
             ParentField : ''
         }
 
-        console.log('pushed ', JSON.stringify({...this.selectedRecord, ...info, ...fsObject}));
+        console.log('pushed ', JSON.stringify({...this.selectedRecord, ...info, ...fsObject}, null, 2));
         this.lookupUpdatehandler({...this.selectedRecord, ...info, ...fsObject});
         
         // if(this.isObjectLookup)

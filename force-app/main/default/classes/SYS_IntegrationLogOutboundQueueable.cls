@@ -82,12 +82,7 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
                     continue;
                 }
                 try {
-                    String finalJsonForOutbound;
-                    finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound?.get(log.whatid__c));
-                    
-                    if(log.Additional_Param__c != NULL ) {
-                        finalJsonForOutbound = appService.sanitizeJSONForOutbound(finalJsonForOutbound, log.Additional_Param__c);
-                    }
+                    String finalJsonForOutbound = jsonListForOutbound?.get(log.whatid__c);
                     SYS_Helper.generateRequestBody(log, finalJsonForOutbound);
     
                 } catch(Exception e) {

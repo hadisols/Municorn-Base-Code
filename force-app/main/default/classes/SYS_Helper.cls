@@ -794,7 +794,7 @@ global without sharing class SYS_Helper {
         if(log.Additional_Param__c != NULL ) {
             finalJsonForOutbound = appService.sanitizeJSONForOutbound(finalJsonForOutbound, log.Additional_Param__c);
         }
-        writeDataFields(log, requestBody);
+        writeDataFields(log, finalJsonForOutbound);
 
     }
 

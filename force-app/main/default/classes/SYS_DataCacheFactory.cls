@@ -205,6 +205,14 @@
         }
     }
 
+    public static Boolean BYPASS_ORDER {
+        get {
+            Boolean bypass = objectSettingMap.get(SYS_DataCache.OBJ_TYPE) != null ?
+            objectSettingMap.get(SYS_DataCache.OBJ_TYPE).BypassOrder__c : true;
+            return bypass;
+        }
+    }
+
     public static String INT_TYPE {
         set {
             SYS_DataCache.INT_TYPE = value;
