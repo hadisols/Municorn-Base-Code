@@ -852,6 +852,60 @@ global without sharing class SYS_Helper {
         }
     }
 
+    /* ------------------------------------------------------------------------ */
+
+    public static void insertErrorLog(String method, String message) {
+        List<SYS_IntegrationLog__c> sysLogs = registerLogAfterError(method, message);
+        SYS_Helper.upsertLog(sysLogs);
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+    public static List<SYS_IntegrationLog__c> registerLogAfterError(String method, String message) {
+        String requestBody = RestContext.request.requestBody.toString();
+        SYS_IntegrationLog__c log = new SYS_IntegrationLog__c();
+        List<SYS_IntegrationLog__c> logAfterPartition = new List<SYS_IntegrationLog__c>();
+        
+        //Check criteria when chars more than 1M
+        if(requestBody != NULL && requestBody.length() > SYS_Constants.TEXT_AREA_MAX_SIZE*10) {
+            logAfterPartition = SYS_Helper.getLogsAfterPartition(requestBody);
+            if(logAfterPartition != NULL && logAfterPartition.size() > 0) {
+                // SYS_Helper.upsertLog(logs[0]);
+                // List<SYS_IntegrationLog__c> childs = SYS_Helper.getChildRecords(logs);
+                
+                // SYS_Helper.upsertLog(childs);
+                log = logAfterPartition[0];
+            }
+            System.debug('SP 1M<<');
+        } else {
+            log = SYS_Helper.getLogsToInsert(requestBody);
+            System.debug('SP 1M>>');
+        }
+
+        if(SYS_DataCacheFactory.integrationSetting.Notifications_are_partial__c)
+            log.Is_Notification_Only__c = true;
+
+        log.Type__c = SYS_Constants.INBOUND;
+        log.HTTP_Method__c = method;
+        log.How_to_process__c = 'ignore_log';
+        log.Message__c = message;
+        log.Status__c = SYS_Constants.FAIL;
+        log.retry__c = false;
+
+    
+
+        List<SYS_IntegrationLog__c> returnVal = new List<SYS_IntegrationLog__c>();
+        returnVal.add(log);
+        if(logAfterPartition != NULL && logAfterPartition.size() > 0) {
+            log.Status__c = SYS_Constants.PENDING_PARTITIONED_LOOKUP;
+            for(integer i = 1 ; i < logAfterPartition.size() ; i++) {
+                returnVal.add(logAfterPartition[i]);
+            }
+        }
+
+        return returnVal;
+    }
+
     // public static void processOutboundRequest(List<sObject> newList, String operationType, String httpMethod, Map<Id,sObject> newMap, Map<Id, String> parameterMap ) {
     //     List<SYS_IntegrationLog__c> insertSysLog = new List<SYS_IntegrationLog__c>();
     //     SYS_ApplicationService appService = (SYS_ApplicationService)Type.forName(SYS_DataCacheFactory.objectSettingMap.get(SYS_DataCacheFactory.OBJ_TYPE).ApexHandler__c).newInstance();

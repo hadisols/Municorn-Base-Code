@@ -29,6 +29,12 @@ public without sharing class SYS_Constants {
         }
     }
 
+    public static String FAIL {
+        get {
+            return 'FAIL';
+        }
+    }
+
     public static String INBOUND {
         get {
             return 'INBOUND';
@@ -53,6 +59,35 @@ public without sharing class SYS_Constants {
         }
     }
 
+    public static String POST {
+        get {
+            return 'POST';
+        }
+    }
+
+    public static String PUT {
+        get {
+            return 'PUT';
+        }
+    }
+
+    public static String GET {
+        get {
+            return 'GET';
+        }
+    }
+
+    public static String DELETE_SERVICE {
+        get {
+            return 'DELETE';
+        }
+    }
+
+    public static String PATCH {
+        get {
+            return 'PATCH';
+        }
+    }
     /**
      * INT_NAME is used to set the default integration name.
      * used @MunicornHome component while enabling the integration.
