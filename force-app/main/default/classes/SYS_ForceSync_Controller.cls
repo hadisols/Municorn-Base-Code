@@ -5,6 +5,8 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
     private static List<sObject> recList = new List<sObject>();
     private static SYS_DataCacheFactory init;
 
+    private class SYS_ForceSync_ControllerException extends Exception {}
+
     @AuraEnabled
     public static String invokeAccountFlow(Id recId,String objSetting,String apexHandler, String direction, 
     String accountMergeField) {
@@ -81,9 +83,9 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                         finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
 
                         newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
-                        newSysLog.Status__c = 'NEW';
+                        newSysLog.Status__c = SYS_Constants.NEW_STATUS;
                         //newSysLog.HTTP_Method__c = 'POST';
-                        newSysLog.Type__c = 'OUTBOUND';
+                        newSysLog.Type__c = SYS_Constants.OUTBOUND;
                         newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
                         newSysLog.SYS_Operation_Type__c = 'UPSERT';
                         newSysLog.WhatId__c = jsonRecordId;
@@ -101,14 +103,19 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                     if(insertSysLog.size()>0 && SYS_DataCacheFactory.enableCheck){
                         new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
                     }
+                    else if(insertSysLog.size()>0 && !SYS_DataCacheFactory.enableCheck) {
+                        // SYS_Helper.updateIntegrationSettingDisableMessage(insertSysLog);
+                        // SYS_Helper.upsertLog(insertSysLog);
+                        throw new SYS_ForceSync_ControllerException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
+                    }
                 }
 
             }else if(direction == 'IN'){
                 
                 newSysLog.Callout_URL__c = SYS_Helper.urlFromPattern('GET',recList[0]);
-                newSysLog.Status__c = 'NEW';
+                newSysLog.Status__c = SYS_Constants.NEW_STATUS;
                 newSysLog.HTTP_Method__c = 'GET';
-                newSysLog.Type__c = 'OUTBOUND';
+                newSysLog.Type__c = SYS_Constants.OUTBOUND;
                 newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = 'UPSERT';
                 newSysLog.WhatId__c = recId;
@@ -124,10 +131,15 @@ global without sharing class SYS_ForceSync_Controller extends SYS_ApplicationSer
                 insertSysLog.add(newSysLog);
                 if(insertSysLog.size()>0 && SYS_DataCacheFactory.enableCheck){
                     new SYS_IntegrationLogOutboundImmediate(insertSysLog).execute();
+                } 
+                else if(insertSysLog.size()>0 && !SYS_DataCacheFactory.enableCheck) {
+                    // SYS_Helper.updateIntegrationSettingDisableMessage(insertSysLog);
+                    // SYS_Helper.upsertLog(insertSysLog);
+                    throw new SYS_ForceSync_ControllerException(Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE);
                 }
 
             }else{
-                throw new AuraHandledException('Invalid Direction specified');
+                throw new SYS_ForceSync_ControllerException('Invalid Direction specified');
             }
             
         }catch(Exception e) {

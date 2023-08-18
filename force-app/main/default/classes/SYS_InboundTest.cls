@@ -371,11 +371,11 @@ public class SYS_InboundTest {
         System.runAs(getUser()) {
             SYS_TestDataFactory.createIgnoreLog();
             List<SYS_IntegrationLog__c> log = [SELECT Id FROM SYS_IntegrationLog__c LIMIT 1];
-            log[0].Type__c = 'INBOUND';
-            log[0].Status__c = 'READY_FOR_PROCESSING';
+            log[0].Type__c = SYS_Constants.INBOUND;
+            log[0].Status__c = SYS_Constants.READY_FOR_PROCESSING;
             update log;
 
-            System.assertEquals('READY_FOR_PROCESSING',log[0].Status__c);
+            System.assertEquals(SYS_Constants.READY_FOR_PROCESSING,log[0].Status__c);
         }
     }
 

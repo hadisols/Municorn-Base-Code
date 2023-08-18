@@ -1,0 +1,22 @@
+<template>
+    <lightning-card title="JSON Viewer" class="slds-m-left_x-small slds-align_absolute-center"></lightning-card>
+    
+    <lightning-button variant="Neutral" label="Next" title="Next" onclick={handleNextClick} class="slds-m-left_x-small"></lightning-button>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-m-left_x-small">
+            <label for="story">Inbound:</label>
+            <textarea class="json-input" placeholder="Paste JSON here" onchange={handleInputChangeIn} rows="5" cols="40"></textarea>
+            <label for="story">Outbound:</label>
+            <textarea class="json-input" placeholder="Paste JSON here" onchange={handleInputChangeOut} rows="5" cols="40"></textarea>
+        </div>
+        
+        <div class="slds-col slds-m-left_x-small">
+            <div if:true={showJson}>
+                <pre class="json-output">{formattedJson}</pre>
+            </div>
+            <div if:false={showJson}>
+                <pre class="json-output">{error}</pre>
+            </div>
+        </div>
+    </div>
+</template>

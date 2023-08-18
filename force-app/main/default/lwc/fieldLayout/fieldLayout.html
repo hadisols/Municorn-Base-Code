@@ -1,0 +1,91 @@
+<template>
+    <lightning-modal-header label="Field Setting"></lightning-modal-header>
+
+    <lightning-modal-body>
+        <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+            <lightning-accordion-section name="G" label="Field Information">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-layout-item padding="around-small">
+                            <lightning-input type="text" label="Label" onchange={handleLabelChange} value={label}></lightning-input>
+                            <lightning-input type="text" label="Developer Name" onchange={handleDevelopernameChange} value={developername}></lightning-input>
+                            <lightning-input type="text" label="Object Setting" onchange={handleOSChange} value={ObjectSetting} readonly ></lightning-input>
+                            
+                            <lightning-combobox name="Direction" label="Direction" 
+                                value={Direction}
+                                options={directionOptions}
+                                placeholder={Direction}
+                                onchange={handleDirectionChange}></lightning-combobox>
+                            <lightning-input type="checkbox" label="Is Active" onchange={handleActiveChange} checked={Is_Active}></lightning-input>
+                            <lightning-input type="text" label="Field Mapping Handler" onchange={handleApexHandlerChange} value={Field_Mapping_Handler}></lightning-input>
+                            <lightning-input type="checkbox" label="Skip Field Setting" onchange={handleSkipFSChange} checked={Skip_Field_Setting}></lightning-input>
+                        </lightning-layout-item>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-layout-item padding="around-small">
+                            <lightning-input type="text" label="Object API Name" onchange={handleObjApiNameChange} value={ObjectApiName}></lightning-input>
+                            <lightning-input type="text" label="JSON Key" onchange={handleKeyChange} value={Key}></lightning-input>
+                            <lightning-input type="text" label="Field API Name" onchange={handleFieldApiNameChange} value={FieldApiName}></lightning-input>
+                            <lightning-input type="text" label="Static Value" onchange={handleStaticValueChange} value={StaticValue}></lightning-input>
+                        </lightning-layout-item>
+                    </div>
+                </div>
+            </lightning-accordion-section>
+            <lightning-accordion-section name="I" label="Inbound">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-layout-item padding="around-small">
+                            <lightning-input type="text" label="JSON Key (For Events)" onchange={handleKeyForEventChange} value={Key_For_Events}></lightning-input>
+                            <lightning-input type="text" label="Rest Resource" onchange={handleRestResourceChange} value={RestResource}></lightning-input>
+                            <lightning-input type="checkbox" label="Is External Field?" onchange={handleIsExtFieldChange} checked={Is_External_Field}></lightning-input>
+                            <lightning-input type="checkbox" label="Is Lookup?" onchange={handleIsLookUpChange} checked={Is_Lookup}></lightning-input>
+                            <lightning-input type="text" label="Lookup Object (API Name)" onchange={handleLookUpApiNameChange} value={Lookup_Object_API_Name}></lightning-input>
+                            
+                            <lightning-combobox name="Datetime Conversion Format" 
+                            label="Datetime Conversion Format" 
+                                options={dateTimeOptions}
+                                value={Datetime_Conversion_Format}
+                                placeholder={Datetime_Conversion_Format}
+                                onchange={handleDateTimeChange}></lightning-combobox>
+                        </lightning-layout-item>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-layout-item padding="around-small">
+                            <lightning-input type="checkbox" label="Get value from Log" onchange={handleFromLogChange} checked={Get_value_from_Log}></lightning-input>
+                            <lightning-input type="text" label="Log API for field mapping" onchange={handleLgApiNameChange} value={Log_API_for_field_mapping}></lightning-input>
+                            <lightning-input type="text" label="Lookup External Key" onchange={handleLookUpExtKeyChange} value={Lookup_External_Key}></lightning-input>
+                        </lightning-layout-item>
+                    </div>
+                </div>
+            </lightning-accordion-section>
+            <lightning-accordion-section name="O" label="Outbound">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-layout-item padding="around-small">
+                            <lightning-input type="text" label="Mapping is for" onchange={handleMapForChange} value={Mapping_is_for}></lightning-input>
+                            
+                            <lightning-combobox name="Level" label="Level" value={Level}
+                                options={levelOptions}
+                                placeholder={Level}
+                                onchange={handleLevelChange}></lightning-combobox>
+                            <lightning-input type="checkbox" label="Send Blanks as Empty String" onchange={handleIsEmptyChange} checked={Send_Blanks_as_Empty_String}></lightning-input>
+                        </lightning-layout-item>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-layout-item padding="around-small">
+                            <lightning-input type="text" label="Child Root Element" onchange={handleChildRootElementChange} value={ChildRootElement}></lightning-input>
+                            <lightning-input type="text" label="Parent Field" onchange={handleParentFieldChange} value={ParentField}></lightning-input>
+                        </lightning-layout-item>
+                    </div>
+                </div>
+            </lightning-accordion-section>
+        </lightning-accordion>
+    </lightning-modal-body>
+    <lightning-modal-footer >
+        <div class="slds-align_absolute-center">
+            <lightning-button label="Save" onclick={handleSave} ></lightning-button>
+            <lightning-button label="Reset" onclick={handleReset} class="slds-m-left_small"></lightning-button>
+        </div>
+    </lightning-modal-footer>
+    
+</template>

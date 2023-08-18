@@ -65,6 +65,20 @@
 		<members>MunicornHealthCheck</members-->
 		<name>AuraDefinitionBundle</name>
 	</types>
+
+    <types>
+		<members>fieldLayout</members>
+		<members>formJSONTree</members>
+		<members>formMapper</members>
+		<members>jsonViewer</members>
+		<members>lookup</members>
+		<name>LightningComponentBundle</name>
+	</types>
+        <types>
+		<members>SYS_FieldMapperController</members>
+		<name>ApexClass</name>
+	</types>
+
 	<types>
 		<members>Account.SYS_Key_Municorn__c</members>
         <members>Account.UUID__c</members>
@@ -168,6 +182,7 @@
 		<!--members>Municorn_Home</members-->
         <members>SYS_Matrix__c</members>
         <members>SYS_Integration_Metadata__c</members>
+        <members>Field_Mapper</members>
 		<name>CustomTab</name>
 	</types>
 	<types>
@@ -258,6 +273,7 @@
         <members>setup</members>
         <members>salesforce_setup</members>
         <members>troubleshoot</members>
+        <members>IS_disabled</members>
         <name>CustomLabel</name>
     </types>
     <types>

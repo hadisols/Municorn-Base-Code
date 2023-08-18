@@ -40,6 +40,11 @@
                 <default>false</default>
                 <label>SYS_Test_IntegrationSetting_Fail</label>
             </value>
+            <value>
+                <fullName>SYS_Test_Target</fullName>
+                <default>false</default>
+                <label>SYS_Test_Target</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

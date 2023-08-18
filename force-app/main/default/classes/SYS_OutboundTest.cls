@@ -134,8 +134,8 @@ public class SYS_OutboundTest {
             
             SYS_IntegrationLog__c  newSysLog = new SYS_IntegrationLog__c();
             newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
-            newSysLog.Status__c = 'NEW';
-            newSysLog.Type__c = 'OUTBOUND';
+            newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+            newSysLog.Type__c = SYS_Constants.OUTBOUND;
             newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
             newSysLog.SYS_Operation_Type__c = 'INSERT';
             newSysLog.whatid__c = 'a005f000007K9hlAAC';
@@ -145,8 +145,8 @@ public class SYS_OutboundTest {
 
             newSysLog = new SYS_IntegrationLog__c();
             newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
-            newSysLog.Status__c = 'NEW';
-            newSysLog.Type__c = 'OUTBOUND';
+            newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+            newSysLog.Type__c = SYS_Constants.OUTBOUND;
             newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
             newSysLog.SYS_Operation_Type__c = 'INSERT';
             newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
@@ -156,8 +156,8 @@ public class SYS_OutboundTest {
 
             newSysLog = new SYS_IntegrationLog__c();
             newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
-            newSysLog.Status__c = 'NEW';
-            newSysLog.Type__c = 'OUTBOUND';
+            newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+            newSysLog.Type__c = SYS_Constants.OUTBOUND;
             newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
             newSysLog.SYS_Operation_Type__c = 'INSERT';
             newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
@@ -180,11 +180,11 @@ public class SYS_OutboundTest {
         System.runAs(getUser()) {
             SYS_TestDataFactory.createIgnoreLog();
             List<SYS_IntegrationLog__c> log = [SELECT Id FROM SYS_IntegrationLog__c LIMIT 1];
-            log[0].Type__c = 'OUTBOUND';
-            log[0].Status__c = 'READY_FOR_PROCESSING';
+            log[0].Type__c = SYS_Constants.OUTBOUND;
+            log[0].Status__c = SYS_Constants.READY_FOR_PROCESSING;
             update log;
 
-            System.assertEquals('READY_FOR_PROCESSING',log[0].Status__c);
+            System.assertEquals(SYS_Constants.READY_FOR_PROCESSING,log[0].Status__c);
         }
     }
 

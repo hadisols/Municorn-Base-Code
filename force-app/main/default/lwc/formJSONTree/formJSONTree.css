@@ -1,0 +1,15 @@
+.node {
+    height: .9rem;
+    width: .9rem;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.node:hover {
+    background-color: rgb(136, 136, 136);
+}
+
+.text-bold {
+    font-weight: bold;
+}

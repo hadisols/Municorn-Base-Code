@@ -144,6 +144,13 @@
         }
     }
 
+    public static integer MAX_CALLOUT_COUNT {
+        get {
+            Decimal count = objectSettingMap.get(OBJ_TYPE)?.Maximum_Callout_Limit__c;
+            return Integer.valueof(count != NULL ? count : 50);
+        }
+    }
+
     public static boolean DEBUG_CHECK {
         get {
             if(SYS_DataCache.datacache != NULL && SYS_DataCache.datacache?.metadata?.get('int-set') != NULL) {
@@ -173,9 +180,10 @@
     //datatype change
     public static Boolean enableCheck {
         get {
-            return SYS_DataCache.datacache != NULL ? 
+            Boolean enableFlag = SYS_DataCache.datacache != NULL ? 
             SYS_DataCache.datacache.isEnabled : 
             SYS_DataCache.enableCheck.get(SYS_DataCacheFactory.INT_TYPE?.toUpperCase());
+            return enableFlag != NULL ? enableFlag : false;
         }
     }
 
@@ -194,6 +202,14 @@
                 return SYS_DataCache.datacache?.integrationSetting?.Integration_Type__c;
             } 
             return NULL;
+        }
+    }
+
+    public static Boolean BYPASS_ORDER {
+        get {
+            Boolean bypass = objectSettingMap.get(SYS_DataCache.OBJ_TYPE) != null ?
+            objectSettingMap.get(SYS_DataCache.OBJ_TYPE).BypassOrder__c : true;
+            return bypass;
         }
     }
 
@@ -279,7 +295,23 @@
         }
     }
 
-
+    /**
+     * SYSlog has lookUp relationship with SYS_Matrix
+     * if it is converted to master-detail, we will get Record row locked error
+     * when bulk operations are performed concurrently
+     */
+    private static Id MATRIX_REC_ID;
+    public static Id MATRIX_ID {
+        get {
+            if(MATRIX_REC_ID == NULL) {
+                List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
+                if (matrix != NULL && matrix.size() > 0) {
+                    MATRIX_REC_ID = matrix[0].Id;
+                }
+            }
+            return MATRIX_REC_ID;
+        }
+    }
 
     public class SYS_DataCacheFactoryException extends Exception{}
 }

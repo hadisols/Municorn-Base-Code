@@ -14,9 +14,8 @@ global without sharing class SYS_Helper {
         if(logs.size()>0){ 
 
             
-            List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-            String matrixId;
-            if(matrix.size() == 0) {
+            String matrixId = SYS_DataCacheFactory.MATRIX_ID;
+            if (matrixId == NULL) {
                 SYS_Matrix__c matrixRec = new SYS_Matrix__c(
                     Date__c = Date.today()
                 );
@@ -31,9 +30,7 @@ global without sharing class SYS_Helper {
                 if (result.isSuccess()) {
                     matrixId = matrixRec.Id;
                 }
-            } else {
-                matrixId = matrix[0].Id;
-            }
+            } 
 
             for(SYS_IntegrationLog__c log:logs) {
                 log.SYS_Matrix__c = matrixId;
@@ -55,9 +52,8 @@ global without sharing class SYS_Helper {
         Database.SaveResult result;
         
         //insert log;
-        List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-        String matrixId;
-        if(matrix.size() == 0) {
+        String matrixId = SYS_DataCacheFactory.MATRIX_ID;
+        if (matrixId == NULL) {
             SYS_Matrix__c matrixRec = new SYS_Matrix__c(
                 Date__c = Date.today()
             );
@@ -72,9 +68,7 @@ global without sharing class SYS_Helper {
             if (result.isSuccess()) {
                 matrixId = matrixRec.Id;
             }
-        } else {
-            matrixId = matrix[0].Id;
-        }
+        } 
         log.SYS_Matrix__c = matrixId;
         Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
         Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
@@ -97,12 +91,12 @@ global without sharing class SYS_Helper {
             String sObjectApiName = String.valueOf(recId.getsobjecttype());
             Boolean isObjDeletable = Schema.getGlobalDescribe().get(sObjectApiName).getDescribe().isDeletable();
             System.debug('delete permission '+isObjDeletable);
-            if(isObjDeletable){
-                results = Database.delete(sObjects,false);
-            }
-            else {
-                results = Database.delete(sObjects,false);
-            }
+            //removed the deletable permisssion check
+            // if(isObjDeletable){
+            //     results = Database.delete(sObjects,false);
+            // }
+            results = Database.delete(sObjects,false);
+            
         }
         return results;
         
@@ -113,9 +107,9 @@ global without sharing class SYS_Helper {
     global static List<Database.upsertResult> upsertLog(List<SYS_IntegrationLog__c> logs){
         List<Database.upsertResult> upsertResult;
         if(logs.size()>0){
-            List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-            String matrixId;
-            if(matrix.size() == 0) {
+            
+            String matrixId = SYS_DataCacheFactory.MATRIX_ID;
+            if (matrixId == NULL) {
                 SYS_Matrix__c matrixRec = new SYS_Matrix__c(
                     Date__c = Date.today()
                 );
@@ -130,12 +124,10 @@ global without sharing class SYS_Helper {
                 if (result.isSuccess()) {
                     matrixId = matrixRec.Id;
                 }
-            } else {
-                matrixId = matrix[0].Id;
-            }
-
-            for(SYS_IntegrationLog__c log:logs) {
-                log.SYS_Matrix__c = matrixId;
+            } 
+            for(SYS_IntegrationLog__c log:logs) { //TODO identify UNABLE_TO_LOCK_ROW bug.
+                if(log.SYS_Matrix__c == NULL)
+                    log.SYS_Matrix__c = matrixId;
             }
 
             Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
@@ -160,10 +152,8 @@ global without sharing class SYS_Helper {
 
     global static Database.upsertResult upsertLog(SYS_IntegrationLog__c log){
         
-        Database.SaveResult result;
-        List<SYS_Matrix__c> matrix = [SELECT Id from SYS_Matrix__c WHERE Date__c = TODAY LIMIT 1];
-        String matrixId;
-        if(matrix.size() == 0) {
+        String matrixId = SYS_DataCacheFactory.MATRIX_ID;
+        if (matrixId == NULL) {
             SYS_Matrix__c matrixRec = new SYS_Matrix__c(
                 Date__c = Date.today()
             );
@@ -174,13 +164,12 @@ global without sharing class SYS_Helper {
                     throw new SecurityException('Log cannot be created/updated. Field: '+fieldKey+' is missing permission');
                 }
             }
-            result = Database.insert(matrixRec, false);
+            Database.SaveResult result = Database.insert(matrixRec, false);
             if (result.isSuccess()) {
                 matrixId = matrixRec.Id;
             }
-        } else {
-            matrixId = matrix[0].Id;
-        }
+        } 
+
         log.SYS_Matrix__c = matrixId;
         Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.SYS_IntegrationLog__c.fields.getMap();
         Map<String, Object> fieldsToValue = log.getPopulatedFieldsAsMap();
@@ -393,7 +382,7 @@ global without sharing class SYS_Helper {
                     firstlog.Request_Digest__c = requestDigest;
                 firstlog.Has_Child__c = true;
                 firstlog.UUID__c = getUUID();
-                firstlog.Type__c = 'INBOUND';
+                firstlog.Type__c = SYS_Constants.INBOUND;
                 logs.add(firstlog);
 
 
@@ -401,8 +390,8 @@ global without sharing class SYS_Helper {
                     SYS_IntegrationLog__c log = getLogsToInsertNew(dataPartition[i]);
                     log.Order__c = i-1;
                     log.Parent_UUID__c = firstlog.UUID__c;
-                    log.Status__c = 'PENDING_PARTITIONED_LOOKUP';
-                    log.Type__c = 'INBOUND';
+                    log.Status__c = SYS_Constants.PENDING_PARTITIONED_LOOKUP;
+                    log.Type__c = SYS_Constants.INBOUND;
                     logs.add(log);
                 } 
 
@@ -805,7 +794,7 @@ global without sharing class SYS_Helper {
         if(log.Additional_Param__c != NULL ) {
             finalJsonForOutbound = appService.sanitizeJSONForOutbound(finalJsonForOutbound, log.Additional_Param__c);
         }
-        writeDataFields(log, requestBody);
+        writeDataFields(log, finalJsonForOutbound);
 
     }
 
@@ -823,8 +812,8 @@ global without sharing class SYS_Helper {
                 
                 newSysLog.Callout_URL__c = SYS_Helper.urlFromPattern(httpMethod,newMap.get(jsonRecordId.Id));
 
-                newSysLog.Status__c = 'NEW';
-                newSysLog.Type__c = 'OUTBOUND';
+                newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+                newSysLog.Type__c = SYS_Constants.OUTBOUND;
                 newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
                 newSysLog.SYS_Operation_Type__c = operationType;
                 newSysLog.How_to_process__c = 'use_object_setting';
@@ -844,12 +833,77 @@ global without sharing class SYS_Helper {
                 
                 insertSysLog.add(newSysLog);
             }
-            if(!insertSysLog.isEmpty() && SYS_DataCacheFactory.enableCheck){ 
+            if(!insertSysLog.isEmpty() && SYS_DataCacheFactory.enableCheck) { 
                 SYS_Helper.insertLog(insertSysLog);
                 /*--*/SYS_debug.log('insertSysLog=='+insertSysLog);
+            } 
+            else if (!insertSysLog.isEmpty() && !SYS_DataCacheFactory.enableCheck) {
+                updateIntegrationSettingDisableMessage(insertSysLog);
+                SYS_Helper.upsertLog(insertSysLog);
             }
             
         }
+    }
+
+    public static void updateIntegrationSettingDisableMessage(List<SYS_IntegrationLog__c> logs) {
+        for(SYS_IntegrationLog__c log: logs) {
+            log.Message__c = Label.IS_disabled + ' : ' + SYS_DataCacheFactory.INT_TYPE;
+            log.Status__c = 'FAIL';
+        }
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+    public static void insertErrorLog(String method, String message) {
+        List<SYS_IntegrationLog__c> sysLogs = registerLogAfterError(method, message);
+        SYS_Helper.upsertLog(sysLogs);
+    }
+
+    /* ------------------------------------------------------------------------ */
+
+    public static List<SYS_IntegrationLog__c> registerLogAfterError(String method, String message) {
+        String requestBody = RestContext.request.requestBody.toString();
+        SYS_IntegrationLog__c log = new SYS_IntegrationLog__c();
+        List<SYS_IntegrationLog__c> logAfterPartition = new List<SYS_IntegrationLog__c>();
+        
+        //Check criteria when chars more than 1M
+        if(requestBody != NULL && requestBody.length() > SYS_Constants.TEXT_AREA_MAX_SIZE*10) {
+            logAfterPartition = SYS_Helper.getLogsAfterPartition(requestBody);
+            if(logAfterPartition != NULL && logAfterPartition.size() > 0) {
+                // SYS_Helper.upsertLog(logs[0]);
+                // List<SYS_IntegrationLog__c> childs = SYS_Helper.getChildRecords(logs);
+                
+                // SYS_Helper.upsertLog(childs);
+                log = logAfterPartition[0];
+            }
+            System.debug('SP 1M<<');
+        } else {
+            log = SYS_Helper.getLogsToInsert(requestBody);
+            System.debug('SP 1M>>');
+        }
+
+        if(SYS_DataCacheFactory.integrationSetting.Notifications_are_partial__c)
+            log.Is_Notification_Only__c = true;
+
+        log.Type__c = SYS_Constants.INBOUND;
+        log.HTTP_Method__c = method;
+        log.How_to_process__c = 'ignore_log';
+        log.Message__c = message;
+        log.Status__c = SYS_Constants.FAIL;
+        log.retry__c = false;
+
+    
+
+        List<SYS_IntegrationLog__c> returnVal = new List<SYS_IntegrationLog__c>();
+        returnVal.add(log);
+        if(logAfterPartition != NULL && logAfterPartition.size() > 0) {
+            log.Status__c = SYS_Constants.PENDING_PARTITIONED_LOOKUP;
+            for(integer i = 1 ; i < logAfterPartition.size() ; i++) {
+                returnVal.add(logAfterPartition[i]);
+            }
+        }
+
+        return returnVal;
     }
 
     // public static void processOutboundRequest(List<sObject> newList, String operationType, String httpMethod, Map<Id,sObject> newMap, Map<Id, String> parameterMap ) {
@@ -883,8 +937,8 @@ global without sharing class SYS_Helper {
                 
     //             newSysLog.Callout_URL__c = SYS_Helper.urlFromPattern(httpMethod,newMap.get(jsonRecordId));
 
-    //             newSysLog.Status__c = 'NEW';
-    //             newSysLog.Type__c = 'OUTBOUND';
+    //             newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+    //             newSysLog.Type__c = SYS_Constants.OUTBOUND;
     //             newSysLog.Integration_Setting__c = SYS_DataCacheFactory.INT_TYPE;
     //             newSysLog.SYS_Operation_Type__c = operationType;
     //             newSysLog.How_to_process__c = 'use_object_setting';
@@ -925,7 +979,7 @@ global without sharing class SYS_Helper {
                 log.Status__c = 'DONE';
             }
             else if(log.Order__c == NULL) {
-                log.Status__c = 'READY_FOR_PROCESSING';
+                log.Status__c = SYS_Constants.READY_FOR_PROCESSING;
             }
             System.debug('Log info '+log.Status__c+log.Parent_UUID__c+externalIdToSFIdMap.get(log.Parent_UUID__c));
         }

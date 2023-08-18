@@ -44,8 +44,8 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Account.SYS_Key__c</field>
-        <readable>true</readable>
+        <field>Account.SYS_Key_Municorn__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -71,6 +71,11 @@
         <editable>true</editable>
         <field>SYS_IntegrationLog__c.Account_Id__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SYS_IntegrationLog__c.Additional_Param__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -198,6 +203,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>SYS_IntegrationLog__c.SYS_Matrix__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>SYS_IntegrationLog__c.SYS_Operation_Type__c</field>
         <readable>true</readable>
@@ -316,11 +326,6 @@
         <editable>false</editable>
         <field>SYS_Integration_Metadata__c.Value__c</field>
         <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SYS_Matrix__c.Count_of_Logs__c</field>
-        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>

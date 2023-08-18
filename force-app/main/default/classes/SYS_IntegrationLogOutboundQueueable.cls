@@ -35,17 +35,15 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
                                             */
         
         List<Id> pendingProcessLogs = new List<Id>();
-        System.debug('Chunk Size '+this.sysLogIds.size());
-
         Map<String, String> logIdvsWhatIdMap = new Map<String, String>();
         List<sObject> records = new List<sObject>();
         String objectSettingName, objectApiName, objectQuery;
-        Integer maxRecordCount = 50, i = 0; // This value will come from objest setting, and default value is 50
+        Integer maxRecordCount = SYS_DataCacheFactory.MAX_CALLOUT_COUNT, i = 0; // TODO This value will come from objest setting, and default value is 50
 
         for(SYS_IntegrationLog__c log:sysLogs) {
             try {
                 if (log.ObjectSettingId__c == NULL) continue;
-                if (objectSettingName == NULL && log.ObjectSettingId__c != NULL) {
+                if (objectSettingName == NULL ) {
                     objectSettingName = log.ObjectSettingId__c;
                     
                     SYS_DataCacheFactory init = new SYS_DataCacheFactory(log.Account_Id__c,
@@ -54,6 +52,7 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
                     log.ObjectSettingId__c);
     
                     objectApiName = SYS_DataCacheFactory.objectSettingMap?.get(SYS_DataCacheFactory.OBJ_TYPE)?.ObjectApiName__c;
+                    maxRecordCount = SYS_DataCacheFactory.MAX_CALLOUT_COUNT;
     
                 }
                 
@@ -83,12 +82,7 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
                     continue;
                 }
                 try {
-                    String finalJsonForOutbound;
-                    finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound?.get(log.whatid__c));
-                    
-                    if(log.Additional_Param__c != NULL ) {
-                        finalJsonForOutbound = appService.sanitizeJSONForOutbound(finalJsonForOutbound, log.Additional_Param__c);
-                    }
+                    String finalJsonForOutbound = jsonListForOutbound?.get(log.whatid__c);
                     SYS_Helper.generateRequestBody(log, finalJsonForOutbound);
     
                 } catch(Exception e) {
@@ -106,7 +100,7 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
             }
             try{
                 SYS_DataCache.log = log;
-                if(Limits.getCallouts() < Limits.getLimitCallouts() - 1 && !this.followUp){
+                if(Limits.getCallouts() < Limits.getLimitCallouts() && !this.followUp){
                     SYS_DataCacheFactory init = new SYS_DataCacheFactory(log.Account_Id__c,
                     log.Integration_Type__c,
                     log.Integration_Setting__c,
@@ -155,9 +149,8 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
         
         if(outboundResultLogs.size() > 0){
 
-            //new SYS_ApplicationService().doDML(outboundResultLogs, 'UPSERT','');
             SYS_Helper.upsertLog(outboundResultLogs); 
-            // upsert outboundResultLogs;
+            
         } else if(sysLogs.size() > 0) {
             SYS_Helper.upsertLog(sysLogs);
         }
@@ -166,7 +159,8 @@ public without sharing class SYS_IntegrationLogOutboundQueueable implements Queu
          * If there are still some logs pending for process after exhausting the callout limits 
          * then chain the queueable
          **/ 
-        if(pendingProcessLogs.size()>0 && (Limits.getQueueableJobs() < Limits.getLimitQueueableJobs() - 1)){
+        SYS_debug.log('Chunk Size '+this.sysLogIds.size()+' pending logs '+pendingProcessLogs.size()+' rec count '+SYS_DataCacheFactory.MAX_CALLOUT_COUNT);
+        if(pendingProcessLogs.size()>0 && (Limits.getQueueableJobs() < Limits.getLimitQueueableJobs())){
             System.enqueueJob(new SYS_IntegrationLogOutboundQueueable(pendingProcessLogs));
         } else if (pendingProcessLogs.size()>0) {
 

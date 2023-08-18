@@ -1,0 +1,49 @@
+<template>
+    <lightning-card>
+        <lightning-progress-indicator current-step={currentStep} type="base" has-error={hasError} variant="base">
+            <lightning-progress-step label="Inbound JSON" value="1"></lightning-progress-step>
+            <lightning-progress-step label="Field Mapper" value="2"></lightning-progress-step>
+            <lightning-progress-step label="Deploy Status" value="3"></lightning-progress-step>
+        </lightning-progress-indicator>
+        <template if:true={screenOne}>
+            <c-json-viewer onpaste={handlePasteEvent}></c-json-viewer>
+        </template>
+        
+        <template if:true={screenTwo}>
+
+            <!-- <lightning-button variant="Neutral" label="Modify JSON(P)" title="Modify JSON(P)" onclick={handleClick} class="slds-m-left_x-small">
+            </lightning-button> -->
+            <lightning-button variant="Neutral" label="Back" title="Back" onclick={handleBackClick} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="Neutral" label="Deploy" title="Create Field Settings" onclick={handleDeploy} class="slds-m-left_x-small">
+            </lightning-button>
+            
+            <!-- <lightning-button variant="Neutral" label="Open Modal" title="Update Field Settings" onclick={handleModalOpen} class="slds-m-left_x-small">
+            </lightning-button> -->
+    
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <span>
+                            <c-form-j-s-o-n-tree class="tree-form" onselect={handleSelectEvent}></c-form-j-s-o-n-tree>
+                        </span>
+                    </div>
+                    <div class="slds-col">
+                        <span>
+                            <!-- <canvas width="500" height="500" style="border: 1px solid #333"></canvas> -->
+                        </span>
+                    </div>
+                    <div class="slds-col">
+                        <span>
+                            <!-- <c-form-j-s-o-n-tree treejson={objectJson} nodealign="left"></c-form-j-s-o-n-tree> -->
+                        </span>
+                    </div>
+                </div>
+
+        </template>
+
+        <template if:true={screenThree}>
+            
+        </template>
+
+            
+    </lightning-card>
+</template>

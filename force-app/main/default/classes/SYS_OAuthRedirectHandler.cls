@@ -72,7 +72,7 @@ global without sharing class SYS_OAuthRedirectHandler extends SYS_ApplicationSer
             
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
             logResp.WhatId__c = log.WhatId__c;
-            logResp.Type__c = 'RESPONSE';
+            logResp.Type__c = SYS_Constants.RESPONSE;
             logResp.How_To_Process__c = 'ignore_log';
             logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
             
@@ -80,7 +80,7 @@ global without sharing class SYS_OAuthRedirectHandler extends SYS_ApplicationSer
         else{
             log.Status__c = 'DONE';
 
-            logResp.Status__c = 'NEW';
+            logResp.Status__c = SYS_Constants.NEW_STATUS;
             logResp.SYS_Operation_Type__c = 'UPDATE';
 
             logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
@@ -89,7 +89,7 @@ global without sharing class SYS_OAuthRedirectHandler extends SYS_ApplicationSer
             
             logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
             logResp.WhatId__c = log.WhatId__c;
-            logResp.Type__c = 'RESPONSE';
+            logResp.Type__c = SYS_Constants.RESPONSE;
             logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
             logResp.ObjectSettingId__c = log.ObjectSettingId__c;
 
@@ -137,9 +137,9 @@ global without sharing class SYS_OAuthRedirectHandler extends SYS_ApplicationSer
                         finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
 
                         newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
-                        newSysLog.Status__c = 'NEW';
+                        newSysLog.Status__c = SYS_Constants.NEW_STATUS;
                         newSysLog.HTTP_Method__c = 'POST';
-                        newSysLog.Type__c = 'OUTBOUND';
+                        newSysLog.Type__c = SYS_Constants.OUTBOUND;
                         newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
                         newSysLog.How_to_process__c = 'use_object_setting';
                         newSysLog.ObjectSettingId__c = SYS_DataCache.OBJ_TYPE;

@@ -83,6 +83,10 @@
         <value xsi:type="xsd:string">SYS_Auth_JWT_Object_Setting</value>
     </values>
     <values>
+        <field>Order_Number__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
         <field>ParentField__c</field>
         <value xsi:nil="true"/>
     </values>

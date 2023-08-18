@@ -15,6 +15,10 @@
         <value xsi:type="xsd:string">SYS_OAuthRedirectHandler</value>
     </values>
     <values>
+        <field>BypassOrder__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
         <field>BypassTrigger__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
@@ -41,6 +45,10 @@
     <values>
         <field>IntegrationType__c</field>
         <value xsi:type="xsd:string">SYS_OAuth_Pwd_IS</value>
+    </values>
+    <values>
+        <field>Maximum_Callout_Limit__c</field>
+        <value xsi:type="xsd:double">100.0</value>
     </values>
     <values>
         <field>Modified_Source_FieldApiName__c</field>
@@ -92,6 +100,10 @@
     </values>
     <values>
         <field>isInboundList__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>new__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>

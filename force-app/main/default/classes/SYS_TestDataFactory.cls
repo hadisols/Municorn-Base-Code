@@ -61,8 +61,8 @@ public class SYS_TestDataFactory {
 
     public static void createIgnoreLog(){
         SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
-        newSysLog.Status__c = 'NEW';
-        newSysLog.Type__c = 'OUTBOUND';
+        newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+        newSysLog.Type__c = SYS_Constants.OUTBOUND;
         newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
         newSysLog.SYS_Operation_Type__c = 'INSERT';
         newSysLog.whatid__c = 'a005f000007K9hlAAC';
@@ -74,8 +74,8 @@ public class SYS_TestDataFactory {
 
     public static void createObjectSettingLog(){
         SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
-        newSysLog.Status__c = 'NEW';
-        newSysLog.Type__c = 'OUTBOUND';
+        newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+        newSysLog.Type__c = SYS_Constants.OUTBOUND;
         newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
         newSysLog.SYS_Operation_Type__c = 'INSERT';
         newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;
@@ -87,8 +87,8 @@ public class SYS_TestDataFactory {
 
     public static void createCustomApexHandlerLog(){
         SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert('{\"Name\":\"Municorn Test Account\"}');
-        newSysLog.Status__c = 'NEW';
-        newSysLog.Type__c = 'OUTBOUND';
+        newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+        newSysLog.Type__c = SYS_Constants.OUTBOUND;
         newSysLog.Integration_Setting__c = 'SYS_Test_IntegrationSetting';
         newSysLog.SYS_Operation_Type__c = 'INSERT';
         newSysLog.whatid__c = [SELECT Id FROM Account][0].Id;

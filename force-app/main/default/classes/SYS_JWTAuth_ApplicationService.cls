@@ -60,7 +60,7 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
             
     //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
     //         logResp.WhatId__c = log.WhatId__c;
-    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.Type__c = SYS_Constants.RESPONSE;
     //         logResp.How_To_Process__c = 'ignore_log';
     //         logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
             
@@ -68,7 +68,7 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
     //     else{
     //         log.Status__c = 'DONE';
 
-    //         logResp.Status__c = 'NEW';
+    //         logResp.Status__c = SYS_Constants.NEW_STATUS;
     //         logResp.SYS_Operation_Type__c = 'UPDATE';
 
     //         logResp.Resource__c = SYS_DataCache.objectSettingMap.get(SYS_DataCache.OBJ_TYPE).Resource_Name__c;
@@ -77,7 +77,7 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
             
     //         logresp.SYS_Http_Status__c = Integer.valueOf(resp.getStatusCode());
     //         logResp.WhatId__c = log.WhatId__c;
-    //         logResp.Type__c = 'RESPONSE';
+    //         logResp.Type__c = SYS_Constants.RESPONSE;
     //         logResp.Integration_Setting__c = SYS_DataCache.INT_TYPE;
     //         logResp.ObjectSettingId__c = log.ObjectSettingId__c;
 
@@ -130,8 +130,8 @@ public with sharing class SYS_JWTAuth_ApplicationService extends SYS_Application
                     finalJsonForOutbound = appService.sanitizeJSONForOutbound(jsonListForOutbound.get(jsonRecordId));
 
                     SYS_IntegrationLog__c  newSysLog = SYS_Helper.getLogsToInsert(finalJsonForOutbound);
-                    newSysLog.Status__c = 'NEW';
-                    newSysLog.Type__c = 'OUTBOUND';
+                    newSysLog.Status__c = SYS_Constants.NEW_STATUS;
+                    newSysLog.Type__c = SYS_Constants.OUTBOUND;
                     newSysLog.Integration_Setting__c = SYS_DataCache.INT_TYPE;
                     newSysLog.SYS_Operation_Type__c = 'INSERT';
                     newSysLog.whatid__c = jsonRecordId;
