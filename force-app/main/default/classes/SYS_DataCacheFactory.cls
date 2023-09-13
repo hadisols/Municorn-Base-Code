@@ -313,5 +313,19 @@
         }
     }
 
+    private static Map<String, String> metadataWoISMap = new Map<String, String>();
+    public static Map<String, String> fieldServiceHandlerMap {
+        get{
+            if (metadataWoISMap != NULL && metadataWoISMap.isEmpty()) {
+                for(Integration_Metadata__mdt metadata : Integration_Metadata__mdt.getAll()?.values()) {
+                    if(metadata?.Integration_Setting__c == NULL) {
+                        metadataWoISMap.put(metadata?.Key__c, metadata?.Value__c);
+                    }
+                }
+            }
+            return metadataWoISMap;
+        }
+    }
+
     public class SYS_DataCacheFactoryException extends Exception{}
 }

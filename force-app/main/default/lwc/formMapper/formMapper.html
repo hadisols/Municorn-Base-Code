@@ -1,5 +1,8 @@
 <template>
     <lightning-card>
+        <template if:true={loading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
         <lightning-progress-indicator current-step={currentStep} type="base" has-error={hasError} variant="base">
             <lightning-progress-step label="Inbound JSON" value="1"></lightning-progress-step>
             <lightning-progress-step label="Field Mapper" value="2"></lightning-progress-step>
@@ -41,6 +44,23 @@
         </template>
 
         <template if:true={screenThree}>
+            <div class="message-box">
+                <div class="slds-text-heading_medium slds-p-horizontal_medium slds-p-vertical_medium">Deployment status</div>
+                <!-- <div class="slds-p-horizontal_medium slds-p-vertical_large">
+                    <lightning-progress-bar value={progress} size="large" variant="circular"></lightning-progress-bar>
+                </div> -->
+                <div class="progress ">
+                    <div class="progress-done" style={widthPercentage} data-done="10">
+                        {progress}%
+                    </div>
+                </div>
+                <div if:true={showSuccess} class="slds-p-around_large slds-align_absolute-center">
+                    <lightning-icon icon-name='action:approval' alternative-text='approval' size='large' title='approval'></lightning-icon>
+                </div>
+                <div if:true={showErrorMessage} class="slds-p-around_large slds-align_absolute-center">
+                    <lightning-icon icon-name='action:close' alternative-text='close' size='large' title='close'></lightning-icon>
+                </div>
+            </div>
             
         </template>
 
