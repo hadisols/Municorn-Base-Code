@@ -75,7 +75,7 @@
 		<name>LightningComponentBundle</name>
 	</types>
     <types>
-        <members>FieldSetting.FieldMapper</members>
+        <members>Integration_Metadata.FieldMapper</members>
 		<name>CustomMetadata</name>
 	</types>
 
