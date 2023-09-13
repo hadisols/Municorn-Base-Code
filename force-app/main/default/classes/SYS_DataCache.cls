@@ -1,4 +1,371 @@
-public class SYS_DataCache {
+public without sharing class SYS_DataCache {
+    public static Map<String, Map<String,SYS_DataCache>> SYS_DataCacheMap = new Map<String, Map<String,SYS_DataCache>>();
+    public static SYS_DataCache datacache; 
+    /* {
+        set {
+            datacache = value;
+        }
+        get{
+            if(datacache != NULL && datacache.metadata?.get('int-set') != NULL) {
+                throw new SYS_DataCacheException('\nIntegration metadata is not configured for this integration. Please contact your admin.');
+            }
+            return datacache;
+        }
+    } */
+    public static String OBJ_TYPE;
+    public static String testAccountId;
+
+    public List<String> accountIds;
+    public List<FieldSetting__mdt> AllFieldSettings = new List<FieldSetting__mdt>();
+    public List<FieldSetting__mdt> AllFieldSettings_in = new List<FieldSetting__mdt>();
+    public List<FieldSetting__mdt> AllFieldSettings_out = new List<FieldSetting__mdt>();
+    public Map<String, List<FieldSetting__mdt>> ObjectSettingFieldSettingMap_out = new Map<String, List<FieldSetting__mdt>>();
+    public Map<String, List<FieldSetting__mdt>> ObjectSettingFieldSettingMap_in = new Map<String, List<FieldSetting__mdt>>();
+    public Boolean isEnabled = false;
+    public Boolean debug = false;
+    public String INT_TYPE;
+    public String accountId;
+    public Map<String, String> metadata = new Map<String, String>();
+    public List<HttpHeaders__mdt> headers = new List<HttpHeaders__mdt>();
+    public IntegrationSetting__mdt integrationSetting;
+    public Map<String,String> parentResourceMap = new Map<String, String>();
+    public String flatKeySeparator;
+    public String flatKeyPattern;
+    public Map<String, String> externalKeyByObjectMap = new Map<String, String>();
+    public Map<String, String> externalKeyByResourceMap = new Map<String, String>();
+    public Map<String, ObjectSetting__mdt> objectSettingMap = new Map<String, ObjectSetting__mdt>();
+    public List<SYS_OAuthConfig__c> sysAuthRecords = new List<SYS_OAuthConfig__c>();
+
+    public SYS_DataCache(List<String> accountIds) {
+        this.accountIds = accountIds;
+        if(this.accountIds != NULL && accountIds.size() > 0 && accountIds[0] != NULL)
+            execute();
+    }
+
+    public SYS_DataCache(String accountIds) {
+        this(new List<String>{accountIds});
+    }
+
+    private SYS_DataCache() {}
+
+    private void execute() {
+        String query_fs = 'SELECT ' + SYS_Helper.getAllFieldsFor('FieldSetting__mdt') 
+                            +', '+ SYS_Helper.getAllParentFields('ObjectSetting__r.', 'ObjectSetting__mdt') 
+                            +', '+ SYS_Helper.getAllParentFields('ObjectSetting__r.IntegrationType__r.', 'IntegrationSetting__mdt') 
+                            +' FROM FieldSetting__mdt '+ 'WHERE ' + 'Is_Active__c = true LIMIT 10000';
+                            /* ((!Test.isRunningTest())?(getClause('ObjectSetting__r.IntegrationType__r.AccountId__c', accountIds) +' AND ') : '') */
+                            /* 'WHERE ObjectSetting__r.IntegrationType__r.AccountId__c in :accountIds' */
+                            /* 'WHERE ObjectSetting__r.IntegrationType__r.AccountId__c LIKE ' + getClause(accountIds) */
+        String query_account = 'SELECT Id, '
+                            + '( SELECT ' + SYS_Helper.getAllFieldsFor('SYS_Integration_Metadata__c') +' FROM Integration_Metadata__r), '
+                            + '( SELECT ' + SYS_Helper.getAllFieldsFor('SYS_OAuthConfig__c') + ' FROM SYS_OAuthConfigs__r) ' 
+                            + ' FROM Account WHERE Id in :accountIds LIMIT 10000';
+
+        String query_intchild = 'SELECT ' + SYS_Helper.getAllFieldsFor('IntegrationSetting__mdt') + ', '
+                            + '( SELECT ' + SYS_Helper.getAllFieldsFor('HttpHeaders__mdt') + ' FROM HttpHeaders__r), ' 
+                            + '( SELECT ' + SYS_Helper.getAllFieldsFor('IntegrationEnablement__mdt') + ' FROM Integration_Enablement__r) '
+                            + ' FROM IntegrationSetting__mdt ' /* + ((!Test.isRunningTest())?('WHERE ' + getClause('AccountId__c', accountIds)) : '') */ +' LIMIT 10000';
+                            /* 'WHERE AccountId__c in :accountIds' */
+                            /* 'WHERE AccountId__c LIKE ' + getClause(accountIds) */
+        System.debug('query_fs '+getClause('ObjectSetting__r.IntegrationType__r.AccountId__c', accountIds));
+
+        List<FieldSetting__mdt> fieldSettings = Database.query(query_fs);
+        List<Account> allMetadata = Database.query(query_account);
+        List<IntegrationSetting__mdt> allIntSettings = Database.query(query_intchild);
+
+
+        Map<String, Map<String,  Map<String, String>>> accountmetadataTypeMap = new Map<String, Map<String,  Map<String, String>>>();
+        Map<String, Map<String, List<SYS_OAuthConfig__c>>> accountAuthconfigMap = new Map<String, Map<String, List<SYS_OAuthConfig__c>>>();
+        for(Account acc:allMetadata) {
+            // Map<String, String> metadataMap = new Map<String, String>();
+            Map<String, List<SYS_OAuthConfig__c>> sysAuthMap = new Map<String, List<SYS_OAuthConfig__c>>();
+            Map<String, Map<String, String>> metadataTypeMap = new Map<String, Map<String, String>>();
+            
+            for(SYS_Integration_Metadata__c md: acc?.Integration_Metadata__r) {
+                if(!metadataTypeMap.containsKey(md.Integration_Type__c)) {
+                    metadataTypeMap.put(md.Integration_Type__c, new Map<String, String>());
+                }
+                metadataTypeMap.get(md.Integration_Type__c).put(md.key__c, md.value__c);
+                // metadataMap.put(md.key__c, md.value__c);
+            }
+            for(SYS_OAuthConfig__c auth:acc?.SYS_OAuthConfigs__r) {
+                if(!sysAuthMap.containsKey(auth.Integration_Type__c)) {
+                    sysAuthMap.put(auth.Integration_Type__c, new List<SYS_OAuthConfig__c>());
+                }
+                sysAuthMap.get(auth.Integration_Type__c).add(auth);
+            }
+            System.debug('map '+metadataTypeMap);
+            accountmetadataTypeMap.put(acc.Id, metadataTypeMap);
+            accountAuthconfigMap.put(acc.Id, sysAuthMap);
+        }
+        
+
+        for(String id: this.accountIds) {
+
+            List<FieldSetting__mdt> allfs = new List<FieldSetting__mdt>();
+            Set<String> os_devname = new Set<String>(); 
+            Map<String, SYS_DataCache> typeDatacacheMap = new Map<String, SYS_DataCache>();
+            
+            /* for(FieldSetting__mdt fs : fieldSettings) {
+                SYS_Helper.setNamespacePrefix(fs);
+                
+                // if((fs?.ObjectSetting__r?.IntegrationType__r?.AccountId__c != NULL ? fs?.ObjectSetting__r?.IntegrationType__r?.AccountId__c : '').contains(id) ) {
+                //     allfs.add(fs);
+                // }
+            } */
+            //create the map of int-org-type and datacache
+
+            
+            /* Map<String, Boolean> intEnable = new Map<String, Boolean>();
+            Map<String, Boolean> debugCheckMap = new Map<String, Boolean>();
+            Map<String, List<HttpHeaders__mdt>> headerSettings = new Map<String, List<HttpHeaders__mdt>>();
+            Map<String, IntegrationSetting__mdt> intSettingMap = new Map<String, IntegrationSetting__mdt>();
+             */
+
+            /* for(IntegrationSetting__mdt is:allIntSettings) {
+                if((is?.AccountId__c != NULL ? is?.AccountId__c : '').contains(id)) { 
+                    for(IntegrationEnablement__mdt e: is?.Integration_Enablement__r) {
+                        intEnable.put(is.Integration_Type__c, e.Enable__c);
+                    }
+                    headerSettings.put(is.Integration_Type__c, is?.HttpHeaders__r);
+                    intSettingMap.put(is.Integration_Type__c, is);
+                    debugCheckMap.put(is.Integration_Type__c, is.DebugCheck__c);
+                }
+            } */
+
+            for(String type: SYS_Helper.getPicklistEntryFor('IntegrationSetting__mdt', 'Integration_Type__c')) {
+                
+                Map<String, Boolean> intEnable = new Map<String, Boolean>();
+                Map<String, Boolean> debugCheckMap = new Map<String, Boolean>();
+                Map<String, List<HttpHeaders__mdt>> headerSettings = new Map<String, List<HttpHeaders__mdt>>();
+                Map<String, IntegrationSetting__mdt> intSettingMap = new Map<String, IntegrationSetting__mdt>();
+                
+                
+                for(IntegrationSetting__mdt is:allIntSettings) {
+                    if((is?.developername != NULL ? is?.developername : '')
+                    .equals(accountmetadataTypeMap.get(id)?.get(type)?.get('int-set'))) { 
+                        for(IntegrationEnablement__mdt e: is?.Integration_Enablement__r) {
+                            intEnable.put(is.Integration_Type__c, e.Enable__c);
+                        }
+                        headerSettings.put(is.Integration_Type__c, is?.HttpHeaders__r);
+                        intSettingMap.put(is.Integration_Type__c, is);
+                        debugCheckMap.put(is.Integration_Type__c, is.DebugCheck__c);
+                    }
+                }
+
+                System.debug('intSettingMap 11111' + type +intSettingMap);
+
+                SYS_DataCache datacache = new SYS_DataCache();
+                datacache.metadata = accountmetadataTypeMap.get(id)?.get(type);
+                datacache.sysAuthRecords = accountAuthconfigMap.get(id)?.get(type);
+                datacache.accountId = id;
+                datacache.headers = headerSettings.get(type);
+                datacache.isEnabled = intEnable.get(type);
+                datacache.integrationSetting = intSettingMap.get(type);
+                datacache.INT_TYPE = intSettingMap.get(type)?.developername;
+                datacache.flatKeyPattern = intSettingMap.get(type)?.Flat_Key_Pattern__c != NULL ?
+                                                intSettingMap.get(type)?.Flat_Key_Pattern__c : 'A_B';
+                datacache.flatKeySeparator = intSettingMap.get(type)?.Flat_Key_Separator__c != NULL ?
+                                                intSettingMap.get(type)?.Flat_Key_Separator__c : '.';
+                datacache.objectSettingMap = ObjectSetting__mdt.getAll();
+                datacache.debug = debugCheckMap.get(type);
+
+                // System.debug('accountAuthconfigMap '+accountAuthconfigMap.get(id)?.get(type));
+                // System.debug('accountmetadataTypeMap '+accountmetadataTypeMap.get(id)?.get(type));
+                // System.debug('accountid '+id);
+                // System.debug('INT_TYPE ' + intSettingMap.get(type)?.developername);
+                // System.debug('flatKeyPattern ' + datacache.flatKeyPattern);
+                // System.debug('flatKeySeparator ' + datacache.flatKeySeparator);
+                // System.debug('debug ' + datacache.debug);
+                // System.debug('datacache.isEnabled ' + datacache.isEnabled);
+                // System.debug('datacache.headers ' + datacache.headers);
+
+                String resourceMapString = intSettingMap.get(type)?.Parent_Resource_Map__c;
+                if(resourceMapString != NULL){
+                    List<String> kvPair = resourceMapString.split('\n');
+                    for(String kv:kvPair){
+                        datacache.parentResourceMap.put(kv.split(':')[0],kv.split(':')[1]);
+                    }
+                }
+                
+
+                Map<String, String> objExtKeyMap = new Map<String, String>();
+                for(FieldSetting__mdt fs:fieldSettings) {
+                    
+                    if(((fs?.ObjectSetting__r?.IntegrationType__r?.developername != NULL) ? (fs?.ObjectSetting__r?.IntegrationType__r?.developername) : '')
+                    .equals(accountmetadataTypeMap.get(id)?.get(type)?.get('int-set')) ) {
+                        SYS_Helper.setNamespacePrefix(fs);
+                        if(type == fs?.ObjectSetting__r?.IntegrationType__r?.Integration_Type__c) {
+                            datacache.AllFieldSettings.add(fs);
+                            if(fs?.Direction__c != SYS_Constants.INBOUND) {
+                                datacache.AllFieldSettings_out.add(fs);
+    
+                                if(!datacache.ObjectSettingFieldSettingMap_out.containsKey(fs?.ObjectSetting__r.developername)) {
+                                    datacache.ObjectSettingFieldSettingMap_out.put(fs?.ObjectSetting__r.developername, new List<FieldSetting__mdt>());
+                                }
+                                datacache.ObjectSettingFieldSettingMap_out.get(fs?.ObjectSetting__r.developername).add(fs);
+                            }
+                            if(fs?.Direction__c != SYS_Constants.OUTBOUND) {
+                                datacache.AllFieldSettings_in.add(fs);
+    
+                                if(!datacache.ObjectSettingFieldSettingMap_in.containsKey(fs?.ObjectSetting__r.developername)) {
+                                    datacache.ObjectSettingFieldSettingMap_in.put(fs?.ObjectSetting__r.developername, new List<FieldSetting__mdt>());
+                                }
+                                datacache.ObjectSettingFieldSettingMap_in.get(fs?.ObjectSetting__r.developername).add(fs);
+                            }
+                            if(fs?.Is_External_Field__c ) {
+                                datacache.externalKeyByObjectMap.put(fs?.ObjectApiName__c?.toLowerCase(), fs?.FieldApiName__c?.toLowerCase());
+                                datacache.externalKeyByResourceMap.put(fs.RestResource__c,fs.FieldApiName__c);
+                                System.debug('SP datacache.externalKeyByObjectMap '+datacache.externalKeyByObjectMap);
+                            }
+                        }
+                    }
+                }
+                typeDatacacheMap.put(type, datacache);
+            }
+            SYS_DataCache.SYS_DataCacheMap.put(id, typeDatacacheMap);
+        }
+    }
+
+    public static SYS_DataCache getDataCache(String accountId, String integrationType) {
+        System.debug('SP type '+accountId+' '+integrationType);
+        if(String.isBlank(accountId) && SYS_DataCache.INT_TYPE == NULL ) {
+            throw new SYS_DataCacheException('\n Account is not configured. Please contact your admin.');
+        }
+        else if(String.isBlank(integrationType) && SYS_DataCache.INT_TYPE == NULL ) {
+            throw new SYS_DataCacheException('\n Integration Type is not configured. Please contact your admin.');
+        }
+        if(SYS_DataCacheMap?.get(accountId)?.get(integrationType) == NULL) {
+            new SYS_DataCache(accountId);
+        }
+        return SYS_DataCacheMap?.get(accountId)?.get(integrationType);
+    }
+
+    private String getClause(String prefix, List<String> accountIds) {
+        String result = '';
+        for(integer i=0; i<accountIds.size(); i++) {
+            result += prefix + ' LIKE \'%'+accountIds[i]+'%\'';
+
+            if(i != accountIds.size()-1)
+                result = result + ' OR ';
+        }
+        return result;
+    }
+
+    //Extension for Webhook extension
+    //TODO - check and remove the below code
+    /* private static String handler;
+    public static String getHandler{
+        get{
+            if(handler==NULL || handler==''){
+                RestRequest req = RestContext.request;
+                String intSettingFromUrl = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+                String type = intSettingFromUrl;
+                String key = RestContext.request.params.get('key');
+                System.debug(type +' : '+key);
+
+                List<Account> account = [SELECT Id FROM Account WHERE UUID__c = :key LIMIT 1];
+                if(account.size() > 0) {
+                    String accountId = account[0].Id;
+                    System.debug(accountId);
+                    datacache = getDataCache(accountId, type);
+                } else {
+                    throw new SYS_DataCacheException('\nInvalid key in the webservice URL');
+                }
+                System.debug(datacache.isEnabled);
+                String extFromUrl = datacache?.integrationSetting?.ApexHandler__c;
+                if(extFromUrl != '' && extFromUrl != NULL){
+                    handler = extFromUrl;
+                }
+                else{
+                    handler = 'SYS_ApplicationService';
+                }
+            }
+            return handler;
+        }
+    } */
+
+    public class SYS_DataCacheException extends Exception{}
+
+    // public static List<SYS_FieldSetting__c> fieldSetting;
+    // public static List<SYS_FieldSetting__c> AllFieldSettings {
+    //     get {
+    //         if(fieldSetting == NULL) {
+    //             fieldSetting = [Select Id,Datetime_Conversion_Format__c,Send_Blanks_as_Empty_String__c,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c, 
+    //                         ObjectSetting__r.DeveloperName__c,name,Field_Mapping_Handler__c, ObjectSetting__r.name , StaticValue__c , ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+    //                         ObjectSetting__r.Direction__c , ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c, ObjectSetting__r.IntegrationType__r.DeveloperName__c , Skip_Field_Setting__c
+    //                         from SYS_FieldSetting__c WHERE Is_Active__c=true LIMIT 10000];
+
+    //             for(SYS_FieldSetting__c item : fieldSetting) {
+        
+    //                 SYS_Helper.setNamespacePrefix(item);
+    //             } 
+                            
+    //         }           
+    //         return fieldSetting;                
+    //     }
+    // }
+
+    // public static List<SYS_ObjectSetting__c> objectSettings;
+    // public static List<SYS_ObjectSetting__c> AllObjectSettings {
+    //     get {
+    //         if(objectSettings == NULL) {
+    //             objectSettings = [SELECT DeveloperName__c,Resource_Name__c, ApexHandler__c,BypassTrigger__c, ExternalFieldApi__c,Id,IntegrationType__r.developername__c ,
+    //                             ObjectApiName__c, name ,ResourcePath__c,url_params__c FROM SYS_ObjectSetting__c LIMIT 10000];
+    //         }
+    //         return objectSettings;
+    //     }
+    // }
+
+    // public static List<SYS_IntegrationSetting__c> integrationSettings;
+    // public static List<SYS_IntegrationSetting__c> AllIntegrationSettings {
+    //     get {
+    //         if(integrationSettings == NULL) {
+    //             integrationSettings = [SELECT EscapeCharacter__c, BaseAPIEndPoint__c,
+    //                                     ApexHandler__c, 
+    //                                     UpdateMethod__c, AuthenticationType__c,
+    //                                     name, DeveloperName__c, Id 
+    //                                     FROM SYS_IntegrationSetting__c LIMIT 10000];
+    //         }
+    //         return integrationSettings;
+    //     }
+    // }
+
+    // public static List<SYS_HttpHeaders__c> headerSettings;
+    // public static List<SYS_HttpHeaders__c> AllHeaderSettings {
+    //     get{
+    //         if(headerSettings == NULL){
+    //             headerSettings = new List<SYS_HttpHeaders__c>();
+    //             headerSettings = [SELECT Id, name, IntegrationType__c, Value__c,header_name__c 
+    //                                 FROM SYS_HttpHeaders__c 
+    //                                 WHERE IntegrationType__c =:(integrationSetting.get(INT_TYPE)).id];
+    //         }
+    //         return headerSettings;
+    //     }
+    // }
+
+    // public static List<SYS_IntegrationEnablement__c> IntegrationEnablements;
+    // public static List<SYS_IntegrationEnablement__c> AllIntegrationEnablements {
+    //     get{
+    //         if(IntegrationEnablements == NULL){
+    //             IntegrationEnablements = [SELECT Id, DeveloperName__c, Enable__c, ExpiryDate__c, Integration_Setting__c, Name 
+    //                                         FROM SYS_IntegrationEnablement__c LIMIT 10000];
+    //         }
+    //         return IntegrationEnablements;
+    //     }
+    // }
+
+    // public static List<SYS_Integration_Metadata__c> IntegrationMetadata;
+    // public static List<SYS_Integration_Metadata__c> AllIntegrationMetadata {
+    //     get{
+    //         if(IntegrationMetadata == NULL) {
+    //             IntegrationMetadata = [SELECT Id, Name, DataType__c, End_Date__c, Integration_Setting__c, Key__c, Start_Date__c, Value__c
+    //                                     FROM SYS_Integration_Metadata__c LIMIT 10000];
+    //         }
+    //         return IntegrationMetadata;
+    //     }
+    // }
+
 	private static Map<Id, sObject> oldObjMap = new Map<Id, sObject>();
     private static Map<Id, sObject> newObjMap = new Map<Id, sObject>();
     private static Map<String, List<FieldSetting__mdt>> ObjectSettingToFieldSettingsMap_OB;
@@ -43,13 +410,12 @@ public class SYS_DataCache {
         get{
             if(extension==NULL || extension==''){
                 RestRequest req = RestContext.request;
-                System.debug('uri =='+ req.requestURI);
                 String intSettingFromUrl = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
                 INT_TYPE = intSettingFromUrl;
-                System.debug('MS Stripe extension check:'+integrationSetting);
+                //# System.debug('MS Stripe extension check:'+integrationSetting);
                 String extFromUrl = integrationSetting.get(INT_TYPE).ApexHandler__c;
-                System.debug('\nintegrationSetting.get(INT_TYPE):'+integrationSetting.get(INT_TYPE));
-                System.debug('\nApexHandler__c:'+integrationSetting.get(INT_TYPE).ApexHandler__c);
+                //# System.debug('\nintegrationSetting.get(INT_TYPE):'+integrationSetting.get(INT_TYPE));
+                //# System.debug('\nApexHandler__c:'+integrationSetting.get(INT_TYPE).ApexHandler__c);
                 if(extFromUrl != '' && extFromUrl != NULL){
                     extension = extFromUrl;
                 }
@@ -80,7 +446,6 @@ public class SYS_DataCache {
     /******* NEW VARIABLES START*******/
 
     public static String INT_TYPE;
-    public static String OBJ_TYPE;
 
     public static Map<String,String> PARENT_RESOURCE_MAP{
         get{
@@ -132,10 +497,8 @@ public class SYS_DataCache {
             if(external_key == null) {
                 external_key = new Map<String, String>();
                 for(FieldSetting__mdt fs : FieldMappingInbound){
-                    if(fs.Is_External_Field__c) {
+                    if(fs.Is_External_Field__c)
                         external_key.put(fs.RestResource__c,fs.FieldApiName__c);
-                        external_key.put(fs.RestResource__c.toLowerCase(),fs.FieldApiName__c);
-                    }
                 }
             }
             return external_key;
@@ -148,11 +511,11 @@ public class SYS_DataCache {
     public static Map<String, String> externalKeyByObject {
         get {
             if(external_key_by_obj == null) {
-                external_key_by_obj = new Map<String, String>();
-                for(FieldSetting__mdt fs : AllFieldSettingMappings){
-                    if(fs.Is_External_Field__c && fs.ObjectSetting__r.DeveloperName == SYS_DataCache.OBJ_TYPE)
-                    external_key_by_obj.put(fs.ObjectApiName__c.toLowerCase(),fs.FieldApiName__c.toLowerCase());
-                }
+            external_key_by_obj = new Map<String, String>();
+            for(FieldSetting__mdt fs : AllFieldSettingMappings){
+                if(fs.Is_External_Field__c && fs.ObjectSetting__r.DeveloperName == SYS_DataCache.OBJ_TYPE)
+                external_key_by_obj.put(fs.ObjectApiName__c.toLowerCase(),fs.FieldApiName__c.toLowerCase());
+            }
             }
             return external_key_by_obj;
         }
@@ -240,7 +603,7 @@ public class SYS_DataCache {
                                     FROM HttpHeaders__mdt 
                                     WHERE IntegrationType__c =:(integrationSetting.get(INT_TYPE)).id];
             }
-            System.debug('header=='+ headerMetadata);
+            //# System.debug('header=='+ headerMetadata);
             return headerMetadata;
         }
     }
@@ -285,7 +648,8 @@ public class SYS_DataCache {
             if(ObjectSettingToFieldSettingsMap_IB == null) {
                 ObjectSettingToFieldSettingsMap_IB = new Map<String, List<FieldSetting__mdt>>();
                 for(FieldSetting__mdt fs : SYS_DataCache.AllFieldSettingMappings){
-                    if(fs.Direction__c != 'OUTBOUND'){
+                    if(fs.Direction__c != SYS_Constants.OUTBOUND){
+                        fs.Key__c = fs.Key__c?.replace(SYS_DataCache.ESCAPE_CHAR, '.')?.toLowerCase();
                         if(ObjectSettingToFieldSettingsMap_IB.containsKey(fs.ObjectSetting__r.DeveloperName)){
                             ObjectSettingToFieldSettingsMap_IB.get(fs.ObjectSetting__r.DeveloperName).add(fs);
                         }
@@ -298,6 +662,16 @@ public class SYS_DataCache {
 
             if(SYS_DataCache.OBJ_TYPE!=NULL){
                 return ObjectSettingToFieldSettingsMap_IB.get(SYS_DataCache.OBJ_TYPE);
+            } 
+            else if(SYS_DataCache.INT_TYPE != NULL) {
+                List<FieldSetting__mdt> allMappings = new List<FieldSetting__mdt>();
+                for(List<FieldSetting__mdt> fsList:ObjectSettingToFieldSettingsMap_IB.values()){
+                    for(FieldSetting__mdt fs:fsList){
+                        if(fs.Level__c == '0' && fs?.ObjectSetting__r?.IntegrationType__r?.DeveloperName == SYS_DataCache.INT_TYPE)
+                            allMappings.add(fs);
+                    }
+                }
+                return allMappings; 
             }
             else {
                 /**
@@ -400,7 +774,7 @@ public class SYS_DataCache {
             if(ObjectSettingToFieldSettingsMap_OB == null) {
                 ObjectSettingToFieldSettingsMap_OB = new Map<String, List<FieldSetting__mdt>>();
                 for(FieldSetting__mdt fs : SYS_DataCache.AllFieldSettingMappings){
-                    if(fs.Direction__c != 'INBOUND'){
+                    if(fs.Direction__c != SYS_Constants.INBOUND ){
                         if(ObjectSettingToFieldSettingsMap_OB.containsKey(fs.ObjectSetting__r.DeveloperName)){
                             ObjectSettingToFieldSettingsMap_OB.get(fs.ObjectSetting__r.DeveloperName).add(fs);
                         }
@@ -410,7 +784,7 @@ public class SYS_DataCache {
                     }
                 }
             }
-            return ObjectSettingToFieldSettingsMap_OB.get(SYS_DataCache.OBJ_TYPE);
+            return ObjectSettingToFieldSettingsMap_OB.get(SYS_DataCache.OBJ_TYPE); 
         }
     }
     
@@ -668,7 +1042,12 @@ public class SYS_DataCache {
                                      WHERE developername = :SYS_DataCache.INT_TYPE LIMIT 1][0].DebugCheck__c;
             }
             */
-            return integrationSetting.get(SYS_DataCache.INT_TYPE).DebugCheck__c;
+            if(SYS_DataCache.INT_TYPE == null || integrationSetting == null)
+                return false;
+            else if(integrationSetting.get(SYS_DataCache.INT_TYPE) == null)
+                return false;
+            else
+                return integrationSetting.get(SYS_DataCache.INT_TYPE).DebugCheck__c;
             //return true;
         }
     } 
@@ -684,7 +1063,7 @@ public class SYS_DataCache {
                                     FROM IntegrationEnablement__mdt];
                                     */
                 for(IntegrationEnablement__mdt iter : IntegrationEnablement__mdt.getAll().values()) {
-                    checkMap.put(iter.Integration_Setting__r.DeveloperName.toUpperCase() , iter.Enable__c);
+                    checkMap.put(iter.Integration_Setting__r.DeveloperName?.toUpperCase() , iter.Enable__c);
                 }
             }
             return checkMap;
@@ -695,10 +1074,11 @@ public class SYS_DataCache {
     public static String namespacePrefix {
         get {
             if(namespace == null) {
-                Schema.DescribeSObjectResult dsr = SYS_IntegrationLog__c.sObjectType.getDescribe();
-                namespace = dsr.getName().remove(dsr.getLocalName());
+                String[] parts = String.valueOf(SYS_datacache.class).split('\\.', 2);
+                namespace = parts.size() == 2 ? parts[0] : '';
+                System.debug('test namespacePrefixend ' + namespace);
             }
-            return namespace; 
+            return namespace != NULL ? namespace : ''; 
         }
     }
 
@@ -734,5 +1114,29 @@ public class SYS_DataCache {
         }
     }
     */
+
+    public static String endpoint;
+    public static String licenseEndpoint {
+        get {
+            if(endpoint == null) {
+                endpoint = SYS_DataCache.integrationSetting.get(SYS_DataCache.INT_TYPE)?.License_Org_Endpoint__c;
+            }
+            return endpoint;
+        }
+    }
+
+    public static Map<String, Boolean> enforce_limit_map;
+    public static Boolean enforce_limit {
+        get {
+            if(enforce_limit_map == NULL) {
+                enforce_limit_map = new Map<String, Boolean>();
+                for(IntegrationSetting__mdt iter : IntegrationSetting__mdt.getAll().values()) {
+                    enforce_limit_map.put(iter.developerName, iter.Enforce_Limit__c);
+                }
+            }
+            return enforce_limit_map?.get(INT_TYPE) != NULL ? enforce_limit_map?.get(INT_TYPE) : false ;
+        }
+    }
+
     
 }

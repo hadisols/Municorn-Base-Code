@@ -801,7 +801,6 @@ public virtual class SYS_Transformer {
         if(resource == NULL){
             throw new SYS_TransformerException('\nResource not identified. getSObjectsToUpsert() cannot be processed');
         }
-        resource = resource.toLowerCase();
 
         resource = resource.toLowerCase();
 
