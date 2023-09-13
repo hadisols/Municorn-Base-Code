@@ -622,12 +622,17 @@ public without sharing class SYS_DataCache {
         get{
             if(AllFieldSettingsList == null){
                 AllFieldSettingsList = new List<FieldSetting__mdt>();
+                String query_fs = 'SELECT ' + SYS_Helper.getAllFieldsFor('FieldSetting__mdt') 
+                            +', '+ SYS_Helper.getAllParentFields('ObjectSetting__r.', 'ObjectSetting__mdt') 
+                            +', '+ SYS_Helper.getAllParentFields('ObjectSetting__r.IntegrationType__r.', 'IntegrationSetting__mdt') 
+                            +' FROM FieldSetting__mdt '+ 'WHERE ' + 'Is_Active__c = true ORDER BY Order_Number__c ASC LIMIT 10000';
                 
-                AllFieldSettingsList = [Select Id,developerName, Order_Number__c, Datetime_Conversion_Format__c,Send_Blanks_as_Empty_String__c,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
-                            ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c, ObjectSetting__r.IntegrationType__r.DeveloperName , Skip_Field_Setting__c,
-                            ObjectSetting__r.IntegrationType__r.EscapeCharacter__c
-                            from FieldSetting__mdt WHERE Is_Active__c=true ORDER BY Order_Number__c ASC
-                           /* AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != SYS_Constants.INBOUND*/];
+                AllFieldSettingsList = Database.query(query_fs);
+                // AllFieldSettingsList = [Select Id,developerName, Order_Number__c, Datetime_Conversion_Format__c,Send_Blanks_as_Empty_String__c,Mapping_is_for__c,Key_For_Events__c,Level__c,Log_API_for_field_mapping__c, Lookup_External_Key__c, Lookup_Object_API_Name__c,Is_External_Field__c,Is_Lookup__c, Get_value_from_Log__c,ChildFieldApiName__c,ObjectSetting__r.DeveloperName,masterlabel,Field_Mapping_Handler__c, ObjectSetting__r.masterlabel , StaticValue__c,IsChild__c, ObjectSetting__r.ObjectApiName__c, ObjectApiName__c, FieldApiName__c , Key__c, RestResource__c, Direction__c, ParentField__c, ChildRootElement__c,
+                //             ObjectSetting__r.Direction__c,ObjectSetting__r.Trigger_Condition__c,ObjectSetting__r.TriggerEvents__c, ObjectSetting__r.ResourcePath__c,ObjectSetting__r.url_params__c , ObjectSetting__r.ApexHandler__c, ObjectSetting__r.IntegrationType__r.DeveloperName , Skip_Field_Setting__c,
+                //             ObjectSetting__r.IntegrationType__r.EscapeCharacter__c
+                //             from FieldSetting__mdt WHERE Is_Active__c=true ORDER BY Order_Number__c ASC
+                //            /* AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE AND Direction__c != SYS_Constants.INBOUND*/];
                 
                 for(FieldSetting__mdt item : AllFieldSettingsList) {
                     
