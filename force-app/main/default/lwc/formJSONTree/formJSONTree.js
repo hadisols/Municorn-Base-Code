@@ -30,6 +30,7 @@ export default class FormJSONTree extends LightningElement {
     treejsonR;
 
     @track fsObject = {};
+    @track selectedRecords = {};
 
     @api
     get nodealign() {
@@ -69,6 +70,9 @@ export default class FormJSONTree extends LightningElement {
         console.log('selected record ', JSON.stringify(event.detail.selectedRecord, null, 2));
         let selected = event.detail.selectedRecord; 
         this.fsObject = selected;
+        console.log('key row id ',selected.treeuuid);
+        if(selected.treeuuid)
+            this.selectedRecords[selected.treeuuid] = selected;
         try {
             if(selected?.isPrimaryObject && !selected?.isDelete) {
                 // TODO Disable lookup not rendering the child component in the tree
@@ -199,24 +203,34 @@ export default class FormJSONTree extends LightningElement {
     handleModalOpen(e) {
         
         const { target } = e;
-        const { id } = target.dataset;
-        let obj = Object.assign({},this.fsObject);
+        const treeuuid = e.target.dataset.id;
+        let obj = Object.assign({},this.selectedRecords[treeuuid]);
         
-        console.log('Object to open ', JSON.stringify(obj, null, 2));
+        console.log('Object to open ', treeuuid , JSON.stringify(obj, null, 2));
         
-        fieldLayout.open(
-        {
-            objectWrapper : obj,
-            onsave: (event) => {
-                // stop further propagation of the event
-                event.stopPropagation();
-                this.handleUpdateEvent(event.detail);
-              }
-        })
-        .then(result => {
-            console.log('modal after closed ', result);
-            this.fsObject = Object.assign({},result);
-        })
+        if(!this.isObjectEmpty(obj)) {
+            fieldLayout.open(
+            {
+                objectWrapper : obj,
+                onsave: (event) => {
+                    // stop further propagation of the event
+                    event.stopPropagation();
+                    this.handleUpdateEvent(event.detail);
+                    }
+            })
+            .then(result => {
+                console.log('modal after closed ', result);
+                this.fsObject = Object.assign({},result);
+            })
+        }
+        else {
+            return;
+        }
+        
+    }
+
+    isObjectEmpty(obj) {
+        return Object.keys(obj).length === 0;
     }
 }
 

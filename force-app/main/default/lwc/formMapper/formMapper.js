@@ -1,30 +1,35 @@
 import { api, LightningElement, track } from 'lwc';
 
 import deploy from '@salesforce/apex/SYS_FieldMapperController.deploy';
+import getSavedJson from '@salesforce/apex/SYS_FieldMapperController.getSavedJson';
 
 import fieldLayout from "c/fieldLayout";
 
+import { subscribe, unsubscribe, onError, setDebugFlag, isEmpEnabled } 
+    from 'lightning/empApi';
+
 export default class FormMapper extends LightningElement {
     @api
-    treeJSON ={
-        name: "FirstName",
-        title: "Enter your first name:",
-        type: "text",
-        address : {
-            city : "NY"
-        },
-        item :[
-            { 
-                name1 : 'x1',
-                addr : 'addr'
-            },
-            { 
-                name2 : 'x2',
-                pick :['12','23','34']
-            }
-        ]
-    };
-    @track mergedKeyTypes = [];
+    treeJSON = {};
+    // {
+    //     name: "FirstName",
+    //     title: "Enter your first name:",
+    //     type: "text",
+    //     address : {
+    //         city : "NY"
+    //     },
+    //     item :[
+    //         { 
+    //             name1 : 'x1',
+    //             addr : 'addr'
+    //         },
+    //         { 
+    //             name2 : 'x2',
+    //             pick :['12','23','34']
+    //         }
+    //     ]
+    // };
+    @track mergedKeyTypes = {};
 
     @track
     selectedConfig = [];
@@ -32,8 +37,74 @@ export default class FormMapper extends LightningElement {
     @track currentStep = "2";
     @track hasError = false;
 
-    @api
-    recordId;
+    // Deployment related messages
+    // @track progress = 0;
+    @track loading = false;
+    @track showErrorMessage = false;
+    @track totalQueued = 0;
+    @track remainedInQueue = 0;
+    @track deploymentMessage = '';
+    channelName = '/event/SYS_EventLog__e';
+    subscription = {};
+
+    get progress() {
+        let result = 0;
+        console.log('progress ',result, this.remainedInQueue);
+        if(this.totalQueued > 0 && this.remainedInQueue >= 0) {
+            if ( this.totalQueued < this.remainedInQueue ) {
+                this.totalQueued = this.remainedInQueue;
+            }
+            result = Math.floor( (((this.totalQueued - this.remainedInQueue)/this.totalQueued)*100) );
+            console.log('progress ',result, this.remainedInQueue);
+        }
+        return result;
+    }
+
+    get showSuccess() {
+        return this.progress == 100;
+    }
+
+
+
+
+    _recordId;
+
+    @api set recordId(value) {
+        this._recordId = value;
+        console.log('_recordId ', this._recordId);
+        this.loading = true;
+        getSavedJson({ recordId: this._recordId })
+        .then((result) => {
+            console.log(' retrived ', result);
+            this.treeJSON = this.extractResponseFromMetadata(JSON.parse(result));
+            // this.treeJSON = result;
+            console.log('modified treejson', JSON.stringify(this.treeJSON, null, 2));
+            this.loading = false;
+            if(this.template.querySelector(".tree-form") && this.treeJSON)
+                this.template.querySelector(".tree-form").showTreeForm(this.treeJSON, this.mergedKeyTypes); 
+        })
+        .catch((error) => {
+            console.log('deploy error ', error);
+            this.loading = false;
+        });
+        //TODO currently specific to demo org
+        // getsObjectApiName({ recordId: this._recordId })
+        // .then((result) => {
+        //     this.sObjectApiName = result;
+        // })
+        // .catch((error) => {
+        //     console.log('deploy error ', error);
+        // });
+    }
+
+    get recordId() {
+        return this._recordId;
+    }
+
+
+    get widthPercentage() {
+        return `width:${this.progress}%;opacity: 1`;
+    }
 
     get screenOne() {
         return this.currentStep == 1 || this.currentStep == '1';
@@ -47,61 +118,144 @@ export default class FormMapper extends LightningElement {
         return this.currentStep == 3 || this.currentStep == '3';
     }
 
-    renderedCallback() {
-        // const canvasEle = this.template.querySelector('canvas');/* document.getElementById('drawContainer'); */
-        // console.log('canvasEle' ,canvasEle);
-        // const context = canvasEle.getContext('2d');
-        // let startPosition = {x: 0, y: 0};
-        // let lineCoordinates = {x: 0, y: 0};
-        // let isDrawStart = false;
+    connectedCallback() {
+        this.handleSubscribe();
+        this.registerErrorListener();
+        // this.increment()
         
-        // const getClientOffset = (event) => {
-        //     const {pageX, pageY} = event.touches ? event.touches[0] : event;
-        //     console.log('page ordinate ',pageX, pageY);
-        //     const x = pageX - canvasEle.offsetLeft;
-        //     const y = pageY - canvasEle.offsetTop - 150;
+    }
+
+    // increment() {
+    //     setTimeout(() => {
+    //         this.progress += Math.floor(Math.random() * 8);
+    //         if(this.progress < 100)
+    //             this.increment();
+    //     }, 1000);
+    // }
+
+    registerErrorListener() {
+        // Invoke onError empApi method
+        onError((error) => {
+            console.log('Received error from server: ', JSON.stringify(error));
+            // Error contains the server-side error
+        });
+    }
+
+    // Handles subscribe button click
+    handleSubscribe() {
+        // Callback invoked whenever a new event message is received
+        const messageCallback =  (response) => {
+            console.log('New message received: ', JSON.stringify(response, null, 2));
+            if(response.data.payload.Success__c == true) {
+                this.remainedInQueue = response.data.payload.Remaining__c;
+            } else if(response.data.payload.Success__c == false) {
+                this.showErrorMessage = true;
+                this.deploymentMessage = response.data.payload.Message__c;
+            }
+            
+            console.log('remained changed ', this.remainedInQueue,'progress ', this.progress, 'totalQueued ',this.totalQueued);
+            // Response contains the payload of the new message received
+        };
+
+        // Invoke subscribe method of empApi. Pass reference to messageCallback
+        subscribe(this.channelName, -1, messageCallback).then((response) => {
+            // Response contains the subscription information on subscribe call
+            console.log(
+                'Subscription request sent to: ',
+                JSON.stringify(response.channel)
+            );
+            this.subscription = response;
+            
+        });
+    }
+
+    // renderedCallback() {
+    //     // const canvasEle = this.template.querySelector('canvas');/* document.getElementById('drawContainer'); */
+    //     // console.log('canvasEle' ,canvasEle);
+    //     // const context = canvasEle.getContext('2d');
+    //     // let startPosition = {x: 0, y: 0};
+    //     // let lineCoordinates = {x: 0, y: 0};
+    //     // let isDrawStart = false;
         
-        //     return {
-        //        x,
-        //        y
-        //     } 
-        // }
+    //     // const getClientOffset = (event) => {
+    //     //     const {pageX, pageY} = event.touches ? event.touches[0] : event;
+    //     //     console.log('page ordinate ',pageX, pageY);
+    //     //     const x = pageX - canvasEle.offsetLeft;
+    //     //     const y = pageY - canvasEle.offsetTop - 150;
         
-        // const drawLine = () => {
-        //    context.beginPath();
-        //    context.moveTo(startPosition.x, startPosition.y);
-        //    context.lineTo(lineCoordinates.x, lineCoordinates.y);
-        //    context.stroke();
-        // }
+    //     //     return {
+    //     //        x,
+    //     //        y
+    //     //     } 
+    //     // }
         
-        // const mouseDownListener = (event) => {
-        //    startPosition = getClientOffset(event);
-        //    isDrawStart = true;
-        // }
+    //     // const drawLine = () => {
+    //     //    context.beginPath();
+    //     //    context.moveTo(startPosition.x, startPosition.y);
+    //     //    context.lineTo(lineCoordinates.x, lineCoordinates.y);
+    //     //    context.stroke();
+    //     // }
         
-        // const mouseMoveListener = (event) => {
-        //   if(!isDrawStart) return;
+    //     // const mouseDownListener = (event) => {
+    //     //    startPosition = getClientOffset(event);
+    //     //    isDrawStart = true;
+    //     // }
+        
+    //     // const mouseMoveListener = (event) => {
+    //     //   if(!isDrawStart) return;
           
-        //   lineCoordinates = getClientOffset(event);
-        //   clearCanvas();
-        //   drawLine();
-        // }
+    //     //   lineCoordinates = getClientOffset(event);
+    //     //   clearCanvas();
+    //     //   drawLine();
+    //     // }
         
-        // const mouseupListener = (event) => {
-        //   isDrawStart = false;
-        // }
+    //     // const mouseupListener = (event) => {
+    //     //   isDrawStart = false;
+    //     // }
         
-        // const clearCanvas = () => {
-        //    context.clearRect(0, 0, canvasEle.width, canvasEle.height);
-        // }
+    //     // const clearCanvas = () => {
+    //     //    context.clearRect(0, 0, canvasEle.width, canvasEle.height);
+    //     // }
         
-        // canvasEle.addEventListener('mousedown', mouseDownListener);
-        // canvasEle.addEventListener('mousemove', mouseMoveListener);
-        // canvasEle.addEventListener('mouseup', mouseupListener);
+    //     // canvasEle.addEventListener('mousedown', mouseDownListener);
+    //     // canvasEle.addEventListener('mousemove', mouseMoveListener);
+    //     // canvasEle.addEventListener('mouseup', mouseupListener);
         
-        // canvasEle.addEventListener('touchstart', mouseDownListener);
-        // canvasEle.addEventListener('touchmove', mouseMoveListener);
-        // canvasEle.addEventListener('touchend', mouseupListener);
+    //     // canvasEle.addEventListener('touchstart', mouseDownListener);
+    //     // canvasEle.addEventListener('touchmove', mouseMoveListener);
+    //     // canvasEle.addEventListener('touchend', mouseupListener);
+    // }
+
+    extractResponseFromMetadata(treeMetadata) {
+        let result = {};
+        for (let page of treeMetadata.pages) {
+            console.log('inside pages loop',page);
+            if (page.elements) {
+                this.extractNames(page.elements, result);
+            }
+        }
+            
+        return result;
+    }
+
+    extractNames(elements, result) {
+        console.log('inside extractNames');
+        for (let element of elements) {
+            if (element.type === "multipletext") {
+                let obj = {};
+                for (let item of element.items) {
+                    obj[item.name] = "";
+                }
+                result[element.name] = obj;
+            }
+            else if (element.type !== "panel") {
+                result[element.name] = "";
+            }
+            
+            if (element.elements) {
+                this.extractNames(element.elements, result);
+            }
+        }
     }
 
     handleSelectEvent(event) {
@@ -117,6 +271,11 @@ export default class FormMapper extends LightningElement {
         console.log('Rendered');
         if(this.template.querySelector(".tree-form") && this.treeJSON)
             this.template.querySelector(".tree-form").showTreeForm(this.treeJSON, this.mergedKeyTypes); 
+        
+        // const progress = this.template.querySelector('.progress-done');     
+        // console
+        // progress.style.width = 10 + '%';
+        // progress.style.opacity = 1;
     }
 
     handlePasteEvent(event) {
@@ -158,12 +317,20 @@ export default class FormMapper extends LightningElement {
     }
 
     handleDeploy() {
-        deploy({ request: JSON.stringify(this.selectedConfig, null, 2) })
+        // this.handleSubscribe();
+        this.loading = true;
+        deploy({ request: JSON.stringify(this.selectedConfig, null, 2), recordId : this._recordId })
         .then((result) => {
             console.log('result ', result);
+            this.totalQueued = result;
+            this.remainedInQueue = result;
+            console.log('progress info ', this.progress);
+            this.currentStep = "3";
+            this.loading = false;
         })
         .catch((error) => {
             console.log('deploy error ', error);
+            this.loading = false;
         });
     }
 

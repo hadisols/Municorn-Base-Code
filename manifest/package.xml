@@ -74,8 +74,14 @@
 		<members>lookup</members>
 		<name>LightningComponentBundle</name>
 	</types>
-        <types>
-		<members>SYS_FieldMapperController</members>
+    <types>
+        <members>Integration_Metadata.FieldMapper</members>
+		<name>CustomMetadata</name>
+	</types>
+
+    <types>
+		<members>SYS_FieldMapperService</members>
+        <members>SYS_FieldMapperController</members>
 		<name>ApexClass</name>
 	</types>
 

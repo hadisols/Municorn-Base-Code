@@ -986,4 +986,32 @@ global without sharing class SYS_Helper {
 
         SYS_Helper.upsertLog(sysLogs);
     }
+
+    public static string getsObjectApiName(Id recordId) {
+        String sObjectApiName;
+        try {
+            sObjectApiName = recordId.getSObjectType().getDescribe().getName();
+        } catch (Exception e) {
+            throw new SYS_HelperException(e.getMessage());
+        }
+        return sObjectApiName;
+    }
+
+    public static SYS_FieldMapperService getMapperService(String objectApiName) {
+        SYS_FieldMapperService fieldmapper;
+        String apexhandler = 'SYS_FieldMapperService';
+        try {
+            if (SYS_DataCacheFactory.fieldServiceHandlerMap != NULL && !SYS_DataCacheFactory.fieldServiceHandlerMap.isEmpty()) {
+                apexhandler = SYS_DataCacheFactory.fieldServiceHandlerMap.get(objectApiName);
+                fieldmapper = (SYS_FieldMapperService)Type.forName(apexhandler).newInstance();
+            } else {
+                fieldmapper = new SYS_FieldMapperService();
+            }
+        } catch (Exception e) {
+            throw new SYS_HelperException(e.getMessage() + e.getStackTraceString());
+        }
+        return fieldmapper;
+    }
+
+    
 }

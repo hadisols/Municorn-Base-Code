@@ -323,7 +323,7 @@ public virtual class SYS_Transformer {
         // AND ObjectSetting__r.IntegrationType__r.developername = : SYS_DataCache.INT_TYPE ORDER BY adisolsathrz__Order_Number__c	 ASC];
 
         for(FieldSetting__mdt setting : mappings) {
-            // System.debug('order '+setting.adisolsathrz__Order_Number__c);
+            // System.debug('order '+setting.Order_Number__c);
             if(setting.Key__c != null) {
                 keys.add(setting.Key__c);
                 mapKeyToSetting.put(setting.Key__c, setting);
@@ -801,6 +801,7 @@ public virtual class SYS_Transformer {
         if(resource == NULL){
             throw new SYS_TransformerException('\nResource not identified. getSObjectsToUpsert() cannot be processed');
         }
+
         resource = resource.toLowerCase();
 
         List<sObject> objectsToUpsert = new List<sObject>();

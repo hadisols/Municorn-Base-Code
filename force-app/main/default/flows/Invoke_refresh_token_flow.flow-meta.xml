@@ -136,8 +136,8 @@
                 <targetReference>Reset_Schedule_Refresh_Token_Flag</targetReference>
             </connector>
             <label>Schedule action for Refresh token flow</label>
-            <offsetNumber>-1</offsetNumber>
-            <offsetUnit>Hours</offsetUnit>
+            <offsetNumber>-10</offsetNumber>
+            <offsetUnit>Minutes</offsetUnit>
             <recordField>Token_Expiry_Date__c</recordField>
             <timeSource>RecordField</timeSource>
         </scheduledPaths>
