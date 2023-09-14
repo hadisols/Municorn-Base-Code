@@ -58,19 +58,21 @@ public with sharing class SYS_FieldMapperController {
     }
 
     @AuraEnabled
-    public static void deploy(String request, Id recordId) {
+    public static Integer deploy(String request, Id recordId) {
         SYS_FieldMapperService fieldmapper;
+        Integer count = 0;
         try{
             System.debug('body '+ request);
             String objectApiName = SYS_Helper.getsObjectApiName(recordId);
             fieldmapper = SYS_Helper.getMapperService(objectApiName);
 
-            fieldmapper.deployRequest(recordId, request);
+            count = fieldmapper.deployRequest(recordId, request);
             
         } catch(Exception e) {
             System.debug('Error '+e.getStackTraceString()+e.getMessage());
             throw new AuraHandledException(e.getMessage());
         }
+        return count;
     }
 
     @AuraEnabled(cacheable=true)
