@@ -111,6 +111,9 @@ public without sharing class SYS_IntegrationLogOutboundImmediate{
 
             SYS_Helper.upsertLog(logLookUpUpdate);
         } 
+        else if (sysLogs.size() > 0) {
+            SYS_Helper.upsertLog(sysLogs);
+        }
 
         /**
          * If there are still some logs pending for process after exhausting the callout limits 

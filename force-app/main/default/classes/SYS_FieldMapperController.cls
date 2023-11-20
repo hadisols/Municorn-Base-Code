@@ -26,18 +26,7 @@ public with sharing class SYS_FieldMapperController {
         try {
             String objectApiName = SYS_Helper.getsObjectApiName(recordId);
             fieldmapper = SYS_Helper.getMapperService(objectApiName);
-            // String query = 'SELECT '+ SYS_Helper.getAllFieldsFor(sObjectApiName) + ' FROM ' + sObjectApiName
-            // + ' WHERE Id =:recordId LIMIT 1';
-            // List<sObject> records = Database.query(query);
-            // if (records != NULL && records.size() > 0) {
-
-            //     if(sObjectApiName == 'Survey__c') {
-            //         result = (String)records[0].get('Form_JSON__c');
-            //     }
-            //     else if (sObjectApiName == 'Custom_Form__c') {
-            //         result = (String)records[0].get('Response_JSON__c');
-            //     }
-            // }
+            result = fieldmapper.getSavedJson(recordId);
             
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());

@@ -1,6 +1,7 @@
 import { api, LightningElement, track } from 'lwc';
 
 import deploy from '@salesforce/apex/SYS_FieldMapperController.deploy';
+import getsObjectApiName from '@salesforce/apex/SYS_FieldMapperController.getsObjectApiName';
 import getSavedJson from '@salesforce/apex/SYS_FieldMapperController.getSavedJson';
 
 import fieldLayout from "c/fieldLayout";
@@ -68,11 +69,21 @@ export default class FormMapper extends LightningElement {
 
 
     _recordId;
+    _sObjectApiName;
 
     @api set recordId(value) {
         this._recordId = value;
         console.log('_recordId ', this._recordId);
         this.loading = true;
+        //TODO currently specific to demo org
+        getsObjectApiName({ recordId: this._recordId })
+        .then((result) => {
+            this.sObjectApiName = result;
+        })
+        .catch((error) => {
+            console.log('error fetching objectapiname', error);
+        });
+        
         getSavedJson({ recordId: this._recordId })
         .then((result) => {
             console.log(' retrived ', result);
@@ -84,23 +95,18 @@ export default class FormMapper extends LightningElement {
                 this.template.querySelector(".tree-form").showTreeForm(this.treeJSON, this.mergedKeyTypes); 
         })
         .catch((error) => {
-            console.log('deploy error ', error);
+            console.log('error fetching saved json ', error);
             this.loading = false;
         });
-        //TODO currently specific to demo org
-        // getsObjectApiName({ recordId: this._recordId })
-        // .then((result) => {
-        //     this.sObjectApiName = result;
-        // })
-        // .catch((error) => {
-        //     console.log('deploy error ', error);
-        // });
     }
 
     get recordId() {
         return this._recordId;
     }
 
+    set sObjectApiName(value) {
+        this._sObjectApiName = value;
+    }
 
     get widthPercentage() {
         return `width:${this.progress}%;opacity: 1`;
@@ -321,7 +327,7 @@ export default class FormMapper extends LightningElement {
         this.loading = true;
         deploy({ request: JSON.stringify(this.selectedConfig, null, 2), recordId : this._recordId })
         .then((result) => {
-            console.log('result ', result);
+            console.log('result queued', result);
             this.totalQueued = result;
             this.remainedInQueue = result;
             console.log('progress info ', this.progress);
