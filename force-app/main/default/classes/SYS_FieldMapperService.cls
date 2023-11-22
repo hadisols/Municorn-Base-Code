@@ -13,7 +13,8 @@ public virtual inherited sharing class SYS_FieldMapperService {
         return jsonBody;
     }
 
-    public virtual void deployRequest(Id recordId, String request) {
+    public virtual Integer deployRequest(Id recordId, String request) {
+        Integer count = 0;
         try {
             List<SYS_FieldMapperController.FieldWrapper> fslist = 
             (List<SYS_FieldMapperController.FieldWrapper>)JSON.deserialize(request, List<SYS_FieldMapperController.FieldWrapper>.class);
@@ -50,8 +51,6 @@ public virtual inherited sharing class SYS_FieldMapperService {
                 // update form;
             // }
 
-            //container for field settings
-            integer count = 1;
             for(SYS_FieldMapperController.FieldWrapper item:fslist) {
                 Map<String, Object> fieldWithValuesMap = new Map<String, Object>();
 
@@ -113,6 +112,7 @@ public virtual inherited sharing class SYS_FieldMapperService {
             System.debug(e.getStackTraceString() + e.getMessage());
             throw new SYS_FieldMapperServiceException('Some error occured. '+e.getMessage());
         }
+        return count;
     }
 
     public static void getFSToDeactivate(String objectSettingname, Map<String, String> apiNameMap, Map<String, Map<String, Object>> containerMd) {

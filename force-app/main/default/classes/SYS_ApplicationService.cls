@@ -315,7 +315,7 @@ global virtual inherited sharing class SYS_ApplicationService {
                 tzMinsOffset = Integer.valueOf((dt.substring(tzSymbol,tzSymbol+1) + dt.substring(tzMins)));
             }
 
-            newDatetime = DateTime.valueOfGmt(value).addHours(tzHoursOffset).addMinutes(tzMinsOffset);
+            newDatetime = DateTime.valueOfGmt(value).addHours(-tzHoursOffset).addMinutes(-tzMinsOffset);
 
 
             return newDatetime;

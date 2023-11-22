@@ -26,18 +26,7 @@ public with sharing class SYS_FieldMapperController {
         try {
             String objectApiName = SYS_Helper.getsObjectApiName(recordId);
             fieldmapper = SYS_Helper.getMapperService(objectApiName);
-            // String query = 'SELECT '+ SYS_Helper.getAllFieldsFor(sObjectApiName) + ' FROM ' + sObjectApiName
-            // + ' WHERE Id =:recordId LIMIT 1';
-            // List<sObject> records = Database.query(query);
-            // if (records != NULL && records.size() > 0) {
-
-            //     if(sObjectApiName == 'Survey__c') {
-            //         result = (String)records[0].get('Form_JSON__c');
-            //     }
-            //     else if (sObjectApiName == 'Custom_Form__c') {
-            //         result = (String)records[0].get('Response_JSON__c');
-            //     }
-            // }
+            result = fieldmapper.getSavedJson(recordId);
             
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -58,19 +47,21 @@ public with sharing class SYS_FieldMapperController {
     }
 
     @AuraEnabled
-    public static void deploy(String request, Id recordId) {
+    public static Integer deploy(String request, Id recordId) {
         SYS_FieldMapperService fieldmapper;
+        Integer count = 0;
         try{
             System.debug('body '+ request);
             String objectApiName = SYS_Helper.getsObjectApiName(recordId);
             fieldmapper = SYS_Helper.getMapperService(objectApiName);
 
-            fieldmapper.deployRequest(recordId, request);
+            count = fieldmapper.deployRequest(recordId, request);
             
         } catch(Exception e) {
             System.debug('Error '+e.getStackTraceString()+e.getMessage());
             throw new AuraHandledException(e.getMessage());
         }
+        return count;
     }
 
     @AuraEnabled(cacheable=true)
