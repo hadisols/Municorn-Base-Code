@@ -844,16 +844,19 @@ global virtual inherited sharing class SYS_ApplicationService {
         
         String oauthGrantType = SYS_DataCacheFactory.integrationSetting.AuthenticationType__c;
         if(oauthGrantType.toLowerCase() == 'oauth'){
-            String configId = SYS_DataCacheFactory.integrationSetting.OAuth_Config_Record_Id__c;
-            List<SYS_OAuthConfig__c> configs = [SELECT 
-                                                    Id, 
-                                                    Access_Token__c,
-                                                    Token_type__c 
-                                                FROM SYS_OAuthConfig__c 
-                                           	    WHERE Id =:configId];
-
+            List<SYS_OAuthConfig__c> configs = SYS_DataCacheFactory.authRec;
+            
             if(configs.size()>0){
-                req.setHeader('Authorization',configs[0].Token_type__c+' '+configs[0].Access_Token__c);                                       
+                if( (configs[0].Grant_Type__c == 'password') && (configs[0].Token_type__c == 'Basic')  ){
+                    String Username = configs[0].Username__c;
+                    String Password = configs[0].Password__c;
+                    Blob headerValue = Blob.valueOf(Username + ':' + Password);
+                    String authorizationHeader = EncodingUtil.base64Encode(headerValue);
+                    req.setHeader('Authorization',configs[0].Token_type__c+' '+authorizationHeader); 
+                }
+                if( (configs[0].Grant_Type__c == 'authorization_code') && (configs[0].Token_type__c == 'Bearer')  ){
+                    req.setHeader('Authorization',configs[0].Token_type__c+' '+configs[0].Access_Token__c); 
+                }                                                      
             }
             SYS_debug.log('MS Header:'+req.getHeader('Authorization'));
         }
