@@ -172,7 +172,7 @@
                     <criteria>
                         <leftValue>{!Record.Grant_Type__c}</leftValue>
                         <operator>EQUAL</operator>
-                        <rightValue>password</rightValue>
+                        <rightValue>password</rightValue> 
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
